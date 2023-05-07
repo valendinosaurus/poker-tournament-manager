@@ -36,10 +36,18 @@ h2,
 h3,
 h4,
 p {
-  color: $primary;
+  color: white;
   margin: 0;
 }
 
 svg path {
   stroke-linecap: butt !important;
+}
+
+button {
+  background: white;
+  color: $primary;
+  border: none;
+  font-weight: bold;
+  padding: 4px 12px;
 }
