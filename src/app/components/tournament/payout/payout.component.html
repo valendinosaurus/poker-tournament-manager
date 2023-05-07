@@ -1,0 +1,8 @@
+<div class="payout">
+  <h4>
+    Payout
+  </h4>
+  <div *ngFor="let item of payout" class="payout-item">
+    <span class="position">{{item.place}}.</span> {{ totalPrizepool / 100 * item.percent }}.-   
+  </div>
+</div>

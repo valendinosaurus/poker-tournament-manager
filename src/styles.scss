@@ -1,0 +1,45 @@
+@import "./colors.scss";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.simple-circle {
+  margin: 0;
+  padding: 0;
+  width: 4vw;
+  height: 4vw;
+  border-radius: 4vw;
+  background-color: $primary;
+  color: $font;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--big {
+    width: 8vw;
+    height: 8vw;
+    border-radius: 8vw;
+  }
+
+  p {
+    color: $font;
+    transform: translateY(-4%);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  color: $primary;
+  margin: 0;
+}
+
+svg path {
+  stroke-linecap: butt !important;
+}

@@ -1,0 +1,33 @@
+.buyin-overview {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2vh;
+
+  div {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+  }
+}
+
+p.title,
+.title p {
+  margin: 0;
+  font-size: 2vh;
+  font-weight: bold;
+}
+
+p.value,
+.value p {
+  margin: 0;
+  font-size: 4vh;
+  font-weight: bold;
+}
+
+.value p {
+  transform: translateY(-4%);
+}

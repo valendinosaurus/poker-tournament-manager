@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15vh;
+}
+
+h2 {
+  margin: 0;
+  font-size: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+span {
+  font-family: 'Pinyon Script', cursive;
+  font-size: 60px;
+  margin-right: 12px;
+  font-weight: 600;
+}

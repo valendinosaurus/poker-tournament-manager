@@ -1,0 +1,20 @@
+@import "../../../../colors.scss";
+
+.tournament {
+  display: flex;
+}
+
+.side {
+  width: 20vw;
+  height: 100vh;
+  background-color: $background;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.middle {
+  width: 100vw;
+  height: 100vh;
+}

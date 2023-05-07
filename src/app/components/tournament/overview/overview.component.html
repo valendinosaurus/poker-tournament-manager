@@ -1,0 +1,68 @@
+<div class="overview">
+
+  <button *ngIf="!running" (click)="start()">
+    START
+  </button>
+
+  <button *ngIf="running" (click)="pause()">
+    PAUSE
+  </button>
+
+  <app-header
+    [name]="''"
+  ></app-header>
+
+  <div *ngIf="!running" class="popup">
+    PAUSED
+  </div>
+
+  <div class="top">
+    <circle-progress
+      *ngIf="!finished"
+      [percent]="currentTimeLeftPercentage"
+      [radius]="(radius$ | async) || radius"
+      [outerStrokeWidth]="(outerStroke$ | async) || outerStroke"
+      [innerStrokeWidth]="(innerStroke$ | async) || innerStroke"
+      [outerStrokeColor]="'#475841'"
+      [innerStrokeColor]="'#3f403f'"
+      [animation]="true"
+      [title]="currentLevelTimeLeft | time"
+      [showSubtitle]="false"
+      [showUnits]="false"
+      [animationDuration]="300"
+      [titleFontSize]="'15vh'"
+      [subtitleFontSize]="'20px'"
+      [animation]="false"
+    ></circle-progress>
+
+    <div *ngIf="!finished && running" class="time">
+      <ng-container
+        *ngIf="showTimer"
+        [counter]="blindDuration"
+        [interval]="1000"
+        (value)="onValue($event)"
+      >
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <app-current-level
+      *ngIf="!finished"
+      [level]="levels[currentLevelIndex]"
+    ></app-current-level>
+
+    <div class="line"></div>
+
+    <app-next-level
+      *ngIf="!finished && currentLevelIndex < levels.length - 1"
+      [level]="levels[currentLevelIndex+1]"
+    ></app-next-level>
+
+    <p *ngIf="finished">
+      FINISHED
+    </p>
+  </div>
+</div>
+
+
