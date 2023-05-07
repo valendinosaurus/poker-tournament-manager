@@ -16,6 +16,7 @@
         PAUSED
     </div>
 
+
     <div class="top">
         <circle-progress
             *ngIf="!finished"
@@ -54,14 +55,16 @@
 
         <div class="line"></div>
 
-        <app-next-level
-            *ngIf="!finished && currentLevelIndex < levels.length - 1"
-            [level]="levels[currentLevelIndex+1]"
-        ></app-next-level>
+        <div class="darker">
+            <app-next-level
+                *ngIf="!finished && currentLevelIndex < levels.length - 1"
+                [level]="levels[currentLevelIndex+1]"
+            ></app-next-level>
 
-        <p *ngIf="finished">
-            FINISHED
-        </p>
+            <p *ngIf="finished">
+                FINISHED
+            </p>
+        </div>
     </div>
 </div>
 

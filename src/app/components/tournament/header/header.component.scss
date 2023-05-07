@@ -1,34 +1,41 @@
 @import '../../../../colors';
 
+:host {
+    display: contents;
+}
+
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 8vh;
-  flex-direction: column;
-  background: $primary;
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 8vh;
+    background: $primaryDark;
+    box-sizing: border-box;
 }
 
 h2 {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 100;
-  color: white;
-  font-family: sans-serif !important;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 100;
+    color: white;
+    font-family: sans-serif !important;
 }
 
 span {
-  font-family: 'Pinyon Script', cursive;
-  font-size: 5vh;
-  margin-right: 12px;
-  font-weight: 400;
+    font-family: 'Pinyon Script', cursive;
+    font-size: 5vh;
+    margin-right: 12px;
+    font-weight: 400;
 }
 
 .subtitle {
-  font-family: sans-serif !important;
-  font-size: 3vh;
-  color: white;
-  font-weight: 400;
+    font-family: 'Segoe UI';
+    font-size: 3vh;
+    color: white;
+    font-weight: 400;
 }
