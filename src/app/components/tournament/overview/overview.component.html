@@ -1,12 +1,18 @@
 <div class="overview">
 
-    <button *ngIf="!running" (click)="start()">
-        START
-    </button>
+    <div class="button-wrapper">
+        <button (click)="addMinute()">
+            + 1 MIN
+        </button>
 
-    <button *ngIf="running" (click)="pause()">
-        PAUSE
-    </button>
+        <button *ngIf="!running" (click)="start()">
+            START
+        </button>
+
+        <button *ngIf="running" (click)="pause()">
+            PAUSE
+        </button>
+    </div>
 
     <app-header
         [name]="''"

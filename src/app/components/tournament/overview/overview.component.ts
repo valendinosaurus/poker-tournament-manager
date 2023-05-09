@@ -84,13 +84,6 @@ export class OverviewComponent implements OnInit {
         );
     }
 
-    private setupWakeLock(): void {
-        const anyNav: any = navigator;
-        if ('wakeLock' in navigator) {
-            anyNav['wakeLock'].request('screen');
-        }
-    }
-
     onValue(event: number): void {
         this.currentLevelTimeLeft = event;
 
@@ -125,6 +118,10 @@ export class OverviewComponent implements OnInit {
 
             }
         }
+    }
+
+    addMinute(): void {
+        this.blindDuration += 60;
     }
 
     start(): void {

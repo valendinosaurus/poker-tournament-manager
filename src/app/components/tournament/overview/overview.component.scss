@@ -65,8 +65,14 @@ p {
     background-color: $background;
 }
 
-button {
+.button-wrapper {
     position: absolute;
     bottom: 12px;
     right: 12px;
+    display: flex;
+
+    button {
+        margin: 4px;
+        font-size: 3vh;
+    }
 }

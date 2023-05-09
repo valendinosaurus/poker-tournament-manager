@@ -12,7 +12,7 @@
     align-items: center;
     justify-content: space-between;
     height: 8vh;
-    background: $primaryDark;
+    background: rgb(243, 242, 241);
     box-sizing: border-box;
 }
 
@@ -22,7 +22,7 @@ h2 {
     justify-content: center;
     align-items: center;
     font-weight: 100;
-    color: white;
+    color: $primary;
     font-family: sans-serif !important;
 }
 
@@ -33,9 +33,18 @@ span {
     font-weight: 400;
 }
 
+img {
+    height: 6vh;
+}
+
 .subtitle {
-    font-family: 'Segoe UI';
-    font-size: 3vh;
-    color: white;
-    font-weight: 400;
+    display: flex;
+    align-items: center;
+
+    span {
+        font-family: 'Segoe UI';
+        font-size: 2vh;
+        color: $primary;
+        font-weight: bold;
+    }
 }
