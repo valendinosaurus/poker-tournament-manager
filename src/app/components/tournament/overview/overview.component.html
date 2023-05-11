@@ -1,7 +1,7 @@
 <div class="overview">
 
     <div class="button-wrapper">
-        <button (click)="addMinute()">
+        <button *ngIf="currentLevelTimeLeft < blindDurationFixed - 60" (click)="addMinute()">
             + 1 MIN
         </button>
 
