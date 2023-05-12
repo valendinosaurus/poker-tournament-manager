@@ -49,17 +49,24 @@
 
         <div class="all-levels">
             <ng-container *ngFor="let level of levels; let i = index;">
-                    <span [class.bold]="i === currentLevelIndex">
-                <ng-container *ngIf="(level | level); else pause">
-                        <span *ngIf="i === currentLevelIndex">
-                            ►
-                        </span>
-                    {{ level.sb }} / {{ level.bb }} <br>
-                </ng-container>
-                <ng-template #pause>
-                    PAUSE <br>
-                </ng-template>
-                    </span>
+                <span [class.bold]="i === currentLevelIndex" style="display: flex">
+                    <ng-container *ngIf="(level | level); else pause">
+                        <div style="width: 32px; flex: 0 0 32px;">
+                           <ng-container *ngIf="i === currentLevelIndex">
+                               ►
+                           </ng-container>
+                        </div>
+                        {{ level.sb }} / {{ level.bb }}
+                     </ng-container>
+                    <ng-template #pause>
+                       <div style="width: 32px; flex: 0 0 32px;">
+                               <ng-container *ngIf="i === currentLevelIndex">
+                                   ►
+                               </ng-container>
+                        </div>
+                         PAUSE
+                    </ng-template>
+                </span>
             </ng-container>
         </div>
     </div>
