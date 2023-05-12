@@ -14,12 +14,6 @@ export const blindLevelsNoAnte: (BlindLevel | Pause)[] = [
         ante: 0,
         durationMinutes: 20,
     },
-    // {
-    //     sb: 75,
-    //     bb: 150,
-    //     ante: 0,
-    //     durationMinutes: 20,
-    // },
     {
         sb: 100,
         bb: 200,
@@ -42,21 +36,11 @@ export const blindLevelsNoAnte: (BlindLevel | Pause)[] = [
         ante: 0,
         durationMinutes: 20,
     },
-    // {
-    //     sb: 400,
-    //     bb: 800,
-    //     ante: 0,
-    //     durationMinutes: 20,
-    // },
     {
         sb: 500,
         bb: 1000,
         ante: 0,
         durationMinutes: 20,
-    },
-    {
-        durationMinutes: 5,
-        type: 'regular'
     },
     {
         sb: 700,
@@ -65,32 +49,30 @@ export const blindLevelsNoAnte: (BlindLevel | Pause)[] = [
         durationMinutes: 20,
     },
     {
+        durationMinutes: 5,
+        type: 'regular'
+    },
+    {
         sb: 1000,
         bb: 2000,
         ante: 0,
         durationMinutes: 20,
     },
     {
-        sb: 1300,
-        bb: 2600,
+        sb: 1500,
+        bb: 3000,
         ante: 0,
         durationMinutes: 20,
-    },
-    {
-        sb: 1600,
-        bb: 3200,
-        ante: 0,
-        durationMinutes: 20,
-    },
-    {
-        durationMinutes: 5,
-        type: 'chip-up'
     },
     {
         sb: 2000,
         bb: 4000,
         ante: 0,
         durationMinutes: 20,
+    },
+    {
+        durationMinutes: 5,
+        type: 'chip-up'
     },
     {
         sb: 3000,

@@ -1,9 +1,9 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
-import { blindLevelsNoAnte } from 'src/app/shared/data/blind-levels.const';
-import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
-import { Pause } from 'src/app/shared/models/pause.interface';
+import {Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {debounceTime, map} from 'rxjs/operators';
+import {blindLevelsNoAnte} from 'src/app/shared/data/blind-levels.const';
+import {BlindLevel} from 'src/app/shared/models/blind-level.interface';
+import {Pause} from 'src/app/shared/models/pause.interface';
 
 @Component({
     selector: 'app-overview',
@@ -57,6 +57,10 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.initTourney();
+    }
+
+    initTourney(): void {
         this.levels = this.levels.map((level) => ({
             ...level,
         }));
@@ -107,7 +111,7 @@ export class OverviewComponent implements OnInit {
             } else {
                 setTimeout(() => {
                     this.currentLevelTimeLeft =
-                        (this.levels[this.currentLevelTimeLeft].durationMinutes * 60) + 1;
+                        (this.levels[this.currentLevelIndex].durationMinutes * 60) + 1;
                     this.blindDuration = this.currentLevelTimeLeft;
 
                     this.blindDurationFixed = this.currentLevelTimeLeft;

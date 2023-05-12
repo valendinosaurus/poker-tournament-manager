@@ -1,10 +1,6 @@
 <div class="overview">
 
     <div class="button-wrapper">
-        <button *ngIf="currentLevelTimeLeft < blindDurationFixed - 60" (click)="addMinute()">
-            + 1 MIN
-        </button>
-
         <button *ngIf="!running" (click)="start()">
             START
         </button>
@@ -19,7 +15,7 @@
     ></app-header>
 
     <div *ngIf="!running" class="popup">
-        PAUSED
+        PAUSED {{ blindDuration }}
     </div>
 
 
@@ -32,7 +28,6 @@
             [innerStrokeWidth]="(innerStroke$ | async) || innerStroke"
             [outerStrokeColor]="'#006dc7'"
             [innerStrokeColor]="'#006dc7'"
-            [animation]="true"
             [title]="currentLevelTimeLeft | time"
             [showSubtitle]="false"
             [showUnits]="false"
@@ -49,6 +44,22 @@
                 [interval]="1000"
                 (value)="onValue($event)"
             >
+            </ng-container>
+        </div>
+
+        <div class="all-levels">
+            <ng-container *ngFor="let level of levels; let i = index;">
+                    <span [class.bold]="i === currentLevelIndex">
+                <ng-container *ngIf="(level | level); else pause">
+                        <span *ngIf="i === currentLevelIndex">
+                            ►
+                        </span>
+                    {{ level.sb }} / {{ level.bb }} <br>
+                </ng-container>
+                <ng-template #pause>
+                    PAUSE <br>
+                </ng-template>
+                    </span>
             </ng-container>
         </div>
     </div>

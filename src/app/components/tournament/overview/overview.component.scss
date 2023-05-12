@@ -76,3 +76,17 @@ p {
         font-size: 3vh;
     }
 }
+
+.all-levels {
+    position: absolute;
+    top: 40%;
+    right: 4vw;
+    transform: translateY(-50%);
+    font-size: 2vh;
+    color: $primaryDark;
+}
+
+.bold {
+    font-weight: bold;
+    font-size: 3vh;
+}

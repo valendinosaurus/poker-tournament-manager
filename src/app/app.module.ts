@@ -18,6 +18,7 @@ import { TournamentComponent } from './components/tournament/tournament-view/tou
 import { CounterDirective } from './counter.directive';
 import { SharedModule } from './shared/shared.module';
 import { ChipsOverviewComponent } from './components/tournament/chips-overview/chips-overview.component';
+import { LevelPipe } from './level.pipe';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ChipsOverviewComponent } from './components/tournament/chips-overview/c
     BuyinOverviewComponent,
     HeaderComponent,
     ChipsOverviewComponent,
+    LevelPipe,
   ],
   imports: [
     BrowserModule,
