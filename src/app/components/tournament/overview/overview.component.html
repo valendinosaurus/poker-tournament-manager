@@ -8,6 +8,10 @@
         <button *ngIf="running" (click)="pause()">
             PAUSE
         </button>
+
+        <button (click)="addMinute()">s
+            +1 min
+        </button>
     </div>
 
     <app-header
@@ -15,7 +19,7 @@
     ></app-header>
 
     <div *ngIf="!running" class="popup">
-        PAUSED {{ blindDuration }}
+        PAUSED
     </div>
 
 
@@ -37,15 +41,12 @@
             [animation]="false"
         ></circle-progress>
 
-        <div *ngIf="!finished && running" class="time">
-            <ng-container
-                *ngIf="showTimer"
-                [counter]="blindDuration"
-                [interval]="1000"
-                (value)="onValue($event)"
-            >
-            </ng-container>
-        </div>
+        <countdown
+            class="countdown"
+            #cd
+            (event)="handleEvent($event)"
+            [config]="config"
+        ></countdown>
 
         <div class="all-levels">
             <ng-container *ngFor="let level of levels; let i = index;">
