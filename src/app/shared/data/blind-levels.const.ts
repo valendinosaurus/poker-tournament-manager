@@ -6,13 +6,13 @@ export const blindLevelsNoAnte: (BlindLevel | Pause)[] = [
         sb: 25,
         bb: 50,
         ante: 0,
-        durationMinutes: 20,
+        durationMinutes: 6,
     },
     {
         sb: 50,
         bb: 100,
         ante: 0,
-        durationMinutes: 20,
+        durationMinutes: 6,
     },
     {
         sb: 100,
