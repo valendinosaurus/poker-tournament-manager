@@ -1,10 +1,10 @@
-import {Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
-import {BehaviorSubject, Observable, of} from 'rxjs';
-import {debounceTime, map} from 'rxjs/operators';
-import {blindLevelsNoAnte} from 'src/app/shared/data/blind-levels.const';
-import {BlindLevel} from 'src/app/shared/models/blind-level.interface';
-import {Pause} from 'src/app/shared/models/pause.interface';
-import {CountdownComponent, CountdownConfig, CountdownEvent} from "ngx-countdown";
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
+import { blindLevelsNoAnte } from 'src/app/shared/data/blind-levels.const';
+import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
+import { Pause } from 'src/app/shared/models/pause.interface';
+import { CountdownComponent, CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 @Component({
     selector: 'app-overview',
@@ -17,20 +17,17 @@ export class OverviewComponent implements OnInit {
     currentLevelIndex = 0;
     currentLevelTimeLeft: number = 0;
     currentTimeLeftPercentage: number = 100;
+    blindDuration: number = 0;
+    blindDurationFixed: number = 0;
 
     showTimer = true;
     running = false;
     finished = false;
 
-    config!: CountdownConfig;
+    countdownConfig: CountdownConfig;
 
-    resize$ = new BehaviorSubject<{ width: number; height: number }>({
-        width: window.innerWidth,
-        height: window.innerHeight,
-    });
+    resize$: BehaviorSubject<{ width: number; height: number }>;
 
-    blindDuration: number = 0;
-    blindDurationFixed: number = 0;
     radius$: Observable<number> = of(200);
     radius = window.innerHeight * 0.6 * 0.4;
     innerStroke$: Observable<number> = of(10);
@@ -62,28 +59,41 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.initTourney();
+        this.initResizeListener();
+        this.initLevels();
+        this.initTimeValues();
+        this.initCountdownConfig();
+        this.initRadius();
+        this.initInnerStroke();
+        this.initOuterStroke();
     }
 
-    initTourney(): void {
+    private initResizeListener(): void {
+        this.resize$ = new BehaviorSubject<{ width: number; height: number }>({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
+    }
+
+    private initLevels(): void {
         this.levels = this.levels.map((level) => ({
             ...level,
         }));
+    }
 
+    private initTimeValues(): void {
         this.currentLevelTimeLeft = this.levels[this.currentLevelIndex].durationMinutes;
         this.blindDuration = this.levels[this.currentLevelIndex].durationMinutes;
         this.blindDurationFixed = this.levels[this.currentLevelIndex].durationMinutes;
+    }
 
-        this.config = {
+    private initCountdownConfig(): void {
+        this.countdownConfig = {
             leftTime: this.currentLevelTimeLeft,
             format: 'mm:ss',
             notify: 0,
             demand: true,
-        }
-
-        this.initRadius();
-        this.initInnerStroke();
-        this.initOuterStroke();
+        };
     }
 
     private initRadius(): void {
@@ -121,14 +131,14 @@ export class OverviewComponent implements OnInit {
                     this.blindDurationFixed = this.currentLevelTimeLeft;
                     this.currentTimeLeftPercentage = 100;
                     this.showTimer = true;
-                    this.config = {
-                        ...this.config,
+                    this.countdownConfig = {
+                        ...this.countdownConfig,
                         leftTime: this.currentLevelTimeLeft
                     };
 
                     setTimeout(() => {
                         this.countdown.begin();
-                    }, 20)
+                    }, 20);
 
                 }, 1000);
             }
@@ -166,19 +176,19 @@ export class OverviewComponent implements OnInit {
 
     addMinute(): void {
         this.countdown.pause();
-        this.currentLevelTimeLeft += 3;
+        this.currentLevelTimeLeft += 60;
 
-        if (this.config.leftTime) {
-            this.config = {
-                ...this.config,
-                leftTime: this.config.leftTime + 3
+        if (this.countdownConfig.leftTime) {
+            this.countdownConfig = {
+                ...this.countdownConfig,
+                leftTime: this.currentLevelTimeLeft
             };
             if (this.running) {
                 this.countdown.resume();
 
                 setTimeout(() => {
-                    this.countdown.resume()
-                }, 20)
+                    this.countdown.resume();
+                }, 20);
             }
         }
     }
