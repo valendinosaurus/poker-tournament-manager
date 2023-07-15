@@ -1,0 +1,10 @@
+<h2>Tournaments</h2>
+
+<div class="list">
+    <ng-container *ngFor="let t of tournaments$ | async">
+        <app-tournament-list-item
+            [t]="t"
+            (reload)="reload()"
+        ></app-tournament-list-item>
+    </ng-container>
+</div>

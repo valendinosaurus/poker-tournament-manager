@@ -1,0 +1,20 @@
+<form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit(model)"
+>
+    <h2>Create Blind Level</h2>
+
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
+
+    <button
+        type="submit"
+        [disabled]="!form.valid"
+    >
+        CREATE
+    </button>
+</form>

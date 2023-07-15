@@ -1,0 +1,76 @@
+@import "src/styles/colors";
+
+:host {
+    display: contents;
+}
+
+.all-levels {
+    font-size: 2vh;
+    color: $primaryDark;
+    width: 80%;
+    max-height: 60vh;
+    overflow-y: auto;
+    max-height: 50.5vh;
+}
+
+.blind-levels .level-wrapper:nth-child(odd) {
+    background: #ddd;
+}
+
+.level-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.bold {
+    font-weight: bold;
+    font-size: 2.6vh;
+}
+
+.position {
+    width: 5%;
+    flex: 0 0 5%;
+}
+
+.position div {
+    width: 2vh;
+    height: 2vh;
+    border-radius: 2vh;
+    background: #006dc7;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+}
+
+.indicator {
+    width: 10%;
+    flex: 0 0 10%;
+    font-size: 2vh;
+    text-align: center;
+    color: #006dc7;
+}
+
+.level {
+    width: 60%;
+    flex: 0 0 60%;
+}
+
+.pause {
+    opacity: 0.5;
+}
+
+.duration {
+    width: 20%;
+    flex: 0 0 20%;
+    text-align: right;
+    flex-grow: 1;
+    padding-right: 1vw;
+}
+
+.opaque {
+    opacity: 0.3;
+}

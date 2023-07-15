@@ -1,0 +1,64 @@
+<div
+    id="allLevels"
+    class="all-levels"
+    #allLevels
+>
+    <h3>
+        Blind Levels
+        <i
+            *ngIf="!isSimpleTournament"
+            class="fa fa-plus-circle"
+            (click)="addBlind.emit()"
+        ></i>
+    </h3>
+
+    <div class="blind-levels">
+        <div id="top"></div>
+        <ng-container *ngFor="let level of levelsToShow; let i = index;">
+            <div
+                class="level-wrapper"
+                [class.bold]="i === currentLevelIndex"
+                [class.opaque]="i < currentLevelIndex"
+            >
+                <div class="position">
+                    <div>
+                        {{ i + 1 }}
+                    </div>
+                </div>
+
+                <div class="indicator">
+                    <ng-container *ngIf="i === currentLevelIndex">
+                        ►
+                    </ng-container>
+                </div>
+
+                <ng-container *ngIf="!level.isPause; else pause">
+                    <div class="level">
+                        {{ level.sb | number }} /
+                        {{ level.bb | number }}
+                        <ng-container *ngIf="level.ante > 0">
+                            / {{ level.ante | number }}
+                        </ng-container>
+                        <ng-container *ngIf="level.btnAnte > 0">
+                            / {{ level.ante | number }} (BA)
+                        </ng-container>
+                    </div>
+                    <div class="duration">
+                        {{ level.duration }} min
+                    </div>
+                </ng-container>
+
+                <ng-template #pause>
+                    <div class="level pause">
+                        {{ level.isChipUp ? 'CHIP UP' : 'PAUSE'}}
+                    </div>
+                    <div class="duration pause">
+                        {{ level.duration }} min
+                    </div>
+                </ng-template>
+            </div>
+        </ng-container>
+        <div id="bottom"></div>
+    </div>
+</div>
+

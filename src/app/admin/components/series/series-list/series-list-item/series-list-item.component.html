@@ -1,0 +1,66 @@
+<div class="list-item">
+    <i
+        class="fa fa-trash"
+        (click)="deleteSeries()"
+    ></i>
+
+    <div>
+        <div>
+            <app-user-image-round
+                [imageUrl]="s.branding.logo"
+                [size]="78"
+            ></app-user-image-round>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Name
+            </h4>
+            <span>
+                {{ s.name }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Short Description
+            </h4>
+            <span>
+                {{ s.shortDesc }}
+            </span>
+        </div>
+    </div>
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                Long Description
+            </h4>
+            <span>
+                {{ s.longDesc }}
+            </span>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                Tournaments <i class="fa fa-plus-circle" (click)="addTournament()"></i>
+            </h4>
+            <span>
+                <ng-container *ngFor="let t of s.tournaments">
+                    <div class="player deletable">
+                        {{ t.date | date:'dd.MM.YYYY' }}
+                        {{ t.name }}
+                        <i
+                            class="fa fa-trash"
+                            (click)="deleteTournamentFromSeries(t.id)"
+                        ></i>
+                    </div>
+                </ng-container>
+            </span>
+        </div>
+
+    </div>
+</div>

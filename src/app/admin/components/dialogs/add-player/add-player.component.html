@@ -1,0 +1,48 @@
+<ng-container *ngIf="data.multi; else formSingle">
+    <h2>Add Players to "{{ data.tournament.name }}"</h2>
+
+    <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmitMulti(modelMulti)"
+    >
+
+        <formly-form
+            [form]="form"
+            [fields]="fields"
+            [options]="options"
+            [model]="modelMulti"
+        ></formly-form>
+
+        <button
+            type="submit"
+            [disabled]="!form.valid"
+        >
+            CREATE
+        </button>
+    </form>
+</ng-container>
+
+<ng-template #formSingle>
+    <h2>Add Player to "{{ data.tournament.name }}"</h2>
+
+    <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit(model)"
+    >
+
+        <formly-form
+            [form]="form"
+            [fields]="fields"
+            [options]="options"
+            [model]="model"
+        ></formly-form>
+
+        <button
+            type="submit"
+            [disabled]="!form.valid"
+        >
+            CREATE
+        </button>
+    </form>
+</ng-template>
+

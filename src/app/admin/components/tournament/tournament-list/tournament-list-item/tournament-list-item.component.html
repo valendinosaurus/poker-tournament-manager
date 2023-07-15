@@ -1,0 +1,147 @@
+<div class="list-item">
+    <i
+        class="fa fa-trash"
+        (click)="deleteTournament()"
+    ></i>
+
+    <i
+        class="fa fa-share"
+        (click)="openTournament()"
+    ></i>
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                Date
+            </h4>
+            <span>
+                {{ t.date | date:'dd.MM.YYYY' }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Name
+            </h4>
+            <span>
+                {{ t.name }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Location
+            </h4>
+            <span>
+                {{ t.location }}
+            </span>
+        </div>
+    </div>
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                BuyIn
+            </h4>
+            <span>
+                $ {{ t.buyIn | number:'':'de-CH' }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                $ Rebuy / No. of Rebuys
+            </h4>
+            <span>
+                $ {{ t.rebuy | number:'':'de-CH' }} / {{ t.noOfRebuys }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                $ Addon / Chips Addon
+            </h4>
+            <span>
+                $ {{ t.addon | number:'':'de-CH' }} / {{ t.addonAmount }}
+            </span>
+        </div>
+    </div>
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                Start Stack
+            </h4>
+            <span>
+                {{ t.startStack | number:'':'de-CH' }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Payout
+            </h4>
+            <span>
+                {{ t.payout }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                $ Initial Pricepool
+            </h4>
+            <span>
+                $ {{ t.initialPricepool | number:'':'de-CH' }}
+            </span>
+        </div>
+    </div>
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                Players <i class="fa fa-plus-circle" (click)="addPlayers()"></i>
+            </h4>
+            <span>
+                <ng-container *ngFor="let p of t.players">
+                    <div class="player deletable">
+                        <app-user-image-round
+                            [imageUrl]="p.image"
+                        ></app-user-image-round>
+                        {{ p.name }}
+                        <i
+                            class="fa fa-trash"
+                            (click)="deletePlayerFromTournament(p.id)"
+                        ></i>
+                    </div>
+                </ng-container>
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Blinds <i class="fa fa-plus-circle" (click)="addBlinds()"></i>
+            </h4>
+            <span>
+                <ng-container *ngFor="let b of t.structure">
+                    <div class="blind deletable">
+                       <div>
+                            <span>
+                                 {{ b.sb }}
+                            </span>
+                            <span>
+                                {{ b.bb }}
+                            </span>
+                        </div>
+                        <span>
+                            {{ b.duration}}min
+                        </span>
+                        <i
+                            class="fa fa-trash"
+                            (click)="deleteBlindFromTournament(b.id)"
+                        ></i>
+                    </div>
+                </ng-container>
+            </span>
+        </div>
+    </div>
+</div>

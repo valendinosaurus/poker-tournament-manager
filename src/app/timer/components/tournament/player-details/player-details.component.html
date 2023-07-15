@@ -1,0 +1,31 @@
+<h3>
+    Player Details
+</h3>
+
+<div>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th class="center">Rebuys</th>
+            <th class="center">Addons</th>
+        </tr>
+        <ng-container *ngFor="let e of combination">
+            <tr>
+                <td>
+                <span class="flextd">
+                    <app-user-image-round
+                        [imageUrl]="e.image"
+                    ></app-user-image-round>
+                    {{ e.name }}
+                </span>
+                </td>
+                <td class="center">
+                    {{ e.rebuys }}
+                </td>
+                <td class="center">
+                    {{ e.addons }}
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+</div>

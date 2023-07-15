@@ -1,0 +1,10 @@
+<h2>Series</h2>
+
+<div class="list">
+    <ng-container *ngFor="let s of seriess$ | async">
+        <app-series-list-item
+            [s]="s"
+            (reload)="reload()"
+        ></app-series-list-item>
+    </ng-container>
+</div>
