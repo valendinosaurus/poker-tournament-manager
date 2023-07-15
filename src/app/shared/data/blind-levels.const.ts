@@ -1,95 +1,184 @@
 import { BlindLevel } from '../models/blind-level.interface';
-import { Pause } from '../models/pause.interface';
 
-export const blindLevelsNoAnte: (BlindLevel | Pause)[] = [
+export const blindLevelsNoAnte: (BlindLevel)[] = [
     {
         sb: 25,
         bb: 50,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
         sb: 50,
         bb: 100,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
+    },
+    {
+        sb: 75,
+        bb: 150,
+        ante: 0,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
+    },
+    {
+        sb: 0,
+        bb: 0,
+        ante: 0,
+        duration: 5 * 60,
+        btnAnte: 0,
+        isPause: true,
+        isChipUp: false
     },
     {
         sb: 100,
         bb: 200,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
-        durationMinutes: 5 * 60,
-        type: 'chip-up'
+        sb: 150,
+        bb: 300,
+        ante: 0,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
         sb: 200,
         bb: 400,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
+    },
+    {
+        sb: 0,
+        bb: 0,
+        ante: 0,
+        duration: 5 * 60,
+        btnAnte: 0,
+        isPause: true,
+        isChipUp: true
     },
     {
         sb: 300,
         bb: 600,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
-        sb: 500,
-        bb: 1000,
+        sb: 400,
+        bb: 800,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
-        sb: 700,
-        bb: 1400,
+        sb: 600,
+        bb: 1200,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
-        durationMinutes: 5 * 60,
-        type: 'regular'
-    },
-    {
-        sb: 1000,
-        bb: 2000,
+        sb: 0,
+        bb: 0,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 5 * 60,
+        btnAnte: 0,
+        isPause: true,
+        isChipUp: false
+    },
+    {
+        sb: 800,
+        bb: 1600,
+        ante: 0,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
+    },
+    {
+        sb: 1100,
+        bb: 2200,
+        ante: 0,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
         sb: 1500,
         bb: 3000,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
+    },
+    {
+        sb: 0,
+        bb: 0,
+        ante: 0,
+        duration: 5 * 60,
+        btnAnte: 0,
+        isPause: true,
+        isChipUp: true
     },
     {
         sb: 2000,
         bb: 4000,
         ante: 0,
-        durationMinutes: 20 * 60,
-    },
-    {
-        durationMinutes: 5 * 60,
-        type: 'chip-up'
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
         sb: 3000,
         bb: 6000,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
         sb: 4000,
         bb: 8000,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
     {
         sb: 5000,
         bb: 10000,
         ante: 0,
-        durationMinutes: 20 * 60,
+        duration: 15 * 60,
+        btnAnte: 0,
+        isPause: false,
+        isChipUp: false
     },
 ];

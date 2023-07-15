@@ -1,0 +1,26 @@
+:host {
+    display: contents;
+}
+
+.buyin-overview {
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 4vh;
+
+    div {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+p.value,
+.value p {
+    margin: 0;
+    font-size: 5vh;
+    font-weight: bold;
+}

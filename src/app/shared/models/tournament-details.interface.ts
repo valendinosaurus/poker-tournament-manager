@@ -2,7 +2,7 @@ import { BlindLevel } from './blind-level.interface';
 import { Player } from './player.interface';
 import { Finish } from './finish.interface';
 
-export interface Tournament {
+export interface TournamentDetails {
     id?: number;
     name: string;
     date: Date;
@@ -16,7 +16,7 @@ export interface Tournament {
     payout: string;
     initialPricepool: number;
     startStack: number;
-    location: number;
+    location: string;
     structure: BlindLevel[];
     players: Player[];
     entries: any[]; //Entry[];

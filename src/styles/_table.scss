@@ -1,0 +1,34 @@
+
+mat-tab-body table th,
+mat-tab-body table td {
+    padding: 8px 20px;
+    text-align: center;
+}
+
+table,
+table th,
+table td {
+    border-collapse: collapse !important;
+    border-color: transparent !important;
+    border: none !important;
+    color: #00437b;
+}
+
+table td,
+table th {
+    padding: 6px 12px;
+}
+
+table tr:nth-child(odd) {
+    background: #ddd;
+}
+
+
+th.center,
+td.center {
+    text-align: center !important;
+}
+
+th:not(.center) {
+    text-align: left !important;
+}

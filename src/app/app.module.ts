@@ -1,58 +1,36 @@
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {NgCircleProgressModule} from 'ng-circle-progress';
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {CreatePlayerComponent} from './components/create-player/create-player.component';
-import {CreateTournamentComponent} from './components/create-tournament/create-tournament.component';
-import {BuyinOverviewComponent} from './components/tournament/buyin-overview/buyin-overview.component';
-import {ControlsComponent} from './components/tournament/controls/controls.component';
-import {CurrentLevelComponent} from './components/tournament/current-level/current-level.component';
-import {HeaderComponent} from './components/tournament/header/header.component';
-import {NextLevelComponent} from './components/tournament/next-level/next-level.component';
-import {OverviewComponent} from './components/tournament/overview/overview.component';
-import {PayoutComponent} from './components/tournament/payout/payout.component';
-import {PlayerOverviewComponent} from './components/tournament/player-overview/player-overview.component';
-import {TournamentComponent} from './components/tournament/tournament-view/tournament.component';
-import {SharedModule} from './shared/shared.module';
-import {ChipsOverviewComponent} from './components/tournament/chips-overview/chips-overview.component';
-import {LevelPipe} from './level.pipe';
-import {CountdownModule} from "ngx-countdown";
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { SharedModule } from './shared/shared.module';
+import { TimerModule } from './timer/timer.module';
+import { AdminModule } from './admin/admin.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormlyModule } from '@ngx-formly/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormlyMaterialModule } from '@ngx-formly/material';
+
+import localeDECH from '@angular/common/locales/de-CH';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeDECH);
 
 @NgModule({
     declarations: [
         AppComponent,
-        TournamentComponent,
-        CreatePlayerComponent,
-        CreateTournamentComponent,
-        OverviewComponent,
-        ControlsComponent,
-        PayoutComponent,
-        CurrentLevelComponent,
-        NextLevelComponent,
-        PlayerOverviewComponent,
-        BuyinOverviewComponent,
-        HeaderComponent,
-        ChipsOverviewComponent,
-        LevelPipe,
     ],
     imports: [
-        BrowserModule,
         AppRoutingModule,
-        CommonModule,
         SharedModule,
-        NgCircleProgressModule.forRoot({
-            radius: 150,
-            outerStrokeWidth: 25,
-            innerStrokeWidth: 10,
-            outerStrokeColor: 'blue',
-            innerStrokeColor: 'darkblue',
-            animationDuration: 300,
-        }),
-        CountdownModule
+        TimerModule,
+        AdminModule,
+        BrowserAnimationsModule,
+        FormlyModule.forRoot(),
+        ReactiveFormsModule,
+        FormlyMaterialModule,
     ],
-    providers: [],
+    providers: [
+        {provide: LOCALE_ID, useValue: 'de-ch'},
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {

@@ -1,8 +1,10 @@
-import {Tournamnet} from "./tournament.interface";
-
-export interface TournamentSeries {
+export interface Series {
+    id: number | undefined;
     name: string;
-    start: Date;
-    end?: Date;
-    tournaments: Tournamnet[];
+    shortDesc: string;
+    longDesc: string;
+    branding: number;
+    finalTournament: number;
+    rankFormula: number;
+    ftFormula: number;
 }

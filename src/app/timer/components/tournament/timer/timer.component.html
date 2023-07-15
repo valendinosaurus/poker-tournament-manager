@@ -1,0 +1,15 @@
+<div
+    *ngIf="tournament"
+    class="tournament"
+>
+    <div class="middle">
+        <app-overview
+            [tournament]="tournament"
+            [isSimpleTournament]="isSimpleTournament"
+            [playersInTheHole]="playersInTheHole"
+            [formulaId]="formulaId"
+        ></app-overview>
+    </div>
+</div>
+
+

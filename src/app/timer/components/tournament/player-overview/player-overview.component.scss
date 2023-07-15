@@ -1,0 +1,17 @@
+.player-overview {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+circle-progress {
+    //  margin-bottom: -4vh;
+    margin-top: 1vh;
+}
+
+p.title {
+    margin: 0;
+    font-size: 2vh;
+}

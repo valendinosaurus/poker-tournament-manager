@@ -1,0 +1,169 @@
+<div class="overview">
+
+    <div
+        *ngIf="!finished"
+        class="button-wrapper"
+    >
+        <app-buttons
+            [running]="running"
+            [isSimpleTournament]="isSimpleTournament"
+            [withRebuy]="tournament.noOfRebuys > 0"
+            [withAddon]="tournament.addonAmount > 0"
+            (createPlayer)="createPlayer()"
+            (addPlayer)="addPlayer()"
+            (addRebuy)="addRebuy()"
+            (addAddon)="addAddon()"
+            (start)="start()"
+            (pause)="pause()"
+            (addMinute)="addMinute()"
+            (nextLevel)="goToNextLevel()"
+            (seatOpen)="seatOpen()"
+        ></app-buttons>
+    </div>
+
+    <app-header
+        [tournament]="tournament"
+    ></app-header>
+
+
+    <div class="top">
+        <div class="top-center">
+            <div *ngIf="!running" class="popup">
+                PAUSED
+            </div>
+
+            <circle-progress
+                *ngIf="!finished && tournament.structure.length > 0"
+                [percent]="currentTimeLeftPercentage"
+                [radius]="(radius$ | async) || radius"
+                [outerStrokeWidth]="(outerStroke$ | async) || outerStroke"
+                [innerStrokeWidth]="(innerStroke$ | async) || innerStroke"
+                [outerStrokeColor]="'#00437b'"
+                [innerStrokeColor]="'#006dc7'"
+                [title]="currentLevelTimeLeft | time"
+                [showSubtitle]="false"
+                [showUnits]="false"
+                [animationDuration]="300"
+                [titleFontSize]="'15vh'"
+                [subtitleFontSize]="'20px'"
+                [animation]="false"
+            ></circle-progress>
+
+            <countdown
+                *ngIf="!finished && tournament.structure.length > 0"
+                class="countdown"
+                #cd
+                (event)="handleEvent($event)"
+                [config]="countdownConfig"
+            ></countdown>
+        </div>
+
+        <div class="info-panel">
+            <div class="slider-wrapper">
+                <div class="keen-slider" #sliderRef>
+                    <div class="keen-slider__slide number-slide1 slide-blinds">
+                        <app-blind-level-overview
+                            [isSimpleTournament]="isSimpleTournament"
+                            [levels]="tournament.structure"
+                            [currentLevelIndex]="currentLevelIndex"
+                            (addBlind)="addBlind()"
+                        ></app-blind-level-overview>
+                    </div>
+
+                    <div class="keen-slider__slide number-slide2 slide-stats">
+                        <h3>
+                            Info
+                        </h3>
+
+                        <app-player-overview
+                            [players]="tournament.players"
+                            [finishes]="tournament.finishes"
+                        ></app-player-overview>
+
+                        <app-buyin-overview
+                            [entries]="tournament.entries"
+                        ></app-buyin-overview>
+
+                        <app-chips-overview
+                            [entries]="tournament.entries"
+                            [players]="tournament.players"
+                            [startStack]="tournament.startStack"
+                            [addonAmount]="tournament.addonAmount"
+                            [finishes]="tournament.finishes"
+                        ></app-chips-overview>
+                    </div>
+
+                    <div class="keen-slider__slide number-slide3 slide-players">
+                        <app-player-details
+                            [players]="tournament.players"
+                            [entries]="tournament.entries"
+                        ></app-player-details>
+                    </div>
+
+                    <div class="keen-slider__slide number-slide4 slide-players">
+                        <app-ranking
+                            [players]="tournament.players"
+                            [entries]="tournament.entries"
+                            [finishes]="tournament.finishes"
+                            [formulaId]="formulaId"
+                            [tournament]="tournament"
+                        ></app-ranking>
+                    </div>
+
+                    <div class="keen-slider__slide number-slide5 slide-payout">
+                        <app-payout-details
+                            [entries]="tournament.entries"
+                            [addon]="tournament.addon"
+                            [buyIn]="tournament.buyIn"
+                            [payout]="tournament.payout"
+                            [players]="tournament.players"
+                            [finishes]="tournament.finishes"
+                            [initialPricepool]="tournament.initialPricepool"
+                        ></app-payout-details>
+                    </div>
+                </div>
+
+                <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
+                <i class="fa fa-chevron-right" (click)="slider.next()"></i>
+
+                <div class="steps">
+                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 0"></i>
+                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 1"></i>
+                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 2"></i>
+                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 3"></i>
+                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom">
+        <app-current-level
+            *ngIf="!finished && tournament.structure.length > 0"
+            [level]="levels[currentLevelIndex]"
+        ></app-current-level>
+
+        <div class="line"></div>
+
+        <div class="darker"
+             *ngIf="tournament.structure.length > 0"
+        >
+            <app-next-level
+                *ngIf="!finished && currentLevelIndex < levels.length - 1"
+                [level]="levels[currentLevelIndex+1]"
+            ></app-next-level>
+
+            <p *ngIf="finished">
+                FINISHED
+            </p>
+        </div>
+    </div>
+</div>
+
+<audio #warning>
+    <source src="../../../../../assets/warning.wav" type="audio/wav">
+</audio>
+
+<audio #bleepNext>
+    <source src="../../../../../assets/next.wav" type="audio/wav">
+</audio>

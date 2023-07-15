@@ -1,0 +1,26 @@
+<div class="player-overview">
+
+
+    <h4 style="margin-bottom: -20px !important;">Players left</h4>
+
+    <circle-progress
+        [percent]="percentageIn"
+        [radius]="(radius$ | async) || radius"
+        [outerStrokeWidth]="(outerStroke$ | async) || outerStroke"
+        [innerStrokeWidth]="(innerStroke$ | async) || innerStroke"
+        [outerStrokeColor]="'#00437b'"
+        [innerStrokeColor]="'#006dc7'"
+        [backgroundColor]="'#ddd'"
+        [animation]="true"
+        [title]="text"
+        [titleFontWeight]="'bold'"
+        [showSubtitle]="false"
+        [subtitleColor]="'#eee'"
+        [showUnits]="false"
+        [animationDuration]="300"
+        [titleFontSize]="'6vh'"
+        [subtitleFontSize]="'20px'"
+        [renderOnClick]="false"
+    ></circle-progress>
+
+</div>
