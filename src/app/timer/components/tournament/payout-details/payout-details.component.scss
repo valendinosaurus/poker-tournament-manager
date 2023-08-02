@@ -9,14 +9,33 @@ table {
 }
 
 h1 {
-    font-size: 10vh;
+    font-size: 6.4vh;
     background: #eee;
     color: #00437b;
     font-weight: bold;
     padding: 1vh 2vh;
     margin-top: 2vh;
-    margin-bottom: 4vh;
+    margin-bottom: 0;
     text-align: right;
+}
+
+h2 {
+    margin-top: 0;
+    background: #ccc;
+    margin-bottom: 2vh;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 20px;
+    color: #eee;
+
+    span:nth-child(2) {
+        color: #00437b;
+    }
+}
+
+h2.no-mb {
+    margin-bottom: 0 !important;
+    border-bottom: solid #666 1px;
 }
 
 th, td {
@@ -69,4 +88,20 @@ div.payout {
     .price {
         color: #00437b;
     }
+}
+
+.deduction {
+    color: darkred !important;
+    opacity: 0.6;
+}
+
+.initial {
+    opacity: 0.6;
+}
+
+.payouts {
+    overflow-y: auto;
+    height: 25vh;
+    display: block;
+    padding-right: 20px;
 }

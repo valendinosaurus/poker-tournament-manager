@@ -38,6 +38,7 @@ export class CreateBlindLevelComponent implements OnInit {
             btnAnte: 0,
             isPause: false,
             isChipUp: false,
+            endsRebuyReentry: false
         };
     }
 

@@ -3,38 +3,33 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../shared/models/tournament.interface';
+import { EntryApiService } from '../../../../core/services/api/entry-api.service';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
-import { FinishApiService } from '../../../../core/services/api/finish-api.service';
-import { RankingService } from '../../../../core/services/util/ranking.service';
-import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
+import { Entry } from '../../../../shared/models/entry.interface';
 
 @Component({
-    selector: 'app-add-finish',
-    templateUrl: './add-finish.component.html',
-    styleUrls: ['./add-finish.component.scss']
+    selector: 'app-add-re-entry',
+    templateUrl: './add-re-entry.component.html',
+    styleUrls: ['./add-re-entry.component.scss']
 })
-export class AddFinishComponent implements OnInit {
+export class AddReEntryComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
     model: { playerId: number | undefined, tournamentId: number };
     fields: FormlyFieldConfig[];
 
-    private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
-    data: { tournament: Tournament, metadata: SeriesMetadata } = inject(MAT_DIALOG_DATA);
+    private dialogRef: MatDialogRef<AddReEntryComponent> = inject(MatDialogRef<AddReEntryComponent>);
+    data: { tournament: Tournament } = inject(MAT_DIALOG_DATA);
 
-    private finishApiService: FinishApiService = inject(FinishApiService);
+    private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private rankingService: RankingService = inject(RankingService);
 
     allPlayers: { label: string, value: number }[];
-
-    rank = 0;
-    price = 0;
 
     ngOnInit(): void {
         this.playerApiService.getAll$().pipe(
@@ -44,9 +39,12 @@ export class AddFinishComponent implements OnInit {
                         player => this.data.tournament.players.map(p => p.id).includes(player.id)
                     )
                     .filter(player => {
-                        const finishedIds = this.data.tournament.finishes.map(f => f.playerId);
+                        const allowed = this.data.tournament.noOfReEntries;
+                        const rebuysOfPlayer = this.data.tournament.entries.filter(
+                            (entry: Entry) => entry.playerId === player.id && entry.type === 'RE-ENTRY'
+                        ).length;
 
-                        return !finishedIds.includes(player.id ?? 0);
+                        return rebuysOfPlayer < allowed;
                     })
                     .map(
                         player => ({
@@ -59,28 +57,6 @@ export class AddFinishComponent implements OnInit {
                 this.initFields();
             })
         ).subscribe();
-
-        this.rank = this.data.tournament.players.length - this.data.tournament.finishes.length;
-
-        const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
-
-        const payoutPercentage = payoutRaw[this.rank - 1];
-
-        if (payoutPercentage) {
-            const {totalPricePool} = this.rankingService.getTotalPricePool(
-                this.data.tournament.entries,
-                this.data.tournament.buyInAmount,
-                this.data.tournament.rebuyAmount,
-                this.data.tournament.addonAmount,
-                this.data.tournament.initialPricePool,
-                this.data.metadata.percentage,
-                this.data.metadata.maxAmountPerTournament
-            );
-
-            this.price = totalPricePool / 100 * payoutPercentage;
-        } else {
-            this.price = 0;
-        }
     }
 
     private initModel(): void {
@@ -98,16 +74,16 @@ export class AddFinishComponent implements OnInit {
 
     onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
         if (model.playerId && model.tournamentId) {
-            this.finishApiService.post$({
-                playerId: model.playerId,
+            this.entryApiService.post$({
+                id: undefined,
+                playerId: model.playerId ?? 0,
                 tournamentId: model.tournamentId,
-                price: this.price,
-                rank: this.rank
+                type: 'RE-ENTRY'
             }).pipe(
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({
-                            finishId: result.id
+                            entryId: result.id
                         });
                     }
                 })

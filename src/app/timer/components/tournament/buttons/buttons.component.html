@@ -27,7 +27,7 @@
         </button>
 
         <button
-            *ngIf="withRebuy && !isSimpleTournament"
+            *ngIf="tournament.withRebuy && !isSimpleTournament"
             (click)="addRebuy.emit()"
         >
             <i class="fa fa-money"></i>
@@ -37,7 +37,17 @@
         </button>
 
         <button
-            *ngIf="withAddon && !isSimpleTournament"
+            *ngIf="tournament.withReEntry && !isSimpleTournament"
+            (click)="addReEntry.emit()"
+        >
+            <i class="fa fa-money"></i>
+            <span>
+                Re-Entry
+            </span>
+        </button>
+
+        <button
+            *ngIf="tournament.withAddon && !isSimpleTournament"
             (click)="addAddon.emit()"
         >
             <i class="fa fa-database"></i>

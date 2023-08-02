@@ -4,6 +4,7 @@ import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Formula, RankingService } from '../../../../core/services/util/ranking.service';
 import { Tournament } from '../../../../shared/models/tournament.interface';
+import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 
 @Component({
     selector: 'app-ranking',
@@ -14,9 +15,9 @@ export class RankingComponent implements OnChanges {
 
     @Input() players: Player[];
     @Input() entries: Entry[];
+    @Input() seriesMetadata: SeriesMetadata | null;
     @Input() finishes: Finish[];
     @Input() tournament: Tournament;
-    @Input() formulaId: number | null;
 
     private rankingService: RankingService = inject(RankingService);
 
@@ -29,6 +30,7 @@ export class RankingComponent implements OnChanges {
         price: number;
         rebuys: number;
         addons: number;
+        reEntries: number;
     }[];
 
     missingRankes: {
@@ -38,6 +40,7 @@ export class RankingComponent implements OnChanges {
         price: number;
         rebuys: number;
         addons: number;
+        reEntries: number;
     }[];
 
     ngOnChanges(): void {
@@ -49,21 +52,21 @@ export class RankingComponent implements OnChanges {
                     rank: finish.rank,
                     price: finish.price,
                     rebuys: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'REBUY').length,
-                    addons: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length
+                    addons: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length,
+                    reEntries: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
                 })
             ).sort((a, b) => a.rank - b.rank);
 
-            const amountOfMissingRankes = this.players.length = this.finishes.length;
-
-            console.log(amountOfMissingRankes);
+            const amountOfMissingRanks = this.players.length - this.finishes.length;
 
             this.missingRankes = [];
 
-            for (let i = 1; i <= amountOfMissingRankes; i++) {
+            for (let i = 1; i <= amountOfMissingRanks; i++) {
                 this.missingRankes.push({
                     rank: i,
                     addons: 0,
                     rebuys: 0,
+                    reEntries: 0,
                     name: '???',
                     image: 'https://friconix.com/jpg/fi-cnsuxx-question-mark.jpg',
                     price: 0
@@ -71,8 +74,18 @@ export class RankingComponent implements OnChanges {
             }
         }
 
-        if (this.formulaId !== null) {
-            this.formula = this.rankingService.getFormulaById(this.formulaId);
+        let formula = undefined;
+
+        if (this.tournament.rankFormula) {
+            formula = this.tournament.rankFormula;
+        } else {
+            if (this.seriesMetadata?.rankFormula !== undefined && this.seriesMetadata?.rankFormula !== null) {
+                formula = this.seriesMetadata.rankFormula;
+            }
+        }
+
+        if (formula) {
+            this.formula = this.rankingService.getFormulaById(formula);
         }
     }
 
@@ -82,24 +95,27 @@ export class RankingComponent implements OnChanges {
         rank: number;
         price: number;
         rebuys: number;
+        reEntries: number;
         addons: number;
     }): number {
-        return this.formula({
+        return this.formula ? this.formula({
             rank: +combFinishe.rank,
+            reEntries: +combFinishe.reEntries,
             addons: +combFinishe.addons,
             rebuys: +combFinishe.rebuys,
             players: this.tournament.players.length,
-            buyIn: +this.tournament.buyIn,
-            pricepool: +this.getPricePool(),
-            addonCost: +this.tournament.addon
-        });
+            buyIn: +this.tournament.buyInAmount,
+            pricePool: +this.getPricePool(),
+            addonCost: +this.tournament.addonAmount
+        }) : 0;
     }
 
     private getPricePool(): number {
         return this.entries.filter(
-                (entry: Entry) => entry.type !== 'ADDON'
-            ).length * +this.tournament.buyIn
-            + this.entries.filter(e => e.type === 'ADDON').length * +this.tournament.addon
-            + +this.tournament.initialPricepool;
+                (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
+            ).length * +this.tournament.buyInAmount
+            + this.entries.filter(e => e.type === 'REBUY').length * +this.tournament.rebuyAmount
+            + this.entries.filter(e => e.type === 'ADDON').length * +this.tournament.addonAmount
+            + +this.tournament.initialPricePool;
     }
 }

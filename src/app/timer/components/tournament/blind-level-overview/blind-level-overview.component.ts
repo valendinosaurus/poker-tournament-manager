@@ -31,10 +31,8 @@ export class BlindLevelOverviewComponent implements OnChanges, AfterViewInit {
             tap(() => {
                 if (scrollDown) {
                     document.getElementById('bottom')?.scrollIntoView({behavior: 'smooth'});
-                    console.log('down');
                 } else {
                     document.getElementById('top')?.scrollIntoView({behavior: 'smooth'});
-                    console.log('up');
                 }
 
                 scrollDown = !scrollDown;

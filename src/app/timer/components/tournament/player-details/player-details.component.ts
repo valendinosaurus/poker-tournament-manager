@@ -17,6 +17,7 @@ export class PlayerDetailsComponent implements OnChanges {
         name: string;
         rebuys: number;
         addons: number;
+        reEntries: number;
     }[];
 
     ngOnChanges(): void {
@@ -26,7 +27,8 @@ export class PlayerDetailsComponent implements OnChanges {
                     image: player.image,
                     name: player.name,
                     rebuys: this.entries.filter(e => e.playerId === player.id && e.type === 'REBUY').length,
-                    addons: this.entries.filter(e => e.playerId === player.id && e.type === 'ADDON').length
+                    addons: this.entries.filter(e => e.playerId === player.id && e.type === 'ADDON').length,
+                    reEntries: this.entries.filter(e => e.playerId === player.id && e.type === 'RE-ENTRY').length
                 })
             );
         }

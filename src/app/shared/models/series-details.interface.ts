@@ -11,4 +11,6 @@ export interface SeriesDetails {
     finalTournament: Tournament;
     rankFormula: number;
     ftFormula: number;
+    percentage: number;
+    maxAmountPerTournament: number;
 }

@@ -14,7 +14,8 @@ export class ChipsOverviewComponent implements OnChanges {
     @Input() players: Player[];
     @Input() finishes: Finish[];
     @Input() startStack: number;
-    @Input() addonAmount: number;
+    @Input() rebuyStack: number;
+    @Input() addonStack: number;
 
     totalChips: number = 0;
     averageStack: number = 0;
@@ -23,10 +24,12 @@ export class ChipsOverviewComponent implements OnChanges {
         const entries = this.entries.filter((e: Entry) => e.type === 'ENTRY').length;
         const rebuys = this.entries.filter((e: Entry) => e.type === 'REBUY').length;
         const addons = this.entries.filter((e: Entry) => e.type === 'ADDON').length;
+        const reEntries = this.entries.filter((e: Entry) => e.type === 'RE-ENTRY').length;
 
         this.totalChips = entries * this.startStack
-            + rebuys * this.startStack
-            + addons * this.addonAmount;
+            + reEntries * this.startStack
+            + rebuys * this.rebuyStack
+            + addons * this.addonStack;
 
         const playersIn = this.players.length - this.finishes.length;
 

@@ -17,10 +17,14 @@
     }
 }
 
-
 p.value,
 .value p {
     margin: 0;
-    font-size: 5vh;
+    font-size: 4.5vh;
     font-weight: bold;
+}
+
+.small {
+    font-size: 1.4vh;
+    transform: translateY(-30%);
 }

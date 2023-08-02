@@ -4,6 +4,10 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
+import { RankingService } from '../../../../core/services/util/ranking.service';
+import { TriggerService } from '../../../../core/services/util/trigger.service';
+import { tap } from 'rxjs/operators';
+import { LocationApiService } from '../../../../core/services/api/location-api.service';
 
 @Component({
     selector: 'app-create-tournament',
@@ -17,12 +21,23 @@ export class CreateTournamentComponent implements OnInit {
     model: Tournament;
     fields: FormlyFieldConfig[];
 
+    allLocations: { label: string, value: number }[];
+
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private rankingService: RankingService = inject(RankingService);
+    private locationService: LocationApiService = inject(LocationApiService);
+    private triggerService: TriggerService = inject(TriggerService);
 
     ngOnInit(): void {
-        this.initModel();
-        this.initFields();
+        this.locationService.getAll$().pipe(
+            tap((locations) => {
+                this.allLocations = locations.map(l => ({label: l.name, value: l.id ?? -1}));
+                this.initModel();
+                this.initFields();
+            })
+        ).subscribe();
+
     }
 
     private initModel(): void {
@@ -31,15 +46,20 @@ export class CreateTournamentComponent implements OnInit {
             name: '',
             date: new Date(),
             maxPlayers: 0,
-            noOfTables: 0,
             startStack: 0,
-            initialPricepool: 0,
-            buyIn: 0,
+            initialPricePool: 0,
+            buyInAmount: 0,
             noOfRebuys: 0,
-            rebuy: 0,
+            rebuyAmount: 0,
+            addonStack: 0,
+            noOfReEntries: 0,
             addonAmount: 0,
-            addon: 0,
-            payout: '',
+            withRebuy: false,
+            withAddon: false,
+            withReEntry: false,
+            rebuyStack: 0,
+            payout: 0,
+            rankFormula: null,
             location: -1,
             entries: [],
             structure: [],
@@ -49,33 +69,55 @@ export class CreateTournamentComponent implements OnInit {
     }
 
     private initFields(): void {
-        const locations = [
-            {label: 'Location 1', value: 1},
-            {label: 'Location 2', value: 2},
-            {label: 'Location 3', value: 3},
-            {label: 'Location 4', value: 4},
-        ];
-
         this.fields = [
             this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
             this.formlyFieldService.getDefaultDateField('date', 'Date', true),
             this.formlyFieldService.getDefaultNumberField('maxPlayers', 'max Players', true),
-            this.formlyFieldService.getDefaultNumberField('noOfTables', 'no of tables', true),
+            this.formlyFieldService.getDefaultNumberField('buyInAmount', 'buy-in', true),
             this.formlyFieldService.getDefaultNumberField('startStack', 'start stack', true),
-            this.formlyFieldService.getDefaultNumberField('initialPricepool', 'initial pricepool', true),
-            this.formlyFieldService.getDefaultNumberField('buyIn', 'buy-in', true),
-            this.formlyFieldService.getDefaultNumberField('noOfRebuys', 'no of rebuys', true),
-            this.formlyFieldService.getDefaultNumberField('rebuy', 'rebuy amount', true),
-            this.formlyFieldService.getDefaultNumberField('addonAmount', 'addon chips', true),
-            this.formlyFieldService.getDefaultNumberField('addon', 'addon amount', true),
-            this.formlyFieldService.getDefaultTextField('payout', 'payout structure', true, 1000),
-            this.formlyFieldService.getDefaultSelectField('location', 'location', true, locations),
+            this.formlyFieldService.getDefaultCheckboxField('withReEntry', 'with Re-Entry'),
+            {
+                className: 'sub-group',
+                fieldGroup: [
+                    this.formlyFieldService.getDefaultNumberField('noOfReEntries', 'no of re-entries', true),
+                ],
+                expressions: {
+                    hide: () => !this.model.withReEntry
+                }
+            },
+            this.formlyFieldService.getDefaultCheckboxField('withRebuy', 'with Rebuy'),
+            {
+                className: 'sub-group',
+                fieldGroup: [
+                    this.formlyFieldService.getDefaultNumberField('noOfRebuys', 'no of rebuys', true),
+                    this.formlyFieldService.getDefaultNumberField('rebuyAmount', 'rebuy amount', true),
+                    this.formlyFieldService.getDefaultNumberField('rebuyStack', 'rebuy stack', true),
+                ],
+                expressions: {
+                    hide: () => !this.model.withRebuy
+                }
+            },
+            this.formlyFieldService.getDefaultCheckboxField('withAddon', 'with Addon'),
+            {
+                className: 'sub-group',
+                fieldGroup: [
+                    this.formlyFieldService.getDefaultNumberField('addonAmount', 'addon amount', true),
+                    this.formlyFieldService.getDefaultNumberField('addonStack', 'addon chips', true),
+                ],
+                expressions: {
+                    hide: () => !this.model.withAddon
+                }
+            },
+            this.formlyFieldService.getDefaultNumberField('initialPricePool', 'initial pricepool', true),
+            this.formlyFieldService.getDefaultSelectField('payout', 'payout structure', true, this.rankingService.getAllPayoutsForSelect()),
+            this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect()),
+            this.formlyFieldService.getDefaultSelectField('location', 'location', true, this.allLocations),
         ];
     }
 
     onSubmit(model: Tournament): void {
         this.tournamentApiService.post$(model).pipe(
-
+            tap(() => this.triggerService.triggerTournaments())
         ).subscribe();
     }
 }

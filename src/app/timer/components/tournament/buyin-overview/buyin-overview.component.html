@@ -1,6 +1,9 @@
 <div class="buyin-overview">
     <div>
         <div class="value simple-circle">
+            <span class="small">
+                x {{ tournament.startStack | number:'':'de-CH' }}
+            </span>
             <p>
                 {{ textEntries }}
             </p>
@@ -9,6 +12,9 @@
     </div>
     <div>
         <div class="value simple-circle">
+            <span class="small">
+                x {{ tournament.rebuyStack | number:'':'de-CH' }}
+            </span>
             <p>
                 {{ textRebuys }}
             </p>
@@ -17,6 +23,9 @@
     </div>
     <div>
         <div class="value simple-circle">
+            <span class="small">
+                x {{ tournament.addonStack | number:'':'de-CH' }}
+            </span>
             <p>
                 {{ textAddons }}
             </p>

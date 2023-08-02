@@ -7,13 +7,19 @@
         <tr>
             <th>Name</th>
             <th class="center">Rank</th>
+            <th class="center">Re-Entries</th>
             <th class="center">Rebuys</th>
             <th class="center">Addons</th>
             <th class="center">Price</th>
-            <th *ngIf="formulaId !== null" class="center">Points</th>
+            <th
+                *ngIf="formula"
+                class="center"
+            >
+                Points
+            </th>
         </tr>
         <ng-container *ngFor="let e of missingRankes">
-            <tr>
+            <tr class="opaque">
                 <td>
                 <span class="flextd">
                     <app-user-image-round
@@ -34,7 +40,13 @@
                 <td class="center">
                     -
                 </td>
-                <td *ngIf="formulaId !== null" class="center">
+                <td class="center">
+                    -
+                </td>
+                <td
+                    *ngIf="formula"
+                    class="center"
+                >
                     -
                 </td>
             </tr>
@@ -53,6 +65,9 @@
                     {{ e.rank }}
                 </td>
                 <td class="center">
+                    {{ e.reEntries }}
+                </td>
+                <td class="center">
                     {{ e.rebuys }}
                 </td>
                 <td class="center">
@@ -61,7 +76,10 @@
                 <td class="center">
                     $ {{ e.price | number:'':'de-CH' }}
                 </td>
-                <td *ngIf="formulaId !== null" class="center">
+                <td
+                    *ngIf="formula"
+                    class="center"
+                >
                     {{ calcPoints(e) }}
                 </td>
             </tr>

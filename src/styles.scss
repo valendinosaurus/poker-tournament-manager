@@ -283,4 +283,19 @@ mat-tab-body button {
         background: #00437b;
         color: white;
     }
+
+    mat-form-field {
+        font-size: 32px;
+    }
+}
+
+.sub-group {
+    display: block;
+    margin-bottom: 20px;
+
+    mat-form-field {
+        padding-left: 32px;
+        border-left: solid 2px #ccc;
+        box-sizing: border-box;
+    }
 }

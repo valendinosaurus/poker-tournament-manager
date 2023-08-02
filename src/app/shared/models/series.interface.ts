@@ -7,4 +7,6 @@ export interface Series {
     finalTournament: number;
     rankFormula: number;
     ftFormula: number;
+    percentage: number;
+    maxAmountPerTournament: number;
 }

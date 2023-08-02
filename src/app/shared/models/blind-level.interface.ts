@@ -7,4 +7,5 @@ export interface BlindLevel {
     duration: number;
     isPause: boolean;
     isChipUp: boolean;
+    endsRebuyReentry: boolean;
 }

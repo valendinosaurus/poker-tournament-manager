@@ -44,7 +44,7 @@
                 BuyIn
             </h4>
             <span>
-                $ {{ t.buyIn | number:'':'de-CH' }}
+                $ {{ +t.buyInAmount | number:'':'de-CH' }}
             </span>
         </div>
 
@@ -53,7 +53,7 @@
                 $ Rebuy / No. of Rebuys
             </h4>
             <span>
-                $ {{ t.rebuy | number:'':'de-CH' }} / {{ t.noOfRebuys }}
+                $ {{ t.rebuyAmount | number:'':'de-CH' }} / {{ t.noOfRebuys }}
             </span>
         </div>
 
@@ -62,7 +62,7 @@
                 $ Addon / Chips Addon
             </h4>
             <span>
-                $ {{ t.addon | number:'':'de-CH' }} / {{ t.addonAmount }}
+                $ {{ t.addonAmount | number:'':'de-CH' }} / {{ t.addonStack }}
             </span>
         </div>
     </div>
@@ -91,7 +91,18 @@
                 $ Initial Pricepool
             </h4>
             <span>
-                $ {{ t.initialPricepool | number:'':'de-CH' }}
+                $ {{ t.initialPricePool | number:'':'de-CH' }}
+            </span>
+        </div>
+    </div>
+
+    <div>
+        <div class="li-pair">
+            <h4>
+                Rank Formula
+            </h4>
+            <span>
+                {{ t.rankFormula }}
             </span>
         </div>
     </div>

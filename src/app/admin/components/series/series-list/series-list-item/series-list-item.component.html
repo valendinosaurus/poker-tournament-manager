@@ -5,7 +5,7 @@
     ></i>
 
     <div>
-        <div>
+        <div class="li-pair">
             <app-user-image-round
                 [imageUrl]="s.branding.logo"
                 [size]="78"
@@ -40,8 +40,16 @@
                 {{ s.longDesc }}
             </span>
         </div>
-    </div>
 
+        <div class="li-pair">
+            <h4>
+                % to final pot / cap
+            </h4>
+            <span>
+                {{ s.percentage }}% / $ {{ s.maxAmountPerTournament }}
+            </span>
+        </div>
+    </div>
 
     <div>
         <div class="li-pair">

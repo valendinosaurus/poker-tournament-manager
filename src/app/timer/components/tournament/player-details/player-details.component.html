@@ -6,6 +6,7 @@
     <table>
         <tr>
             <th>Name</th>
+            <th class="center">Entries</th>
             <th class="center">Rebuys</th>
             <th class="center">Addons</th>
         </tr>
@@ -18,6 +19,9 @@
                     ></app-user-image-round>
                     {{ e.name }}
                 </span>
+                </td>
+                <td class="center">
+                    {{ e.reEntries + 1 }}
                 </td>
                 <td class="center">
                     {{ e.rebuys }}

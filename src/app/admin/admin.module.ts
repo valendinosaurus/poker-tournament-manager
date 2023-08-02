@@ -31,6 +31,7 @@ import { TournamentListItemComponent } from './components/tournament/tournament-
 import { SeriesListItemComponent } from './components/series/series-list/series-list-item/series-list-item.component';
 import { AddMissingEntriesComponent } from './components/dialogs/add-missing-entries/add-missing-entries.component';
 import { AddTournamentComponent } from './components/dialogs/add-tournament/add-tournament.component';
+import { AddReEntryComponent } from './components/dialogs/add-re-entry/add-re-entry.component';
 
 @NgModule({
     declarations: [
@@ -63,6 +64,7 @@ import { AddTournamentComponent } from './components/dialogs/add-tournament/add-
         SeriesListItemComponent,
         AddMissingEntriesComponent,
         AddTournamentComponent,
+        AddReEntryComponent,
     ],
     imports: [
         SharedModule,

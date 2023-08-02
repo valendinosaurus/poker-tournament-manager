@@ -7,6 +7,7 @@ import { Player } from '../../../shared/models/player.interface';
 import { BlindLevel } from '../../../shared/models/blind-level.interface';
 import { TournamentDetails } from '../../../shared/models/tournament-details.interface';
 import { map } from 'rxjs/operators';
+import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -81,6 +82,7 @@ export class TournamentApiService {
                     duration: +split2[4],
                     isPause: +split2[5] === 1,
                     isChipUp: +split2[6] === 1,
+                    endsRebuyReentry: false, // TODO
                     id: +split2[7]
                 });
             });
@@ -97,6 +99,10 @@ export class TournamentApiService {
 
     getFormula$(id: number): Observable<{ rankFormula: number }> {
         return this.http.get<{ rankFormula: number }>(`${BACKEND_URL}${this.ENDPOINT}/${id}/formula`);
+    }
+
+    getSeriesMetadata$(id: number): Observable<SeriesMetadata> {
+        return this.http.get<SeriesMetadata>(`${BACKEND_URL}${this.ENDPOINT}/${id}/meta`);
     }
 
     post$(tournament: Tournament): Observable<any> {

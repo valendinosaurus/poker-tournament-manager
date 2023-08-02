@@ -8,7 +8,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 50,
@@ -17,7 +18,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 75,
@@ -26,7 +28,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 0,
@@ -35,7 +38,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 5 * 60,
         btnAnte: 0,
         isPause: true,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 100,
@@ -44,7 +48,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 150,
@@ -53,7 +58,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 200,
@@ -62,7 +68,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 0,
@@ -71,7 +78,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 5 * 60,
         btnAnte: 0,
         isPause: true,
-        isChipUp: true
+        isChipUp: true,
+        endsRebuyReentry: false
     },
     {
         sb: 300,
@@ -80,7 +88,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 400,
@@ -89,7 +98,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 600,
@@ -98,7 +108,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 0,
@@ -107,7 +118,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 5 * 60,
         btnAnte: 0,
         isPause: true,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 800,
@@ -116,7 +128,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 1100,
@@ -125,7 +138,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 1500,
@@ -134,7 +148,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 0,
@@ -143,7 +158,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 5 * 60,
         btnAnte: 0,
         isPause: true,
-        isChipUp: true
+        isChipUp: true,
+        endsRebuyReentry: false
     },
     {
         sb: 2000,
@@ -152,7 +168,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 3000,
@@ -161,7 +178,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 4000,
@@ -170,7 +188,8 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
     {
         sb: 5000,
@@ -179,6 +198,7 @@ export const blindLevelsNoAnte: (BlindLevel)[] = [
         duration: 15 * 60,
         btnAnte: 0,
         isPause: false,
-        isChipUp: false
+        isChipUp: false,
+        endsRebuyReentry: false
     },
 ];

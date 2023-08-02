@@ -1,22 +1,30 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnChanges } from '@angular/core';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Player } from '../../../../shared/models/player.interface';
+import { RankingService } from '../../../../core/services/util/ranking.service';
 
 @Component({
     selector: 'app-payout-details',
     templateUrl: './payout-details.component.html',
     styleUrls: ['./payout-details.component.scss']
 })
-export class PayoutDetailsComponent implements OnChanges {
+export class PayoutDetailsComponent implements OnChanges, AfterViewInit {
 
     @Input() entries: Entry[];
-    @Input() buyIn: number;
-    @Input() addon: number;
-    @Input() initialPricepool: number;
-    @Input() payout: string;
+    @Input() buyInAmount: number;
+    @Input() rebuyAmount: number;
+    @Input() addonAmount: number;
+    @Input() initialPricePool: number;
+    @Input() percentage: number | null | undefined;
+    @Input() maxCap: number | null | undefined;
+    @Input() payout: number;
     @Input() finishes: Finish[];
     @Input() players: Player[];
+
+    deduction: number = 0;
+
+    private rankingService: RankingService = inject(RankingService);
 
     payouts: {
         rank: number,
@@ -26,18 +34,25 @@ export class PayoutDetailsComponent implements OnChanges {
         name: string | undefined
     }[];
 
-    totalPricepool: number;
+    totalPricePool: number;
 
     ngOnChanges(): void {
         this.payouts = [];
 
-        const payoutRaw = this.payout.split(' ');
+        const payoutRaw = this.rankingService.getPayoutById(this.payout);
 
-        this.totalPricepool = this.entries.filter(
-                (entry: Entry) => entry.type !== 'ADDON'
-            ).length * +this.buyIn
-            + this.entries.filter(e => e.type === 'ADDON').length * +this.addon
-            + +this.initialPricepool;
+        const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
+            this.entries,
+            this.buyInAmount,
+            this.rebuyAmount,
+            this.addonAmount,
+            this.initialPricePool,
+            this.percentage,
+            this.maxCap
+        );
+
+        this.totalPricePool = totalPricePool;
+        this.deduction = deduction;
 
         let index = 1;
 
@@ -49,19 +64,35 @@ export class PayoutDetailsComponent implements OnChanges {
             })
         );
 
-        payoutRaw.forEach((raw: string) => {
-            const percentage = +raw;
-
+        payoutRaw.forEach((percentage: number) => {
             this.payouts.push({
                 rank: index,
                 percentage: `${percentage}%`,
-                price: this.totalPricepool / 100 * percentage,
+                price: this.totalPricePool / 100 * percentage,
                 name: mappedFinishes.find(f => f.rank === index)?.n,
                 image: mappedFinishes.find(f => f.rank === index)?.i
             });
 
             index++;
         });
+    }
+
+    ngAfterViewInit(): void {
+        let scrollDown = false;
+
+        // interval(3000).pipe(
+        //     tap(() => {
+        //         if (scrollDown) {
+        //             console.log('down');
+        //             document.getElementById('bottom')?.scrollIntoView({behavior: 'smooth'});
+        //         } else {
+        //             console.log('up');
+        //             document.getElementById('top')?.scrollIntoView({behavior: 'smooth'});
+        //         }
+        //
+        //         scrollDown = !scrollDown;
+        //     })
+        // ).subscribe();
     }
 
 }

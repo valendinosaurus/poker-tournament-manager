@@ -7,8 +7,30 @@
         Pricepool
     </h4>
     <h1>
-        {{  totalPricepool }}.-
+        {{  totalPricePool | number:'':'de-CH' }} $
     </h1>
+    <h2
+        *ngIf="initialPricePool > 0"
+        [class.no-mb]="initialPricePool > 0 && deduction > 0"
+        class="no-mb"
+    >
+        <span>
+            initial pricepool
+        </span>
+        <span class="initial">
+            {{ initialPricePool | number:'':'de-CH' }} $
+        </span>
+    </h2>
+    <h2
+        *ngIf="deduction > 0"
+    >
+        <span>
+            added to final pot
+        </span>
+        <span class="deduction">
+            {{ deduction  | number:'':'de-CH' }} $
+        </span>
+    </h2>
 </div>
 
 <div class="payout">
@@ -16,33 +38,37 @@
         Payout structrue
     </h4>
 
-    <table cellspacing="0" cellpadding="0">
-        <ng-container *ngFor="let e of payouts">
-            <tr [class.opaque]="!e.name">
-                <td>
-                    <div class="rank">
-                        {{ e.rank }}
-                    </div>
-                </td>
-                <td class="percentage">
-                    {{ e.percentage }}
-                </td>
-                <td>
-                    <div
-                        *ngIf="e.name"
-                        class="player"
-                    >
-                        <app-user-image-round
-                            [imageUrl]="e.image ? e.image : ''"
-                        ></app-user-image-round>
-                        {{ e.name }}
-                    </div>
-                </td>
-                <td class="price">
-                    {{ e.price | number:'':'de-CH' }}.-
-                </td>
-            </tr>
-        </ng-container>
-    </table>
+    <div class="payouts">
+        <div id="top"></div>
+        <table cellspacing="0" cellpadding="0">
+            <ng-container *ngFor="let e of payouts">
+                <tr [class.opaque]="!e.name">
+                    <td>
+                        <div class="rank">
+                            {{ e.rank }}
+                        </div>
+                    </td>
+                    <td class="percentage">
+                        {{ e.percentage }}
+                    </td>
+                    <td>
+                        <div
+                            *ngIf="e.name"
+                            class="player"
+                        >
+                            <app-user-image-round
+                                [imageUrl]="e.image ? e.image : ''"
+                            ></app-user-image-round>
+                            {{ e.name }}
+                        </div>
+                    </td>
+                    <td class="price">
+                        {{ e.price | number:'':'de-CH' }} $
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+        <div id="bottom"></div>
+    </div>
 
 </div>

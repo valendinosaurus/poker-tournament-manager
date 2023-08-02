@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
@@ -38,13 +38,15 @@ export class CreatePauseComponent implements OnInit {
             btnAnte: 0,
             isPause: true,
             isChipUp: false,
+            endsRebuyReentry: false
         };
     }
 
     private initFields(): void {
         this.fields = [
             this.formlyFieldService.getDefaultNumberField('duration', 'Duration', true),
-            this.formlyFieldService.getDefaultCheckboxField('isChipUp', 'Chip-Up?')
+            this.formlyFieldService.getDefaultCheckboxField('isChipUp', 'Chip-Up?'),
+            this.formlyFieldService.getDefaultCheckboxField('endsRebuyReentry', 'ends rebuy / re-entry?')
         ];
     }
 

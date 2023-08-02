@@ -54,18 +54,23 @@ export class SeriesApiService {
                     players: [],
                     entries: [],
                     structure: [],
-                    initialPricepool: 0,
-                    payout: '',
+                    initialPricePool: 0,
+                    payout: 0,
                     location: 0,
+                    addonStack: 0,
                     addonAmount: 0,
-                    addon: 0,
-                    rebuy: 0,
+                    noOfReEntries: 0,
+                    rebuyAmount: 0,
                     startStack: 0,
-                    buyIn: 0,
-                    noOfTables: 0,
+                    buyInAmount: 0,
                     maxPlayers: 0,
                     finishes: [],
-                    noOfRebuys: 0
+                    noOfRebuys: 0,
+                    rebuyStack: 0,
+                    withReEntry: false,
+                    withRebuy: false,
+                    withAddon: false,
+                    rankFormula: 0
                 });
             });
 

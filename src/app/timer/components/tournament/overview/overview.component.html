@@ -6,11 +6,11 @@
     >
         <app-buttons
             [running]="running"
+            [tournament]="tournament"
             [isSimpleTournament]="isSimpleTournament"
-            [withRebuy]="tournament.noOfRebuys > 0"
-            [withAddon]="tournament.addonAmount > 0"
             (createPlayer)="createPlayer()"
             (addPlayer)="addPlayer()"
+            (addReEntry)="addReEntry()"
             (addRebuy)="addRebuy()"
             (addAddon)="addAddon()"
             (start)="start()"
@@ -82,13 +82,15 @@
 
                         <app-buyin-overview
                             [entries]="tournament.entries"
+                            [tournament]="tournament"
                         ></app-buyin-overview>
 
                         <app-chips-overview
                             [entries]="tournament.entries"
                             [players]="tournament.players"
                             [startStack]="tournament.startStack"
-                            [addonAmount]="tournament.addonAmount"
+                            [rebuyStack]="tournament.rebuyStack"
+                            [addonStack]="tournament.addonStack"
                             [finishes]="tournament.finishes"
                         ></app-chips-overview>
                     </div>
@@ -105,20 +107,23 @@
                             [players]="tournament.players"
                             [entries]="tournament.entries"
                             [finishes]="tournament.finishes"
-                            [formulaId]="formulaId"
                             [tournament]="tournament"
+                            [seriesMetadata]="seriesMetadata"
                         ></app-ranking>
                     </div>
 
                     <div class="keen-slider__slide number-slide5 slide-payout">
                         <app-payout-details
                             [entries]="tournament.entries"
-                            [addon]="tournament.addon"
-                            [buyIn]="tournament.buyIn"
+                            [buyInAmount]="tournament.buyInAmount"
+                            [rebuyAmount]="tournament.rebuyAmount"
+                            [addonAmount]="tournament.addonAmount"
                             [payout]="tournament.payout"
                             [players]="tournament.players"
                             [finishes]="tournament.finishes"
-                            [initialPricepool]="tournament.initialPricepool"
+                            [percentage]="seriesMetadata?.percentage"
+                            [maxCap]="seriesMetadata?.maxAmountPerTournament"
+                            [initialPricePool]="tournament.initialPricePool"
                         ></app-payout-details>
                     </div>
                 </div>

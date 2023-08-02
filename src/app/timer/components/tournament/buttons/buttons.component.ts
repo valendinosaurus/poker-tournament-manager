@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Tournament } from '../../../../shared/models/tournament.interface';
 
 @Component({
     selector: 'app-buttons',
@@ -8,14 +9,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class ButtonsComponent {
 
     @Input() running: boolean;
-    @Input() withRebuy: boolean;
-    @Input() withAddon: boolean;
+    @Input() tournament: Tournament;
     @Input() isSimpleTournament: boolean;
 
     isOverlayOpen = false;
 
     @Output() createPlayer = new EventEmitter<void>();
     @Output() addPlayer = new EventEmitter<void>();
+    @Output() addReEntry = new EventEmitter<void>();
     @Output() addRebuy = new EventEmitter<void>();
     @Output() addAddon = new EventEmitter<void>();
     @Output() seatOpen = new EventEmitter<void>();
