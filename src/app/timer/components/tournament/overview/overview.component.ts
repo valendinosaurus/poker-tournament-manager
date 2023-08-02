@@ -1,6 +1,7 @@
 import {
     AfterViewInit,
-    Component, DestroyRef,
+    Component,
+    DestroyRef,
     ElementRef,
     HostListener,
     inject,
@@ -41,6 +42,7 @@ import { RankingService } from '../../../../core/services/util/ranking.service';
 import { AddReEntryComponent } from '../../../../admin/components/dialogs/add-re-entry/add-re-entry.component';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 
 @Component({
     selector: 'app-overview',
@@ -102,6 +104,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     @HostListener('window:resize', ['$event.target'])
     onResize(target: any): void {
@@ -186,8 +189,17 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     }
 
     private initTimeValues(): void {
-        this.currentLevelTimeLeft = this.levels[this.currentLevelIndex].duration * 60;
-        this.blindDuration = this.levels[this.currentLevelIndex].duration * 60;
+        const fromLocalStorage = this.localStorageService.getTournamentStateById(this.tournament.id ?? -1);
+
+        if (fromLocalStorage) {
+            this.currentLevelTimeLeft = fromLocalStorage.timeLeft;
+            this.blindDuration = fromLocalStorage.timeLeft;
+            this.currentLevelIndex = fromLocalStorage.levelIndex;
+        } else {
+            this.currentLevelTimeLeft = this.levels[this.currentLevelIndex].duration * 60;
+            this.blindDuration = this.levels[this.currentLevelIndex].duration * 60;
+        }
+
         this.blindDurationFixed = this.levels[this.currentLevelIndex].duration * 60;
     }
 
@@ -240,6 +252,12 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
                         leftTime: this.currentLevelTimeLeft
                     };
 
+                    this.localStorageService.storeTournamentState(
+                        this.tournament.id ?? -1,
+                        this.currentLevelIndex,
+                        this.currentLevelTimeLeft
+                    );
+
                     setTimeout(() => {
                         this.countdown.begin();
                     }, 20);
@@ -260,6 +278,12 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
             }
 
             this.currentTimeLeftPercentage = (this.currentLevelTimeLeft / this.blindDurationFixed) * 100;
+
+            this.localStorageService.storeTournamentState(
+                this.tournament.id ?? -1,
+                this.currentLevelIndex,
+                this.currentLevelTimeLeft
+            );
         }
     }
 
