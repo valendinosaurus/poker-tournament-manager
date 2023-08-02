@@ -1,14 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { Player } from '../../../../shared/models/player.interface';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { EntryApiService } from '../../../../core/services/api/entry-api.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-player',
@@ -29,11 +30,13 @@ export class AddPlayerComponent implements OnInit {
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allPlayers: { label: string, value: number }[];
 
     ngOnInit(): void {
         this.playerApiService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((players: Player[]) => {
                 this.allPlayers = players
                     .filter(
@@ -88,6 +91,7 @@ export class AddPlayerComponent implements OnInit {
                         tournamentId: model.tournamentId,
                         type: 'ENTRY'
                     }).pipe(
+                        take(1),
                         tap((result: any) => {
                             if (this.dialogRef) {
                                 this.dialogRef.close({
@@ -105,6 +109,7 @@ export class AddPlayerComponent implements OnInit {
     onSubmitMulti(model: { playerIds: number[] | undefined, tournamentId: number }): void {
         if (model.playerIds && model.tournamentId) {
             this.tournamentApiService.addPlayers$(model.playerIds, model.tournamentId).pipe(
+                take(1),
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({

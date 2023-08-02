@@ -5,7 +5,7 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { Player } from '../../../../shared/models/player.interface';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 
 @Component({
@@ -48,6 +48,7 @@ export class CreatePlayerComponent implements OnInit {
 
     onSubmit(model: Player): void {
         this.playerApiService.post$(model).pipe(
+            take(1),
             tap(() => {
                 if (this.dialogRef && this.dialogRef.close) {
                     this.dialogRef.close();

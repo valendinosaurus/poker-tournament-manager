@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 
 @Component({
@@ -69,6 +69,7 @@ export class BlindLevelListComponent implements OnInit {
 
     deleteLevel(level: BlindLevel): void {
         this.blindLevelApiService.delete$(level.id ?? -1).pipe(
+            take(1),
             tap(() => this.triggerService.triggerBlinds())
         ).subscribe();
     }

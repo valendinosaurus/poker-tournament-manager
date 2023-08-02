@@ -1,14 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
-import { shareReplay, tap } from 'rxjs/operators';
+import { shareReplay, take, tap } from 'rxjs/operators';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-blinds',
@@ -28,6 +29,7 @@ export class AddBlindsComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allBlinds: { label: string, value: number }[];
     filterDuration: number;
@@ -42,6 +44,7 @@ export class AddBlindsComponent implements OnInit {
             allBlinds$,
             this.filterDurationTrigger$
         ]).pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap(([blinds, duration]: [BlindLevel[], number]) => {
                 this.allBlinds = blinds
                     .filter(
@@ -97,7 +100,8 @@ export class AddBlindsComponent implements OnInit {
     onSubmit(model: { blindId: number[] | undefined, tournamentId: number }): void {
         if (model.blindId && model.tournamentId) {
             this.tournamentApiService.addBlinds$(model.blindId, model.tournamentId, this.data.tournament.structure.length).pipe(
-                tap((result: any) => {
+                take(1),
+                tap(() => {
                     if (this.dialogRef) {
                         this.dialogRef.close({
                             blindId: model.blindId

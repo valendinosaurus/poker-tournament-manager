@@ -1,15 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 import { RankingService } from '../../../../core/services/util/ranking.service';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-finish',
@@ -30,6 +31,7 @@ export class AddFinishComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private rankingService: RankingService = inject(RankingService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allPlayers: { label: string, value: number }[];
 
@@ -38,6 +40,7 @@ export class AddFinishComponent implements OnInit {
 
     ngOnInit(): void {
         this.playerApiService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((players: Player[]) => {
                 this.allPlayers = players
                     .filter(
@@ -104,6 +107,7 @@ export class AddFinishComponent implements OnInit {
                 price: this.price,
                 rank: this.rank
             }).pipe(
+                take(1),
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({

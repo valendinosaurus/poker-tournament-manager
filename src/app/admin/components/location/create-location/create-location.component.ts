@@ -4,6 +4,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { LocationApiService } from '../../../../core/services/api/location-api.service';
 import { Location } from '../../../../shared/models/location.interface';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-create-location',
@@ -42,7 +43,7 @@ export class CreateLocationComponent implements OnInit {
 
     onSubmit(model: Location): void {
         this.locationApiService.post$(model).pipe(
-
+            take(1)
         ).subscribe();
     }
 

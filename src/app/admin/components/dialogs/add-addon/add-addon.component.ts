@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -6,9 +6,10 @@ import { Tournament } from '../../../../shared/models/tournament.interface';
 import { EntryApiService } from '../../../../core/services/api/entry-api.service';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
 import { Entry } from '../../../../shared/models/entry.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-addon',
@@ -28,11 +29,13 @@ export class AddAddonComponent implements OnInit {
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
+    private destroyRef = inject(DestroyRef);
 
     allPlayers: { label: string, value: number }[];
 
     ngOnInit(): void {
         this.playerApiService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((players: Player[]) => {
                 this.allPlayers = players
                     .filter(
@@ -80,6 +83,7 @@ export class AddAddonComponent implements OnInit {
                 tournamentId: model.tournamentId,
                 type: 'ADDON'
             }).pipe(
+                take(1),
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({

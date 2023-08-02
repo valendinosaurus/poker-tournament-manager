@@ -4,7 +4,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 
 @Component({
@@ -52,6 +52,7 @@ export class CreatePauseComponent implements OnInit {
 
     onSubmit(model: BlindLevel): void {
         this.blindLevelApiService.post$(model).pipe(
+            take(1),
             tap(() => this.triggerService.triggerBlinds())
         ).subscribe();
     }

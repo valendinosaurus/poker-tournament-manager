@@ -4,7 +4,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 
 @Component({
@@ -54,6 +54,7 @@ export class CreateBlindLevelComponent implements OnInit {
 
     onSubmit(model: BlindLevel): void {
         this.blindLevelApiService.post$(model).pipe(
+            take(1),
             tap(() => this.triggerService.triggerBlinds())
         ).subscribe();
     }

@@ -1,6 +1,6 @@
 import {
     AfterViewInit,
-    Component,
+    Component, DestroyRef,
     ElementRef,
     HostListener,
     inject,
@@ -10,7 +10,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { BehaviorSubject, iif, Observable, of } from 'rxjs';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, take, tap } from 'rxjs/operators';
 import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
 import { CountdownComponent, CountdownConfig, CountdownEvent, CountdownStatus } from 'ngx-countdown';
 import { Tournament } from '../../../../shared/models/tournament.interface';
@@ -40,6 +40,7 @@ import { RankingComponent } from '../ranking/ranking.component';
 import { RankingService } from '../../../../core/services/util/ranking.service';
 import { AddReEntryComponent } from '../../../../admin/components/dialogs/add-re-entry/add-re-entry.component';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-overview',
@@ -100,6 +101,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     private finishApiService: FinishApiService = inject(FinishApiService);
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private rankingService: RankingService = inject(RankingService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     @HostListener('window:resize', ['$event.target'])
     onResize(target: any): void {
@@ -144,6 +146,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
                     type: 'ENTRY',
                     tournamentId: this.tournament.id ?? -1
                 }).pipe(
+                    take(1),
                     tap(() => this.tournament.entries.push({
                         id: undefined,
                         playerId: player.id ?? -1,
@@ -315,6 +318,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             switchMap((res: { blindId: number }) => this.blindApiService.getOfTournament$(this.tournament.id ?? -1)),
             tap((blinds: BlindLevel[]) => this.tournament.structure = blinds),
             tap(() => {
@@ -337,6 +341,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         let entryId: number;
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((res: { entryId: number, playerId: number }) => {
                 playerId = res.playerId;
                 entryId = res.entryId;
@@ -378,6 +383,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             switchMap((res: { entryId: number }) => this.entryApiService.get$(res.entryId)),
             tap((entry: Entry) => this.tournament.entries.push(entry)),
             tap((a) => this.refreshViews())
@@ -392,6 +398,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             switchMap((res: { entryId: number }) => this.entryApiService.get$(res.entryId)),
             tap((entry: Entry) => this.tournament.entries.push(entry)),
             tap((a) => this.refreshViews())
@@ -407,6 +414,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             switchMap((res: { finishId: number }) => this.finishApiService.getInTournament$(this.tournament.id ?? 0)),
             tap((finish: Finish[]) => this.tournament.finishes = finish),
             tap(() => {

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Player } from '../../../../shared/models/player.interface';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-player-list',
@@ -32,6 +32,7 @@ export class PlayerListComponent implements OnInit {
     deletePlayer(playerId: number | undefined): void {
         if (playerId) {
             this.playerApiService.delete$(playerId).pipe(
+                take(1),
                 tap(() => this.triggerService.triggerPlayers())
             ).subscribe();
         }

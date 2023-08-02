@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, Output } from '@angular/core';
 import { TournamentDetails } from '../../../../../shared/models/tournament-details.interface';
 import { AddBlindsComponent } from '../../../dialogs/add-blinds/add-blinds.component';
 import { take, tap } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { PlayerApiService } from '../../../../../core/services/api/player-api.se
 import { AddPlayerComponent } from '../../../dialogs/add-player/add-player.component';
 import { TournamentApiService } from '../../../../../core/services/api/tournament-api.service';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-tournament-list-item',
@@ -25,6 +26,7 @@ export class TournamentListItemComponent {
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private router: Router = inject(Router);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     @Output() reload = new EventEmitter<void>();
 
@@ -36,6 +38,7 @@ export class TournamentListItemComponent {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap(() => this.reload.emit())
         ).subscribe();
     }
@@ -49,6 +52,7 @@ export class TournamentListItemComponent {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap(() => this.reload.emit())
         ).subscribe();
     }

@@ -1,10 +1,11 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, Output } from '@angular/core';
 import { SeriesDetails } from '../../../../../shared/models/series-details.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { PlayerApiService } from '../../../../../core/services/api/player-api.service';
 import { SeriesApiService } from '../../../../../core/services/api/series-api.service';
 import { AddTournamentComponent } from '../../../dialogs/add-tournament/add-tournament.component';
 import { tap } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-series-list-item',
@@ -18,6 +19,7 @@ export class SeriesListItemComponent {
     private dialog: MatDialog = inject(MatDialog);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     @Output() reload = new EventEmitter<void>();
 
@@ -29,6 +31,7 @@ export class SeriesListItemComponent {
         });
 
         dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap(() => this.reload.emit())
         ).subscribe();
     }

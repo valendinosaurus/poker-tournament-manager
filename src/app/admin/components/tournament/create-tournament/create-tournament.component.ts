@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { Tournament } from '../../../../shared/models/tournament.interface';
@@ -6,8 +6,9 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { RankingService } from '../../../../core/services/util/ranking.service';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { LocationApiService } from '../../../../core/services/api/location-api.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-create-tournament',
@@ -28,9 +29,11 @@ export class CreateTournamentComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private locationService: LocationApiService = inject(LocationApiService);
     private triggerService: TriggerService = inject(TriggerService);
+    private destroyRef = inject(DestroyRef);
 
     ngOnInit(): void {
         this.locationService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((locations) => {
                 this.allLocations = locations.map(l => ({label: l.name, value: l.id ?? -1}));
                 this.initModel();
@@ -117,6 +120,7 @@ export class CreateTournamentComponent implements OnInit {
 
     onSubmit(model: Tournament): void {
         this.tournamentApiService.post$(model).pipe(
+            take(1),
             tap(() => this.triggerService.triggerTournaments())
         ).subscribe();
     }

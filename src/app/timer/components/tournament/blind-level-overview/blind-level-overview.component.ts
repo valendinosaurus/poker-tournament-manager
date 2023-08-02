@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
 import { interval } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-blind-level-overview',
@@ -16,6 +17,8 @@ export class BlindLevelOverviewComponent implements OnChanges, AfterViewInit {
 
     @Output() addBlind = new EventEmitter<void>();
 
+    private destroyRef: DestroyRef = inject(DestroyRef);
+
     levelsToShow: BlindLevel[];
 
     ngOnChanges(): void {
@@ -28,6 +31,7 @@ export class BlindLevelOverviewComponent implements OnChanges, AfterViewInit {
         let scrollDown = false;
 
         interval(300000).pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap(() => {
                 if (scrollDown) {
                     document.getElementById('bottom')?.scrollIntoView({behavior: 'smooth'});

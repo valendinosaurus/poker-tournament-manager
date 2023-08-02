@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
@@ -6,8 +6,9 @@ import { Series } from '../../../../shared/models/series.interface';
 import { SeriesApiService } from '../../../../core/services/api/series-api.service';
 import { BrandingApiService } from '../../../../core/services/api/branding-api.service';
 import { Branding } from '../../../../shared/models/branding.interface';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-create-series',
@@ -25,11 +26,13 @@ export class CreateSeriesComponent implements OnInit {
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private brandingApiService: BrandingApiService = inject(BrandingApiService);
     private triggerService: TriggerService = inject(TriggerService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allBrandings: { label: string, value: number }[];
 
     ngOnInit(): void {
         this.brandingApiService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((brandings: Branding[]) => {
                 this.allBrandings = brandings.map(b => ({
                     label: b.name,
@@ -72,6 +75,7 @@ export class CreateSeriesComponent implements OnInit {
 
     onSubmit(model: Series): void {
         this.seriesApiService.post$(model).pipe(
+            take(1),
             tap(() => this.triggerService.triggerSeriess())
         ).subscribe();
     }

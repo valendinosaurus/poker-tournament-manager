@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -6,7 +6,8 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { Series } from '../../../../shared/models/series.interface';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { SeriesApiService } from '../../../../core/services/api/series-api.service';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-tournament',
@@ -26,11 +27,13 @@ export class AddTournamentComponent implements OnInit {
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allTournaments: { label: string, value: number }[];
 
     ngOnInit(): void {
         this.tournamentApiService.getAllWithoutSeries$().pipe(
+            takeUntilDestroyed(this.destroyRef),
             tap((t: { label: string, value: number }[]) => {
                 this.allTournaments = t;
                 this.initModel();
@@ -55,6 +58,7 @@ export class AddTournamentComponent implements OnInit {
     onSubmit(model: { seriesId: number, tournamentId: number | undefined }): void {
         if (model.seriesId && model.tournamentId) {
             this.seriesApiService.addTournament$(model.tournamentId, this.data.series.id ?? -1).pipe(
+                take(1),
                 tap(() => {
                     if (this.dialogRef) {
                         this.dialogRef.close();
