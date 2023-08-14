@@ -6,6 +6,7 @@ import { BlindLevel } from '../../../shared/models/blind-level.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, switchMap } from 'rxjs/operators';
 import { BlindLevelModel } from '../../../shared/models/blind-level-model.interface';
+import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
     providedIn: 'root'
@@ -32,10 +33,10 @@ export class BlindLevelApiService {
         return this.http.get<BlindLevel[]>(`${BACKEND_URL}${this.ENDPOINT}/tournament/${tId}/${sub}`);
     }
 
-    post$(blindLevel: BlindLevelModel): Observable<any> {
+    post$(blindLevel: BlindLevelModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.post<any>(
+            switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...blindLevel,
@@ -45,10 +46,10 @@ export class BlindLevelApiService {
         );
     }
 
-    put$(blindLevel: BlindLevel): Observable<any> {
+    put$(blindLevel: BlindLevel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
+            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...blindLevel,
                     sub

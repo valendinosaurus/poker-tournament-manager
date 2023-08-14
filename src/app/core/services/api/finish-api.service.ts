@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { Finish } from '../../../shared/models/finish.interface';
+import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
     providedIn: 'root'
@@ -32,15 +33,15 @@ export class FinishApiService {
         return this.http.get<Finish[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}`);
     }
 
-    post$(player: Finish): Observable<any> {
-        return this.http.post<any>(
+    post$(player: Finish): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(player)
         );
     }
 
-    put$(player: Finish): Observable<any> {
-        return this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
+    put$(player: Finish): Observable<ServerResponse> {
+        return this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(player)
         );
     }

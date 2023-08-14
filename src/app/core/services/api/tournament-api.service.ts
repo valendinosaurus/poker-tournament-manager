@@ -11,6 +11,7 @@ import { SeriesMetadata } from '../../../shared/models/series-metadata.interface
 import { AuthService, User } from '@auth0/auth0-angular';
 import { TournamentInSeries } from '../../../shared/models/tournament-in-series.interface';
 import { TournamentModel } from '../../../shared/models/tournament-model.interface';
+import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
     providedIn: 'root'
@@ -116,10 +117,10 @@ export class TournamentApiService {
         return this.http.get<SeriesMetadata>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}/meta`);
     }
 
-    post$(tournament: TournamentModel): Observable<any> {
+    post$(tournament: TournamentModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.post<any>(
+            switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...tournament,
@@ -129,10 +130,10 @@ export class TournamentApiService {
         );
     }
 
-    put$(tournament: Tournament): Observable<any> {
+    put$(tournament: Tournament): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
+            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...tournament,
                     sub
@@ -145,8 +146,8 @@ export class TournamentApiService {
         return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
     }
 
-    addPlayer$(playerId: number, tournamentId: number): Observable<any> {
-        return this.http.post<any>(
+    addPlayer$(playerId: number, tournamentId: number): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}/add-player`,
             JSON.stringify({
                 tId: tournamentId,
@@ -155,8 +156,8 @@ export class TournamentApiService {
         );
     }
 
-    addPlayers$(playerId: number[], tournamentId: number): Observable<any> {
-        return this.http.post<any>(
+    addPlayers$(playerId: number[], tournamentId: number): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}/add-players`,
             JSON.stringify({
                 tId: tournamentId,
@@ -169,8 +170,8 @@ export class TournamentApiService {
         return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${tournamentId}/player/${playerId}/${sub}`);
     }
 
-    addBlind$(blindId: number, tournamentId: number, position: number): Observable<any> {
-        return this.http.post<any>(
+    addBlind$(blindId: number, tournamentId: number, position: number): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}/add-blind`,
             JSON.stringify({
                 tId: tournamentId,
@@ -180,8 +181,8 @@ export class TournamentApiService {
         );
     }
 
-    addBlinds$(blindId: number[], tournamentId: number, positions: number[]): Observable<any> {
-        return this.http.post<any>(
+    addBlinds$(blindId: number[], tournamentId: number, positions: number[]): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}/add-blinds`,
             JSON.stringify({
                 tId: tournamentId,
@@ -191,8 +192,8 @@ export class TournamentApiService {
         );
     }
 
-    addPause$(blindId: number, tournamentId: number, position: number): Observable<any> {
-        return this.http.post<any>(
+    addPause$(blindId: number, tournamentId: number, position: number): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}/add-pause`,
             JSON.stringify({
                 tId: tournamentId,

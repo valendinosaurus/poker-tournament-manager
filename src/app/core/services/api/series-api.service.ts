@@ -10,6 +10,7 @@ import { SeriesDetails } from '../../../shared/models/series-details.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { SeriesModel } from '../../../shared/models/series-model.interface';
+import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
     providedIn: 'root'
@@ -124,10 +125,10 @@ export class SeriesApiService {
         return this.http.get<Series>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
     }
 
-    post$(series: SeriesModel): Observable<any> {
+    post$(series: SeriesModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.post<SeriesModel>(
+            switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...series,
@@ -137,10 +138,10 @@ export class SeriesApiService {
         );
     }
 
-    put$(series: Series): Observable<any> {
+    put$(series: Series): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
+            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...series,
                     sub
@@ -153,8 +154,8 @@ export class SeriesApiService {
         return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
     }
 
-    addTournament$(tournamentId: number, seriesId: number): Observable<any> {
-        return this.http.post<any>(
+    addTournament$(tournamentId: number, seriesId: number): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}/add-tournament`,
             JSON.stringify({
                 sId: seriesId,

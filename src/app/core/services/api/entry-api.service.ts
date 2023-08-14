@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { Entry } from '../../../shared/models/entry.interface';
+import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
     providedIn: 'root'
@@ -32,15 +33,15 @@ export class EntryApiService {
         return this.http.get<Entry[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}`);
     }
 
-    post$(entry: Entry): Observable<any> {
-        return this.http.post<any>(
+    post$(entry: Entry): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(entry)
         );
     }
 
-    put$(entry: Entry): Observable<any> {
-        return this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
+    put$(entry: Entry): Observable<ServerResponse> {
+        return this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(entry)
         );
     }

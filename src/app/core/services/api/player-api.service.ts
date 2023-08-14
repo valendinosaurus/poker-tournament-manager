@@ -7,6 +7,7 @@ import { AuthService, User } from '@auth0/auth0-angular';
 import { map, switchMap } from 'rxjs/operators';
 import { PlayerModel } from '../../../shared/models/player-model.interface';
 import { PlayerInSeries } from '../../../shared/models/player-in-series.interface';
+import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
     providedIn: 'root'
@@ -37,10 +38,10 @@ export class PlayerApiService {
         return this.http.get<PlayerInSeries[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}/${password}`);
     }
 
-    post$(player: PlayerModel): Observable<any> {
+    post$(player: PlayerModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.post<any>(
+            switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...player,
@@ -50,10 +51,10 @@ export class PlayerApiService {
         );
     }
 
-    put$(player: Player): Observable<any> {
+    put$(player: Player): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.put<any>(
+            switchMap((sub: string) => this.http.put<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...player,
