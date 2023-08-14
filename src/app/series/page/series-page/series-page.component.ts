@@ -16,6 +16,10 @@ import { Tournament } from '../../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { TournamentInSeries } from '../../../shared/models/tournament-in-series.interface';
 import { PlayerInSeries } from '../../../shared/models/player-in-series.interface';
+import { CombinedEntriesFinishes } from '../../models/combined-entries-finishes.interface';
+import { CombinedRanking } from '../../models/combined-ranking.interface';
+import { OverallRanking } from '../../models/overall-ranking.interface';
+import { CombinedFinish } from '../../models/combined-finish.interface';
 
 @Component({
     selector: 'app-series-page',
@@ -34,39 +38,11 @@ export class SeriesPageComponent implements OnInit {
 
     series$: Observable<SeriesDetails | null>;
 
-    combined: {
-        entries: Entry[],
-        finish: Finish[]
-    }[] = [];
-
-    combinedRankings: {
-        combFinishes: {
-            image: string;
-            name: string;
-            rank: number;
-            price: number;
-            rebuys: number;
-            addons: number;
-            reEntries: number;
-            points: number;
-        }[];
-        tournament: Tournament;
-        seriesMetadata: SeriesMetadata;
-        formulaText: string;
-        pricePool: number;
-        contribution: number;
-    }[] = [];
+    combined: CombinedEntriesFinishes[] = [];
+    combinedRankings: CombinedRanking[] = [];
+    overallRanking: OverallRanking[];
 
     formula: Formula;
-
-    overallRanking: {
-        image: string;
-        name: string;
-        rank: number;
-        price: number;
-        points: number;
-        tournaments: number;
-    }[];
 
     seriesId: number;
     password: string;
@@ -89,11 +65,9 @@ export class SeriesPageComponent implements OnInit {
 
             })
         );
-
     }
 
     private getRankings(): void {
-
         combineLatest([
             this.finishApiService.getInSeries$(this.seriesId),
             this.entryApiService.getInSeries$(this.seriesId),
@@ -102,26 +76,30 @@ export class SeriesPageComponent implements OnInit {
             this.seriesApiService.getSeriesMetadata$(this.seriesId, this.password)
         ]).pipe(
             tap(([finishes, entries, players, tournaments, seriesMetadata]: [Finish[], Entry[], PlayerInSeries[], TournamentInSeries[], SeriesMetadata]) => {
-                const tIds = tournaments.map(t => t.id);
+                const tIds = tournaments.map((t: TournamentInSeries) => t.id);
 
                 tIds.forEach(
                     (id: number) => {
-                        const localFinished = finishes.filter(f => f.tournamentId === id);
-                        const localEntries = entries.filter(e => e.tournamentId === id);
-                        const localPlayers = players.filter(p => p.tId === id);
-                        const localTournament = tournaments.filter(t => t.id === id)[0];
-                        localTournament.players = localPlayers.map(p => ({image: p.image, id: p.id, name: p.name}));
+                        const localFinished: Finish[] = finishes.filter((f: Finish) => f.tournamentId === id);
+                        const localEntries: Entry[] = entries.filter((e: Entry) => e.tournamentId === id);
+                        const localPlayers: PlayerInSeries[] = players.filter((p: PlayerInSeries) => p.tId === id);
+                        const localTournament: TournamentInSeries = tournaments.filter((t: TournamentInSeries) => t.id === id)[0];
+                        localTournament.players = localPlayers.map((p: PlayerInSeries) => ({
+                            image: p.image,
+                            id: p.id,
+                            name: p.name
+                        }));
                         localTournament.entries = localEntries;
                         localTournament.finishes = localFinished;
 
-                        const combo = {
+                        const combo: CombinedEntriesFinishes = {
                             finish: localFinished,
                             entries: localEntries
                         };
 
                         this.combined.push(combo);
 
-                        const combFinishes = localFinished.map(
+                        const combFinishes: CombinedFinish[] = localFinished.map(
                             (finish: Finish) => ({
                                 image: localPlayers.filter(p => p.id === finish.playerId)[0]?.image,
                                 name: localPlayers.filter(p => p.id === finish.playerId)[0]?.name,
@@ -132,7 +110,7 @@ export class SeriesPageComponent implements OnInit {
                                 reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
                                 points: 0
                             })
-                        ).sort((a, b) => a.rank - b.rank);
+                        ).sort((a: CombinedFinish, b: CombinedFinish) => a.rank - b.rank);
 
                         let formula = undefined;
 
@@ -182,7 +160,7 @@ export class SeriesPageComponent implements OnInit {
                 if (this.overallRanking.filter(e => e.name === f.name).length > 0) {
                     const index = this.overallRanking.findIndex(o => o.name === f.name);
 
-                    const element = {...this.overallRanking[index]};
+                    const element: OverallRanking = {...this.overallRanking[index]};
 
                     this.overallRanking[index] = {
                         name: f.name,
@@ -207,32 +185,24 @@ export class SeriesPageComponent implements OnInit {
         );
 
         this.overallRanking = this.overallRanking.sort(
-            (a, b) => b.points - a.points
+            (a: OverallRanking, b: OverallRanking) => b.points - a.points
         );
 
         this.guaranteed = this.combinedRankings.map(
-            r => r.contribution
-        ).reduce((acc, curr) => acc + curr, 0);
+            (r: CombinedRanking) => r.contribution
+        ).reduce((acc: number, curr: number) => acc + curr, 0);
     }
 
     calcPoints(
-        combFinishe: {
-            image: string;
-            name: string;
-            rank: number;
-            price: number;
-            rebuys: number;
-            reEntries: number;
-            addons: number;
-        },
+        combFinish: CombinedFinish,
         tournament: Tournament,
         formula: Formula | undefined
     ): number {
         return formula ? formula({
-            rank: +combFinishe.rank,
-            reEntries: +combFinishe.reEntries,
-            addons: +combFinishe.addons,
-            rebuys: +combFinishe.rebuys,
+            rank: +combFinish.rank,
+            reEntries: +combFinish.reEntries,
+            addons: +combFinish.addons,
+            rebuys: +combFinish.rebuys,
             players: tournament.players.length,
             buyIn: tournament.buyInAmount,
             pricePool: +this.getPricePool(tournament),
