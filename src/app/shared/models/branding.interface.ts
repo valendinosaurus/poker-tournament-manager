@@ -1,5 +1,5 @@
 export interface Branding {
-    id: number | undefined;
+    id: number;
     name: string;
     description: string;
     logo: string;

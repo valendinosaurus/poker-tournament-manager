@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
-import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
+import { AuthService, User } from '@auth0/auth0-angular';
 
 @Component({
     selector: 'app-blind-level-list',
@@ -21,10 +22,16 @@ export class BlindLevelListComponent implements OnInit {
     private blindLevelApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
+    private authService: AuthService = inject(AuthService);
 
     ngOnInit(): void {
-        this.blindLevels$ = this.triggerService.getBlindsTrigger$().pipe(
-            switchMap(() => this.blindLevelApiService.getAll$().pipe(
+        this.blindLevels$ = combineLatest([
+            this.triggerService.getBlindsTrigger$(),
+            this.authService.user$
+        ]).pipe(
+            map(([_trigger, user]: [void, User | undefined | null]) => user?.sub ?? ''),
+            filter((sub: string) => sub.length > 0),
+            switchMap((sub: string) => this.blindLevelApiService.getAll$(sub).pipe(
                 map((levels: BlindLevel[]) => levels.sort((a, b) => {
                     if (a.sb !== b.sb) {
                         return a.sb - b.sb;
@@ -68,9 +75,12 @@ export class BlindLevelListComponent implements OnInit {
     }
 
     deleteLevel(level: BlindLevel): void {
-        this.blindLevelApiService.delete$(level.id ?? -1).pipe(
-            take(1),
-            tap(() => this.triggerService.triggerBlinds())
+        this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            switchMap((sub: string) => this.blindLevelApiService.delete$(level.id, sub).pipe(
+                take(1),
+                tap(() => this.triggerService.triggerBlinds())
+            ))
         ).subscribe();
     }
 

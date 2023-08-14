@@ -2,10 +2,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
-import { BlindLevel } from '../../../../shared/models/blind-level.interface';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
 import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
+import { BlindLevelModel } from '../../../../shared/models/blind-level-model.interface';
 
 @Component({
     selector: 'app-create-blind-level',
@@ -16,7 +16,7 @@ export class CreateBlindLevelComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: BlindLevel;
+    model: BlindLevelModel;
     fields: FormlyFieldConfig[];
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -38,7 +38,7 @@ export class CreateBlindLevelComponent implements OnInit {
             btnAnte: 0,
             isPause: false,
             isChipUp: false,
-            endsRebuyReentry: false
+            endsRebuy: false
         };
     }
 
@@ -52,7 +52,7 @@ export class CreateBlindLevelComponent implements OnInit {
         ];
     }
 
-    onSubmit(model: BlindLevel): void {
+    onSubmit(model: BlindLevelModel): void {
         this.blindLevelApiService.post$(model).pipe(
             take(1),
             tap(() => this.triggerService.triggerBlinds())

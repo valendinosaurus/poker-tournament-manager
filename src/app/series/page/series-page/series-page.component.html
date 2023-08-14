@@ -1,0 +1,216 @@
+<ng-container *ngIf="series$ | async as series; else notAuthorized;">
+    <div class="series-page">
+        <div class="flex-center">
+            <app-user-image-round
+                [imageUrl]="series.branding.logo"
+                [size]="200"
+                border="b-black"
+            ></app-user-image-round>
+        </div>
+
+        <h1>
+            {{ series.name }}
+        </h1>
+
+        <hr>
+
+        <div class="series-content">
+            <div class="series-content-block">
+                <div class="li-pair">
+                    <h4>
+                        Number of tournaments
+                    </h4>
+                    <span>
+                        {{ series.tournaments.length }} / {{ series.noOfTournaments }}
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        % to final pot / cap
+                    </h4>
+                    <span>
+                        {{ series.percentage }}% / $ {{ series.maxAmountPerTournament }}
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        guaranteed
+                    </h4>
+                    <span>
+                        $ {{ guaranteed }}
+                    </span>
+                </div>
+            </div>
+
+            <!--            <div class="series-content-block">-->
+            <!--                <div class="li-pair">-->
+            <!--                    <h4>-->
+            <!--                        Formula Rank-->
+            <!--                    </h4>-->
+            <!--                    <span>-->
+            <!--                        {{ formulaString }}-->
+            <!--                    </span>-->
+            <!--                </div>-->
+
+            <!--                <div class="li-pair">-->
+            <!--                    <h4>-->
+            <!--                        Final Table Formula-->
+            <!--                    </h4>-->
+            <!--                    <span>-->
+            <!--                        {{ series.ftFormula }}-->
+            <!--                    </span>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <h2>
+                Current leaderboard
+            </h2>
+
+            <div class="leaderboard">
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th class="t-right">Points</th>
+                            <th class="t-center">Played</th>
+                            <th class="t-center">avg. Rank</th>
+                            <th class="t-right">Price</th>
+                        </tr>
+                        <ng-container *ngFor="let e of overallRanking; let i = index">
+                            <tr [class.finalist]="i < series.finalists">
+                                <td>
+                                    <span class="flextd">
+                                        <app-user-image-round
+                                            [imageUrl]="e.image"
+                                        ></app-user-image-round>
+                                        {{ e.name }}
+                                    </span>
+                                </td>
+                                <td class="t-right">
+                                    <strong>{{ e.points }}</strong>
+                                </td>
+                                <td class="t-center">
+                                    {{ e.tournaments }}
+                                </td>
+                                <td class="t-center">
+                                    {{ e.rank / e.tournaments | number:'1.1-1' }}
+                                </td>
+                                <td class="t-right">
+                                    $ {{ e.price | number:'':'de-CH' }}
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </table>
+
+                </div>
+
+                <div class="legend-wrapper">
+                    <div class="legend"></div>
+                    Current Finalist
+                </div>
+            </div>
+
+
+            <h2>
+                Tournaments
+            </h2>
+
+            <ng-container *ngFor="let tournament of series.tournaments; let i = index;">
+                <div class="tournament">
+                    <div class="header">
+                        <h4>
+                            {{ tournament.date | date }} - {{ tournament.name }}
+                        </h4>
+
+                        <ng-container *ngIf="combinedRankings[i]">
+                            <div>
+                                <span>
+                                    <h5>
+                                        effective price pool
+                                    </h5>
+                                    <p>
+                                        <strong>
+                                            $ {{ combinedRankings[i].pricePool - combinedRankings[i].contribution }}
+                                        </strong>
+                                    </p>
+                                </span>
+
+                                <span>
+                                    <h5>
+                                        total price pool
+                                    </h5>
+                                    <p>
+                                        $ {{ combinedRankings[i].pricePool }}
+                                    </p>
+                                </span>
+
+                                <span>
+                                    <h5>
+                                        goes to final pot
+                                    </h5>
+                                    <p>
+                                        $ {{ combinedRankings[i].contribution }}
+                                    </p>
+                                </span>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table *ngIf="combinedRankings[i]">
+                            <tr>
+                                <th>Name</th>
+                                <th class="t-right">
+                                    Points
+                                </th>
+                                <th class="t-center">Rank</th>
+                                <th class="t-center">Re-Entries</th>
+                                <th class="t-center">Rebuys</th>
+                                <th class="t-center">Addons</th>
+                                <th class="t-right">Price</th>
+                            </tr>
+                            <ng-container *ngFor="let e of combinedRankings[i].combFinishes">
+                                <tr>
+                                    <td>
+                                        <span class="flextd">
+                                            <app-user-image-round
+                                                [imageUrl]="e.image"
+                                            ></app-user-image-round>
+                                            {{ e.name }}
+                                        </span>
+                                    </td>
+                                    <td class="t-right">
+                                        <strong>{{ e.points }}</strong>
+                                    </td>
+                                    <td class="t-center">
+                                        {{ e.rank }}
+                                    </td>
+                                    <td class="t-center">
+                                        {{ e.reEntries }}
+                                    </td>
+                                    <td class="t-center">
+                                        {{ e.rebuys }}
+                                    </td>
+                                    <td class="t-center">
+                                        {{ e.addons }}
+                                    </td>
+                                    <td class="t-right">
+                                        $ {{ e.price | number:'':'de-CH' }}
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #notAuthorized>
+    <h1>
+        You are not authorized to see this Series.
+    </h1>
+</ng-template>

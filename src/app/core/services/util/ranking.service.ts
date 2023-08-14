@@ -50,16 +50,24 @@ export class RankingService {
                 15,
                 10
             ]
+        },
+        {
+            id: 3,
+            prices: [
+                70,
+                30
+            ]
         }
     ];
 
-    formulas: { id: number, f: Formula, name: string }[] = [
+    formulas: { id: number, f: Formula, name: string, desc: string }[] = [
         {
             name: 'Very Simple',
             id: 1,
             f: (input: FormulaInput) => {
                 return input.players - input.rank + 1;
-            }
+            },
+            desc: '#players - rank + 1'
         },
         {
             name: 'VPR with rebuy and addon',
@@ -69,7 +77,8 @@ export class RankingService {
                     / Math.sqrt(+input.players * (1 + +input.reEntries + +input.rebuys + +input.addons)) / (1 + +input.rank);
 
                 return Math.round(points);
-            }
+            },
+            desc: 'pricepool / sqrt(#players x (1 + #reEntries + #rebuys + #addons)) / (1 + rank)'
         }
     ];
 
@@ -92,6 +101,14 @@ export class RankingService {
             },
             ...formulas
         ];
+    }
+
+    getFormulaDesc(id: number | null | undefined): string {
+        if (id === null || id === undefined) {
+            return 'no description';
+        }
+
+        return this.formulas.find(f => f.id === id)?.desc ?? 'no description';
     }
 
     getPayoutById(id: number): number[] {
@@ -128,7 +145,7 @@ export class RankingService {
         ;
 
         const reductionFull = temp * (percentage ? (percentage / 100) : 0);
-        const deduction = ((reductionFull > (maxCap ?? reductionFull) ? maxCap : reductionFull) ?? 0);
+        const deduction = ((reductionFull > (maxCap ?? reductionFull) ? maxCap : reductionFull)) ?? 0;
 
         const totalPricePool = temp - deduction;
 

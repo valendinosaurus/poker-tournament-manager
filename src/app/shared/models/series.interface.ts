@@ -1,5 +1,5 @@
 export interface Series {
-    id: number | undefined;
+    id: number;
     name: string;
     shortDesc: string;
     longDesc: string;
@@ -9,4 +9,8 @@ export interface Series {
     ftFormula: number;
     percentage: number;
     maxAmountPerTournament: number;
+    noOfTournaments: number;
+    finalists: number;
+    sub: string;
+    password: string;
 }

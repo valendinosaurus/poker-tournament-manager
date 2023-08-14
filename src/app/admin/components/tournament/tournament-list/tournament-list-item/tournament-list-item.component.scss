@@ -40,6 +40,22 @@
     }
 }
 
+div.insert-pause {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    span {
+        cursor: pointer;
+        text-align: center;
+        padding: 2px;
+
+        &:hover {
+            background: white;
+        }
+    }
+}
+
 h4 {
     display: flex;
     align-items: center;

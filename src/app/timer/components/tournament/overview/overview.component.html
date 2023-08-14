@@ -7,6 +7,7 @@
         <app-buttons
             [running]="running"
             [tournament]="tournament"
+            [isRebuyPhaseFinished]="isRebuyPhaseFinished"
             [isSimpleTournament]="isSimpleTournament"
             (createPlayer)="createPlayer()"
             (addPlayer)="addPlayer()"
@@ -99,6 +100,7 @@
                         <app-player-details
                             [players]="tournament.players"
                             [entries]="tournament.entries"
+                            [finishes]="tournament.finishes"
                         ></app-player-details>
                     </div>
 

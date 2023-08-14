@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TimePipe } from './pipes/time.pipe';
-import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,10 +12,10 @@ import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe.compo
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatRadioModule } from '@angular/material/radio';
 import { UserImageRoundComponent } from './components/user-image-round/user-image-round.component';
+import { PageWithSlideMenuComponent } from './components/page-with-slide-menu/page-with-slide-menu.component';
 
 const SHARED_MODULES = [
     CommonModule,
-    BrowserModule,
     HttpClientModule,
     MatDatepickerModule,
     FormsModule,
@@ -29,7 +28,12 @@ const SHARED_MODULES = [
 ];
 
 @NgModule({
-    declarations: [TimePipe, UnsubscribeComponent, UserImageRoundComponent],
+    declarations: [
+        TimePipe,
+        UnsubscribeComponent,
+        UserImageRoundComponent,
+        PageWithSlideMenuComponent
+    ],
     imports: [
         ...SHARED_MODULES,
         FormlyModule.forChild(),
@@ -39,8 +43,8 @@ const SHARED_MODULES = [
         ...SHARED_MODULES,
         FormlyModule,
         UnsubscribeComponent,
-        UserImageRoundComponent
-
+        UserImageRoundComponent,
+        PageWithSlideMenuComponent
     ],
 })
 export class SharedModule {

@@ -1,0 +1,9 @@
+<div class="page-with-slide-menu" [class.side-visible]="isSideVisible">
+    <div class="s-page">
+        <ng-content select="[page]"></ng-content>
+    </div>
+    <div class="side-menu">
+        <i class="fa fa-plus-circle" (click)="isSideVisible = !isSideVisible"></i>
+        <ng-content select="[side]"></ng-content>
+    </div>
+</div>

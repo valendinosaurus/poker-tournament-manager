@@ -6,8 +6,9 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { Series } from '../../../../shared/models/series.interface';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { SeriesApiService } from '../../../../core/services/api/series-api.service';
-import { take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService, User } from '@auth0/auth0-angular';
 
 @Component({
     selector: 'app-add-tournament',
@@ -28,23 +29,27 @@ export class AddTournamentComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private authService: AuthService = inject(AuthService);
 
     allTournaments: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.tournamentApiService.getAllWithoutSeries$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap((t: { label: string, value: number }[]) => {
-                this.allTournaments = t;
-                this.initModel();
-                this.initFields();
-            })
+        this.authService.user$.pipe(
+            map((user: User | null | undefined) => user?.sub ?? ''),
+            switchMap((sub: string) => this.tournamentApiService.getAllWithoutSeries$(sub).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap((t: { label: string, value: number }[]) => {
+                    this.allTournaments = t;
+                    this.initModel();
+                    this.initFields();
+                })
+            ))
         ).subscribe();
     }
 
     initModel(): void {
         this.model = {
-            seriesId: this.data.series.id ?? -1,
+            seriesId: this.data.series.id,
             tournamentId: undefined
         };
     }
@@ -57,7 +62,7 @@ export class AddTournamentComponent implements OnInit {
 
     onSubmit(model: { seriesId: number, tournamentId: number | undefined }): void {
         if (model.seriesId && model.tournamentId) {
-            this.seriesApiService.addTournament$(model.tournamentId, this.data.series.id ?? -1).pipe(
+            this.seriesApiService.addTournament$(model.tournamentId, this.data.series.id).pipe(
                 take(1),
                 tap(() => {
                     if (this.dialogRef) {

@@ -11,7 +11,7 @@ export const dummyTourney: Tournament = {
     addonStack: 0,
     addonAmount: 0,
     noOfReEntries: 0,
-    structure: blindLevelsNoAnte,
+    structure: blindLevelsNoAnte.map((e, i) => ({...e, id: 0, position: i})),
     name: 'Test',
     payout: 0,
     players: [],

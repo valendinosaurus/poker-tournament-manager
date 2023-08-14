@@ -7,6 +7,7 @@ import { PlayerApiService } from '../../../../core/services/api/player-api.servi
 import { MatDialogRef } from '@angular/material/dialog';
 import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
+import { PlayerModel } from '../../../../shared/models/player-model.interface';
 
 @Component({
     selector: 'app-create-player',
@@ -17,7 +18,7 @@ export class CreatePlayerComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: Player;
+    model: PlayerModel;
     fields: FormlyFieldConfig[];
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -46,7 +47,7 @@ export class CreatePlayerComponent implements OnInit {
         ];
     }
 
-    onSubmit(model: Player): void {
+    onSubmit(model: PlayerModel): void {
         this.playerApiService.post$(model).pipe(
             take(1),
             tap(() => {

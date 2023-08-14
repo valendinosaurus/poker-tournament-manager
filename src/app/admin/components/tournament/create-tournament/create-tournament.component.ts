@@ -6,9 +6,11 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { RankingService } from '../../../../core/services/util/ranking.service';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
-import { take, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { LocationApiService } from '../../../../core/services/api/location-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService, User } from '@auth0/auth0-angular';
+import { TournamentModel } from '../../../../shared/models/tournament-model.interface';
 
 @Component({
     selector: 'app-create-tournament',
@@ -19,7 +21,7 @@ export class CreateTournamentComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: Tournament;
+    model: TournamentModel;
     fields: FormlyFieldConfig[];
 
     allLocations: { label: string, value: number }[];
@@ -30,15 +32,20 @@ export class CreateTournamentComponent implements OnInit {
     private locationService: LocationApiService = inject(LocationApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private destroyRef = inject(DestroyRef);
+    private authService: AuthService = inject(AuthService);
 
     ngOnInit(): void {
-        this.locationService.getAll$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap((locations) => {
-                this.allLocations = locations.map(l => ({label: l.name, value: l.id ?? -1}));
-                this.initModel();
-                this.initFields();
-            })
+        this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            filter((sub: string) => sub.length > 0),
+            switchMap((sub: string) => this.locationService.getAll$(sub).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap((locations) => {
+                    this.allLocations = locations.map(l => ({label: l.name, value: l.id}));
+                    this.initModel();
+                    this.initFields();
+                })
+            ))
         ).subscribe();
 
     }
@@ -118,7 +125,7 @@ export class CreateTournamentComponent implements OnInit {
         ];
     }
 
-    onSubmit(model: Tournament): void {
+    onSubmit(model: TournamentModel): void {
         this.tournamentApiService.post$(model).pipe(
             take(1),
             tap(() => this.triggerService.triggerTournaments())

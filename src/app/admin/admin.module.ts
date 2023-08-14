@@ -27,11 +27,14 @@ import { PlayerTabComponent } from './components/player/player-tab.component';
 import { BrandingListComponent } from './components/branding/branding-list/branding-list.component';
 import { BrandingTabComponent } from './components/branding/branding-tab.component';
 import { CreatePauseComponent } from './components/blind-level/create-pause/create-pause.component';
-import { TournamentListItemComponent } from './components/tournament/tournament-list/tournament-list-item/tournament-list-item.component';
+import {
+    TournamentListItemComponent
+} from './components/tournament/tournament-list/tournament-list-item/tournament-list-item.component';
 import { SeriesListItemComponent } from './components/series/series-list/series-list-item/series-list-item.component';
 import { AddMissingEntriesComponent } from './components/dialogs/add-missing-entries/add-missing-entries.component';
 import { AddTournamentComponent } from './components/dialogs/add-tournament/add-tournament.component';
 import { AddReEntryComponent } from './components/dialogs/add-re-entry/add-re-entry.component';
+import { AddPauseComponent } from './components/dialogs/add-pause/add-pause.component';
 
 @NgModule({
     declarations: [
@@ -65,6 +68,7 @@ import { AddReEntryComponent } from './components/dialogs/add-re-entry/add-re-en
         AddMissingEntriesComponent,
         AddTournamentComponent,
         AddReEntryComponent,
+        AddPauseComponent,
     ],
     imports: [
         SharedModule,

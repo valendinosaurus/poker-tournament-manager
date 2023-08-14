@@ -1,15 +1,23 @@
 <div
-    *ngIf="tournament"
+    *ngIf="tournament$ | async as tournament"
     class="tournament"
 >
     <div class="middle">
         <app-overview
+            *ngIf="config"
             [tournament]="tournament"
+            [playersInTheHole]="playersInTheHole$ | async"
+            [seriesMetadata]="seriesMetadata$ | async"
             [isSimpleTournament]="isSimpleTournament"
-            [seriesMetadata]="seriesMetatdata"
-            [playersInTheHole]="playersInTheHole"
+            [sub]="config.sub"
         ></app-overview>
     </div>
+</div>
+
+<div *ngIf="isNotAllowed">
+    <h1>
+        You are not allowed to see this tournamnet
+    </h1>
 </div>
 
 

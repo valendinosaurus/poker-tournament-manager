@@ -3,7 +3,7 @@ import { Player } from './player.interface';
 import { Finish } from './finish.interface';
 
 export interface Tournament {
-    id?: number;
+    id: number;
     name: string;
     date: Date;
     maxPlayers: number;

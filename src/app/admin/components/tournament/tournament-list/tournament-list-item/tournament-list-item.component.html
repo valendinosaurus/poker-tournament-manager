@@ -133,15 +133,31 @@
                 Blinds <i class="fa fa-plus-circle" (click)="addBlinds()"></i>
             </h4>
             <span>
-                <ng-container *ngFor="let b of t.structure">
+                <ng-container *ngFor="let b of t.structure; let i = index;">
                     <div class="blind deletable">
-                       <div>
+                        <div>
                             <span>
-                                 {{ b.sb }}
+                                 ({{ b.position }})
                             </span>
-                            <span>
-                                {{ b.bb }}
-                            </span>
+                            <ng-container *ngIf="!b.isPause">
+                                <span>
+                                     {{ b.sb }}
+                                </span>
+                                <span>
+                                    {{ b.bb }}
+                                </span>
+                            </ng-container>
+                            <ng-container *ngIf="b.isPause">
+                                <span>
+                                     PAUSE
+                                </span>
+                                <span *ngIf="b.isChipUp">
+                                    (CHIP UP)
+                                </span>
+                                <span *ngIf="b.endsRebuy">
+                                    ENDS REBUY
+                                </span>
+                            </ng-container>
                         </div>
                         <span>
                             {{ b.duration}}min
@@ -150,6 +166,17 @@
                             class="fa fa-trash"
                             (click)="deleteBlindFromTournament(b.id)"
                         ></i>
+                    </div>
+                    <div
+                        *ngIf="canInsertPause[i]"
+                        class="insert-pause"
+                    >
+                        <span (click)="addPause(b.position)">
+                            <i
+                                class="fa fa-plus-circle"
+                            ></i>
+                            INSERT PAUSE
+                        </span>
                     </div>
                 </ng-container>
             </span>

@@ -19,3 +19,12 @@ td .flextd {
     display: flex;
     align-items: center;
 }
+
+tr.finished {
+    opacity: 0.3;
+}
+
+.fa-skull {
+    margin-left: 12px;
+    font-size: 16px;
+}

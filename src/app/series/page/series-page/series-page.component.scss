@@ -1,0 +1,178 @@
+.series-page {
+    background: #fdf9df;
+    padding: 32px;
+}
+
+.series-page * {
+    color: #011627;
+}
+
+hr {
+    border-color: #666;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 32px;
+
+    @media (max-width: 600px) {
+        font-size: 24px;
+    }
+}
+
+.series-content {
+    max-width: 1000px;
+    margin: auto;
+    padding-top: 32px;
+}
+
+.series-content-block {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > div.li-pair {
+        width: 33%;
+        flex: 0 0 33%;
+        margin-bottom: 40px;
+
+        @media (max-width: 600px) {
+            width: 100%;
+            flex: 0 0 100%;
+            margin-bottom: 16px;
+        }
+    }
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.tournament {
+    background: white;
+    margin-bottom: 12px;
+}
+
+.tournament table {
+    width: 100%;
+    min-width: 600px;
+}
+
+.tournament h5 {
+    margin-bottom: 12px;
+}
+
+.tournament p {
+    margin-bottom: 12px;
+}
+
+.tournament .header {
+    background: aliceblue;
+    padding: 12px;
+    margin-bottom: 12px;
+
+    & > div {
+        display: flex;
+
+        & > span {
+            margin-right: 20px;
+        }
+    }
+}
+
+table * {
+    text-align: left;
+}
+
+h2 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.leaderboard {
+    background: white;
+    padding: 12px;
+}
+
+.leaderboard table {
+    width: 100%;
+    min-width: 380px;
+}
+
+.flextd {
+    display: flex;
+    align-items: center;
+}
+
+table {
+    border-spacing: 1px;
+}
+
+.t-center {
+    text-align: center !important;
+}
+
+.t-right {
+    text-align: right !important;
+    padding-right: 8px;
+}
+
+td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+tr th:first-child,
+tr td:first-child {
+    padding-left: 12px;
+    box-sizing: border-box;
+    position: sticky;
+    left: 0;
+}
+
+tr th:last-child,
+tr td:last-child {
+    padding-right: 12px;
+}
+
+th, td {
+    background: white;
+    box-sizing: border-box;
+}
+
+tr.finalist th,
+tr.finalist td {
+    background: #e8fbe8;
+}
+
+.legend-wrapper {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.legend {
+    width: 32px;
+    height: 32px;
+    background: #e8fbe8;
+    margin-right: 12px;
+    border: solid 1px #555;
+}
+
+@media (max-width: 600px) {
+    table * {
+        font-size: 14px;
+    }
+
+    table app-user-image-round {
+        display: none;
+    }
+
+    h1 {
+        text-align: left;
+    }
+
+    .series-page {
+        padding: 10px;
+    }
+}

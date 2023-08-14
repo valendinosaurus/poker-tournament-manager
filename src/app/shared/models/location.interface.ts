@@ -1,5 +1,5 @@
 export interface Location {
-    id: number | undefined;
+    id: number;
     name: string;
     image: string;
 }

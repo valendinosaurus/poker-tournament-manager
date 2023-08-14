@@ -5,8 +5,11 @@ import { BACKEND_URL } from '../../../app.const';
 import { Series } from '../../../shared/models/series.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
 import { Branding } from '../../../shared/models/branding.interface';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { SeriesDetails } from '../../../shared/models/series-details.interface';
+import { AuthService, User } from '@auth0/auth0-angular';
+import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
+import { SeriesModel } from '../../../shared/models/series-model.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -16,16 +19,17 @@ export class SeriesApiService {
     private readonly ENDPOINT = 'series';
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+        private authService: AuthService
     ) {
     }
 
-    getAll$(): Observable<Series[]> {
-        return this.http.get<Series[]>(`${BACKEND_URL}${this.ENDPOINT}`);
+    getAll$(sub: string): Observable<Series[]> {
+        return this.http.get<Series[]>(`${BACKEND_URL}${this.ENDPOINT}/${sub}`);
     }
 
-    getAllWithDetails$(): Observable<SeriesDetails[]> {
-        return this.http.get<SeriesDetails[]>(`${BACKEND_URL}${this.ENDPOINT}/details`).pipe(
+    getAllWithDetails$(sub: string): Observable<SeriesDetails[]> {
+        return this.http.get<SeriesDetails[]>(`${BACKEND_URL}${this.ENDPOINT}/details/${sub}`).pipe(
             map(tournaments => tournaments.map(
                 t => {
                     return {
@@ -38,6 +42,21 @@ export class SeriesApiService {
         );
     }
 
+    getWithDetailsByPw$(id: number, password: string): Observable<SeriesDetails | null> {
+        return this.http.get<SeriesDetails | null>(`${BACKEND_URL}${this.ENDPOINT}/details/pw/${id}/${password}`).pipe(
+            map((t: SeriesDetails | null) => t ? ({
+                    ...t,
+                    branding: this.mapBranding(t.branding),
+                    tournaments: this.mapTournaments(t.tournaments)
+                }) : null
+            )
+        );
+    }
+
+    getSeriesMetadata$(id: number, password: string): Observable<SeriesMetadata> {
+        return this.http.get<SeriesMetadata>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${password}/meta`);
+    }
+
     private mapTournaments(tournamentsString: any): Tournament[] {
         if (tournamentsString) {
             const tournamentsRaw: string = (tournamentsString ?? '').toString() as string;
@@ -48,9 +67,9 @@ export class SeriesApiService {
                 const split2 = s1.split(',');
 
                 tournamnets.push({
-                    id: undefined,
-                    date: new Date(split2[0]),
-                    name: split2[1],
+                    id: +split2[0],
+                    date: new Date(split2[1]),
+                    name: split2[2],
                     players: [],
                     entries: [],
                     structure: [],
@@ -101,25 +120,37 @@ export class SeriesApiService {
         };
     }
 
-    get$(id: number): Observable<Series> {
-        return this.http.get<Series>(`${BACKEND_URL}${this.ENDPOINT}/${id}`);
+    get$(id: number, sub: string): Observable<Series> {
+        return this.http.get<Series>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
     }
 
-    post$(series: Series): Observable<any> {
-        return this.http.post<any>(
-            `${BACKEND_URL}${this.ENDPOINT}`,
-            JSON.stringify(series)
+    post$(series: SeriesModel): Observable<any> {
+        return this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            switchMap((sub: string) => this.http.post<SeriesModel>(
+                `${BACKEND_URL}${this.ENDPOINT}`,
+                JSON.stringify({
+                    ...series,
+                    sub
+                })
+            ))
         );
     }
 
     put$(series: Series): Observable<any> {
-        return this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
-            JSON.stringify(series)
+        return this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            switchMap((sub: string) => this.http.put<any>(`${BACKEND_URL}${this.ENDPOINT}`,
+                JSON.stringify({
+                    ...series,
+                    sub
+                })
+            ))
         );
     }
 
-    delete$(id: number): Observable<any> {
-        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${id}`);
+    delete$(id: number, sub: string): Observable<any> {
+        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
     }
 
     addTournament$(tournamentId: number, seriesId: number): Observable<any> {

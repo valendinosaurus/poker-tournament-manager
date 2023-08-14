@@ -6,9 +6,11 @@ import { Series } from '../../../../shared/models/series.interface';
 import { SeriesApiService } from '../../../../core/services/api/series-api.service';
 import { BrandingApiService } from '../../../../core/services/api/branding-api.service';
 import { Branding } from '../../../../shared/models/branding.interface';
-import { take, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService, User } from '@auth0/auth0-angular';
+import { SeriesModel } from '../../../../shared/models/series-model.interface';
 
 @Component({
     selector: 'app-create-series',
@@ -19,28 +21,36 @@ export class CreateSeriesComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: Series;
+    model: SeriesModel;
     fields: FormlyFieldConfig[];
+    sub: string;
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private brandingApiService: BrandingApiService = inject(BrandingApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private authService: AuthService = inject(AuthService);
 
     allBrandings: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.brandingApiService.getAll$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap((brandings: Branding[]) => {
-                this.allBrandings = brandings.map(b => ({
-                    label: b.name,
-                    value: b.id ?? -1
-                }));
-                this.initModel();
-                this.initFields();
-            })
+        this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            filter((sub: string) => sub.length > 0),
+            tap((sub: string) => this.sub = sub),
+            switchMap((sub: string) => this.brandingApiService.getAll$(sub).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap((brandings: Branding[]) => {
+                    console.log('b', brandings);
+                    this.allBrandings = brandings.map(b => ({
+                        label: b.name,
+                        value: b.id
+                    }));
+                    this.initModel();
+                    this.initFields();
+                })
+            ))
         ).subscribe();
 
     }
@@ -56,7 +66,11 @@ export class CreateSeriesComponent implements OnInit {
             rankFormula: 0,
             ftFormula: 0,
             percentage: 0,
-            maxAmountPerTournament: 0
+            maxAmountPerTournament: 0,
+            noOfTournaments: 0,
+            finalists: 0,
+            sub: this.sub,
+            password: ''
         };
     }
 
@@ -70,10 +84,13 @@ export class CreateSeriesComponent implements OnInit {
             this.formlyFieldService.getDefaultNumberField('ftFormula', 'final table formula', true),
             this.formlyFieldService.getDefaultNumberField('percentage', '% of pot into final tournament', true),
             this.formlyFieldService.getDefaultNumberField('maxAmountPerTournament', 'Cap per Tournament', true),
+            this.formlyFieldService.getDefaultNumberField('noOfTournaments', 'Cap per Tournament', true),
+            this.formlyFieldService.getDefaultNumberField('finalists', 'Cap per Tournament', true),
+            this.formlyFieldService.getDefaultTextField('password', 'password', false, 1000),
         ];
     }
 
-    onSubmit(model: Series): void {
+    onSubmit(model: SeriesModel): void {
         this.seriesApiService.post$(model).pipe(
             take(1),
             tap(() => this.triggerService.triggerSeriess())

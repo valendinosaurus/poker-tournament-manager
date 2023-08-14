@@ -9,5 +9,6 @@ export class UserImageRoundComponent {
 
     @Input() imageUrl: string;
     @Input() size = 40;
+    @Input() border: string = 'b-regular';
 
 }

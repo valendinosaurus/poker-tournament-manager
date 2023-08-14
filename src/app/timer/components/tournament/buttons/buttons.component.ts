@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Tournament } from '../../../../shared/models/tournament.interface';
+import { AuthService } from '@auth0/auth0-angular';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-buttons',
@@ -11,8 +13,12 @@ export class ButtonsComponent {
     @Input() running: boolean;
     @Input() tournament: Tournament;
     @Input() isSimpleTournament: boolean;
+    @Input() isRebuyPhaseFinished: boolean;
 
     isOverlayOpen = false;
+
+    private authService: AuthService = inject(AuthService);
+    isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
 
     @Output() createPlayer = new EventEmitter<void>();
     @Output() addPlayer = new EventEmitter<void>();

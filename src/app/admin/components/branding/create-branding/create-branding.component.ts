@@ -5,6 +5,7 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { Branding } from '../../../../shared/models/branding.interface';
 import { BrandingApiService } from '../../../../core/services/api/branding-api.service';
 import { take } from 'rxjs/operators';
+import { BrandingModel } from '../../../../shared/models/branding-model.interface';
 
 @Component({
     selector: 'app-create-branding',
@@ -15,7 +16,7 @@ export class CreateBrandingComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: Branding;
+    model: BrandingModel;
     fields: FormlyFieldConfig[];
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -43,7 +44,7 @@ export class CreateBrandingComponent implements OnInit {
         ];
     }
 
-    onSubmit(model: Branding): void {
+    onSubmit(model: BrandingModel): void {
         this.brandingApiService.post$(model).pipe(
             take(1),
         ).subscribe();

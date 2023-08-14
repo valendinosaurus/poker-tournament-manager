@@ -1,0 +1,49 @@
+.page-with-slide-menu {
+    width: 100%;
+    display: flex;
+
+    * {
+        transition: 120ms ease-out;
+    }
+}
+
+.side-menu {
+    position: relative;
+
+    & > .fa {
+        position: fixed;
+        right: 0%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 32px;
+    }
+}
+
+.page-with-slide-menu {
+    .s-page {
+        width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .side-menu {
+        width: 0%;
+        flex: 0 0 0%;
+    }
+}
+
+.page-with-slide-menu.side-visible {
+    .s-page {
+        width: 66%;
+        flex: 0 0 66%;
+    }
+
+    .side-menu {
+        width: 33%;
+        flex: 0 0 33%;
+
+        & > .fa {
+            right: 33%;
+        }
+    }
+}
+

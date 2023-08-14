@@ -2,7 +2,7 @@ import { Branding } from './branding.interface';
 import { Tournament } from './tournament.interface';
 
 export interface SeriesDetails {
-    id: number | undefined;
+    id: number;
     name: string;
     shortDesc: string;
     longDesc: string;
@@ -13,4 +13,6 @@ export interface SeriesDetails {
     ftFormula: number;
     percentage: number;
     maxAmountPerTournament: number;
+    noOfTournaments: number;
+    finalists: number;
 }

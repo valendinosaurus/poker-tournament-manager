@@ -19,6 +19,7 @@ import { ButtonsComponent } from './components/tournament/buttons/buttons.compon
 import { PlayerDetailsComponent } from './components/tournament/player-details/player-details.component';
 import { PayoutDetailsComponent } from './components/tournament/payout-details/payout-details.component';
 import { RankingComponent } from './components/tournament/ranking/ranking.component';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
     declarations: [
@@ -48,7 +49,8 @@ import { RankingComponent } from './components/tournament/ranking/ranking.compon
             innerStrokeColor: 'darkblue',
             animationDuration: 300,
         }),
-        CountdownModule
+        CountdownModule,
+        RouterLink
     ],
     exports: [
         TimerComponent,

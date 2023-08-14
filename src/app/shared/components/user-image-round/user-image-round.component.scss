@@ -5,7 +5,14 @@
 div {
     background-size: cover;
     background-position: center center;
-    border: solid 2px #006dc7;
     box-sizing: border-box;
     margin-right: 1vh;
+}
+
+div.b-regular {
+    border: solid 2px #006dc7;
+}
+
+div.b-black {
+    border: solid 4px #666;
 }

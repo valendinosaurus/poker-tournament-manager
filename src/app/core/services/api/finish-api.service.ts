@@ -28,6 +28,10 @@ export class FinishApiService {
         return this.http.get<Finish[]>(`${BACKEND_URL}${this.ENDPOINT}/tournament/${tId}`);
     }
 
+    getInSeries$(sId: number): Observable<Finish[]> {
+        return this.http.get<Finish[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}`);
+    }
+
     post$(player: Finish): Observable<any> {
         return this.http.post<any>(
             `${BACKEND_URL}${this.ENDPOINT}`,

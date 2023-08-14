@@ -3,13 +3,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { Player } from '../../../../shared/models/player.interface';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { EntryApiService } from '../../../../core/services/api/entry-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService, User } from '@auth0/auth0-angular';
 
 @Component({
     selector: 'app-add-player',
@@ -20,7 +21,7 @@ export class AddPlayerComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: { playerId: number | undefined, tournamentId: number };
+    model: { playerId: number, tournamentId: number };
     modelMulti: { playerIds: number[] | undefined, tournamentId: number };
     fields: FormlyFieldConfig[];
 
@@ -31,27 +32,31 @@ export class AddPlayerComponent implements OnInit {
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private authService: AuthService = inject(AuthService);
 
     allPlayers: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.playerApiService.getAll$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap((players: Player[]) => {
-                this.allPlayers = players
-                    .filter(
-                        player => !this.data.tournament.players.map(p => p.id).includes(player.id)
-                    )
-                    .map(
-                        player => ({
-                            label: player.name,
-                            value: player.id ?? 0
-                        })
-                    );
+        this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            switchMap((sub: string) => this.playerApiService.getAll$(sub).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap((players: Player[]) => {
+                    this.allPlayers = players
+                        .filter(
+                            player => !this.data.tournament.players.map(p => p.id).includes(player.id)
+                        )
+                        .map(
+                            player => ({
+                                label: player.name,
+                                value: player.id
+                            })
+                        );
 
-                this.initModel();
-                this.initFields();
-            })
+                    this.initModel();
+                    this.initFields();
+                })
+            ))
         ).subscribe();
     }
 
@@ -59,12 +64,12 @@ export class AddPlayerComponent implements OnInit {
         if (this.data.multi) {
             this.modelMulti = {
                 playerIds: [],
-                tournamentId: this.data.tournament.id ?? -1
+                tournamentId: this.data.tournament.id
             };
         } else {
             this.model = {
-                playerId: undefined,
-                tournamentId: this.data.tournament.id ?? -1
+                playerId: -1,
+                tournamentId: this.data.tournament.id
             };
         }
     }
@@ -81,13 +86,13 @@ export class AddPlayerComponent implements OnInit {
         }
     }
 
-    onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
-        if (model.playerId && model.tournamentId) {
+    onSubmit(model: { playerId: number, tournamentId: number }): void {
+        if (model.playerId > -1 && model.tournamentId) {
             this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
                 switchMap(
                     () => this.entryApiService.post$({
                         id: undefined,
-                        playerId: model.playerId ?? 0,
+                        playerId: model.playerId,
                         tournamentId: model.tournamentId,
                         type: 'ENTRY'
                     }).pipe(

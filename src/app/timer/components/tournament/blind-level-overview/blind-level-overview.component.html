@@ -51,6 +51,9 @@
                 <ng-template #pause>
                     <div class="level pause">
                         {{ level.isChipUp ? 'CHIP UP' : 'PAUSE'}}
+                        <ng-container *ngIf="level.endsRebuy">
+                            (ENDS REBUY)
+                        </ng-container>
                     </div>
                     <div class="duration pause">
                         {{ level.duration }} min

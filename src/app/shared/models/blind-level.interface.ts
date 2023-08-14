@@ -1,5 +1,5 @@
 export interface BlindLevel {
-    id?: number;
+    id: number;
     sb: number;
     bb: number;
     ante: number;
@@ -7,5 +7,6 @@ export interface BlindLevel {
     duration: number;
     isPause: boolean;
     isChipUp: boolean;
-    endsRebuyReentry: boolean;
+    endsRebuy: boolean;
+    position: number;
 }

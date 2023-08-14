@@ -5,12 +5,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
-import { take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 import { RankingService } from '../../../../core/services/util/ranking.service';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService, User } from '@auth0/auth0-angular';
 
 @Component({
     selector: 'app-add-finish',
@@ -25,13 +26,14 @@ export class AddFinishComponent implements OnInit {
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
-    data: { tournament: Tournament, metadata: SeriesMetadata } = inject(MAT_DIALOG_DATA);
+    data: { tournament: Tournament, metadata: SeriesMetadata | undefined } = inject(MAT_DIALOG_DATA);
 
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private authService: AuthService = inject(AuthService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -39,35 +41,38 @@ export class AddFinishComponent implements OnInit {
     price = 0;
 
     ngOnInit(): void {
-        this.playerApiService.getAll$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap((players: Player[]) => {
-                this.allPlayers = players
-                    .filter(
-                        player => this.data.tournament.players.map(p => p.id).includes(player.id)
-                    )
-                    .filter(player => {
-                        const finishedIds = this.data.tournament.finishes.map(f => f.playerId);
+        this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            switchMap((sub: string) => this.playerApiService.getAll$(sub).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap((players: Player[]) => {
+                    this.allPlayers = players
+                        .filter(
+                            player => this.data.tournament.players.map(p => p.id).includes(player.id)
+                        )
+                        .filter(player => {
+                            const finishedIds = this.data.tournament.finishes.map(f => f.playerId);
 
-                        return !finishedIds.includes(player.id ?? 0);
-                    })
-                    .map(
-                        player => ({
-                            label: player.name,
-                            value: player.id ?? 0
+                            return !finishedIds.includes(player.id);
                         })
-                    );
+                        .map(
+                            player => ({
+                                label: player.name,
+                                value: player.id
+                            })
+                        );
 
-                this.initModel();
-                this.initFields();
-            })
+                    this.initModel();
+                    this.initFields();
+                })
+            ))
         ).subscribe();
 
         this.rank = this.data.tournament.players.length - this.data.tournament.finishes.length;
-
         const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
-
         const payoutPercentage = payoutRaw[this.rank - 1];
+
+        console.log('perc', payoutPercentage);
 
         if (payoutPercentage) {
             const {totalPricePool} = this.rankingService.getTotalPricePool(
@@ -76,20 +81,22 @@ export class AddFinishComponent implements OnInit {
                 this.data.tournament.rebuyAmount,
                 this.data.tournament.addonAmount,
                 this.data.tournament.initialPricePool,
-                this.data.metadata.percentage,
-                this.data.metadata.maxAmountPerTournament
+                this.data.metadata?.percentage,
+                this.data.metadata?.maxAmountPerTournament
             );
 
             this.price = totalPricePool / 100 * payoutPercentage;
         } else {
             this.price = 0;
         }
+
+        console.log('price', this.price);
     }
 
     private initModel(): void {
         this.model = {
             playerId: undefined,
-            tournamentId: this.data.tournament.id ?? 0
+            tournamentId: this.data.tournament.id
         };
     }
 
@@ -100,6 +107,12 @@ export class AddFinishComponent implements OnInit {
     }
 
     onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
+        console.log('ssss', {
+            playerId: model.playerId,
+            tournamentId: model.tournamentId,
+            price: this.price,
+            rank: this.rank
+        });
         if (model.playerId && model.tournamentId) {
             this.finishApiService.post$({
                 playerId: model.playerId,

@@ -5,6 +5,7 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { LocationApiService } from '../../../../core/services/api/location-api.service';
 import { Location } from '../../../../shared/models/location.interface';
 import { take } from 'rxjs/operators';
+import { LocationModel } from '../../../../shared/models/location-model.interface';
 
 @Component({
     selector: 'app-create-location',
@@ -15,7 +16,7 @@ export class CreateLocationComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: Location;
+    model: LocationModel;
     fields: FormlyFieldConfig[];
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -41,7 +42,7 @@ export class CreateLocationComponent implements OnInit {
         ];
     }
 
-    onSubmit(model: Location): void {
+    onSubmit(model: LocationModel): void {
         this.locationApiService.post$(model).pipe(
             take(1)
         ).subscribe();
