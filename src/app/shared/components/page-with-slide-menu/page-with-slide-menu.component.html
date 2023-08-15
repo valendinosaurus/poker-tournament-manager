@@ -3,7 +3,8 @@
         <ng-content select="[page]"></ng-content>
     </div>
     <div class="side-menu">
-        <i class="fa fa-plus-circle" (click)="isSideVisible = !isSideVisible"></i>
+        <i *ngIf="!isSideVisible" class="fa fa-plus-circle" (click)="isSideVisible = true"></i>
+        <i *ngIf="isSideVisible" class="fa fa-minus-circle" (click)="isSideVisible = false"></i>
         <ng-content select="[side]"></ng-content>
     </div>
 </div>

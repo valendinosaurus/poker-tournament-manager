@@ -1,17 +1,20 @@
-import { Component, inject, Input, OnChanges } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, inject, Input, OnChanges } from '@angular/core';
 import { Player } from '../../../../shared/models/player.interface';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Formula, RankingService } from '../../../../core/services/util/ranking.service';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
+import { interval } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-ranking',
     templateUrl: './ranking.component.html',
     styleUrls: ['./ranking.component.scss']
 })
-export class RankingComponent implements OnChanges {
+export class RankingComponent implements OnChanges, AfterViewInit {
 
     @Input() players: Player[];
     @Input() entries: Entry[];
@@ -20,6 +23,8 @@ export class RankingComponent implements OnChanges {
     @Input() tournament: Tournament;
 
     private rankingService: RankingService = inject(RankingService);
+
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     formula: Formula;
 
@@ -87,6 +92,23 @@ export class RankingComponent implements OnChanges {
         if (formula) {
             this.formula = this.rankingService.getFormulaById(formula);
         }
+    }
+
+    ngAfterViewInit(): void {
+        let scrollDown = true;
+
+        interval(5000).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => {
+                if (scrollDown) {
+                    document.getElementById('bottomr')?.scrollIntoView({behavior: 'smooth'});
+                } else {
+                    document.getElementById('topr')?.scrollIntoView({behavior: 'smooth'});
+                }
+
+                scrollDown = !scrollDown;
+            })
+        ).subscribe();
     }
 
     calcPoints(combFinishe: {

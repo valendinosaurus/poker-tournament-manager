@@ -50,8 +50,6 @@ export class AddBlindsComponent implements OnInit {
         ]).pipe(
             takeUntilDestroyed(this.destroyRef),
             tap(([blinds, duration]: [BlindLevel[], number]) => {
-                console.log(blinds);
-                console.log(blinds.filter(e => e.duration === 10));
                 this.allBlinds = blinds
                     .filter(b => !b.isPause)
                     .filter(
@@ -103,13 +101,11 @@ export class AddBlindsComponent implements OnInit {
     }
 
     onFilterDurationChange(event: number): void {
-        console.log(event);
         this.filterDurationTrigger$.next(+event);
     }
 
     onSubmit(model: { blindId: number[] | undefined, tournamentId: number }): void {
         if (model.blindId && model.tournamentId) {
-            console.log('submit', model.blindId, model.tournamentId, this.data.tournament.structure.length);
 
             const positions = [];
             const startIndex = this.data.tournament.structure.length * 2;

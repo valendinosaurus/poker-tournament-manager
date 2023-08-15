@@ -10,6 +10,17 @@
         {{  totalPricePool | number:'':'de-CH' }} $
     </h1>
     <h2
+        *ngIf="deduction > 0"
+        class="no-mb"
+    >
+        <span>
+            total price pool
+        </span>
+        <span class="deduction">
+            {{ deduction + totalPricePool  | number:'':'de-CH' }} $
+        </span>
+    </h2>
+    <h2
         *ngIf="initialPricePool > 0"
         [class.no-mb]="initialPricePool > 0 && deduction > 0"
         class="no-mb"
@@ -39,7 +50,7 @@
     </h4>
 
     <div class="payouts">
-        <div id="top"></div>
+        <div id="topd"></div>
         <table cellspacing="0" cellpadding="0">
             <ng-container *ngFor="let e of payouts">
                 <tr [class.opaque]="!e.name">
@@ -68,7 +79,7 @@
                 </tr>
             </ng-container>
         </table>
-        <div id="bottom"></div>
+        <div id="bottomd"></div>
     </div>
 
 </div>

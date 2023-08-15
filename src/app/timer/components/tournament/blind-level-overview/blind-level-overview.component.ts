@@ -28,9 +28,9 @@ export class BlindLevelOverviewComponent implements OnChanges, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        let scrollDown = false;
+        let scrollDown = true;
 
-        interval(300000).pipe(
+        interval(5000).pipe(
             takeUntilDestroyed(this.destroyRef),
             tap(() => {
                 if (scrollDown) {
@@ -44,5 +44,4 @@ export class BlindLevelOverviewComponent implements OnChanges, AfterViewInit {
         ).subscribe();
     }
 
-    protected readonly indexedDB = indexedDB;
 }

@@ -2,7 +2,6 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
-import { Series } from '../../../../shared/models/series.interface';
 import { SeriesApiService } from '../../../../core/services/api/series-api.service';
 import { BrandingApiService } from '../../../../core/services/api/branding-api.service';
 import { Branding } from '../../../../shared/models/branding.interface';
@@ -42,7 +41,6 @@ export class CreateSeriesComponent implements OnInit {
             switchMap((sub: string) => this.brandingApiService.getAll$(sub).pipe(
                 takeUntilDestroyed(this.destroyRef),
                 tap((brandings: Branding[]) => {
-                    console.log('b', brandings);
                     this.allBrandings = brandings.map(b => ({
                         label: b.name,
                         value: b.id

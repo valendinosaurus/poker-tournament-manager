@@ -72,8 +72,6 @@ export class AddFinishComponent implements OnInit {
         const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
 
-        console.log('perc', payoutPercentage);
-
         if (payoutPercentage) {
             const {totalPricePool} = this.rankingService.getTotalPricePool(
                 this.data.tournament.entries,
@@ -89,8 +87,6 @@ export class AddFinishComponent implements OnInit {
         } else {
             this.price = 0;
         }
-
-        console.log('price', this.price);
     }
 
     private initModel(): void {
@@ -107,12 +103,6 @@ export class AddFinishComponent implements OnInit {
     }
 
     onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
-        console.log('ssss', {
-            playerId: model.playerId,
-            tournamentId: model.tournamentId,
-            price: this.price,
-            rank: this.rank
-        });
         if (model.playerId && model.tournamentId) {
             this.finishApiService.post$({
                 playerId: model.playerId,

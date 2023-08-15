@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
 import { AddPauseComponent } from '../../../dialogs/add-pause/add-pause.component';
+import { RankingService } from '../../../../../core/services/util/ranking.service';
 
 @Component({
     selector: 'app-tournament-list-item',
@@ -27,6 +28,9 @@ export class TournamentListItemComponent implements OnInit {
     private router: Router = inject(Router);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
+    private rankingService: RankingService = inject(RankingService);
+
+    payout: number[];
 
     canInsertPause: boolean[];
 
@@ -36,6 +40,8 @@ export class TournamentListItemComponent implements OnInit {
         this.sub$ = this.authService.user$.pipe(
             map((user: User | null | undefined) => user?.sub ?? '')
         );
+
+        this.payout = this.rankingService.getPayoutById(this.t.payout);
 
         this.canInsertPause = [];
 
@@ -66,7 +72,6 @@ export class TournamentListItemComponent implements OnInit {
     }
 
     addPause(position: number | undefined): void {
-        console.log('ad pause', position);
         if (position !== undefined) {
             const dialogRef = this.dialog.open(AddPauseComponent, {
                 data: {

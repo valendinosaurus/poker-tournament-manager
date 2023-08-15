@@ -12,10 +12,15 @@
 
     & > .fa {
         position: fixed;
-        right: 0%;
-        top: 50%;
+        right: 0;
+        bottom: 0;
         transform: translate(-50%, -50%);
-        font-size: 32px;
+        font-size: 64px;
+        color: green;
+        opacity: 0;
+        animation: fadeIn 500ms ease-in;
+        animation-delay: 500ms;
+        animation-fill-mode: forwards;
     }
 }
 
@@ -47,3 +52,12 @@
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

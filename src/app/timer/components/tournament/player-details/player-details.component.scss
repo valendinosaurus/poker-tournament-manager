@@ -28,3 +28,8 @@ tr.finished {
     margin-left: 12px;
     font-size: 16px;
 }
+
+.player-details {
+    overflow-y: auto;
+    max-height: 50.5vh;
+}

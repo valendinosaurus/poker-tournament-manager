@@ -57,6 +57,18 @@ export class RankingService {
                 70,
                 30
             ]
+        },
+        {
+            id: 4,
+            prices: [
+                30,
+                22,
+                18,
+                15,
+                8,
+                5,
+                2
+            ]
         }
     ];
 

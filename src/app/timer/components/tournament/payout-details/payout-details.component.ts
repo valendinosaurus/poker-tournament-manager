@@ -3,6 +3,8 @@ import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Player } from '../../../../shared/models/player.interface';
 import { RankingService } from '../../../../core/services/util/ranking.service';
+import { interval } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-payout-details',
@@ -80,19 +82,17 @@ export class PayoutDetailsComponent implements OnChanges, AfterViewInit {
     ngAfterViewInit(): void {
         let scrollDown = false;
 
-        // interval(3000).pipe(
-        //     tap(() => {
-        //         if (scrollDown) {
-        //             console.log('down');
-        //             document.getElementById('bottom')?.scrollIntoView({behavior: 'smooth'});
-        //         } else {
-        //             console.log('up');
-        //             document.getElementById('top')?.scrollIntoView({behavior: 'smooth'});
-        //         }
-        //
-        //         scrollDown = !scrollDown;
-        //     })
-        // ).subscribe();
+        interval(3000).pipe(
+            tap(() => {
+                if (scrollDown) {
+                    document.getElementById('bottomd')?.scrollIntoView({behavior: 'smooth'});
+                } else {
+                    document.getElementById('topd')?.scrollIntoView({behavior: 'smooth'});
+                }
+
+                scrollDown = !scrollDown;
+            })
+        ).subscribe();
     }
 
 }

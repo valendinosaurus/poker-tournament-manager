@@ -49,9 +49,6 @@ export class AddPauseComponent implements OnInit {
         ]).pipe(
             takeUntilDestroyed(this.destroyRef),
             tap(([blinds, duration]: [BlindLevel[], number]) => {
-
-                console.log(blinds.filter(b => b.isPause));
-
                 this.allPauses = blinds
                     .filter(b => b.isPause)
                     .filter(
@@ -98,13 +95,10 @@ export class AddPauseComponent implements OnInit {
     }
 
     onFilterDurationChange(event: number): void {
-        console.log(event);
         this.filterDurationTrigger$.next(event);
     }
 
     onSubmit(model: { blindId: number | undefined, tournamentId: number }): void {
-        console.log('model', model);
-
         if (model.blindId && model.tournamentId) {
 
             this.tournamentApiService.addPause$(model.blindId, model.tournamentId, this.data.position).pipe(
