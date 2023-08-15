@@ -10,7 +10,7 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import { BehaviorSubject, iif, Observable, of } from 'rxjs';
+import { BehaviorSubject, iif, interval, Observable, of } from 'rxjs';
 import { debounceTime, map, switchMap, take, tap } from 'rxjs/operators';
 import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
 import { CountdownComponent, CountdownConfig, CountdownEvent, CountdownStatus } from 'ngx-countdown';
@@ -172,10 +172,10 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
             initial: this.currentSlide,
             slideChanged: (s: any) => this.currentSlide = s.track.details.rel
         });
-        //
-        // interval(3000000000).pipe(
-        //     tap(() => this.slider.next())
-        // ).subscribe();
+
+        interval(3000000000).pipe(
+            tap(() => this.slider.next())
+        ).subscribe();
     }
 
     private initResizeListener(): void {
