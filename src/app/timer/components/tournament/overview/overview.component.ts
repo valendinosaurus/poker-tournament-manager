@@ -173,7 +173,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
             slideChanged: (s: any) => this.currentSlide = s.track.details.rel
         });
 
-        interval(3000000000).pipe(
+        interval(45000).pipe(
             tap(() => this.slider.next())
         ).subscribe();
     }
