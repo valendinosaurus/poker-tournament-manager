@@ -15,4 +15,5 @@ export interface SeriesDetails {
     maxAmountPerTournament: number;
     noOfTournaments: number;
     finalists: number;
+    password: string;
 }

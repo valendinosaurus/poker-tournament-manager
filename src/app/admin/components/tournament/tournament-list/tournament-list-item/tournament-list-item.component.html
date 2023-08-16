@@ -135,33 +135,31 @@
             <span>
                 <ng-container *ngFor="let b of t.structure; let i = index;">
                     <div class="blind deletable">
-                        <div>
-                            <span>
-                                 ({{ b.position }})
-                            </span>
-                            <ng-container *ngIf="!b.isPause">
-                                <span>
-                                     {{ b.sb }}
-                                </span>
-                                <span>
-                                    {{ b.bb }}
-                                </span>
-                            </ng-container>
-                            <ng-container *ngIf="b.isPause">
-                                <span>
-                                     PAUSE
-                                </span>
-                                <span *ngIf="b.isChipUp">
-                                    (CHIP UP)
-                                </span>
-                                <span *ngIf="b.endsRebuy">
-                                    ENDS REBUY
-                                </span>
-                            </ng-container>
-                        </div>
+                        <span>
+                             ({{ b.position }})
+                        </span>
                         <span>
                             {{ b.duration}}min
                         </span>
+                        <ng-container *ngIf="!b.isPause">
+                            <span>
+                                 {{ b.sb }}
+                            </span>
+                            <span>
+                                {{ b.bb }}
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="b.isPause">
+                            <span>
+                                 PAUSE
+                            </span>
+                            <span *ngIf="b.isChipUp">
+                                (CHIP UP)
+                            </span>
+                            <span *ngIf="b.endsRebuy">
+                                ENDS REBUY
+                            </span>
+                        </ng-container>
                         <i
                             class="fa fa-trash"
                             (click)="deleteBlindFromTournament(b.id)"

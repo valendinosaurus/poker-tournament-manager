@@ -28,11 +28,15 @@
     .s-page {
         width: 100%;
         flex: 0 0 100%;
+        padding: 20px;
+        box-sizing: border-box;
     }
 
     .side-menu {
-        width: 0%;
-        flex: 0 0 0%;
+        width: 0;
+        flex: 0 0 0;
+        padding: 20px;
+        box-sizing: border-box;
     }
 }
 

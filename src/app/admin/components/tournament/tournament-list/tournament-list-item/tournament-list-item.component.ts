@@ -112,7 +112,7 @@ export class TournamentListItemComponent implements OnInit {
 
     deletePlayerFromTournament(playerId: number): void {
         this.sub$.pipe(
-            switchMap((sub: string) => this.tournamentApiService.removePlayer$(playerId, this.t.id ?? -1, sub).pipe(
+            switchMap((sub: string) => this.tournamentApiService.removePlayer$(playerId, this.t.id, sub).pipe(
                     take(1),
                     tap(() => this.reload.emit())
                 )
@@ -122,7 +122,7 @@ export class TournamentListItemComponent implements OnInit {
 
     deleteBlindFromTournament(blindId: number): void {
         this.sub$.pipe(
-            switchMap((sub: string) => this.tournamentApiService.removeBlind$(blindId, this.t.id ?? -1, sub).pipe(
+            switchMap((sub: string) => this.tournamentApiService.removeBlind$(blindId, this.t.id, sub).pipe(
                     take(1),
                     tap(() => this.reload.emit())
                 )

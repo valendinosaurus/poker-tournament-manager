@@ -35,6 +35,7 @@ import { AddMissingEntriesComponent } from './components/dialogs/add-missing-ent
 import { AddTournamentComponent } from './components/dialogs/add-tournament/add-tournament.component';
 import { AddReEntryComponent } from './components/dialogs/add-re-entry/add-re-entry.component';
 import { AddPauseComponent } from './components/dialogs/add-pause/add-pause.component';
+import { MakeDealComponent } from './components/dialogs/make-deal/make-deal.component';
 
 @NgModule({
     declarations: [
@@ -69,6 +70,7 @@ import { AddPauseComponent } from './components/dialogs/add-pause/add-pause.comp
         AddTournamentComponent,
         AddReEntryComponent,
         AddPauseComponent,
+        MakeDealComponent,
     ],
     imports: [
         SharedModule,

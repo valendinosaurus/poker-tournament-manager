@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
     selector: 'app-admin',
@@ -7,8 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminComponent implements OnInit {
 
+    private authService: AuthService = inject(AuthService);
+
     ngOnInit() {
         localStorage.setItem('route', `${window.location.href.split(window.location.origin).pop()}`);
+    }
+
+    logout(): void {
+        this.authService.logout();
     }
 
 }

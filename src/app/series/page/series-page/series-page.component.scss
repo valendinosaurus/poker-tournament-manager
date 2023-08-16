@@ -117,6 +117,18 @@ table {
     padding-right: 8px;
 }
 
+.t-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fa-handshake-o {
+    color: #555;
+    font-size: 14px;
+    margin-left: 12px;
+}
+
 td {
     padding-top: 4px;
     padding-bottom: 4px;

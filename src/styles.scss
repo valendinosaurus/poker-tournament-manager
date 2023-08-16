@@ -1,6 +1,9 @@
 @import "src/styles/colors";
 @import "node_modules/keen-slider/keen-slider.min.css";
 @import "node_modules/font-awesome/css/font-awesome.min.css";
+@import "src/styles/admin";
+@import "src/styles/icons";
+@import "src/styles/material";
 
 html,
 body {
@@ -126,103 +129,6 @@ form {
     overflow-y: auto;
 }
 
-mat-tab-group {
-    background: #eee;
-}
-
-mat-tab-body p,
-mat-tab-body h1,
-mat-tab-body h2,
-mat-tab-body h3 {
-    color: black;
-}
-
-mat-tab-body button {
-    background: #006dc7;
-    color: white;
-}
-
-.list {
-    display: flex;
-    flex-direction: column;
-}
-
-.list-item {
-    width: 100%;
-    padding: 12px;
-    box-sizing: border-box;
-    margin-bottom: 8px;
-    position: relative;
-}
-
-.list-item > .fa-trash {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-}
-
-.list-item > .fa-share {
-    position: absolute;
-    top: 12px;
-    right: 36px;
-}
-
-.list-item h4 .fa-plus-circle {
-    color: green;
-}
-
-.li-pair {
-    display: flex;
-    flex-direction: column;
-
-    h4 {
-        font-size: 14px;
-        margin-bottom: 8px;
-        width: fit-content;
-    }
-
-    h4 .fa {
-        margin-left: 4px;
-    }
-
-    span:last-child {
-        font-size: 20px;
-    }
-}
-
-.fa {
-    width: fit-content;
-    font-size: 24px;
-}
-
-.fa-trash {
-    color: red;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.7;
-    }
-}
-
-.fa-share {
-    color: #00437b;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.7;
-    }
-}
-
-.fa-chevron-circle-up,
-.fa-plus-circle {
-    color: #00437b;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.7;
-    }
-}
-
 
 .expandable {
     max-height: 0;
@@ -249,7 +155,6 @@ mat-tab-body button {
 
 
 .info-panel {
-
     h3 {
         width: 100%;
         text-align: center;
@@ -303,4 +208,19 @@ mat-tab-body button {
 .flex-center {
     display: flex;
     justify-content: center;
+}
+
+.mdc-dialog__container h2 {
+    font-size: 4vh;
+    border-bottom: solid 2px black;
+    margin-bottom: 40px;
+}
+
+.mdc-dialog__container button {
+    font-size: 2.6vh;
+}
+
+
+.mdc-list-item__primary-text {
+    font-size: 2.6vh !important;
 }

@@ -164,7 +164,7 @@ export class SeriesApiService {
         );
     }
 
-    removeTournament$(tournament: Tournament, series: Series): Observable<any> {
-        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${tournament.id}/tournament/${tournament.id}`);
+    removeTournament$(tournamentId: number, seriesId: number): Observable<any> {
+        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${seriesId}/tournament/${tournamentId}`);
     }
 }

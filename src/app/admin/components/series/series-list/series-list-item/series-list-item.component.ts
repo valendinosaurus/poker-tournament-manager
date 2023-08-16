@@ -7,11 +7,11 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-series-list-item',
-    templateUrl: './series-list-item.component.html',
-    styleUrls: ['./series-list-item.component.scss']
+    templateUrl: './series-list-item.component.html'
 })
 export class SeriesListItemComponent implements OnInit {
 
@@ -21,6 +21,7 @@ export class SeriesListItemComponent implements OnInit {
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
+    private router: Router = inject(Router);
 
     sub$: Observable<string>;
 
@@ -54,7 +55,14 @@ export class SeriesListItemComponent implements OnInit {
         ).subscribe();
     }
 
-    deleteTournamentFromSeries(tournamentId: number | undefined): void {
+    deleteTournamentFromSeries(tournamentId: number): void {
+        this.seriesApiService.removeTournament$(tournamentId, this.s.id).pipe(
+            take(1),
+            tap(() => this.reload.emit())
+        ).subscribe();
+    }
 
+    openSeries(): void {
+        this.router.navigate(['series', this.s.id, this.s.password]);
     }
 }

@@ -7,4 +7,5 @@ export interface CombinedFinish {
     addons: number;
     reEntries: number;
     points: number;
+    dealMade: boolean;
 }

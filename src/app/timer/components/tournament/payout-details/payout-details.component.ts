@@ -1,17 +1,15 @@
-import { AfterViewInit, Component, inject, Input, OnChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Player } from '../../../../shared/models/player.interface';
 import { RankingService } from '../../../../core/services/util/ranking.service';
-import { interval } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-payout-details',
     templateUrl: './payout-details.component.html',
     styleUrls: ['./payout-details.component.scss']
 })
-export class PayoutDetailsComponent implements OnChanges, AfterViewInit {
+export class PayoutDetailsComponent implements OnChanges {
 
     @Input() entries: Entry[];
     @Input() buyInAmount: number;
@@ -23,6 +21,7 @@ export class PayoutDetailsComponent implements OnChanges, AfterViewInit {
     @Input() payout: number;
     @Input() finishes: Finish[];
     @Input() players: Player[];
+    @Input() trigger: string | null;
 
     deduction: number = 0;
 
@@ -33,12 +32,36 @@ export class PayoutDetailsComponent implements OnChanges, AfterViewInit {
         percentage: string;
         price: number;
         image: string | undefined,
-        name: string | undefined
+        name: string | undefined,
+        dealMade: boolean
     }[];
 
     totalPricePool: number;
+    scrollDown = true;
+    wasDealMade = false;
 
-    ngOnChanges(): void {
+    ngOnChanges(changes: SimpleChanges): void {
+        const ranks = this.finishes.map(f => f.rank);
+        this.wasDealMade = ranks.length !== new Set(ranks).size;
+
+        if (this.wasDealMade) {
+            this.calculateAfterDeal();
+        } else {
+            this.calculateRegularList();
+        }
+
+        if (changes['trigger']?.currentValue === 'SCROLL') {
+            if (this.scrollDown) {
+                document.getElementById('bottomd')?.scrollIntoView({behavior: 'smooth'});
+            } else {
+                document.getElementById('topd')?.scrollIntoView({behavior: 'smooth'});
+            }
+
+            this.scrollDown = !this.scrollDown;
+        }
+    }
+
+    private calculateRegularList(): void {
         this.payouts = [];
 
         const payoutRaw = this.rankingService.getPayoutById(this.payout);
@@ -72,27 +95,54 @@ export class PayoutDetailsComponent implements OnChanges, AfterViewInit {
                 percentage: `${percentage}%`,
                 price: this.totalPricePool / 100 * percentage,
                 name: mappedFinishes.find(f => f.rank === index)?.n,
-                image: mappedFinishes.find(f => f.rank === index)?.i
+                image: mappedFinishes.find(f => f.rank === index)?.i,
+                dealMade: false
             });
 
             index++;
         });
     }
 
-    ngAfterViewInit(): void {
-        let scrollDown = false;
+    private calculateAfterDeal(): void {
+        this.payouts = [];
 
-        interval(3000).pipe(
-            tap(() => {
-                if (scrollDown) {
-                    document.getElementById('bottomd')?.scrollIntoView({behavior: 'smooth'});
-                } else {
-                    document.getElementById('topd')?.scrollIntoView({behavior: 'smooth'});
-                }
+        const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
+            this.entries,
+            this.buyInAmount,
+            this.rebuyAmount,
+            this.addonAmount,
+            this.initialPricePool,
+            this.percentage,
+            this.maxCap
+        );
 
-                scrollDown = !scrollDown;
-            })
-        ).subscribe();
+        this.totalPricePool = totalPricePool;
+        this.deduction = deduction;
+
+        const mappedFinishes: { n: string, i: string, rank: number, price: number }[] =
+            this.finishes.map(
+                f => ({
+                    rank: f.rank,
+                    i: this.players.find(p => p.id === f.playerId)?.image ?? '',
+                    n: this.players.find(p => p.id === f.playerId)?.name ?? '',
+                    price: f.price
+                })
+            );
+
+        const rankOfDeal = Math.min(...this.finishes.map(f => f.rank));
+
+        mappedFinishes.forEach((m) => {
+            this.payouts.push({
+                rank: m.rank,
+                percentage: `${(this.totalPricePool / m.price).toFixed(2)}%`,
+                price: m.price,
+                name: m.n,
+                image: m.i,
+                dealMade: m.rank === rankOfDeal
+            });
+        });
+
+        this.payouts.sort((a, b) => a.rank - b.rank);
     }
 
 }

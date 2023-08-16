@@ -99,6 +99,9 @@ export class SeriesPageComponent implements OnInit {
 
                         this.combined.push(combo);
 
+                        const wasDealMade = localFinished.length !== new Set(localFinished.map(e => e.rank)).size;
+                        const rankOfDeal = Math.min(...localFinished.map(e => e.rank));
+
                         const combFinishes: CombinedFinish[] = localFinished.map(
                             (finish: Finish) => ({
                                 image: localPlayers.filter(p => p.id === finish.playerId)[0]?.image,
@@ -108,7 +111,8 @@ export class SeriesPageComponent implements OnInit {
                                 rebuys: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'REBUY').length,
                                 addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length,
                                 reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
-                                points: 0
+                                points: 0,
+                                dealMade: wasDealMade && finish.rank === rankOfDeal
                             })
                         ).sort((a: CombinedFinish, b: CombinedFinish) => a.rank - b.rank);
 

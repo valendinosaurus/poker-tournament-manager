@@ -44,26 +44,6 @@
                 </div>
             </div>
 
-            <!--            <div class="series-content-block">-->
-            <!--                <div class="li-pair">-->
-            <!--                    <h4>-->
-            <!--                        Formula Rank-->
-            <!--                    </h4>-->
-            <!--                    <span>-->
-            <!--                        {{ formulaString }}-->
-            <!--                    </span>-->
-            <!--                </div>-->
-
-            <!--                <div class="li-pair">-->
-            <!--                    <h4>-->
-            <!--                        Final Table Formula-->
-            <!--                    </h4>-->
-            <!--                    <span>-->
-            <!--                        {{ series.ftFormula }}-->
-            <!--                    </span>-->
-            <!--                </div>-->
-            <!--            </div>-->
-
             <h2>
                 Current leaderboard
             </h2>
@@ -185,7 +165,13 @@
                                         <strong>{{ e.points }}</strong>
                                     </td>
                                     <td class="t-center">
-                                        {{ e.rank }}
+                                        <span class="t-flex">
+                                            {{ e.rank }}
+
+                                            <ng-container *ngIf="e.dealMade">
+                                                <i class="fa fa-handshake-o"></i>
+                                            </ng-container>
+                                        </span>
                                     </td>
                                     <td class="t-center">
                                         {{ e.reEntries }}

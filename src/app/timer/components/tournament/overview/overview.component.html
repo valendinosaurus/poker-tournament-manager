@@ -19,6 +19,7 @@
             (addMinute)="addMinute()"
             (nextLevel)="goToNextLevel()"
             (seatOpen)="seatOpen()"
+            (makeDeal)="makeDeal()"
         ></app-buttons>
     </div>
 
@@ -101,6 +102,7 @@
                             [players]="tournament.players"
                             [entries]="tournament.entries"
                             [finishes]="tournament.finishes"
+                            [trigger]="scrollTrigger$ | async"
                         ></app-player-details>
                     </div>
 

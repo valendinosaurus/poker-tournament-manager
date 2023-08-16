@@ -1,0 +1,20 @@
+mat-tab-group {
+    background: #eee;
+}
+
+mat-tab-body p,
+mat-tab-body h1,
+mat-tab-body h2,
+mat-tab-body h3 {
+    color: black;
+}
+
+mat-tab-body button {
+    background: #006dc7;
+    color: white;
+}
+
+.mat-mdc-tab-body-content {
+    overflow-x: hidden !important;
+    min-height: calc(100vh - 48px) !important;
+}

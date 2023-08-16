@@ -1,21 +1,19 @@
-import { AfterViewInit, Component, DestroyRef, inject, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Player } from '../../../../shared/models/player.interface';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
-import { interval } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-player-details',
     templateUrl: './player-details.component.html',
     styleUrls: ['./player-details.component.scss']
 })
-export class PlayerDetailsComponent implements OnChanges, AfterViewInit {
+export class PlayerDetailsComponent implements OnChanges {
 
     @Input() players: Player[];
     @Input() entries: Entry[];
     @Input() finishes: Finish[];
+    @Input() trigger: string | null;
 
     combination: {
         image: string;
@@ -26,9 +24,9 @@ export class PlayerDetailsComponent implements OnChanges, AfterViewInit {
         isFinished: boolean;
     }[];
 
-    private destroyRef: DestroyRef = inject(DestroyRef);
+    scrollDown = true;
 
-    ngOnChanges(): void {
+    ngOnChanges(changes: SimpleChanges): void {
         if (this.players && this.entries) {
             this.combination = this.players.map(
                 (player: Player) => ({
@@ -41,23 +39,16 @@ export class PlayerDetailsComponent implements OnChanges, AfterViewInit {
                 })
             );
         }
-    }
 
-    ngAfterViewInit(): void {
-        let scrollDown = true;
-
-        interval(5000).pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap(() => {
-                if (scrollDown) {
-                    document.getElementById('bottomp')?.scrollIntoView({behavior: 'smooth'});
-                } else {
-                    document.getElementById('topp')?.scrollIntoView({behavior: 'smooth'});
-                }
-
-                scrollDown = !scrollDown;
-            })
-        ).subscribe();
+        // if (changes['trigger']?.currentValue === 'SCROLL') {
+        //     if (this.scrollDown) {
+        //         document.getElementById('bottomp')?.scrollIntoView({behavior: 'smooth'});
+        //     } else {
+        //         document.getElementById('topp')?.scrollIntoView({behavior: 'smooth'});
+        //     }
+        //
+        //     this.scrollDown = !this.scrollDown;
+        // }
     }
 
 }

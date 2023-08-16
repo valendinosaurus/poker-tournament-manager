@@ -38,6 +38,23 @@ h2.no-mb {
     border-bottom: solid #666 1px;
 }
 
+h4 {
+    display: flex;
+    align-items: center;
+
+    span {
+        display: flex;
+        align-items: center;
+        margin-left: 16px;
+        font-size: 1.4vh;
+
+        * {
+            font-size: 1.5vh;
+            margin-right: 8px;
+        }
+    }
+}
+
 th, td {
     font-size: 4vh;
     text-align: center;
@@ -104,4 +121,15 @@ div.payout {
     height: 25vh;
     display: block;
     padding-right: 20px;
+}
+
+.fa-handshake-o {
+    color: #555;
+    font-size: 1.8vh;
+    margin-left: 12px;
+}
+
+td.td-flex {
+    display: flex;
+    align-items: center;
 }

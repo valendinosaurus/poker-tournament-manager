@@ -1,0 +1,33 @@
+
+.fa {
+    width: fit-content;
+    font-size: 24px;
+}
+
+.fa-trash {
+    color: red;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+.fa-share {
+    color: #00437b;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+.fa-chevron-circle-up,
+.fa-plus-circle {
+    color: #00437b;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}

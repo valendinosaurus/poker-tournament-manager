@@ -47,17 +47,26 @@
 <div class="payout">
     <h4>
         Payout structrue
+        <ng-container *ngIf="wasDealMade">
+            <span><i class="fa fa-exclamation-triangle"></i> DEAL WAS MADE</span>
+        </ng-container>
     </h4>
 
     <div class="payouts">
         <div id="topd"></div>
         <table cellspacing="0" cellpadding="0">
+
+
             <ng-container *ngFor="let e of payouts">
                 <tr [class.opaque]="!e.name">
-                    <td>
+                    <td class="td-flex">
                         <div class="rank">
                             {{ e.rank }}
                         </div>
+
+                        <ng-container *ngIf="e.dealMade">
+                            <i class="fa fa-handshake-o"></i>
+                        </ng-container>
                     </td>
                     <td class="percentage">
                         {{ e.percentage }}

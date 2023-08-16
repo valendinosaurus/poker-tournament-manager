@@ -1,30 +1,26 @@
-import { AfterViewInit, Component, DestroyRef, inject, Input, OnChanges } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Player } from '../../../../shared/models/player.interface';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Formula, RankingService } from '../../../../core/services/util/ranking.service';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
-import { interval } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-ranking',
     templateUrl: './ranking.component.html',
     styleUrls: ['./ranking.component.scss']
 })
-export class RankingComponent implements OnChanges, AfterViewInit {
+export class RankingComponent implements OnChanges {
 
     @Input() players: Player[];
     @Input() entries: Entry[];
     @Input() seriesMetadata: SeriesMetadata | null;
     @Input() finishes: Finish[];
     @Input() tournament: Tournament;
+    @Input() trigger: string | null;
 
     private rankingService: RankingService = inject(RankingService);
-
-    private destroyRef: DestroyRef = inject(DestroyRef);
 
     formula: Formula;
 
@@ -48,7 +44,9 @@ export class RankingComponent implements OnChanges, AfterViewInit {
         reEntries: number;
     }[];
 
-    ngOnChanges(): void {
+    scrollDown = true;
+
+    ngOnChanges(changes: SimpleChanges): void {
         if (this.players && this.entries && this.finishes) {
             this.combFinishes = this.finishes.map(
                 (finish: Finish) => ({
@@ -92,23 +90,16 @@ export class RankingComponent implements OnChanges, AfterViewInit {
         if (formula) {
             this.formula = this.rankingService.getFormulaById(formula);
         }
-    }
 
-    ngAfterViewInit(): void {
-        let scrollDown = true;
+        if (changes['trigger']?.currentValue === 'SCROLL') {
+            if (this.scrollDown) {
+                document.getElementById('bottomr')?.scrollIntoView({behavior: 'smooth'});
+            } else {
+                document.getElementById('topr')?.scrollIntoView({behavior: 'smooth'});
+            }
 
-        interval(5000).pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap(() => {
-                if (scrollDown) {
-                    document.getElementById('bottomr')?.scrollIntoView({behavior: 'smooth'});
-                } else {
-                    document.getElementById('topr')?.scrollIntoView({behavior: 'smooth'});
-                }
-
-                scrollDown = !scrollDown;
-            })
-        ).subscribe();
+            this.scrollDown = !this.scrollDown;
+        }
     }
 
     calcPoints(combFinishe: {

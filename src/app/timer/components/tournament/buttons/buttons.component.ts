@@ -26,6 +26,7 @@ export class ButtonsComponent {
     @Output() addRebuy = new EventEmitter<void>();
     @Output() addAddon = new EventEmitter<void>();
     @Output() seatOpen = new EventEmitter<void>();
+    @Output() makeDeal = new EventEmitter<void>();
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
     @Output() addMinute = new EventEmitter<void>();

@@ -1,0 +1,79 @@
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item > .fa-trash {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.list-item > .fa-share {
+    position: absolute;
+    top: 12px;
+    right: 36px;
+}
+
+.list-item h4 .fa-plus-circle {
+    color: green;
+}
+
+.li-pair {
+    display: flex;
+    flex-direction: column;
+
+    h4 {
+        font-size: 14px;
+        margin-bottom: 8px;
+        width: fit-content;
+    }
+
+    h4 .fa {
+        margin-left: 4px;
+    }
+
+    span:last-child {
+        font-size: 20px;
+    }
+}
+
+.list-item {
+    background: azure;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.list-item > div {
+    margin-bottom: 24px;
+}
+
+.list-item > div,
+.list-item > span > div {
+    display: flex;
+
+    .li-pair {
+        flex: 0 0 33%;
+        width: 33%;
+    }
+}
+
+h4 {
+    display: flex;
+    align-items: center;
+}
+
+.deletable .fa-trash {
+    font-size: 18px;
+    margin-left: 12px;
+    display: none;
+}
+
+.deletable:hover .fa-trash {
+    display: block;
+}

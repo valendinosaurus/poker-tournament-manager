@@ -1,47 +1,37 @@
-import { AfterViewInit, Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { BlindLevel } from '../../../../shared/models/blind-level.interface';
-import { interval } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-blind-level-overview',
     templateUrl: './blind-level-overview.component.html',
     styleUrls: ['./blind-level-overview.component.scss']
 })
-export class BlindLevelOverviewComponent implements OnChanges, AfterViewInit {
+export class BlindLevelOverviewComponent implements OnChanges {
 
     @Input() levels: BlindLevel[];
     @Input() currentLevelIndex: number;
     @Input() isSimpleTournament: boolean;
+    @Input() trigger: string | null;
 
     @Output() addBlind = new EventEmitter<void>();
 
-    private destroyRef: DestroyRef = inject(DestroyRef);
-
     levelsToShow: BlindLevel[];
+    scrollDown = true;
 
-    ngOnChanges(): void {
+    ngOnChanges(changes: SimpleChanges): void {
         if (this.levels) {
             this.levelsToShow = this.levels;
         }
-    }
 
-    ngAfterViewInit(): void {
-        let scrollDown = true;
+        if (changes['trigger']?.currentValue === 'SCROLL') {
+            if (this.scrollDown) {
+                document.getElementById('bottom')?.scrollIntoView({behavior: 'smooth'});
+            } else {
+                document.getElementById('top')?.scrollIntoView({behavior: 'smooth'});
+            }
 
-        interval(5000).pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap(() => {
-                if (scrollDown) {
-                    document.getElementById('bottom')?.scrollIntoView({behavior: 'smooth'});
-                } else {
-                    document.getElementById('top')?.scrollIntoView({behavior: 'smooth'});
-                }
-
-                scrollDown = !scrollDown;
-            })
-        ).subscribe();
+            this.scrollDown = !this.scrollDown;
+        }
     }
 
 }
