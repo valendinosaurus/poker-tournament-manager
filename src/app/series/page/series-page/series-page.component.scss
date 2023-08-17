@@ -1,5 +1,5 @@
 .series-page {
-    background: #fdf9df;
+    background: white;
     padding: 32px;
 }
 
@@ -35,6 +35,18 @@ h1 {
         flex: 0 0 33%;
         margin-bottom: 40px;
 
+        h4 {
+            display: block;
+            text-align: center;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        span {
+            text-align: center;
+            font-size: 32px;
+        }
+
         @media (max-width: 600px) {
             width: 100%;
             flex: 0 0 100%;
@@ -48,38 +60,6 @@ h1 {
     width: 100%;
 }
 
-.tournament {
-    background: white;
-    margin-bottom: 12px;
-}
-
-.tournament table {
-    width: 100%;
-    min-width: 600px;
-}
-
-.tournament h5 {
-    margin-bottom: 12px;
-}
-
-.tournament p {
-    margin-bottom: 12px;
-}
-
-.tournament .header {
-    background: aliceblue;
-    padding: 12px;
-    margin-bottom: 12px;
-
-    & > div {
-        display: flex;
-
-        & > span {
-            margin-right: 20px;
-        }
-    }
-}
-
 table * {
     text-align: left;
 }
@@ -91,12 +71,52 @@ h2 {
 
 .leaderboard {
     background: white;
-    padding: 12px;
 }
 
 .leaderboard table {
     width: 100%;
     min-width: 380px;
+}
+
+.tournament {
+    margin-bottom: 64px;
+    padding-bottom: 20px;
+
+    * {
+        background: aliceblue;
+    }
+}
+
+.tournament table {
+    width: 100%;
+    min-width: 600px;
+}
+
+.tournament h5 {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.tournament span > p {
+    font-size: 24px;
+    text-align: center;
+}
+
+.tournament p {
+    margin-bottom: 12px;
+}
+
+.tournament .header {
+    padding: 12px;
+    padding-bottom: 20px;
+
+    & > div {
+        display: flex;
+
+        & > span {
+            margin-right: 32px;
+        }
+    }
 }
 
 .flextd {
