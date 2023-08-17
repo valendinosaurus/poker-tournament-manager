@@ -284,9 +284,11 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
                         this.currentLevelTimeLeft
                     );
 
-                    setTimeout(() => {
-                        this.countdown.begin();
-                    }, 20);
+                    if (this.running) {
+                        setTimeout(() => {
+                            this.countdown.begin();
+                        }, 20);
+                    }
 
                 }, 1000);
             }
@@ -348,6 +350,17 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     }
 
     goToNextLevel(): void {
+        this.handleEvent({
+            status: CountdownStatus.done,
+            action: 'done',
+            left: 0,
+            text: ''
+        });
+    }
+
+    goToPreviousLevel(): void {
+        this.currentLevelIndex -= 2;
+
         this.handleEvent({
             status: CountdownStatus.done,
             action: 'done',

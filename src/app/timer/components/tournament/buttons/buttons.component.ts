@@ -31,6 +31,7 @@ export class ButtonsComponent {
     @Output() pause = new EventEmitter<void>();
     @Output() addMinute = new EventEmitter<void>();
     @Output() nextLevel = new EventEmitter<void>();
+    @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
 
 }
