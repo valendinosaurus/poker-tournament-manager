@@ -166,7 +166,7 @@
                                     </td>
                                     <td class="t-center">
                                         <span class="t-flex">
-                                            {{ e.rank }}
+                                            {{ e.rank | number:'1.0-1' }}
 
                                             <ng-container *ngIf="e.dealMade">
                                                 <i class="fa fa-handshake-o"></i>

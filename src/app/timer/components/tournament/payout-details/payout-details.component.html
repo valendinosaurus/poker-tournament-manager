@@ -59,14 +59,16 @@
 
             <ng-container *ngFor="let e of payouts">
                 <tr [class.opaque]="!e.name">
-                    <td class="td-flex">
-                        <div class="rank">
-                            {{ e.rank }}
-                        </div>
+                    <td>
+                        <span class="td-flex">
+                            <div class="rank">
+                                {{ e.rank | number:'1.0-1' }}
+                            </div>
 
-                        <ng-container *ngIf="e.dealMade">
-                            <i class="fa fa-handshake-o"></i>
-                        </ng-container>
+                            <ng-container *ngIf="e.dealMade">
+                                <i class="fa fa-handshake-o"></i>
+                            </ng-container>
+                        </span>
                     </td>
                     <td class="percentage">
                         {{ e.percentage }}

@@ -1,0 +1,24 @@
+h3 {
+    color: black;
+}
+
+.red {
+    color: red;
+}
+
+.flexed {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+
+    span {
+        font-size: 2vh;
+    }
+
+    div {
+        font-size: 3vh;
+        margin-left: 12px;
+        margin-right: 36px;
+        font-weight: bold;
+    }
+}

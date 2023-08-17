@@ -112,7 +112,7 @@ export class SeriesPageComponent implements OnInit {
                                 addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length,
                                 reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
                                 points: 0,
-                                dealMade: wasDealMade && finish.rank === rankOfDeal
+                                dealMade: wasDealMade && +finish.rank === rankOfDeal
                             })
                         ).sort((a: CombinedFinish, b: CombinedFinish) => a.rank - b.rank);
 

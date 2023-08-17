@@ -10,17 +10,22 @@
 .side-menu {
     position: relative;
 
-    & > .fa {
+    & > .slider-button {
         position: fixed;
-        right: 0;
-        bottom: 0;
-        transform: translate(-50%, -50%);
-        font-size: 64px;
-        color: green;
+        right: 12px;
+        bottom: 12px;
         opacity: 0;
+        width: 64px;
+        height: 64px;
         animation: fadeIn 500ms ease-in;
         animation-delay: 500ms;
         animation-fill-mode: forwards;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -50,10 +55,15 @@
         width: 33%;
         flex: 0 0 33%;
 
-        & > .fa {
+        & > .slider-button {
             right: 33%;
         }
     }
+}
+
+.fa {
+    font-size: 40px;
+    color: green;
 }
 
 @keyframes fadeIn {
