@@ -1,14 +1,15 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
     selector: 'app-buttons',
     templateUrl: './buttons.component.html',
     styleUrls: ['./buttons.component.scss']
 })
-export class ButtonsComponent {
+export class ButtonsComponent implements OnInit {
 
     @Input() running: boolean;
     @Input() tournament: Tournament;
@@ -16,8 +17,12 @@ export class ButtonsComponent {
     @Input() isRebuyPhaseFinished: boolean;
 
     isOverlayOpen = false;
+    isFullscreen = false;
+    elem: HTMLElement;
 
     private authService: AuthService = inject(AuthService);
+    private document: Document = inject(DOCUMENT);
+
     isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
 
     @Output() createPlayer = new EventEmitter<void>();
@@ -33,5 +38,49 @@ export class ButtonsComponent {
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
+
+    @HostListener('document:fullscreenchange', ['$event'])
+    @HostListener('document:webkitfullscreenchange', ['$event'])
+    @HostListener('document:mozfullscreenchange', ['$event'])
+    @HostListener('document:MSFullscreenChange', ['$event'])
+    fullscreenmodes(event: Event) {
+        this.chkScreenMode();
+    }
+
+    ngOnInit(): void {
+        this.elem = this.document.documentElement;
+    }
+
+    chkScreenMode() {
+        if (this.document.fullscreenElement) {
+            this.isFullscreen = true;
+        } else {
+            this.isFullscreen = false;
+        }
+    }
+
+    fullscreen(): void {
+            if (this.elem.requestFullscreen) {
+                this.elem.requestFullscreen();
+            } else if ((this.elem as any).mozRequestFullScreen) {
+                (this.elem as any).mozRequestFullScreen();
+            } else if ((this.elem as any).webkitRequestFullscreen) {
+                (this.elem as any).webkitRequestFullscreen();
+            } else if ((this.elem as any).msRequestFullscreen) {
+                (this.elem as any).msRequestFullscreen();
+            }
+    }
+
+    cancelFullscreen(): void {
+        if (this.document.exitFullscreen) {
+            this.document.exitFullscreen();
+        } else if ((this.document as any).mozCancelFullScreen) {
+            (this.document as any).mozCancelFullScreen();
+        } else if ((this.document as any).webkitExitFullscreen) {
+            (this.document as any).webkitExitFullscreen();
+        } else if ((this.document as any).msExitFullscreen) {
+            (this.document as any).msExitFullscreen();
+        }
+    }
 
 }

@@ -130,6 +130,26 @@
             </span>
         </button>
 
+        <button
+            *ngIf="!isFullscreen"
+            (click)="fullscreen()"
+        >
+            <i class="fa fa-window-maximize"></i>
+            <span>
+                FULLSCREEN
+            </span>
+        </button>
+
+        <button
+            *ngIf="isFullscreen"
+            (click)="cancelFullscreen()"
+        >
+            <i class="fa fa fa-times-rectangle"></i>
+            <span>
+                NORMAL SCREEN
+            </span>
+        </button>
+
         <button [routerLink]="['/admin']" *ngIf="isAuthenticated$ | async">
             <i class="fa fa-gears"></i>
             <span>

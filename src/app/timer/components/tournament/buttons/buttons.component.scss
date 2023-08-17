@@ -48,12 +48,17 @@ button {
 
 .fa-database,
 .fa-money,
-.fa-play {
+.fa-play,
+.fa-chevron-circle-right,
+.fa-chevron-circle-left {
     color: green;
 }
 
 .fa-clock-o,
-.fa-user {
+.fa-user,
+.fa-window-maximize,
+.fa-times-rectangle,
+.fa-gears {
     color: black;
 }
 
@@ -66,8 +71,4 @@ button {
     svg {
         fill: red;
     }
-}
-
-.fa-chevron-circle-right {
-    color: green;
 }
