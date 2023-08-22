@@ -1,3 +1,11 @@
+<h2>
+    Add
+    <ng-container *ngIf="data.isReentry">
+        Re-
+    </ng-container>
+    Entry
+</h2>
+
 <form
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
@@ -13,6 +21,9 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        RE-ENTER
+        <ng-container *ngIf="data.isReentry">
+            RE-
+        </ng-container>
+        ENTER
     </button>
 </form>

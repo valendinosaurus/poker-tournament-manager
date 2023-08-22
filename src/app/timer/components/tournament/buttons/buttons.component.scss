@@ -2,29 +2,33 @@
     display: contents;
 }
 
+div.main-buttons {
+    display: flex;
+}
+
 button.main {
-    width: 4vh;
-    height: 4vh;
-    border-radius: 4vh;
+    width: 6vh;
+    height: 6vh;
+    border-radius: 6vh;
     display: flex;
     justify-content: center;
     align-items: center;
 
     .fa {
-        font-size: 2.5vh;
+        font-size: 3vh;
     }
 }
 
 button {
     margin: 4px;
-    font-size: 1.5vh;
+    font-size: 2vh;
 }
 
 .overlay {
     background: #ddd;
     padding: 12px;
     display: flex;
-    width: 13vw;
+    width: 17vw;
     flex-direction: column;
 
     button {
@@ -34,14 +38,14 @@ button {
         display: flex;
         align-items: center;
         color: #666;
-        font-size: 1.5vh;
+        font-size: 2.5vh;
         padding-top: 0.8vh;
         padding-bottom: 0.8vh;
 
         .fa {
-            width: 2vw;
+            width: 3vw;
             margin-right: 0.4vw;
-            font-size: 2vh !important;
+            font-size: 3vh !important;
         }
     }
 }
@@ -71,4 +75,9 @@ button {
     svg {
         fill: red;
     }
+}
+
+.fa-toggle-on,
+.fa-toggle-off {
+    color: #00437b;
 }

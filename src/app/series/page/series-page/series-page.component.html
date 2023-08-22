@@ -44,6 +44,18 @@
                 </div>
             </div>
 
+
+            <div class="series-content-block">
+                <div class="li-wide">
+                    <h4>
+                        Formula
+                    </h4>
+                    <span>
+                        {{ formulaString }}
+                    </span>
+                </div>
+            </div>
+
             <h2>
                 Current leaderboard
             </h2>
@@ -55,6 +67,7 @@
                             <th>Name</th>
                             <th class="t-right">Points</th>
                             <th class="t-center">Played</th>
+                            <th class="t-center">Rebuys / Addons</th>
                             <th class="t-center">avg. Rank</th>
                             <th class="t-right">Price</th>
                         </tr>
@@ -73,6 +86,9 @@
                                 </td>
                                 <td class="t-center">
                                     {{ e.tournaments }}
+                                </td>
+                                <td class="t-center">
+                                    {{ e.rebuysAddons }}
                                 </td>
                                 <td class="t-center">
                                     {{ e.rank / e.tournaments | number:'1.1-1' }}
@@ -107,32 +123,32 @@
                         <ng-container *ngIf="combinedRankings[i]">
                             <div>
                                 <span>
-                                    <h5>
-                                        Effective price pool
-                                    </h5>
                                     <p>
                                         <strong>
                                             $ {{ combinedRankings[i].pricePool - combinedRankings[i].contribution }}
                                         </strong>
                                     </p>
+                                    <h5>
+                                        Effective price pool
+                                    </h5>
                                 </span>
 
                                 <span>
-                                    <h5>
-                                        Total price pool
-                                    </h5>
                                     <p>
                                         $ {{ combinedRankings[i].pricePool }}
                                     </p>
+                                    <h5>
+                                        Total price pool
+                                    </h5>
                                 </span>
 
                                 <span>
-                                    <h5>
-                                        Goes to final pot
-                                    </h5>
                                     <p>
                                         $ {{ combinedRankings[i].contribution }}
                                     </p>
+                                    <h5>
+                                        Goes to final pot
+                                    </h5>
                                 </span>
                             </div>
                         </ng-container>
@@ -142,11 +158,9 @@
                         <table *ngIf="combinedRankings[i]">
                             <tr>
                                 <th>Name</th>
-                                <th class="t-right">
-                                    Points
+                                <th class="t-center">
+                                    Points (Rank)
                                 </th>
-                                <th class="t-center">Rank</th>
-                                <th class="t-center">Re-Entries</th>
                                 <th class="t-center">Rebuys</th>
                                 <th class="t-center">Addons</th>
                                 <th class="t-right">Price</th>
@@ -161,20 +175,17 @@
                                             {{ e.name }}
                                         </span>
                                     </td>
-                                    <td class="t-right">
-                                        <strong>{{ e.points }}</strong>
-                                    </td>
                                     <td class="t-center">
                                         <span class="t-flex">
-                                            {{ e.rank | number:'1.0-1' }}
-
+                                            <strong>
+                                                {{ e.points }}
+                                            </strong>
+                                            &nbsp;
+                                            ({{ e.rank | number:'1.0-1' }})
                                             <ng-container *ngIf="e.dealMade">
                                                 <i class="fa fa-handshake-o"></i>
                                             </ng-container>
                                         </span>
-                                    </td>
-                                    <td class="t-center">
-                                        {{ e.reEntries }}
                                     </td>
                                     <td class="t-center">
                                         {{ e.rebuys }}

@@ -25,7 +25,7 @@ export class AddReEntryComponent implements OnInit {
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddReEntryComponent> = inject(MatDialogRef<AddReEntryComponent>);
-    data: { tournament: Tournament } = inject(MAT_DIALOG_DATA);
+    data: { tournament: Tournament, isReentry: boolean } = inject(MAT_DIALOG_DATA);
 
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -36,11 +36,16 @@ export class AddReEntryComponent implements OnInit {
     allPlayers: { label: string, value: number }[];
 
     ngOnInit(): void {
+        console.log('isss', this.data.isReentry);
         this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
             switchMap((sub: string) => this.playerApiService.getAll$(sub).pipe(
                 takeUntilDestroyed(this.destroyRef),
                 tap((players: Player[]) => {
+                    console.log('tap', players);
+                    console.log(this.data.tournament.players);
+                    console.log(this.data.tournament.entries);
+
                     this.allPlayers = players
                         .filter(
                             player => this.data.tournament.players.map(p => p.id).includes(player.id)
@@ -48,15 +53,31 @@ export class AddReEntryComponent implements OnInit {
                         .filter(player => {
                             const finishedIds = this.data.tournament.finishes.map(f => f.playerId);
 
-                            return finishedIds.includes(player.id);
+                            if (this.data.isReentry) {
+                                return finishedIds.includes(player.id);
+                            } else {
+                                return !finishedIds.includes(player.id);
+                            }
                         })
                         .filter(player => {
-                            const allowed = this.data.tournament.noOfReEntries;
-                            const rebuysOfPlayer = this.data.tournament.entries.filter(
-                                (entry: Entry) => entry.playerId === player.id && entry.type === 'RE-ENTRY'
-                            ).length;
+                            console.log('is', this.data.isReentry);
+                            if (this.data.isReentry) {
+                                const allowed = this.data.tournament.noOfReEntries;
+                                const rebuysOfPlayer = this.data.tournament.entries.filter(
+                                    (entry: Entry) => entry.playerId === player.id && entry.type === 'RE-ENTRY'
+                                ).length;
 
-                            return rebuysOfPlayer < allowed;
+                                return rebuysOfPlayer < allowed;
+                            }
+
+                            const enteredPlayers = this.data.tournament.entries.filter(
+                                (entry: Entry) => entry.playerId === player.id && entry.type === 'ENTRY'
+                            ).map(e => e.playerId);
+
+                            console.log('entered', enteredPlayers);
+
+                            return !enteredPlayers.includes(player.id);
+
                         })
                         .map(
                             player => ({
@@ -64,6 +85,8 @@ export class AddReEntryComponent implements OnInit {
                                 value: player.id
                             })
                         );
+
+                    console.log(this.allPlayers);
 
                     this.initModel();
                     this.initFields();
@@ -91,7 +114,7 @@ export class AddReEntryComponent implements OnInit {
                 id: undefined,
                 playerId: model.playerId,
                 tournamentId: model.tournamentId,
-                type: 'RE-ENTRY'
+                type: this.data.isReentry ? 'RE-ENTRY' : 'ENTRY'
             }).pipe(
                 take(1),
                 tap((result: any) => {

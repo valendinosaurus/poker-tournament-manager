@@ -112,9 +112,9 @@ export class SeriesPageComponent implements OnInit {
                                 addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length,
                                 reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
                                 points: 0,
-                                dealMade: wasDealMade && +finish.rank === rankOfDeal
-                            })
-                        ).sort((a: CombinedFinish, b: CombinedFinish) => a.rank - b.rank);
+                                dealMade: wasDealMade && +finish.rank === rankOfDeal,
+                            } as CombinedFinish)
+                        );
 
                         let formula = undefined;
 
@@ -136,8 +136,8 @@ export class SeriesPageComponent implements OnInit {
                         this.combinedRankings.push({
                             combFinishes: combFinishes.map((c, i) => ({
                                 ...c,
-                                points: this.calcPoints(c, localTournament, this.formula)
-                            })),
+                                points: this.calcPoints(c, localTournament, this.formula),
+                            })).sort((a: CombinedFinish, b: CombinedFinish) => a.rank - b.rank || b.points - a.points),
                             tournament: localTournament,
                             seriesMetadata,
                             pricePool: pricePool,
@@ -172,7 +172,8 @@ export class SeriesPageComponent implements OnInit {
                         price: +f.price + +element.price,
                         image: f.image,
                         points: +f.points + +element.points,
-                        tournaments: allPlayers.filter(e => e.name === f.name).length
+                        tournaments: allPlayers.filter(e => e.name === f.name).length,
+                        rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons
                     };
 
                 } else {
@@ -182,14 +183,15 @@ export class SeriesPageComponent implements OnInit {
                         image: f.image,
                         price: f.price,
                         rank: f.rank,
-                        tournaments: allPlayers.filter(e => e.name === f.name).length
+                        tournaments: allPlayers.filter(e => e.name === f.name).length,
+                        rebuysAddons: +f.rebuys + +f.addons
                     });
                 }
             })
         );
 
         this.overallRanking = this.overallRanking.sort(
-            (a: OverallRanking, b: OverallRanking) => b.points - a.points
+            (a: OverallRanking, b: OverallRanking) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
         );
 
         this.guaranteed = this.combinedRankings.map(

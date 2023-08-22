@@ -30,6 +30,17 @@ h1 {
     display: flex;
     flex-wrap: wrap;
 
+    & > div.li-wide {
+        width: 100%;
+        flex: 0 0 100%;
+
+        * {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
     & > div.li-pair {
         width: 33%;
         flex: 0 0 33%;
@@ -207,4 +218,18 @@ tr.finalist td {
     .series-page {
         padding: 10px;
     }
+
+    table tr td:first-child {
+        width: 84px;
+    }
+}
+
+.tournament .header div span p {
+    margin-top: 32px;
+    margin-bottom: 8px;
+}
+
+.tournament .header div span h5 {
+    margin-top: 0;
+    margin-bottom: 24px;
 }

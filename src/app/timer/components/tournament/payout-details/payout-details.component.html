@@ -17,7 +17,7 @@
             total price pool
         </span>
         <span class="deduction">
-            {{ deduction + totalPricePool  | number:'':'de-CH' }} $
+            {{ +deduction + +totalPricePool  | number:'':'de-CH' }} $
         </span>
     </h2>
     <h2

@@ -4,5 +4,6 @@ export interface OverallRanking {
     rank: number;
     price: number;
     points: number;
+    rebuysAddons: number;
     tournaments: number;
 }

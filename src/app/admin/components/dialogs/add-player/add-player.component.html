@@ -3,9 +3,7 @@
 
     <form
         [formGroup]="form"
-        (ngSubmit)="onSubmitMulti(modelMulti)"
     >
-
         <formly-form
             [form]="form"
             [fields]="fields"
@@ -15,9 +13,18 @@
 
         <button
             type="submit"
+            (click)="onSubmitMulti(modelMulti, false)"
             [disabled]="!form.valid"
         >
-            CREATE
+            ADD
+        </button>
+
+        <button
+            type="submit"
+            (click)="onSubmitMulti(modelMulti, true)"
+            [disabled]="!form.valid"
+        >
+            ADD WITH ENTRY
         </button>
     </form>
 </ng-container>
@@ -27,7 +34,6 @@
 
     <form
         [formGroup]="form"
-        (ngSubmit)="onSubmit(model)"
     >
 
         <formly-form
@@ -40,8 +46,17 @@
         <button
             type="submit"
             [disabled]="!form.valid"
+            (click)="onSubmit(model, false)"
         >
-            CREATE
+            ADD
+        </button>
+
+        <button
+            type="submit"
+            [disabled]="!form.valid"
+            (click)="onSubmit(model, true)"
+        >
+            ADD WITH ENTRY
         </button>
     </form>
 </ng-template>

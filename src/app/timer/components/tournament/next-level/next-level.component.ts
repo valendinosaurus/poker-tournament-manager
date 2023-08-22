@@ -13,8 +13,8 @@ export class NextLevelComponent implements OnChanges {
 
     ngOnChanges(): void {
         if (!this.level?.isPause) {
-            this.text = `${(this.level as BlindLevel).sb} / ${
-                (this.level as BlindLevel).bb
+            this.text = `${Math.round((this.level as BlindLevel).sb)} / ${
+                Math.round((this.level as BlindLevel).bb)
             }`;
         } else {
             this.text = 'PAUSE';

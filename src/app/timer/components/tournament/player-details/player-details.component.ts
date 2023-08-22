@@ -24,8 +24,6 @@ export class PlayerDetailsComponent implements OnChanges {
         isFinished: boolean;
     }[];
 
-    scrollDown = true;
-
     ngOnChanges(changes: SimpleChanges): void {
         if (this.players && this.entries) {
             this.combination = this.players.map(
@@ -34,21 +32,11 @@ export class PlayerDetailsComponent implements OnChanges {
                     name: player.name,
                     rebuys: this.entries.filter(e => e.playerId === player.id && e.type === 'REBUY').length,
                     addons: this.entries.filter(e => e.playerId === player.id && e.type === 'ADDON').length,
-                    reEntries: this.entries.filter(e => e.playerId === player.id && e.type === 'RE-ENTRY').length,
+                    reEntries: this.entries.filter(e => e.playerId === player.id && (e.type === 'ENTRY' || e.type === 'RE-ENTRY')).length,
                     isFinished: this.finishes.map(f => f.playerId).includes(player.id)
                 })
             );
         }
-
-        // if (changes['trigger']?.currentValue === 'SCROLL') {
-        //     if (this.scrollDown) {
-        //         document.getElementById('bottomp')?.scrollIntoView({behavior: 'smooth'});
-        //     } else {
-        //         document.getElementById('topp')?.scrollIntoView({behavior: 'smooth'});
-        //     }
-        //
-        //     this.scrollDown = !this.scrollDown;
-        // }
     }
 
 }

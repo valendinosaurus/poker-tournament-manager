@@ -20,9 +20,11 @@
                 [class.bold]="i === currentLevelIndex"
                 [class.opaque]="i < currentLevelIndex"
             >
-                <div class="position">
+                <div class="position" *ngIf="!level.isPause">
                     <div>
-                        {{ i + 1 }}
+                        <span>
+                            {{ level.id }}
+                        </span>
                     </div>
                 </div>
 

@@ -41,7 +41,8 @@ export class MakeDealComponent implements OnInit {
     ngOnInit(): void {
         const pricePool = this.getPricePool(this.data.tournament);
         const contribution = pricePool * (this.data.metadata?.percentage ?? 0) / 100;
-        const effectivePricePool = pricePool - contribution;
+        const realContribution = contribution > (this.data.metadata?.maxAmountPerTournament ?? 0) ? (this.data.metadata?.maxAmountPerTournament ?? 0) : contribution;
+        const effectivePricePool = pricePool - realContribution;
 
         const sumPayed = this.data.tournament.finishes.map(
             f => f.price
@@ -61,7 +62,7 @@ export class MakeDealComponent implements OnInit {
         this.rankAfterDeal = remainingPlaces.reduce((acc, curr) => acc + curr, 0) / remainingPlaces.length;
 
         console.log('pricepool', pricePool);
-        console.log('contr', contribution);
+        console.log('contr', realContribution);
         console.log('effective pp', effectivePricePool);
         console.log('payed', sumPayed);
         console.log('to distribute', this.toDistribute);

@@ -43,8 +43,6 @@ export class PayoutDetailsComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         const ranks = this.finishes.map(f => f.rank);
         this.wasDealMade = ranks.length !== new Set(ranks).size;
-        console.log(ranks.length);
-        console.log(new Set(ranks).size);
 
         if (this.wasDealMade) {
             this.calculateAfterDeal();
@@ -91,6 +89,8 @@ export class PayoutDetailsComponent implements OnChanges {
             })
         );
 
+        console.log(payoutRaw);
+
         payoutRaw.forEach((percentage: number) => {
             this.payouts.push({
                 rank: index,
@@ -135,11 +135,12 @@ export class PayoutDetailsComponent implements OnChanges {
 
         mappedFinishes.forEach((m) => {
 
-            console.log('rank of deal', rankOfDeal, 'm', m.rank);
-
+            console.log('total', this.totalPricePool);
+            console.log('price', m.price);
+            console.log('res', (this.totalPricePool / m.price).toFixed(2));
             this.payouts.push({
                 rank: m.rank,
-                percentage: `${(this.totalPricePool / m.price).toFixed(2)}%`,
+                percentage: m.price > 0 ? `${(m.price / this.totalPricePool * 100).toFixed(1)}%` : '',
                 price: m.price,
                 name: m.n,
                 image: m.i,

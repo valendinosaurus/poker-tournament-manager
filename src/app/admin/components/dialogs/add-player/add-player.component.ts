@@ -86,32 +86,46 @@ export class AddPlayerComponent implements OnInit {
         }
     }
 
-    onSubmit(model: { playerId: number, tournamentId: number }): void {
+    onSubmit(model: { playerId: number, tournamentId: number }, withEntry: boolean): void {
         if (model.playerId > -1 && model.tournamentId) {
-            this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
-                switchMap(
-                    () => this.entryApiService.post$({
-                        id: undefined,
-                        playerId: model.playerId,
-                        tournamentId: model.tournamentId,
-                        type: 'ENTRY'
-                    }).pipe(
-                        take(1),
-                        tap((result: any) => {
-                            if (this.dialogRef) {
-                                this.dialogRef.close({
-                                    entryId: result.id,
-                                    playerId: model.playerId
-                                });
-                            }
-                        })
+            if (withEntry) {
+                this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
+                    switchMap(
+                        () => this.entryApiService.post$({
+                            id: undefined,
+                            playerId: model.playerId,
+                            tournamentId: model.tournamentId,
+                            type: 'ENTRY'
+                        }).pipe(
+                            take(1),
+                            tap((result: any) => {
+                                if (this.dialogRef) {
+                                    this.dialogRef.close({
+                                        entryId: result.id,
+                                        playerId: model.playerId
+                                    });
+                                }
+                            })
+                        )
                     )
-                )
-            ).subscribe();
+                ).subscribe();
+            } else {
+                this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
+                    take(1),
+                    tap(() => {
+                        if (this.dialogRef) {
+                            this.dialogRef.close({
+                                playerId: model.playerId
+                            });
+                        }
+                    })
+                ).subscribe();
+            }
+
         }
     }
 
-    onSubmitMulti(model: { playerIds: number[] | undefined, tournamentId: number }): void {
+    onSubmitMulti(model: { playerIds: number[] | undefined, tournamentId: number }, withEntry: boolean): void {
         if (model.playerIds && model.tournamentId) {
             this.tournamentApiService.addPlayers$(model.playerIds, model.tournamentId).pipe(
                 take(1),

@@ -27,6 +27,7 @@ export class ButtonsComponent implements OnInit {
 
     @Output() createPlayer = new EventEmitter<void>();
     @Output() addPlayer = new EventEmitter<void>();
+    @Output() addEntry = new EventEmitter<void>();
     @Output() addReEntry = new EventEmitter<void>();
     @Output() addRebuy = new EventEmitter<void>();
     @Output() addAddon = new EventEmitter<void>();
@@ -38,6 +39,9 @@ export class ButtonsComponent implements OnInit {
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
+    @Output() toggleAutoSlide = new EventEmitter<boolean>();
+
+    autoSlide = true;
 
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
@@ -60,15 +64,15 @@ export class ButtonsComponent implements OnInit {
     }
 
     fullscreen(): void {
-            if (this.elem.requestFullscreen) {
-                this.elem.requestFullscreen();
-            } else if ((this.elem as any).mozRequestFullScreen) {
-                (this.elem as any).mozRequestFullScreen();
-            } else if ((this.elem as any).webkitRequestFullscreen) {
-                (this.elem as any).webkitRequestFullscreen();
-            } else if ((this.elem as any).msRequestFullscreen) {
-                (this.elem as any).msRequestFullscreen();
-            }
+        if (this.elem.requestFullscreen) {
+            this.elem.requestFullscreen();
+        } else if ((this.elem as any).mozRequestFullScreen) {
+            (this.elem as any).mozRequestFullScreen();
+        } else if ((this.elem as any).webkitRequestFullscreen) {
+            (this.elem as any).webkitRequestFullscreen();
+        } else if ((this.elem as any).msRequestFullscreen) {
+            (this.elem as any).msRequestFullscreen();
+        }
     }
 
     cancelFullscreen(): void {
@@ -81,6 +85,11 @@ export class ButtonsComponent implements OnInit {
         } else if ((this.document as any).msExitFullscreen) {
             (this.document as any).msExitFullscreen();
         }
+    }
+
+    onToggleAutoslide(): void {
+        this.autoSlide = !this.autoSlide;
+        this.toggleAutoSlide.emit(this.autoSlide);
     }
 
 }

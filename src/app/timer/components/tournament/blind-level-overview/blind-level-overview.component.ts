@@ -18,9 +18,14 @@ export class BlindLevelOverviewComponent implements OnChanges {
     levelsToShow: BlindLevel[];
     scrollDown = true;
 
+    ii = 1;
+
     ngOnChanges(changes: SimpleChanges): void {
         if (this.levels) {
-            this.levelsToShow = this.levels;
+            this.levelsToShow = this.levels.map(l => ({
+                ...l,
+                id: l.isPause ? this.ii : this.ii++
+            }));
         }
 
         if (changes['trigger']?.currentValue === 'SCROLL') {
