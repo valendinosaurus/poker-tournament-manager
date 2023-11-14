@@ -20,6 +20,7 @@ import { CombinedEntriesFinishes } from '../../models/combined-entries-finishes.
 import { CombinedRanking } from '../../models/combined-ranking.interface';
 import { OverallRanking } from '../../models/overall-ranking.interface';
 import { CombinedFinish } from '../../models/combined-finish.interface';
+import { MathContent } from '../../../shared/models/math-content.interface';
 
 @Component({
     selector: 'app-series-page',
@@ -47,7 +48,7 @@ export class SeriesPageComponent implements OnInit {
     seriesId: number;
     password: string;
 
-    formulaString: string | undefined;
+    formulaString: MathContent;
     guaranteed: number;
 
     ngOnInit(): void {
@@ -57,7 +58,9 @@ export class SeriesPageComponent implements OnInit {
         this.series$ = this.seriesApiService.getWithDetailsByPw$(this.seriesId, this.password).pipe(
             tap((series: SeriesDetails | null) => {
 
-                this.formulaString = this.rankingService.getFormulaDesc(series?.rankFormula);
+                this.formulaString = {
+                    latex: this.rankingService.getFormulaDesc(series?.rankFormula)
+                };
 
                 if (series) {
                     this.getRankings();
@@ -196,7 +199,9 @@ export class SeriesPageComponent implements OnInit {
 
         this.guaranteed = this.combinedRankings.map(
             (r: CombinedRanking) => r.contribution
-        ).reduce((acc: number, curr: number) => acc + curr, 0);
+        ).reduce((acc: number, curr: number) => +acc + +curr, 0);
+
+        console.log(this.guaranteed);
     }
 
     calcPoints(
@@ -225,6 +230,10 @@ export class SeriesPageComponent implements OnInit {
         const addons: number = tournament.entries.filter(e => e.type === 'ADDON').length * tournament.addonAmount;
 
         return buyInsReEntries + rebuys + addons + +tournament.initialPricePool;
+    }
+
+    getSortedTournaments(t: Tournament[]): Tournament[] {
+        return t.sort((t1, t2) => new Date(t1.date).getTime() - new Date(t2.date).getTime());
     }
 
 }

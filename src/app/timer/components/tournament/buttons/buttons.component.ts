@@ -11,6 +11,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class ButtonsComponent implements OnInit {
 
+    @Input() randomId: number;
     @Input() running: boolean;
     @Input() tournament: Tournament;
     @Input() isSimpleTournament: boolean;

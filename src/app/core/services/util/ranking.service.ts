@@ -90,7 +90,7 @@ export class RankingService {
 
                 return Math.round(points);
             },
-            desc: 'pricepool / sqrt(#players x (1 + #reEntries + #rebuys + #addons)) / (1 + rank)'
+            desc: '$\\frac{pricepool}{\\frac{\\sqrt(players * (1 + rebuys + addons)}{1 + rank}}$'
         }
     ];
 

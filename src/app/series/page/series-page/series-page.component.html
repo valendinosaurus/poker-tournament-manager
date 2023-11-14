@@ -1,11 +1,20 @@
 <ng-container *ngIf="series$ | async as series; else notAuthorized;">
     <div class="series-page">
         <div class="flex-center">
-            <app-user-image-round
-                [imageUrl]="series.branding.logo"
-                [size]="200"
-                border="b-black"
-            ></app-user-image-round>
+            <span class="desktop-only">
+                <app-user-image-round
+                    [imageUrl]="series.branding.logo"
+                    [size]="200"
+                    border="b-black"
+                ></app-user-image-round>
+            </span>
+            <span class="mobile-only">
+                <app-user-image-round
+                    [imageUrl]="series.branding.logo"
+                    [size]="100"
+                    border="b-black"
+                ></app-user-image-round>
+            </span>
         </div>
 
         <h1>
@@ -27,10 +36,19 @@
 
                 <div class="li-pair">
                     <h4>
-                        % to final pot / cap
+                        % per tourney to final pot
                     </h4>
                     <span>
-                        {{ series.percentage }}% / $ {{ series.maxAmountPerTournament }}
+                        {{ series.percentage }}%
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Cap per tournament to fina pot
+                    </h4>
+                    <span>
+                        ${{ series.maxAmountPerTournament }}
                     </span>
                 </div>
 
@@ -39,20 +57,18 @@
                         Guaranteed
                     </h4>
                     <span>
-                        $ {{ guaranteed }}
+                        ${{ +guaranteed }}
                     </span>
                 </div>
             </div>
 
 
-            <div class="series-content-block">
+            <div class="series-content-block" *ngIf="formulaString">
                 <div class="li-wide">
                     <h4>
                         Formula
                     </h4>
-                    <span>
-                        {{ formulaString }}
-                    </span>
+                    <span class="formula" [appMath]="formulaString"></span>
                 </div>
             </div>
 
@@ -64,15 +80,19 @@
                 <div class="table-wrapper">
                     <table>
                         <tr>
+                            <th>Rank</th>
                             <th>Name</th>
                             <th class="t-right">Points</th>
+                            <th class="t-center">avg. Rank</th>
                             <th class="t-center">Played</th>
                             <th class="t-center">Rebuys / Addons</th>
-                            <th class="t-center">avg. Rank</th>
                             <th class="t-right">Price</th>
                         </tr>
                         <ng-container *ngFor="let e of overallRanking; let i = index">
                             <tr [class.finalist]="i < series.finalists">
+                                <td>
+                                    {{ i + 1 }}.
+                                </td>
                                 <td>
                                     <span class="flextd">
                                         <app-user-image-round
@@ -85,13 +105,13 @@
                                     <strong>{{ e.points }}</strong>
                                 </td>
                                 <td class="t-center">
+                                    {{ e.rank / e.tournaments | number:'1.1-1' }}
+                                </td>
+                                <td class="t-center">
                                     {{ e.tournaments }}
                                 </td>
                                 <td class="t-center">
                                     {{ e.rebuysAddons }}
-                                </td>
-                                <td class="t-center">
-                                    {{ e.rank / e.tournaments | number:'1.1-1' }}
                                 </td>
                                 <td class="t-right">
                                     $ {{ e.price | number:'':'de-CH' }}
@@ -113,7 +133,7 @@
                 Tournaments
             </h2>
 
-            <ng-container *ngFor="let tournament of series.tournaments; let i = index;">
+            <ng-container *ngFor="let tournament of getSortedTournaments(series.tournaments); let i = index;">
                 <div class="tournament">
                     <div class="header">
                         <h4>

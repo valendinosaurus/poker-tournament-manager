@@ -34,7 +34,9 @@
                             "@angular/material/prebuilt-themes/deeppurple-amber.css",
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/mml-chtml.js"
+                        ]
                     },
                     "configurations": {
                         "production": {

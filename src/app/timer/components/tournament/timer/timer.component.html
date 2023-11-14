@@ -6,6 +6,7 @@
         <app-overview
             *ngIf="config"
             [tournament]="tournament"
+            [randomId]="randomId"
             [playersInTheHole]="playersInTheHole$ | async"
             [seriesMetadata]="seriesMetadata$ | async"
             [isSimpleTournament]="isSimpleTournament"

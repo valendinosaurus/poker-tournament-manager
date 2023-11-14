@@ -15,8 +15,9 @@ h1 {
     text-align: center;
     margin-top: 32px;
 
-    @media (max-width: 600px) {
-        font-size: 24px;
+    @media (max-width: 800px) {
+        font-size: 16px;
+        width: 100%;
     }
 }
 
@@ -24,46 +25,83 @@ h1 {
     max-width: 1000px;
     margin: auto;
     padding-top: 32px;
+
+    @media (max-width: 800px) {
+        padding-top: 10px;
+    }
 }
 
 .series-content-block {
     display: flex;
+    justify-content: space-around;
     flex-wrap: wrap;
 
     & > div.li-wide {
         width: 100%;
         flex: 0 0 100%;
+        background: aliceblue;
+        padding: 12px;
+        box-sizing: border-box;
 
         * {
             display: block;
             width: 100%;
             text-align: center;
+            color: #222;
+        }
+
+        h4 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        span {
+            margin-bottom: 0;
+            color: #222;
+            font-weight: bold;
         }
     }
 
     & > div.li-pair {
-        width: 33%;
-        flex: 0 0 33%;
+        width: 24%;
+        flex: 0 0 24%;
         margin-bottom: 40px;
+        background: aliceblue;
+        padding: 12px;
+        box-sizing: border-box;
 
         h4 {
             display: block;
             text-align: center;
             width: 100%;
             font-size: 18px;
+            margin-top: 0;
+            color: #222;
         }
 
         span {
             text-align: center;
             font-size: 32px;
+            margin-bottom: 0;
+            color: #222;
+            font-weight: bold;
         }
 
-        @media (max-width: 600px) {
-            width: 100%;
-            flex: 0 0 100%;
-            margin-bottom: 16px;
+        @media (max-width: 800px) {
+            width: 48%;
+            flex: 0 0 48%;
+            margin-bottom: 2%;
+
+            h4 {
+                font-size: 12px;
+            }
+
+            span {
+                font-size: 20px;
+            }
         }
     }
+
 }
 
 .table-wrapper {
@@ -202,17 +240,13 @@ tr.finalist td {
     border: solid 1px #555;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
     table * {
         font-size: 14px;
     }
 
     table app-user-image-round {
         display: none;
-    }
-
-    h1 {
-        text-align: left;
     }
 
     .series-page {

@@ -88,6 +88,15 @@ p {
     display: flex;
     flex-direction: column;
     z-index: 99;
+
+    @media (max-width: 800px) {
+        top: 2vh;
+        bottom: auto;
+        justify-content: center;
+        width: 100%;
+        left: 0;
+        right: auto;
+    }
 }
 
 .countdown {
@@ -160,5 +169,13 @@ p {
 
     i.fa-circle {
         transform: scale(2) !important;
+    }
+}
+
+@media (max-width: 800px) {
+    app-header,
+    .top,
+    .bottom {
+        display: none;
     }
 }

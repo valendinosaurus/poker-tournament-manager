@@ -21,7 +21,15 @@
     </button>
 
     <button
+        *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
         class="main"
+        (click)="addAddon.emit()"
+    >
+        <i class="fa fa-database"></i>
+    </button>
+
+    <button
+        class="main hide-800"
         type="button"
         cdkOverlayOrigin
         #trigger="cdkOverlayOrigin"

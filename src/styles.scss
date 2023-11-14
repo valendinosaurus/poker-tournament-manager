@@ -224,3 +224,31 @@ form {
 .mdc-list-item__primary-text {
     font-size: 2.6vh !important;
 }
+
+@media (max-width: 800px) {
+    .cdk-overlay-pane {
+        width: 90%;
+    }
+}
+
+.mobile-only {
+    display: none;
+
+    @media (max-width: 800px) {
+        display: block;
+    }
+}
+
+.desktop-only {
+    display: block;
+
+    @media (max-width: 800px) {
+        display: none;
+    }
+}
+
+span.formula {
+    font-size: 32px;
+    margin: auto;
+
+}

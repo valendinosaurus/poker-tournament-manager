@@ -23,6 +23,7 @@
         "@auth0/auth0-angular": "^2.2.1",
         "@ngx-formly/core": "^6.1.8",
         "@ngx-formly/material": "^6.1.8",
+        "@types/mathjax": "^0.0.40",
         "font-awesome": "^4.7.0",
         "keen-slider": "^6.8.6",
         "ng-circle-progress": "^1.7.1",

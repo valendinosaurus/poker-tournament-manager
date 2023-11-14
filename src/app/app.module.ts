@@ -39,7 +39,7 @@ registerLocaleData(localeDECH);
                 redirect_uri: window.location.origin,
 
             }
-        }),
+        })
     ],
     providers: [
         {provide: LOCALE_ID, useValue: 'de-ch'},
