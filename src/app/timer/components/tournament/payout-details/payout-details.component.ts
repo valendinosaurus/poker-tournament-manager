@@ -1,8 +1,13 @@
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { Player } from '../../../../shared/models/player.interface';
 import { RankingService } from '../../../../core/services/util/ranking.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { ModifyPayoutComponent } from '../../../../admin/components/dialogs/modify-payout/modify-payout.component';
+import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 
 @Component({
     selector: 'app-payout-details',
@@ -11,6 +16,7 @@ import { RankingService } from '../../../../core/services/util/ranking.service';
 })
 export class PayoutDetailsComponent implements OnChanges {
 
+    @Input() tournamentId: number;
     @Input() entries: Entry[];
     @Input() buyInAmount: number;
     @Input() rebuyAmount: number;
@@ -26,6 +32,9 @@ export class PayoutDetailsComponent implements OnChanges {
     deduction: number = 0;
 
     private rankingService: RankingService = inject(RankingService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
+    private dialog: MatDialog = inject(MatDialog);
+    private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     payouts: {
         rank: number,
@@ -39,10 +48,14 @@ export class PayoutDetailsComponent implements OnChanges {
     totalPricePool: number;
     scrollDown = true;
     wasDealMade = false;
+    playersLeft: number;
+    placesPaid: number;
 
     ngOnChanges(changes: SimpleChanges): void {
         const ranks = this.finishes.map(f => f.rank);
         this.wasDealMade = ranks.length !== new Set(ranks).size;
+        this.playersLeft = this.entries.filter(e => e.type === 'ENTRY').length - this.finishes.length;
+        this.placesPaid = this.rankingService.getPayoutById(this.payout).length;
 
         if (this.wasDealMade) {
             this.calculateAfterDeal();
@@ -89,20 +102,39 @@ export class PayoutDetailsComponent implements OnChanges {
             })
         );
 
-        console.log(payoutRaw);
+        console.log(mappedFinishes);
 
-        payoutRaw.forEach((percentage: number) => {
-            this.payouts.push({
-                rank: index,
-                percentage: `${percentage}%`,
-                price: this.totalPricePool / 100 * percentage,
-                name: mappedFinishes.find(f => f.rank === index)?.n,
-                image: mappedFinishes.find(f => f.rank === index)?.i,
-                dealMade: false
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
+
+        if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
+            adaptedPayouts.forEach((payout: number) => {
+                this.payouts.push({
+                    rank: index,
+                    percentage: `${Math.floor(payout / this.totalPricePool * 100)}%`,
+                    price: payout,
+                    name: mappedFinishes.find(f => +f.rank === index)?.n,
+                    image: mappedFinishes.find(f => +f.rank === index)?.i,
+                    dealMade: false
+                });
+
+                index++;
             });
+        } else {
+            payoutRaw.forEach((percentage: number) => {
+                this.payouts.push({
+                    rank: index,
+                    percentage: `${percentage}%`,
+                    price: this.totalPricePool / 100 * percentage,
+                    name: mappedFinishes.find(f => +f.rank === index)?.n,
+                    image: mappedFinishes.find(f => +f.rank === index)?.i,
+                    dealMade: false
+                });
 
-            index++;
-        });
+                index++;
+            });
+        }
+
+        console.log(this.payouts);
     }
 
     private calculateAfterDeal(): void {
@@ -134,10 +166,6 @@ export class PayoutDetailsComponent implements OnChanges {
         const rankOfDeal = Math.min(...this.finishes.map(f => f.rank));
 
         mappedFinishes.forEach((m) => {
-
-            console.log('total', this.totalPricePool);
-            console.log('price', m.price);
-            console.log('res', (this.totalPricePool / m.price).toFixed(2));
             this.payouts.push({
                 rank: m.rank,
                 percentage: m.price > 0 ? `${(m.price / this.totalPricePool * 100).toFixed(1)}%` : '',
@@ -149,6 +177,27 @@ export class PayoutDetailsComponent implements OnChanges {
         });
 
         this.payouts.sort((a, b) => a.rank - b.rank);
+    }
+
+    editPayouts(): void {
+        const dialogRef = this.dialog.open(ModifyPayoutComponent, {
+            position: {
+                top: '40px'
+            },
+            data: {
+                pricepool: this.payouts.map(e => e.price).reduce((p, c) => p + c, 0),
+                payouts: this.payouts.map(e => e.price),
+                tId: this.tournamentId
+            }
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => {
+                this.ngOnChanges({});
+
+            }),
+        ).subscribe();
     }
 
 }

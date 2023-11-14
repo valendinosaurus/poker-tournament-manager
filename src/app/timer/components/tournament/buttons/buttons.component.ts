@@ -3,6 +3,8 @@ import { Tournament } from '../../../../shared/models/tournament.interface';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
+import { EventApiService } from '../../../../core/services/api/event-api.service';
+import { ServerResponse } from '../../../../shared/models/server-response';
 
 @Component({
     selector: 'app-buttons',
@@ -43,6 +45,8 @@ export class ButtonsComponent implements OnInit {
     @Output() toggleAutoSlide = new EventEmitter<boolean>();
 
     autoSlide = true;
+
+    private eventApiService: EventApiService = inject(EventApiService);
 
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
@@ -93,4 +97,15 @@ export class ButtonsComponent implements OnInit {
         this.toggleAutoSlide.emit(this.autoSlide);
     }
 
+    notify(): void {
+        this.sendRefetchEvent$();
+    }
+
+    private sendRefetchEvent$(): Observable<ServerResponse> {
+        return this.eventApiService.post$({
+            id: null,
+            tId: this.tournament.id,
+            clientId: this.randomId
+        });
+    }
 }

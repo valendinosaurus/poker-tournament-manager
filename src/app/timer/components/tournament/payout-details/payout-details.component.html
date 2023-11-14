@@ -50,6 +50,8 @@
         <ng-container *ngIf="wasDealMade">
             <span><i class="fa fa-exclamation-triangle"></i> DEAL WAS MADE</span>
         </ng-container>
+
+        <span *ngIf="playersLeft >= placesPaid"><i class="fa fa-edit" (click)="editPayouts()"></i></span>
     </h4>
 
     <div class="payouts">

@@ -12,6 +12,7 @@ import { RankingService } from '../../../../core/services/util/ranking.service';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 
 @Component({
     selector: 'app-add-finish',
@@ -34,6 +35,7 @@ export class AddFinishComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
+    private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -72,20 +74,27 @@ export class AddFinishComponent implements OnInit {
         const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
 
-        if (payoutPercentage) {
-            const {totalPricePool} = this.rankingService.getTotalPricePool(
-                this.data.tournament.entries,
-                this.data.tournament.buyInAmount,
-                this.data.tournament.rebuyAmount,
-                this.data.tournament.addonAmount,
-                this.data.tournament.initialPricePool,
-                this.data.metadata?.percentage,
-                this.data.metadata?.maxAmountPerTournament
-            );
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.data.tournament.id);
+        const placesPaid = payoutRaw.length;
 
-            this.price = totalPricePool / 100 * payoutPercentage;
-        } else {
+        if (this.rank > placesPaid) {
             this.price = 0;
+        } else {
+            if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
+                this.price = adaptedPayouts[this.rank - 1];
+            } else {
+                const {totalPricePool} = this.rankingService.getTotalPricePool(
+                    this.data.tournament.entries,
+                    this.data.tournament.buyInAmount,
+                    this.data.tournament.rebuyAmount,
+                    this.data.tournament.addonAmount,
+                    this.data.tournament.initialPricePool,
+                    this.data.metadata?.percentage,
+                    this.data.metadata?.maxAmountPerTournament
+                );
+
+                this.price = totalPricePool / 100 * payoutPercentage;
+            }
         }
     }
 

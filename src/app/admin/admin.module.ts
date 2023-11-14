@@ -36,6 +36,7 @@ import { AddTournamentComponent } from './components/dialogs/add-tournament/add-
 import { AddReEntryComponent } from './components/dialogs/add-re-entry/add-re-entry.component';
 import { AddPauseComponent } from './components/dialogs/add-pause/add-pause.component';
 import { MakeDealComponent } from './components/dialogs/make-deal/make-deal.component';
+import { ModifyPayoutComponent } from './components/dialogs/modify-payout/modify-payout.component';
 
 @NgModule({
     declarations: [
@@ -71,6 +72,7 @@ import { MakeDealComponent } from './components/dialogs/make-deal/make-deal.comp
         AddReEntryComponent,
         AddPauseComponent,
         MakeDealComponent,
+        ModifyPayoutComponent,
     ],
     imports: [
         SharedModule,

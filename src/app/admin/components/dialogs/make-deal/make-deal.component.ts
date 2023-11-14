@@ -61,16 +61,6 @@ export class MakeDealComponent implements OnInit {
         const remainingPlaces = Array.from({length: noOfRemainingPlaces}, (_, i) => i + 1);
         this.rankAfterDeal = remainingPlaces.reduce((acc, curr) => acc + curr, 0) / remainingPlaces.length;
 
-        console.log('pricepool', pricePool);
-        console.log('contr', realContribution);
-        console.log('effective pp', effectivePricePool);
-        console.log('payed', sumPayed);
-        console.log('to distribute', this.toDistribute);
-        console.log('remaining places', noOfRemainingPlaces);
-        console.log('remaining', remainingPlaces);
-        console.log('rank', this.rankAfterDeal);
-        console.log('not finihsed', remainingPlayers);
-
         this.fields = [];
         this.keys = [];
 
@@ -84,7 +74,6 @@ export class MakeDealComponent implements OnInit {
                     this.formlyFieldService.getDefaultNumberField(key, player.name, true)
                 );
             });
-
     }
 
     getPricePool(tournament: Tournament): number {

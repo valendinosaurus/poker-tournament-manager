@@ -1,0 +1,34 @@
+<h2>Adapt payout</h2>
+
+<div class="flexed">
+    <span>
+        To distribute:
+    </span>
+    <div>
+        $ {{ toDistribute }}
+    </div>
+</div>
+
+<form
+    style="width: 800px"
+    (ngSubmit)="onSubmit(model)"
+>
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+        (modelChange)="modelChange(model)"
+    ></formly-form>
+
+    <h3 [class.red]="total != toDistribute  ">
+        Total: {{ total }}
+    </h3>
+
+    <button
+        type="submit"
+        [disabled]="!form.valid || toDistribute !== 0"
+    >
+        ADAPT PAYOUTS
+    </button>
+</form>
