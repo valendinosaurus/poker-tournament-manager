@@ -131,6 +131,8 @@ export class TournamentListItemComponent implements OnInit {
     }
 
     openTournament(): void {
-        this.router.navigate(['timer', this.t.id]);
+        //  this.router.navigate(['timer', this.t.id]);
+        const link = this.router.serializeUrl(this.router.createUrlTree(['timer', this.t.id]));
+        window.open(link, '_blank');
     }
 }
