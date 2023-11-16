@@ -148,9 +148,12 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
 
             if (this.changes > 1) {
                 console.log('**** LIVE CHANGE');
-                setTimeout(() => {
-                    this.countdown.resume();
-                }, 400);
+
+                if (this.running) {
+                    setTimeout(() => {
+                        this.countdown.resume();
+                    }, 400);
+                }
 
                 this.refreshViews();
             }
