@@ -13,6 +13,10 @@ import { SeriesMetadata } from '../../../../shared/models/series-metadata.interf
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
+import { Finish } from '../../../../shared/models/finish.interface';
+import { iif, of } from 'rxjs';
+import { FetchService } from '../../../../core/services/fetch.service';
+import { EventApiService } from '../../../../core/services/api/event-api.service';
 
 @Component({
     selector: 'app-add-finish',
@@ -27,7 +31,11 @@ export class AddFinishComponent implements OnInit {
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
-    data: { tournament: Tournament, metadata: SeriesMetadata | undefined } = inject(MAT_DIALOG_DATA);
+    data: {
+        tournament: Tournament,
+        metadata: SeriesMetadata | undefined,
+        randomId: number
+    } = inject(MAT_DIALOG_DATA);
 
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -36,6 +44,8 @@ export class AddFinishComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private fetchService: FetchService = inject(FetchService);
+    private eventApiService: EventApiService = inject(EventApiService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -120,6 +130,18 @@ export class AddFinishComponent implements OnInit {
                 rank: this.rank
             }).pipe(
                 take(1),
+                switchMap(() => iif(
+                    () => this.rank === 2,
+                    this.finishApiService.post$(this.getRemainingFinish()),
+                    of(null)
+                )),
+                tap(() =>
+                    this.fetchService.trigger()),
+                switchMap(() => this.eventApiService.post$({
+                    id: null,
+                    tId: this.data.tournament.id,
+                    clientId: this.data.randomId
+                })),
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({
@@ -129,6 +151,45 @@ export class AddFinishComponent implements OnInit {
                 })
             ).subscribe();
         }
+    }
+
+    private getRemainingFinish(): Finish {
+        const playerId = this.data.tournament.players.filter(
+            (player: Player) => {
+                const finishIds = this.data.tournament.finishes.map(f => f.playerId);
+
+                return !finishIds.includes(player.id);
+            }
+        )[0].id;
+
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.data.tournament.id);
+        const payouts = this.rankingService.getPayoutById(this.data.tournament.payout);
+        const payoutPercentage = +payouts[0];
+
+        let price = 0;
+
+        if (adaptedPayouts) {
+            price = adaptedPayouts[this.rank - 1];
+        } else {
+            const {totalPricePool} = this.rankingService.getTotalPricePool(
+                this.data.tournament.entries,
+                this.data.tournament.buyInAmount,
+                this.data.tournament.rebuyAmount,
+                this.data.tournament.addonAmount,
+                this.data.tournament.initialPricePool,
+                this.data.metadata?.percentage,
+                this.data.metadata?.maxAmountPerTournament
+            );
+
+            price = totalPricePool / 100 * payoutPercentage;
+        }
+
+        return {
+            rank: 1,
+            tournamentId: this.data.tournament.id,
+            price,
+            playerId
+        };
     }
 
 }

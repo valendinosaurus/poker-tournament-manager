@@ -46,7 +46,7 @@ export class FinishApiService {
         );
     }
 
-    delete$(id: number): Observable<any> {
-        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${id}`);
+    delete$(tId: number, pId: number): Observable<any> {
+        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${tId}/${pId}`);
     }
 }

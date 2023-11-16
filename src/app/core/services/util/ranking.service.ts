@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Entry } from '../../../shared/models/entry.interface';
+import { Tournament } from '../../../shared/models/tournament.interface';
 
 export type FormulaInput = {
     players: number,
@@ -165,6 +166,17 @@ export class RankingService {
             totalPricePool,
             deduction
         };
+    }
+
+    getSimplePricePool(tournament: Tournament): number {
+        const buyInsReEntries: number = tournament.entries.filter(
+            (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
+        ).length * tournament.buyInAmount;
+
+        const rebuys: number = tournament.entries.filter(e => e.type === 'REBUY').length * tournament.rebuyAmount;
+        const addons: number = tournament.entries.filter(e => e.type === 'ADDON').length * tournament.addonAmount;
+
+        return buyInsReEntries + rebuys + addons + +tournament.initialPricePool;
     }
 
 }

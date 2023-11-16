@@ -25,11 +25,22 @@ tr.finished {
 }
 
 .fa-skull {
-    margin-left: 12px;
+    margin-left: 8px;
+    margin-right: 8px;
     font-size: 16px;
 }
 
 .player-details {
     overflow-y: auto;
     max-height: 50.5vh;
+}
+
+span.tbd,
+span.rank {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+span.tbd {
+    font-size: 12px;
 }

@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
-import { Entry } from '../../../../shared/models/entry.interface';
 import { Player } from '../../../../shared/models/player.interface';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
@@ -10,8 +9,11 @@ import { FormlyFieldService } from '../../../../core/services/util/formly-field.
 import { forkJoin, Observable } from 'rxjs';
 import { ServerResponse } from '../../../../shared/models/server-response';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
-import { take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { Finish } from '../../../../shared/models/finish.interface';
+import { FetchService } from '../../../../core/services/fetch.service';
+import { EventApiService } from '../../../../core/services/api/event-api.service';
+import { RankingService } from '../../../../core/services/util/ranking.service';
 
 @Component({
     selector: 'app-make-deal',
@@ -21,7 +23,11 @@ import { Finish } from '../../../../shared/models/finish.interface';
 export class MakeDealComponent implements OnInit {
 
     private dialogRef: MatDialogRef<MakeDealComponent> = inject(MatDialogRef<MakeDealComponent>);
-    data: { tournament: Tournament, metadata: SeriesMetadata | undefined } = inject(MAT_DIALOG_DATA);
+    data: {
+        tournament: Tournament,
+        metadata: SeriesMetadata | undefined,
+        randomId: number
+    } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
@@ -37,9 +43,12 @@ export class MakeDealComponent implements OnInit {
 
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
+    private fetchService: FetchService = inject(FetchService);
+    private eventApiService: EventApiService = inject(EventApiService);
+    private rankingService: RankingService = inject(RankingService);
 
     ngOnInit(): void {
-        const pricePool = this.getPricePool(this.data.tournament);
+        const pricePool = this.rankingService.getSimplePricePool(this.data.tournament);
         const contribution = pricePool * (this.data.metadata?.percentage ?? 0) / 100;
         const realContribution = contribution > (this.data.metadata?.maxAmountPerTournament ?? 0) ? (this.data.metadata?.maxAmountPerTournament ?? 0) : contribution;
         const effectivePricePool = pricePool - realContribution;
@@ -76,17 +85,6 @@ export class MakeDealComponent implements OnInit {
             });
     }
 
-    getPricePool(tournament: Tournament): number {
-        const buyInsReEntries: number = tournament.entries.filter(
-            (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
-        ).length * tournament.buyInAmount;
-
-        const rebuys: number = tournament.entries.filter(e => e.type === 'REBUY').length * tournament.rebuyAmount;
-        const addons: number = tournament.entries.filter(e => e.type === 'ADDON').length * tournament.addonAmount;
-
-        return buyInsReEntries + rebuys + addons + +tournament.initialPricePool;
-    }
-
     modelChange(model: { [key: string]: number }): void {
         this.total = 0;
 
@@ -117,6 +115,12 @@ export class MakeDealComponent implements OnInit {
         forkJoin(streams).pipe(
             take(1),
             tap(e => console.log('e')),
+            tap(() => this.fetchService.trigger()),
+            switchMap(() => this.eventApiService.post$({
+                id: null,
+                tId: this.data.tournament.id,
+                clientId: this.data.randomId
+            })),
             tap(() => {
                 if (this.dialogRef) {
                     this.dialogRef.close(this.finishesToReturn);

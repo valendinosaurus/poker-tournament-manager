@@ -133,7 +133,7 @@ export class SeriesPageComponent implements OnInit {
                             this.formula = this.rankingService.getFormulaById(formula);
                         }
 
-                        const pricePool = this.getPricePool(localTournament);
+                        const pricePool = this.rankingService.getSimplePricePool(localTournament);
                         const contribution = pricePool * seriesMetadata.percentage / 100;
 
                         this.combinedRankings.push({
@@ -216,20 +216,9 @@ export class SeriesPageComponent implements OnInit {
             rebuys: +combFinish.rebuys,
             players: tournament.players.length,
             buyIn: tournament.buyInAmount,
-            pricePool: +this.getPricePool(tournament),
+            pricePool: +this.rankingService.getSimplePricePool(tournament),
             addonCost: tournament.addonAmount
         }) : 0;
-    }
-
-    getPricePool(tournament: Tournament): number {
-        const buyInsReEntries: number = tournament.entries.filter(
-            (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
-        ).length * tournament.buyInAmount;
-
-        const rebuys: number = tournament.entries.filter(e => e.type === 'REBUY').length * tournament.rebuyAmount;
-        const addons: number = tournament.entries.filter(e => e.type === 'ADDON').length * tournament.addonAmount;
-
-        return buyInsReEntries + rebuys + addons + +tournament.initialPricePool;
     }
 
     getSortedTournaments(t: Tournament[]): Tournament[] {

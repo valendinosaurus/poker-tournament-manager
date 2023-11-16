@@ -12,8 +12,8 @@
             [isSimpleTournament]="isSimpleTournament"
             (createPlayer)="createPlayer()"
             (addPlayer)="addPlayer()"
-            (addEntry)="addEntry()"
-            (addReEntry)="addReEntry()"
+            (addEntry)="addEntry(false)"
+            (addReEntry)="addEntry(true)"
             (addRebuy)="addRebuy()"
             (addAddon)="addAddon()"
             (start)="start()"
@@ -107,6 +107,7 @@
                             [entries]="tournament.entries"
                             [finishes]="tournament.finishes"
                             [trigger]="scrollTrigger$ | async"
+                            [tId]="tournament.id"
                         ></app-player-details>
                     </div>
 

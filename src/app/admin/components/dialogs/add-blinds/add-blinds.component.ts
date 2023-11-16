@@ -11,6 +11,8 @@ import { TournamentApiService } from '../../../../core/services/api/tournament-a
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { FetchService } from '../../../../core/services/fetch.service';
+import { EventApiService } from '../../../../core/services/api/event-api.service';
 
 @Component({
     selector: 'app-add-blinds',
@@ -32,6 +34,8 @@ export class AddBlindsComponent implements OnInit {
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
+    private fetchService: FetchService = inject(FetchService);
+    private eventApiService: EventApiService = inject(EventApiService);
 
     allBlinds: { label: string, value: number }[];
     filterDuration: number;
@@ -118,6 +122,7 @@ export class AddBlindsComponent implements OnInit {
 
             this.tournamentApiService.addBlinds$(model.blindId, model.tournamentId, positions).pipe(
                 take(1),
+                tap((a) => this.fetchService.trigger()),
                 tap(() => {
                     if (this.dialogRef) {
                         this.dialogRef.close({

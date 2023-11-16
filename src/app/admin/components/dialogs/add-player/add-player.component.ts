@@ -11,6 +11,8 @@ import { Tournament } from '../../../../shared/models/tournament.interface';
 import { EntryApiService } from '../../../../core/services/api/entry-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { FetchService } from '../../../../core/services/fetch.service';
+import { EventApiService } from '../../../../core/services/api/event-api.service';
 
 @Component({
     selector: 'app-add-player',
@@ -25,7 +27,12 @@ export class AddPlayerComponent implements OnInit {
     modelMulti: { playerIds: number[] | undefined, tournamentId: number };
     fields: FormlyFieldConfig[];
 
-    data: { tournament: Tournament, multi: boolean } = inject(MAT_DIALOG_DATA);
+    data: {
+        tournament: Tournament,
+        multi: boolean,
+        randomId: number
+    } = inject(MAT_DIALOG_DATA);
+
     private dialogRef: MatDialogRef<AddPlayerComponent> = inject(MatDialogRef<AddPlayerComponent>);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
@@ -33,6 +40,8 @@ export class AddPlayerComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
+    private fetchService: FetchService = inject(FetchService);
+    private eventApiService: EventApiService = inject(EventApiService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -88,6 +97,7 @@ export class AddPlayerComponent implements OnInit {
 
     onSubmit(model: { playerId: number, tournamentId: number }, withEntry: boolean): void {
         if (model.playerId > -1 && model.tournamentId) {
+            // TODO improve
             if (withEntry) {
                 this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
                     switchMap(
@@ -98,6 +108,12 @@ export class AddPlayerComponent implements OnInit {
                             type: 'ENTRY'
                         }).pipe(
                             take(1),
+                            tap((a) => this.fetchService.trigger()),
+                            switchMap(() => this.eventApiService.post$({
+                                id: null,
+                                tId: this.data.tournament.id,
+                                clientId: this.data.randomId
+                            })),
                             tap((result: any) => {
                                 if (this.dialogRef) {
                                     this.dialogRef.close({
@@ -112,6 +128,12 @@ export class AddPlayerComponent implements OnInit {
             } else {
                 this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
                     take(1),
+                    tap((a) => this.fetchService.trigger()),
+                    switchMap(() => this.eventApiService.post$({
+                        id: null,
+                        tId: this.data.tournament.id,
+                        clientId: this.data.randomId
+                    })),
                     tap(() => {
                         if (this.dialogRef) {
                             this.dialogRef.close({

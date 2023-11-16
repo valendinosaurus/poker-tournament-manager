@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, Input, OnChanges, OnInit, SimpleChanges 
 import { Tournament } from 'src/app/shared/models/tournament.interface';
 import { Player } from '../../../../shared/models/player.interface';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
-import { combineLatest, defer, iif, Observable, of, ReplaySubject, Subscription, timer } from 'rxjs';
+import { combineLatest, defer, iif, Observable, of, Subscription, timer } from 'rxjs';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
 import { ActionEvent } from '../../../../shared/models/event.interface';
+import { FetchService } from '../../../../core/services/fetch.service';
 
 @Component({
     selector: 'app-timer',
@@ -34,7 +35,6 @@ export class TimerComponent implements OnInit, OnChanges {
 
     tournament$: Observable<Tournament>;
     seriesMetadata$: Observable<SeriesMetadata>;
-    playersInTheHole$: Observable<Player[]>;
     isSimpleTournament = false;
     isNotAllowed = false;
     randomId: number;
@@ -48,12 +48,14 @@ export class TimerComponent implements OnInit, OnChanges {
     private authService: AuthService = inject(AuthService);
     private router: Router = inject(Router);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private fetchService: FetchService = inject(FetchService);
 
-    private fetchTrigger$ = new ReplaySubject<void>();
+    private fetchTrigger$: Observable<void>;
 
     private pullSubscription: Subscription;
 
     ngOnInit(): void {
+        this.fetchTrigger$ = this.fetchService.getFetchTrigger$();
         this.randomId = Math.ceil(Math.random() * 100000);
     }
 
@@ -68,7 +70,7 @@ export class TimerComponent implements OnInit, OnChanges {
                     if (this.config.sub) {
                         this.getStuff(this.config?.tournamentId);
 
-                        this.fetchTrigger$.next();
+                        this.fetchService.trigger();
 
                         if (this.config?.tournamentId && this.config.sub) {
                             const id = this.config.tournamentId;
@@ -82,7 +84,7 @@ export class TimerComponent implements OnInit, OnChanges {
                                 tap((events: ActionEvent[]) => {
                                     if (events.length > 0 && +(events[0].tId) === +id) {
                                         console.log('*** LIVE *** : event triggered, fetch stuff');
-                                        this.fetchTrigger$.next();
+                                        this.fetchService.trigger();
                                     } else {
                                         console.log('*** LIVE *** : nothing to do');
                                     }
@@ -120,37 +122,34 @@ export class TimerComponent implements OnInit, OnChanges {
             ))
         );
 
-        const blinds$ = sub$.pipe(
-            switchMap((sub: string) => this.blindLevelApiService.getOfTournament$(+tournamentId, sub)),
-            shareReplay(1)
+        const blinds$ = this.fetchTrigger$.pipe(
+            switchMap(() => sub$.pipe(
+                switchMap((sub: string) => this.blindLevelApiService.getOfTournament$(+tournamentId, sub)),
+                shareReplay(1)
+            ))
         );
 
-        const players$ = sub$.pipe(
-            switchMap((sub: string) => this.playerApiService.getInTournament$(+tournamentId, sub)),
-            shareReplay(1)
+        const players$ = this.fetchTrigger$.pipe(
+            switchMap(() => sub$.pipe(
+                switchMap((sub: string) => this.playerApiService.getInTournament$(+tournamentId, sub)),
+                shareReplay(1)
+            ))
         );
 
         const entries$ = this.fetchTrigger$.pipe(
             switchMap(() => this.entryApiService.getInTournament$(+tournamentId)),
             shareReplay(1)
         );
-        const finishes$ = this.finishApiService.getInTournament$(+tournamentId).pipe(shareReplay(1));
+        const finishes$ = this.fetchTrigger$.pipe(
+            switchMap(() => this.finishApiService.getInTournament$(+tournamentId)),
+            shareReplay(1)
+        );
 
         this.seriesMetadata$ = sub$.pipe(
             switchMap((sub: string) => this.tournamentApiService.getSeriesMetadata$(+tournamentId, sub)),
         );
 
-        const pureEntries$ = entries$.pipe(map((entries) => entries.filter(e => e.type === 'ENTRY')));
-
-        this.playersInTheHole$ = combineLatest([
-            players$,
-            pureEntries$
-        ]).pipe(
-            map(([players, pureEntries]) => players.filter(p => !pureEntries.map(e => e.playerId).includes(p.id))),
-        );
-
         this.tournament$ = this.fetchTrigger$.pipe(
-            tap(() => console.log('FETCHING TOURNEY AGAIN')),
             switchMap(() => combineLatest([
                 tourney$,
                 blinds$,
