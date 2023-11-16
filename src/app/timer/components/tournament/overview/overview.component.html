@@ -77,31 +77,6 @@
                     </div>
 
                     <div class="keen-slider__slide number-slide2 slide-stats">
-                        <h3>
-                            Info
-                        </h3>
-
-                        <app-player-overview
-                            [players]="tournament.players"
-                            [finishes]="tournament.finishes"
-                        ></app-player-overview>
-
-                        <app-buyin-overview
-                            [entries]="tournament.entries"
-                            [tournament]="tournament"
-                        ></app-buyin-overview>
-
-                        <app-chips-overview
-                            [entries]="tournament.entries"
-                            [players]="tournament.players"
-                            [startStack]="tournament.startStack"
-                            [rebuyStack]="tournament.rebuyStack"
-                            [addonStack]="tournament.addonStack"
-                            [finishes]="tournament.finishes"
-                        ></app-chips-overview>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide3 slide-players">
                         <app-player-details
                             [players]="tournament.players"
                             [entries]="tournament.entries"
@@ -111,32 +86,7 @@
                         ></app-player-details>
                     </div>
 
-                    <div class="keen-slider__slide number-slide4 slide-stats">
-                        <h3>
-                            Info
-                        </h3>
-
-                        <app-player-overview
-                            [players]="tournament.players"
-                            [finishes]="tournament.finishes"
-                        ></app-player-overview>
-
-                        <app-buyin-overview
-                            [entries]="tournament.entries"
-                            [tournament]="tournament"
-                        ></app-buyin-overview>
-
-                        <app-chips-overview
-                            [entries]="tournament.entries"
-                            [players]="tournament.players"
-                            [startStack]="tournament.startStack"
-                            [rebuyStack]="tournament.rebuyStack"
-                            [addonStack]="tournament.addonStack"
-                            [finishes]="tournament.finishes"
-                        ></app-chips-overview>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide5 slide-players">
+                    <div class="keen-slider__slide number-slide3 slide-stats">
                         <app-ranking
                             [players]="tournament.players"
                             [entries]="tournament.entries"
@@ -146,32 +96,7 @@
                         ></app-ranking>
                     </div>
 
-                    <div class="keen-slider__slide number-slide6 slide-stats">
-                        <h3>
-                            Info
-                        </h3>
-
-                        <app-player-overview
-                            [players]="tournament.players"
-                            [finishes]="tournament.finishes"
-                        ></app-player-overview>
-
-                        <app-buyin-overview
-                            [entries]="tournament.entries"
-                            [tournament]="tournament"
-                        ></app-buyin-overview>
-
-                        <app-chips-overview
-                            [entries]="tournament.entries"
-                            [players]="tournament.players"
-                            [startStack]="tournament.startStack"
-                            [rebuyStack]="tournament.rebuyStack"
-                            [addonStack]="tournament.addonStack"
-                            [finishes]="tournament.finishes"
-                        ></app-chips-overview>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide7 slide-payout">
+                    <div class="keen-slider__slide number-slide4 slide-stats">
                         <app-payout-details
                             [entries]="tournament.entries"
                             [buyInAmount]="tournament.buyInAmount"
@@ -185,31 +110,6 @@
                             [initialPricePool]="tournament.initialPricePool"
                             [tournamentId]="tournament.id"
                         ></app-payout-details>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide8 slide-stats">
-                        <h3>
-                            Info
-                        </h3>
-
-                        <app-player-overview
-                            [players]="tournament.players"
-                            [finishes]="tournament.finishes"
-                        ></app-player-overview>
-
-                        <app-buyin-overview
-                            [entries]="tournament.entries"
-                            [tournament]="tournament"
-                        ></app-buyin-overview>
-
-                        <app-chips-overview
-                            [entries]="tournament.entries"
-                            [players]="tournament.players"
-                            [startStack]="tournament.startStack"
-                            [rebuyStack]="tournament.rebuyStack"
-                            [addonStack]="tournament.addonStack"
-                            [finishes]="tournament.finishes"
-                        ></app-chips-overview>
                     </div>
                 </div>
 
@@ -227,6 +127,27 @@
                     <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 7"></i>
                 </div>
             </div>
+        </div>
+
+        <div class="overview-panel">
+            <app-player-overview
+                [players]="tournament.players"
+                [finishes]="tournament.finishes"
+            ></app-player-overview>
+
+            <app-buyin-overview
+                [entries]="tournament.entries"
+                [tournament]="tournament"
+            ></app-buyin-overview>
+
+            <app-chips-overview
+                [entries]="tournament.entries"
+                [players]="tournament.players"
+                [startStack]="tournament.startStack"
+                [rebuyStack]="tournament.rebuyStack"
+                [addonStack]="tournament.addonStack"
+                [finishes]="tournament.finishes"
+            ></app-chips-overview>
         </div>
     </div>
 

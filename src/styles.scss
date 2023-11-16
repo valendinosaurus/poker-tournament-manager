@@ -258,5 +258,9 @@ span.formula {
 
     &:hover {
         opacity: 0.7;
+
+        svg {
+            fill: darkred;
+        }
     }
 }
