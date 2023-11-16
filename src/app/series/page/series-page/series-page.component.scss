@@ -267,3 +267,24 @@ tr.finalist td {
     margin-top: 0;
     margin-bottom: 24px;
 }
+
+span.running {
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    animation: live 3s infinite;
+    margin-left: 20px;
+    margin-right: 8px;
+}
+
+@keyframes live {
+    0% {
+        background-color: green;
+    }
+    50% {
+        background-color: greenyellow;
+    }
+    100% {
+        background-color: green;
+    }
+}

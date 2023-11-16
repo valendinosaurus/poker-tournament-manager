@@ -145,7 +145,14 @@ export class SeriesPageComponent implements OnInit {
                             seriesMetadata,
                             pricePool: pricePool,
                             contribution: contribution > seriesMetadata.maxAmountPerTournament ? seriesMetadata.maxAmountPerTournament : contribution,
-                            formulaText: this.rankingService.getFormulaDesc(localTournament.rankFormula)
+                            formulaText: this.rankingService.getFormulaDesc(localTournament.rankFormula),
+                            playersAlive: localPlayers.filter(p => !localFinished.map(f => f.playerId).includes(p.id)).map(
+                                (player: Player) => ({
+                                    ...player,
+                                    rebuys: localEntries.filter(e => e.playerId === player.id && e.type === 'REBUY').length,
+                                    addons: localEntries.filter(e => e.playerId === player.id && e.type === 'ADDON').length
+                                })
+                            )
                         });
                     }
                 );

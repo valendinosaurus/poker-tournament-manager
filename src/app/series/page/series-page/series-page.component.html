@@ -138,6 +138,10 @@
                     <div class="header">
                         <h4>
                             {{ tournament.date | date }} - {{ tournament.name }}
+                            <ng-container *ngIf="combinedRankings[i] && combinedRankings[i].playersAlive.length > 0">
+                                <span class="running"></span>
+                                RUNNING!
+                            </ng-container>
                         </h4>
 
                         <ng-container *ngIf="combinedRankings[i]">
@@ -185,6 +189,36 @@
                                 <th class="t-center">Addons</th>
                                 <th class="t-right">Price</th>
                             </tr>
+                            <ng-container *ngFor="let e of combinedRankings[i].playersAlive">
+                                <tr>
+                                    <td>
+                                        <span class="flextd">
+                                            <app-user-image-round
+                                                [imageUrl]="e.image"
+                                            ></app-user-image-round>
+                                            {{ e.name }}
+                                        </span>
+                                    </td>
+                                    <td class="t-center">
+                                        <span class="t-flex">
+                                            <strong>
+                                                --
+                                            </strong>
+                                            &nbsp;
+                                            (--)
+                                        </span>
+                                    </td>
+                                    <td class="t-center">
+                                        {{ e.rebuys }}
+                                    </td>
+                                    <td class="t-center">
+                                        {{ e.addons }}
+                                    </td>
+                                    <td class="t-right">
+                                        $ --
+                                    </td>
+                                </tr>
+                            </ng-container>
                             <ng-container *ngFor="let e of combinedRankings[i].combFinishes">
                                 <tr>
                                     <td>
