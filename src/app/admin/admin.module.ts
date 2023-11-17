@@ -33,7 +33,7 @@ import {
 import { SeriesListItemComponent } from './components/series/series-list/series-list-item/series-list-item.component';
 import { AddMissingEntriesComponent } from './components/dialogs/add-missing-entries/add-missing-entries.component';
 import { AddTournamentComponent } from './components/dialogs/add-tournament/add-tournament.component';
-import { AddReEntryComponent } from './components/dialogs/add-re-entry/add-re-entry.component';
+import { AddEntryComponent } from './components/dialogs/add-entry/add-entry.component';
 import { AddPauseComponent } from './components/dialogs/add-pause/add-pause.component';
 import { MakeDealComponent } from './components/dialogs/make-deal/make-deal.component';
 import { ModifyPayoutComponent } from './components/dialogs/modify-payout/modify-payout.component';
@@ -69,7 +69,7 @@ import { ModifyPayoutComponent } from './components/dialogs/modify-payout/modify
         SeriesListItemComponent,
         AddMissingEntriesComponent,
         AddTournamentComponent,
-        AddReEntryComponent,
+        AddEntryComponent,
         AddPauseComponent,
         MakeDealComponent,
         ModifyPayoutComponent,

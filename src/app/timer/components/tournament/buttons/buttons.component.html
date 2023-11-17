@@ -2,7 +2,7 @@
     <button
         *ngIf="!isSimpleTournament"
         class="main"
-        (click)="seatOpen.emit()"
+        (click)="seatOpen()"
     >
         <i class="fa fa-skull">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 512 512">
@@ -15,7 +15,7 @@
     <button
         *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
         class="main"
-        (click)="addRebuy.emit()"
+        (click)="addRebuy()"
     >
         <i class="fa fa-money"></i>
     </button>
@@ -23,7 +23,7 @@
     <button
         *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
         class="main"
-        (click)="addAddon.emit()"
+        (click)="addAddon()"
     >
         <i class="fa fa-database"></i>
     </button>
@@ -56,7 +56,7 @@
     <div class="overlay">
         <button
             *ngIf="!isSimpleTournament"
-            (click)="addPlayer.emit()"
+            (click)="addPlayer()"
         >
             <i class="fa fa-user"></i>
             <span>
@@ -66,7 +66,7 @@
 
         <button
             *ngIf="!isSimpleTournament"
-            (click)="addEntry.emit()"
+            (click)="addEntry(false)"
         >
             <i class="fa fa-money"></i>
             <span>
@@ -76,7 +76,7 @@
 
         <button
             *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
-            (click)="addRebuy.emit()"
+            (click)="addRebuy()"
         >
             <i class="fa fa-money"></i>
             <span>
@@ -86,7 +86,7 @@
 
         <button
             *ngIf="tournament.withReEntry && !isSimpleTournament && !isRebuyPhaseFinished"
-            (click)="addReEntry.emit()"
+            (click)="addEntry(true)"
         >
             <i class="fa fa-money"></i>
             <span>
@@ -96,7 +96,7 @@
 
         <button
             *ngIf="tournament.withAddon && !isSimpleTournament && !isRebuyPhaseFinished"
-            (click)="addAddon.emit()"
+            (click)="addAddon()"
         >
             <i class="fa fa-database"></i>
             <span>
@@ -106,7 +106,7 @@
 
         <button
             *ngIf="!isSimpleTournament"
-            (click)="seatOpen.emit()"
+            (click)="seatOpen()"
         >
             <i class="fa fa-skull">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 512 512">
@@ -121,7 +121,7 @@
 
         <button
             *ngIf="!isSimpleTournament && isRebuyPhaseFinished"
-            (click)="makeDeal.emit()"
+            (click)="makeDeal()"
         >
             <i class="fa fa-handshake-o"></i>
             <span>
@@ -168,7 +168,7 @@
 
         <hr *ngIf="!isSimpleTournament">
 
-        <button (click)="onToggleAutoslide()">
+        <button (click)="onToggleAutoSlide()">
             <i *ngIf="autoSlide" class="fa fa-toggle-on"></i>
             <i *ngIf="!autoSlide" class="fa fa-toggle-off"></i>
             <span>
@@ -178,7 +178,7 @@
 
         <button
             *ngIf="!isFullscreen"
-            (click)="fullscreen()"
+            (click)="fullScreen()"
         >
             <i class="fa fa-window-maximize"></i>
             <span>

@@ -10,22 +10,23 @@ import { FetchService } from '../../../../core/services/fetch.service';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
 
 @Component({
-    selector: 'app-add-addon',
-    templateUrl: './add-addon.component.html',
-    styleUrls: ['./add-addon.component.scss']
+    selector: 'app-add-re-entry',
+    templateUrl: './add-entry.component.html',
+    styleUrls: ['./add-entry.component.scss']
 })
-export class AddAddonComponent implements OnInit {
+export class AddEntryComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
     model: { playerId: number | undefined, tournamentId: number };
     fields: FormlyFieldConfig[];
 
-    private dialogRef: MatDialogRef<AddAddonComponent> = inject(MatDialogRef<AddAddonComponent>);
+    private dialogRef: MatDialogRef<AddEntryComponent> = inject(MatDialogRef<AddEntryComponent>);
     data: {
         tournamentId: number,
+        isReentry: boolean,
         randomId: number,
-        eligibleForAddon: Player[]
+        eligibleForEntryOrReEntry: Player[]
     } = inject(MAT_DIALOG_DATA);
 
     private entryApiService: EntryApiService = inject(EntryApiService);
@@ -36,7 +37,7 @@ export class AddAddonComponent implements OnInit {
     allPlayers: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.allPlayers = this.data.eligibleForAddon.map(
+        this.allPlayers = this.data.eligibleForEntryOrReEntry.map(
             player => ({
                 label: player.name,
                 value: player.id
@@ -66,7 +67,7 @@ export class AddAddonComponent implements OnInit {
                 id: undefined,
                 playerId: model.playerId,
                 tournamentId: model.tournamentId,
-                type: 'ADDON'
+                type: this.data.isReentry ? 'RE-ENTRY' : 'ENTRY'
             }).pipe(
                 take(1),
                 tap((a) => this.fetchService.trigger()),

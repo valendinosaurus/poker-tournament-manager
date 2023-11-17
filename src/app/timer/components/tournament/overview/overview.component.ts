@@ -34,11 +34,12 @@ import { BlindLevelOverviewComponent } from '../blind-level-overview/blind-level
 import { AddBlindsComponent } from '../../../../admin/components/dialogs/add-blinds/add-blinds.component';
 import { RankingComponent } from '../ranking/ranking.component';
 import { RankingService } from '../../../../core/services/util/ranking.service';
-import { AddReEntryComponent } from '../../../../admin/components/dialogs/add-re-entry/add-re-entry.component';
+import { AddEntryComponent } from '../../../../admin/components/dialogs/add-entry/add-entry.component';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 import { MakeDealComponent } from '../../../../admin/components/dialogs/make-deal/make-deal.component';
+import { TournamentService } from '../../../../core/services/util/tournament.service';
 
 @Component({
     selector: 'app-overview',
@@ -108,6 +109,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private tournamentService: TournamentService = inject(TournamentService);
 
     @HostListener('window:resize', ['$event.target'])
     onResize(target: any): void {
@@ -366,102 +368,11 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         });
     }
 
-    createPlayer(): void {
-        this.dialog.open(CreatePlayerComponent);
-    }
-
     addBlind(): void {
         const dialogRef = this.dialog.open(AddBlindsComponent, {
             ...this.dialogPosition,
             data: {
                 tournament: this.tournament
-            }
-        });
-
-        dialogRef.afterClosed().pipe(
-            takeUntilDestroyed(this.destroyRef),
-        ).subscribe();
-    }
-
-    addPlayer(): void {
-        const dialogRef = this.dialog.open(AddPlayerComponent, {
-            ...this.dialogPosition,
-            data: {
-                tournament: this.tournament,
-                randomId: this.randomId
-            }
-        });
-
-        dialogRef.afterClosed().pipe(
-            takeUntilDestroyed(this.destroyRef),
-        ).subscribe();
-    }
-
-    addEntry(isReEntry: boolean): void {
-        const dialogRef = this.dialog.open(AddReEntryComponent, {
-            ...this.dialogPosition,
-            data: {
-                tournament: this.tournament,
-                isReentry: isReEntry,
-                randomId: this.randomId
-            }
-        });
-
-        dialogRef.afterClosed().pipe(
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe();
-    }
-
-    addRebuy(): void {
-        const dialogRef = this.dialog.open(AddRebuyComponent, {
-            ...this.dialogPosition,
-            data: {
-                tournament: this.tournament,
-                randomId: this.randomId
-            }
-        });
-
-        dialogRef.afterClosed().pipe(
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe();
-    }
-
-    addAddon(): void {
-        const dialogRef = this.dialog.open(AddAddonComponent, {
-            ...this.dialogPosition,
-            data: {
-                tournament: this.tournament,
-                randomId: this.randomId
-            }
-        });
-
-        dialogRef.afterClosed().pipe(
-            takeUntilDestroyed(this.destroyRef),
-        ).subscribe();
-    }
-
-    makeDeal(): void {
-        const dialogRef = this.dialog.open(MakeDealComponent, {
-            ...this.dialogPosition,
-            data: {
-                tournament: this.tournament,
-                metadata: this.seriesMetadata,
-                randomId: this.randomId
-            }
-        });
-
-        dialogRef.afterClosed().pipe(
-            takeUntilDestroyed(this.destroyRef),
-        ).subscribe();
-    }
-
-    seatOpen(): void {
-        const dialogRef = this.dialog.open(AddFinishComponent, {
-            ...this.dialogPosition,
-            data: {
-                tournament: this.tournament,
-                metadata: this.seriesMetadata,
-                randomId: this.randomId
             }
         });
 

@@ -1,16 +1,11 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { Tournament } from '../../../../shared/models/tournament.interface';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { EntryApiService } from '../../../../core/services/api/entry-api.service';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
-import { Entry } from '../../../../shared/models/entry.interface';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService, User } from '@auth0/auth0-angular';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
 
@@ -27,59 +22,36 @@ export class AddRebuyComponent implements OnInit {
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddRebuyComponent> = inject(MatDialogRef<AddRebuyComponent>);
-    data: { tournament: Tournament, randomId: number } = inject(MAT_DIALOG_DATA);
+
+    data: {
+        tournamentId: number,
+        eligibleForRebuy: Player[]
+        randomId: number
+    } = inject(MAT_DIALOG_DATA);
 
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
-    private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private destroyRef: DestroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
 
     allPlayers: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.playerApiService.getAll$(sub).pipe(
-                takeUntilDestroyed(this.destroyRef),
-                tap((players: Player[]) => {
-                    this.allPlayers = players
-                        .filter(
-                            player => this.data.tournament.players.map(p => p.id).includes(player.id)
-                        )
-                        .filter(player => {
-                            const finishedIds = this.data.tournament.finishes.map(f => f.playerId);
+        this.allPlayers = this.data.eligibleForRebuy.map(
+            player => ({
+                label: player.name,
+                value: player.id
+            })
+        );
 
-                            return !finishedIds.includes(player.id);
-                        })
-                        .filter(player => {
-                            const allowed = this.data.tournament.noOfRebuys;
-                            const rebuysOfPlayer = this.data.tournament.entries.filter(
-                                (entry: Entry) => entry.playerId === player.id && entry.type === 'REBUY'
-                            ).length;
-
-                            return rebuysOfPlayer < allowed;
-                        })
-                        .map(
-                            player => ({
-                                label: player.name,
-                                value: player.id
-                            })
-                        );
-
-                    this.initModel();
-                    this.initFields();
-                })
-            ))
-        ).subscribe();
+        this.initModel();
+        this.initFields();
     }
 
     private initModel(): void {
         this.model = {
             playerId: undefined,
-            tournamentId: this.data.tournament.id
+            tournamentId: this.data.tournamentId
         };
     }
 
@@ -101,7 +73,7 @@ export class AddRebuyComponent implements OnInit {
                 tap((a) => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({
                     id: null,
-                    tId: this.data.tournament.id,
+                    tId: this.data.tournamentId,
                     clientId: this.data.randomId
                 })),
                 tap((result: any) => {
