@@ -5,4 +5,6 @@ export interface ConductedEntry {
     entryId: number;
     image: string;
     isFinished: boolean;
+    type: 'ENTRY' | 'REBUY' | 'ADDON' | 'RE-ENTRY';
+    isBlocked?: boolean;
 }

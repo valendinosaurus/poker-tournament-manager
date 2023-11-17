@@ -21,11 +21,11 @@
 
 <h3>Conducted Addons</h3>
 
-<ng-container *ngIf="data.conductedAddons && data.conductedAddons.length > 0; else noRebuys;">
+<ng-container *ngIf="data.conductedAddons && data.conductedAddons.length > 0; else noAddons;">
     <table class="player-table">
         <ng-container *ngFor="let e of data.conductedAddons">
             <tr>
-                <td>
+                <td class="small-gray">
                     {{ e.time | date:'d.M.yy, hh:mm:ss' }}
                 </td>
                 <td>
@@ -55,6 +55,6 @@
     </table>
 </ng-container>
 
-<ng-template #noRebuys>
+<ng-template #noAddons>
     No Addons yet
 </ng-template>

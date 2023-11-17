@@ -27,6 +27,7 @@ export class ButtonsComponent implements OnInit {
 
     @Input() randomId: number;
     @Input() running: boolean;
+    @Input() sub: string | undefined;
     @Input() tournament: Tournament;
     @Input() seriesMetadata: SeriesMetadata | null;
     @Input() isSimpleTournament: boolean;
@@ -83,7 +84,9 @@ export class ButtonsComponent implements OnInit {
             ...this.dialogPosition,
             data: {
                 tournament: this.tournament,
-                randomId: this.randomId
+                randomId: this.randomId,
+                multi: false,
+                sub: this.sub
             }
         });
 
@@ -99,7 +102,8 @@ export class ButtonsComponent implements OnInit {
                 tournamentId: this.tournament.id,
                 isReentry: isReEntry,
                 randomId: this.randomId,
-                eligibleForEntryOrReEntry: this.tournamentService.getPlayersEligibleForEntryOrReEntry(this.tournament, isReEntry)
+                eligibleForEntryOrReEntry: this.tournamentService.getPlayersEligibleForEntryOrReEntry(this.tournament, isReEntry),
+                conductedEntries: this.tournamentService.getConductedEntries(this.tournament)
             }
         });
 

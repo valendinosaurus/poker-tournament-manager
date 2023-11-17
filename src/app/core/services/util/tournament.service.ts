@@ -33,6 +33,23 @@ export class TournamentService {
             });
     }
 
+    getConductedEntries(tournament: Tournament): ConductedEntry[] {
+        return tournament.entries.filter(
+            (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
+        ).map(
+            (entry: Entry) => ({
+                entryId: entry.id ?? -1,
+                time: entry.timestamp,
+                playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
+                name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
+                image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
+                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId),
+                type: entry.type,
+                isBlocked: tournament.entries.filter(e => e.type === 'ADDON' || e.type === 'REBUY').map(e => e.playerId).includes(entry.playerId)
+            })
+        );
+    }
+
     getPlayersEligibleForRebuy(tournament: Tournament): Player[] {
         return tournament.players.filter(
             player => !tournament.finishes.map(f => f.playerId).includes(player.id)
@@ -53,7 +70,8 @@ export class TournamentService {
                 playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
                 name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
                 image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
-                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId)
+                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId),
+                type: entry.type
             })
         );
     }
@@ -83,7 +101,8 @@ export class TournamentService {
                 playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
                 name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
                 image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
-                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId)
+                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId),
+                type: entry.type
             })
         );
     }

@@ -8,6 +8,7 @@ import { switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
+import { ConductedEntry } from '../../../../shared/models/conducted-entry.interface';
 
 @Component({
     selector: 'app-add-re-entry',
@@ -26,7 +27,8 @@ export class AddEntryComponent implements OnInit {
         tournamentId: number,
         isReentry: boolean,
         randomId: number,
-        eligibleForEntryOrReEntry: Player[]
+        eligibleForEntryOrReEntry: Player[],
+        conductedEntries: ConductedEntry[]
     } = inject(MAT_DIALOG_DATA);
 
     private entryApiService: EntryApiService = inject(EntryApiService);
@@ -70,6 +72,27 @@ export class AddEntryComponent implements OnInit {
                 type: this.data.isReentry ? 'RE-ENTRY' : 'ENTRY',
                 timestamp: -1
             }).pipe(
+                take(1),
+                tap((a) => this.fetchService.trigger()),
+                switchMap(() => this.eventApiService.post$({
+                    id: null,
+                    tId: this.data.tournamentId,
+                    clientId: this.data.randomId
+                })),
+                tap((result: any) => {
+                    if (this.dialogRef) {
+                        this.dialogRef.close({
+                            entryId: result.id
+                        });
+                    }
+                })
+            ).subscribe();
+        }
+    }
+
+    removeEntry(entryId: number): void {
+        if (entryId > -1) {
+            this.entryApiService.delete$(entryId).pipe(
                 take(1),
                 tap((a) => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({

@@ -30,7 +30,8 @@ export class AddPlayerComponent implements OnInit {
     data: {
         tournament: Tournament,
         multi: boolean,
-        randomId: number
+        randomId: number,
+        sub: string
     } = inject(MAT_DIALOG_DATA);
 
     private dialogRef: MatDialogRef<AddPlayerComponent> = inject(MatDialogRef<AddPlayerComponent>);
@@ -95,6 +96,14 @@ export class AddPlayerComponent implements OnInit {
         }
     }
 
+    isPlayerFinished(playerId: number): boolean {
+        return this.data.tournament.finishes.map(f => f.playerId).includes(playerId);
+    }
+
+    hasPlayerEntered(playerId: number): boolean {
+        return this.data.tournament.entries.map(e => e.playerId).includes(playerId);
+    }
+
     onSubmit(model: { playerId: number, tournamentId: number }, withEntry: boolean): void {
         if (model.playerId > -1 && model.tournamentId) {
             // TODO improve
@@ -129,7 +138,7 @@ export class AddPlayerComponent implements OnInit {
             } else {
                 this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
                     take(1),
-                    tap((a) => this.fetchService.trigger()),
+                    tap(() => this.fetchService.trigger()),
                     switchMap(() => this.eventApiService.post$({
                         id: null,
                         tId: this.data.tournament.id,
@@ -161,6 +170,23 @@ export class AddPlayerComponent implements OnInit {
                 })
             ).subscribe();
         }
+    }
+
+    removePlayer(playerId: number): void {
+        this.tournamentApiService.removePlayer$(playerId, this.data.tournament.id, this.data.sub).pipe(
+            take(1),
+            tap(() => this.fetchService.trigger()),
+            switchMap(() => this.eventApiService.post$({
+                id: null,
+                tId: this.data.tournament.id,
+                clientId: this.data.randomId
+            })),
+            tap(() => {
+                if (this.dialogRef) {
+                    this.dialogRef.close();
+                }
+            })
+        ).subscribe();
     }
 
 }
