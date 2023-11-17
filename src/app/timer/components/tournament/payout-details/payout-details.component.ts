@@ -6,7 +6,7 @@ import { RankingService } from '../../../../core/services/util/ranking.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { ModifyPayoutComponent } from '../../../../admin/components/dialogs/modify-payout/modify-payout.component';
+import { ModifyPayoutComponent } from '../../../../dialogs/modify-payout/modify-payout.component';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 
 @Component({

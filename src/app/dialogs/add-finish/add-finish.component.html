@@ -1,9 +1,9 @@
+<h2>Seat open</h2>
+
 <form
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
 >
-    <h2>Create Blind Level</h2>
-
     <formly-form
         [form]="form"
         [fields]="fields"
@@ -16,6 +16,6 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        CREATE
+        LEAVE TOURNAMENT
     </button>
 </form>

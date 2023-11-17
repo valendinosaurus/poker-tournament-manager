@@ -2,7 +2,7 @@ import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } fr
 import { SeriesDetails } from '../../../../../shared/models/series-details.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { SeriesApiService } from '../../../../../core/services/api/series-api.service';
-import { AddTournamentComponent } from '../../../dialogs/add-tournament/add-tournament.component';
+import { AddTournamentComponent } from '../../../../../dialogs/add-tournament/add-tournament.component';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';

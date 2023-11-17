@@ -3,8 +3,14 @@ import { Player } from '../../../../shared/models/player.interface';
 import { Entry } from '../../../../shared/models/entry.interface';
 import { Finish } from '../../../../shared/models/finish.interface';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
-import { take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../../../core/services/fetch.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+    ConfirmationDialogComponent
+} from '../../../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { defer, iif, of } from 'rxjs';
+import { EventApiService } from '../../../../core/services/api/event-api.service';
 
 @Component({
     selector: 'app-player-details',
@@ -16,6 +22,7 @@ export class PlayerDetailsComponent implements OnChanges {
     @Input() players: Player[];
     @Input() entries: Entry[];
     @Input() finishes: Finish[];
+    @Input() clientId: number;
     @Input() trigger: string | null;
     @Input() tId: number;
 
@@ -33,6 +40,9 @@ export class PlayerDetailsComponent implements OnChanges {
 
     private fetchService: FetchService = inject(FetchService);
     private finishApiService: FinishApiService = inject(FinishApiService);
+    private eventApiService: EventApiService = inject(EventApiService);
+
+    private dialog: MatDialog = inject(MatDialog);
 
     ngOnChanges(changes: SimpleChanges): void {
         const minRank = Math.min(...this.finishes.map(f => f.rank));
@@ -78,13 +88,35 @@ export class PlayerDetailsComponent implements OnChanges {
         }
     }
 
-    removeSeatOpen(pId: number): void {
-        console.log('REMOVE PD');
-        this.finishApiService.delete$(this.tId, pId).pipe(
-            take(1),
-            tap(() => {
-                this.fetchService.trigger();
-            })
+    removeSeatOpen(pId: number, playerName: string): void {
+        const dialogRef = this.dialog.open(
+            ConfirmationDialogComponent,
+            {
+                data: {
+                    title: 'Remove Seat Open',
+                    body: `Do you really want to remove the seat open of <strong>${playerName}</strong>`,
+                    confirm: 'Remove Addon'
+                }
+            });
+
+        dialogRef.afterClosed().pipe(
+            switchMap((result: boolean) => iif(
+                    () => result,
+                    defer(() => this.finishApiService.delete$(this.tId, pId).pipe(
+                            take(1),
+                            tap(() => {
+                                this.fetchService.trigger();
+                            }),
+                            switchMap(() => this.eventApiService.post$({
+                                id: null,
+                                tId: this.tId,
+                                clientId: this.clientId
+                            }))
+                        )
+                    ),
+                    defer(() => of(null))
+                )
+            )
         ).subscribe();
     }
 

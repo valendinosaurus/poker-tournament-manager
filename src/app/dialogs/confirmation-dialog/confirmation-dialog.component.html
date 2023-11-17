@@ -1,0 +1,23 @@
+<h2>
+    {{ data.title }}
+</h2>
+
+<p class="conf" [innerHTML]="data.body"></p>
+
+
+<div class="actions" mat-dialog-actions>
+    <button
+        mat-flat-button
+        color="primary"
+        (click)="confirm()"
+    >
+        {{ data.confirm}}
+    </button>
+
+    <button
+        mat-flat-button
+        (click)="cancel()"
+    >
+        Cancel
+    </button>
+</div>

@@ -8,12 +8,12 @@ import { ServerResponse } from '../../../../shared/models/server-response';
 import { take } from 'rxjs/operators';
 import { CreatePlayerComponent } from '../../../../admin/components/player/create-player/create-player.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AddPlayerComponent } from '../../../../admin/components/dialogs/add-player/add-player.component';
-import { AddEntryComponent } from '../../../../admin/components/dialogs/add-entry/add-entry.component';
-import { AddRebuyComponent } from '../../../../admin/components/dialogs/add-rebuy/add-rebuy.component';
-import { AddAddonComponent } from '../../../../admin/components/dialogs/add-addon/add-addon.component';
-import { MakeDealComponent } from '../../../../admin/components/dialogs/make-deal/make-deal.component';
-import { AddFinishComponent } from '../../../../admin/components/dialogs/add-finish/add-finish.component';
+import { AddPlayerComponent } from '../../../../dialogs/add-player/add-player.component';
+import { AddEntryComponent } from '../../../../dialogs/add-entry/add-entry.component';
+import { AddRebuyComponent } from '../../../../dialogs/add-rebuy/add-rebuy.component';
+import { AddAddonComponent } from '../../../../dialogs/add-addon/add-addon.component';
+import { MakeDealComponent } from '../../../../dialogs/make-deal/make-deal.component';
+import { AddFinishComponent } from '../../../../dialogs/add-finish/add-finish.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TournamentService } from '../../../../core/services/util/tournament.service';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
@@ -100,6 +100,7 @@ export class ButtonsComponent implements OnInit {
             ...this.dialogPosition,
             data: {
                 tournamentId: this.tournament.id,
+                tournamentName: this.tournament.name,
                 isReentry: isReEntry,
                 randomId: this.randomId,
                 eligibleForEntryOrReEntry: this.tournamentService.getPlayersEligibleForEntryOrReEntry(this.tournament, isReEntry),
@@ -117,6 +118,7 @@ export class ButtonsComponent implements OnInit {
             ...this.dialogPosition,
             data: {
                 tournamentId: this.tournament.id,
+                tournamentName: this.tournament.name,
                 randomId: this.randomId,
                 eligibleForRebuy: this.tournamentService.getPlayersEligibleForRebuy(this.tournament),
                 conductedRebuys: this.tournamentService.getConductedRebuys(this.tournament)
@@ -135,6 +137,7 @@ export class ButtonsComponent implements OnInit {
             ...this.dialogPosition,
             data: {
                 tournamentId: this.tournament.id,
+                tournamentName: this.tournament.name,
                 randomId: this.randomId,
                 eligibleForAddon: this.tournamentService.getPlayersEligibleForAddon(this.tournament),
                 conductedAddons: this.tournamentService.getConductedAddons(this.tournament)

@@ -1,15 +1,15 @@
 import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { TournamentDetails } from '../../../../../shared/models/tournament-details.interface';
-import { AddBlindsComponent } from '../../../dialogs/add-blinds/add-blinds.component';
+import { AddBlindsComponent } from '../../../../../dialogs/add-blinds/add-blinds.component';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { AddPlayerComponent } from '../../../dialogs/add-player/add-player.component';
+import { AddPlayerComponent } from '../../../../../dialogs/add-player/add-player.component';
 import { TournamentApiService } from '../../../../../core/services/api/tournament-api.service';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
-import { AddPauseComponent } from '../../../dialogs/add-pause/add-pause.component';
+import { AddPauseComponent } from '../../../../../dialogs/add-pause/add-pause.component';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 
 @Component({

@@ -14,6 +14,7 @@ import { AuthModule } from '@auth0/auth0-angular';
 import { SeriesModule } from './series/series.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserModule } from '@angular/platform-browser';
+import { DialogsModule } from './dialogs/dialogs.module';
 
 registerLocaleData(localeDECH);
 
@@ -28,6 +29,7 @@ registerLocaleData(localeDECH);
         TimerModule,
         SeriesModule,
         AdminModule,
+        DialogsModule,
         BrowserAnimationsModule,
         FormlyModule.forRoot(),
         ReactiveFormsModule,

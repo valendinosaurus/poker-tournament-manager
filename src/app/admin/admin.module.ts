@@ -7,11 +7,6 @@ import { CreateBrandingComponent } from './components/branding/create-branding/c
 import { CreateTournamentComponent } from './components/tournament/create-tournament/create-tournament.component';
 import { CreateSeriesComponent } from './components/series/create-series/create-series.component';
 import { CreateBlindLevelComponent } from './components/blind-level/create-blind-level/create-blind-level.component';
-import { AddPlayerComponent } from './components/dialogs/add-player/add-player.component';
-import { AddRebuyComponent } from './components/dialogs/add-rebuy/add-rebuy.component';
-import { AddAddonComponent } from './components/dialogs/add-addon/add-addon.component';
-import { AddFinishComponent } from './components/dialogs/add-finish/add-finish.component';
-import { AddBlindsComponent } from './components/dialogs/add-blinds/add-blinds.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlayerListComponent } from './components/player/player-list/player-list.component';
@@ -31,12 +26,7 @@ import {
     TournamentListItemComponent
 } from './components/tournament/tournament-list/tournament-list-item/tournament-list-item.component';
 import { SeriesListItemComponent } from './components/series/series-list/series-list-item/series-list-item.component';
-import { AddMissingEntriesComponent } from './components/dialogs/add-missing-entries/add-missing-entries.component';
-import { AddTournamentComponent } from './components/dialogs/add-tournament/add-tournament.component';
-import { AddEntryComponent } from './components/dialogs/add-entry/add-entry.component';
-import { AddPauseComponent } from './components/dialogs/add-pause/add-pause.component';
-import { MakeDealComponent } from './components/dialogs/make-deal/make-deal.component';
-import { ModifyPayoutComponent } from './components/dialogs/modify-payout/modify-payout.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     declarations: [
@@ -47,11 +37,6 @@ import { ModifyPayoutComponent } from './components/dialogs/modify-payout/modify
         CreateTournamentComponent,
         CreateSeriesComponent,
         CreateBlindLevelComponent,
-        AddPlayerComponent,
-        AddRebuyComponent,
-        AddAddonComponent,
-        AddFinishComponent,
-        AddBlindsComponent,
         PlayerListComponent,
         SeriesListComponent,
         TournamentListComponent,
@@ -67,16 +52,11 @@ import { ModifyPayoutComponent } from './components/dialogs/modify-payout/modify
         CreatePauseComponent,
         TournamentListItemComponent,
         SeriesListItemComponent,
-        AddMissingEntriesComponent,
-        AddTournamentComponent,
-        AddEntryComponent,
-        AddPauseComponent,
-        MakeDealComponent,
-        ModifyPayoutComponent,
     ],
     imports: [
         SharedModule,
-        MatTabsModule
+        MatTabsModule,
+        MatButtonModule
     ],
     exports: [
         AdminComponent
