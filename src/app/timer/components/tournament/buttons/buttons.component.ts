@@ -7,7 +7,6 @@ import { EventApiService } from '../../../../core/services/api/event-api.service
 import { ServerResponse } from '../../../../shared/models/server-response';
 import { take } from 'rxjs/operators';
 import { CreatePlayerComponent } from '../../../../admin/components/player/create-player/create-player.component';
-import { AddBlindsComponent } from '../../../../admin/components/dialogs/add-blinds/add-blinds.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPlayerComponent } from '../../../../admin/components/dialogs/add-player/add-player.component';
 import { AddEntryComponent } from '../../../../admin/components/dialogs/add-entry/add-entry.component';
@@ -62,7 +61,6 @@ export class ButtonsComponent implements OnInit {
 
     autoSlide = true;
 
-
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
     @HostListener('document:mozfullscreenchange', ['$event'])
@@ -75,6 +73,7 @@ export class ButtonsComponent implements OnInit {
         this.elem = this.document.documentElement;
     }
 
+    // TODO include
     createPlayer(): void {
         this.dialog.open(CreatePlayerComponent);
     }
@@ -115,9 +114,12 @@ export class ButtonsComponent implements OnInit {
             data: {
                 tournamentId: this.tournament.id,
                 randomId: this.randomId,
-                eligibleForRebuy: this.tournamentService.getPlayersEligibleForRebuy(this.tournament)
+                eligibleForRebuy: this.tournamentService.getPlayersEligibleForRebuy(this.tournament),
+                conductedRebuys: this.tournamentService.getConductedRebuys(this.tournament)
             }
         });
+
+        console.log(this.tournament);
 
         dialogRef.afterClosed().pipe(
             takeUntilDestroyed(this.destroyRef)
@@ -130,7 +132,8 @@ export class ButtonsComponent implements OnInit {
             data: {
                 tournamentId: this.tournament.id,
                 randomId: this.randomId,
-                eligibleForAddon: this.tournamentService.getPlayersEligibleForAddon(this.tournament)
+                eligibleForAddon: this.tournamentService.getPlayersEligibleForAddon(this.tournament),
+                conductedAddons: this.tournamentService.getConductedAddons(this.tournament)
             }
         });
 

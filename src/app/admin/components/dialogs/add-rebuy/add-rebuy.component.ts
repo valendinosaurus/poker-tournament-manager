@@ -8,6 +8,7 @@ import { switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../../../shared/models/player.interface';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
+import { ConductedEntry } from '../../../../shared/models/conducted-entry.interface';
 
 @Component({
     selector: 'app-add-rebuy',
@@ -26,7 +27,8 @@ export class AddRebuyComponent implements OnInit {
     data: {
         tournamentId: number,
         eligibleForRebuy: Player[]
-        randomId: number
+        randomId: number,
+        conductedRebuys: ConductedEntry[]
     } = inject(MAT_DIALOG_DATA);
 
     private entryApiService: EntryApiService = inject(EntryApiService);
@@ -67,8 +69,30 @@ export class AddRebuyComponent implements OnInit {
                 id: undefined,
                 playerId: model.playerId,
                 tournamentId: model.tournamentId,
-                type: 'REBUY'
+                type: 'REBUY',
+                timestamp: -1
             }).pipe(
+                take(1),
+                tap((a) => this.fetchService.trigger()),
+                switchMap(() => this.eventApiService.post$({
+                    id: null,
+                    tId: this.data.tournamentId,
+                    clientId: this.data.randomId
+                })),
+                tap((result: any) => {
+                    if (this.dialogRef) {
+                        this.dialogRef.close({
+                            entryId: result.id
+                        });
+                    }
+                })
+            ).subscribe();
+        }
+    }
+
+    deleteRebuy(entryId: number): void {
+        if (entryId > -1) {
+            this.entryApiService.delete$(entryId).pipe(
                 take(1),
                 tap((a) => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({

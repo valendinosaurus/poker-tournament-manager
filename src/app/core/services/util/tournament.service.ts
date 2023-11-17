@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Player } from '../../../shared/models/player.interface';
 import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
+import { ConductedEntry } from '../../../shared/models/conducted-entry.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -42,6 +43,21 @@ export class TournamentService {
         );
     }
 
+    getConductedRebuys(tournament: Tournament): ConductedEntry[] {
+        return tournament.entries.filter(
+            (entry: Entry) => entry.type === 'REBUY'
+        ).map(
+            (entry: Entry) => ({
+                entryId: entry.id ?? -1,
+                time: entry.timestamp,
+                playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
+                name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
+                image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
+                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId)
+            })
+        );
+    }
+
     getPlayersEligibleForAddon(tournament: Tournament): Player[] {
         return tournament.players.filter(player => {
             const finishedIds = tournament.finishes.map(f => f.playerId);
@@ -57,11 +73,26 @@ export class TournamentService {
         });
     }
 
+    getConductedAddons(tournament: Tournament): ConductedEntry[] {
+        return tournament.entries.filter(
+            (entry: Entry) => entry.type === 'ADDON'
+        ).map(
+            (entry: Entry) => ({
+                entryId: entry.id ?? -1,
+                time: entry.timestamp,
+                playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
+                name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
+                image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
+                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId)
+            })
+        );
+    }
+
     getPlayersEligibleForSeatOpen(tournament: Tournament): Player[] {
         return tournament.players.filter(player => {
             const finishedIds = tournament.finishes.map(f => f.playerId);
 
             return !finishedIds.includes(player.id);
-        })
+        });
     }
 }

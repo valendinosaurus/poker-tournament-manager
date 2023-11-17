@@ -105,7 +105,8 @@ export class AddFinishComponent implements OnInit {
                 playerId: model.playerId,
                 tournamentId: model.tournamentId,
                 price: this.price,
-                rank: this.rank
+                rank: this.rank,
+                timestamp: -1
             }).pipe(
                 take(1),
                 switchMap(() => iif(
@@ -166,7 +167,8 @@ export class AddFinishComponent implements OnInit {
             rank: 1,
             tournamentId: this.data.tournament.id,
             price,
-            playerId
+            playerId,
+            timestamp: -1
         };
     }
 

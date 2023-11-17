@@ -67,7 +67,8 @@ export class AddEntryComponent implements OnInit {
                 id: undefined,
                 playerId: model.playerId,
                 tournamentId: model.tournamentId,
-                type: this.data.isReentry ? 'RE-ENTRY' : 'ENTRY'
+                type: this.data.isReentry ? 'RE-ENTRY' : 'ENTRY',
+                timestamp: -1
             }).pipe(
                 take(1),
                 tap((a) => this.fetchService.trigger()),

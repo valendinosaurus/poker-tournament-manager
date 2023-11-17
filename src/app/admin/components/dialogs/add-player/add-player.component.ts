@@ -105,7 +105,8 @@ export class AddPlayerComponent implements OnInit {
                             id: undefined,
                             playerId: model.playerId,
                             tournamentId: model.tournamentId,
-                            type: 'ENTRY'
+                            type: 'ENTRY',
+                            timestamp: -1
                         }).pipe(
                             take(1),
                             tap((a) => this.fetchService.trigger()),

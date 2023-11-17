@@ -3,4 +3,5 @@ export interface Finish {
     tournamentId: number;
     rank: number;
     price: number;
+    timestamp: number;
 }

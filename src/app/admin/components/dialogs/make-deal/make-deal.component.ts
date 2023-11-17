@@ -10,7 +10,6 @@ import { forkJoin, Observable } from 'rxjs';
 import { ServerResponse } from '../../../../shared/models/server-response';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 import { switchMap, take, tap } from 'rxjs/operators';
-import { Finish } from '../../../../shared/models/finish.interface';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
 import { RankingService } from '../../../../core/services/util/ranking.service';
@@ -38,8 +37,6 @@ export class MakeDealComponent implements OnInit {
     rankAfterDeal: number;
     total: number = 0;
     keys: string[];
-
-    finishesToReturn: Finish[];
 
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -93,21 +90,14 @@ export class MakeDealComponent implements OnInit {
 
     onSubmit(model: { [key: string]: number }): void {
         const streams: Observable<ServerResponse>[] = [];
-        this.finishesToReturn = [];
         this.keys.forEach(k => {
-            this.finishesToReturn.push({
-                playerId: +k,
-                price: model[k],
-                rank: this.rankAfterDeal,
-                tournamentId: this.data.tournament.id
-            });
-
             streams.push(
                 this.finishApiService.post$({
                     playerId: +k,
                     price: model[k],
                     rank: this.rankAfterDeal,
-                    tournamentId: this.data.tournament.id
+                    tournamentId: this.data.tournament.id,
+                    timestamp: -1
                 })
             );
         });
@@ -123,7 +113,7 @@ export class MakeDealComponent implements OnInit {
             })),
             tap(() => {
                 if (this.dialogRef) {
-                    this.dialogRef.close(this.finishesToReturn);
+                    this.dialogRef.close();
                 }
             })
         ).subscribe();
