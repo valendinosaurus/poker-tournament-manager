@@ -1,28 +1,26 @@
-
-mat-tab-body table th,
-mat-tab-body table td {
-    padding: 8px 20px;
-    text-align: center;
-}
-
-table,
-table th,
-table td {
+table {
+    width: 100%;
     border-collapse: collapse !important;
-    border-color: transparent !important;
-    border: none !important;
-    color: #00437b;
 }
 
 table td,
 table th {
+}
+
+table tr {
+    border-bottom: solid 1px rgba(#00437b, 0.3);
+}
+
+table tr:last-child {
+    border-bottom: none !important;
+}
+
+table tr td,
+table tr th {
     padding: 6px 12px;
+    color: #00437b;
+    text-align: left;
 }
-
-table tr:nth-child(odd) {
-    background: #ddd;
-}
-
 
 th.center,
 td.center {
@@ -31,4 +29,38 @@ td.center {
 
 th:not(.center) {
     text-align: left !important;
+}
+
+table .finished {
+    opacity: 0.3;
+}
+
+td.small-gray {
+    font-size: 1.5vh;
+    color: #aaa;
+}
+
+span.tbd,
+span.rank {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+span.tbd {
+    font-size: 12px;
+}
+
+span.flex-td {
+    display: flex;
+    align-items: center;
+}
+
+.tbd {
+    width: 40px;
+}
+
+mat-tab-body table th,
+mat-tab-body table td {
+    padding: 8px 20px;
+    text-align: center;
 }

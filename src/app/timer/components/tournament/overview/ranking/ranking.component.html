@@ -1,0 +1,93 @@
+<div class="inner-container">
+    <h3>
+        Ranking
+    </h3>
+
+    <div class="overflow-y-auto">
+        <div id="topr"></div>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th class="center">Rank</th>
+                <th class="center">Re-Entries</th>
+                <th class="center">Rebuys</th>
+                <th class="center">Addons</th>
+                <th class="center">Price</th>
+                <th
+                    *ngIf="formula"
+                    class="center"
+                >
+                    Points
+                </th>
+            </tr>
+            <ng-container *ngFor="let e of missingRankes">
+                <tr class="opaque">
+                    <td>
+                <span class="flex-td">
+                    <app-user-image-round
+                        [imageUrl]="e.image"
+                    ></app-user-image-round>
+                    {{ e.name }}
+                </span>
+                    </td>
+                    <td class="center">
+                        {{ e.rank | number }}
+                    </td>
+                    <td class="center">
+                        -
+                    </td>
+                    <td class="center">
+                        -
+                    </td>
+                    <td class="center">
+                        -
+                    </td>
+                    <td class="center">
+                        -
+                    </td>
+                    <td
+                        *ngIf="formula"
+                        class="center"
+                    >
+                        -
+                    </td>
+                </tr>
+            </ng-container>
+            <ng-container *ngFor="let e of combFinishes">
+                <tr>
+                    <td>
+                <span class="flex-td">
+                    <app-user-image-round
+                        [imageUrl]="e.image"
+                    ></app-user-image-round>
+                    {{ e.name }}
+                </span>
+                    </td>
+                    <td class="center">
+                        {{ e.rank | number }}
+                    </td>
+                    <td class="center">
+                        <app-bullets [number]="e.reEntries"></app-bullets>
+                    </td>
+                    <td class="center">
+                        <app-bullets [number]="e.rebuys"></app-bullets>
+                    </td>
+                    <td class="center">
+                        <app-bullets [number]="e.addons"></app-bullets>
+                    </td>
+                    <td class="center">
+                        $ {{ e.price | number:'':'de-CH' }}
+                    </td>
+                    <td
+                        *ngIf="formula"
+                        class="center"
+                    >
+                        {{ calcPoints(e) }}
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+
+        <div id="bottomr"></div>
+    </div>
+</div>

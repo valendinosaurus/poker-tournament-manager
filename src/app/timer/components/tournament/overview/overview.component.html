@@ -1,130 +1,170 @@
 <div class="overview">
+    <!--    <app-header-->
+    <!--        [tournament]="tournament"-->
+    <!--    ></app-header>-->
 
-    <div
-        *ngIf="!finished"
-        class="button-wrapper"
-    >
-        <app-buttons
-            [running]="running"
-            [randomId]="randomId"
-            [tournament]="tournament"
-            [sub]="sub"
-            [seriesMetadata]="seriesMetadata"
-            [isRebuyPhaseFinished]="isRebuyPhaseFinished"
-            [isSimpleTournament]="isSimpleTournament"
-            (start)="start()"
-            (pause)="pause()"
-            (addMinute)="addMinute()"
-            (nextLevel)="goToNextLevel()"
-            (prevLevel)="goToPreviousLevel()"
-            (toggleAutoSlide)="autoSlide = $event"
-        ></app-buttons>
-    </div>
+    <div class="overview-wrapper">
+        <div class="left">
+            <div class="info-panel">
+                <div class="slider-wrapper">
+                    <div class="keen-slider" #sliderRef>
+                        <div class="keen-slider__slide number-slide1 slide-blinds">
+                            <app-blind-level-overview
+                                [isSimpleTournament]="isSimpleTournament"
+                                [levels]="tournament.structure"
+                                [currentLevelIndex]="currentLevelIndex"
+                                (addBlind)="addBlind()"
+                            ></app-blind-level-overview>
+                        </div>
 
-    <app-header
-        [tournament]="tournament"
-    ></app-header>
+                        <div class="keen-slider__slide number-slide2 slide-stats">
+                            <app-player-details
+                                [players]="tournament.players"
+                                [entries]="tournament.entries"
+                                [finishes]="tournament.finishes"
+                                [trigger]="scrollTrigger$ | async"
+                                [tId]="tournament.id"
+                                [clientId]="randomId"
+                            ></app-player-details>
+                        </div>
 
-    <div class="top">
-        <div class="top-center">
-            <!--            <div class="popup">running {{ running }}</div>-->
-            <div *ngIf="!running" class="popup">
-                PAUSED
+                        <div class="keen-slider__slide number-slide3 slide-stats">
+                            <app-ranking
+                                [players]="tournament.players"
+                                [entries]="tournament.entries"
+                                [finishes]="tournament.finishes"
+                                [tournament]="tournament"
+                                [seriesMetadata]="seriesMetadata"
+                            ></app-ranking>
+                        </div>
+
+                        <!--                        <div class="keen-slider__slide number-slide4 slide-stats">-->
+                        <!--                            <app-payout-details-->
+                        <!--                                [entries]="tournament.entries"-->
+                        <!--                                [buyInAmount]="tournament.buyInAmount"-->
+                        <!--                                [rebuyAmount]="tournament.rebuyAmount"-->
+                        <!--                                [addonAmount]="tournament.addonAmount"-->
+                        <!--                                [payout]="tournament.payout"-->
+                        <!--                                [players]="tournament.players"-->
+                        <!--                                [finishes]="tournament.finishes"-->
+                        <!--                                [percentage]="seriesMetadata?.percentage"-->
+                        <!--                                [maxCap]="seriesMetadata?.maxAmountPerTournament"-->
+                        <!--                                [initialPricePool]="tournament.initialPricePool"-->
+                        <!--                                [tournamentId]="tournament.id"-->
+                        <!--                            ></app-payout-details>-->
+                        <!--                        </div>-->
+                    </div>
+
+                    <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
+                    <i class="fa fa-chevron-right" (click)="slider.next()"></i>
+
+                    <div class="steps">
+                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 0"></i>
+                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 1"></i>
+                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 2"></i>
+                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 3"></i>-->
+                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 4"></i>-->
+                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 5"></i>-->
+                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 6"></i>-->
+                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 7"></i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="center">
+            <h3 class="highlighted">
+                Levels
+            </h3>
+            <div class="clock">
+                <span class="titles">
+                <h2 class="series-title">
+                    <span>Valentino's Poker Room</span>
+                </h2>
+
+                <h2 class="tourney">
+                    {{ tournament.name }}
+                </h2>
+                </span>
+
+                <h1>
+                    {{ currentLevelTimeLeft | time }}
+                </h1>
+                <div *ngIf="!running" class="popup">
+                    PAUSED
+                </div>
+
+                <countdown
+                    *ngIf="!finished"
+                    class="countdown"
+                    #cd
+                    (event)="handleEvent($event)"
+                    [config]="countdownConfig"
+                ></countdown>
             </div>
 
-            <circle-progress
+            <div
                 *ngIf="!finished && tournament.structure.length > 0"
-                [percent]="currentTimeLeftPercentage"
-                [radius]="(radius$ | async) || radius"
-                [outerStrokeWidth]="(outerStroke$ | async) || outerStroke"
-                [innerStrokeWidth]="(innerStroke$ | async) || innerStroke"
-                [outerStrokeColor]="'#00437b'"
-                [innerStrokeColor]="'#006dc7'"
-                [title]="currentLevelTimeLeft | time"
-                [showSubtitle]="false"
-                [showUnits]="false"
-                [animationDuration]="300"
-                [titleFontSize]="'15vh'"
-                [subtitleFontSize]="'20px'"
-                [animation]="false"
-            ></circle-progress>
+                class="current-level"
+            >
+                <p class="level">
+                    {{ levels[currentLevelIndex] | blindLevelText }}
+                </p>
+            </div>
 
-            <countdown
+            <div class="next-level">
+                <p class="next-level-title">
+                    NEXT
+                </p>
+
+                <p class="next-level-text">
+                    {{ levels[currentLevelIndex + 1] | blindLevelText }}
+                </p>
+            </div>
+
+            <p *ngIf="finished">
+                FINISHED
+            </p>
+
+            <div
                 *ngIf="!finished"
-                class="countdown"
-                #cd
-                (event)="handleEvent($event)"
-                [config]="countdownConfig"
-            ></countdown>
-        </div>
-
-        <div class="info-panel">
-            <div class="slider-wrapper">
-                <div class="keen-slider" #sliderRef>
-                    <div class="keen-slider__slide number-slide1 slide-blinds">
-                        <app-blind-level-overview
-                            [isSimpleTournament]="isSimpleTournament"
-                            [levels]="tournament.structure"
-                            [currentLevelIndex]="currentLevelIndex"
-                            (addBlind)="addBlind()"
-                        ></app-blind-level-overview>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide2 slide-stats">
-                        <app-player-details
-                            [players]="tournament.players"
-                            [entries]="tournament.entries"
-                            [finishes]="tournament.finishes"
-                            [trigger]="scrollTrigger$ | async"
-                            [tId]="tournament.id"
-                            [clientId]="randomId"
-                        ></app-player-details>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide3 slide-stats">
-                        <app-ranking
-                            [players]="tournament.players"
-                            [entries]="tournament.entries"
-                            [finishes]="tournament.finishes"
-                            [tournament]="tournament"
-                            [seriesMetadata]="seriesMetadata"
-                        ></app-ranking>
-                    </div>
-
-                    <div class="keen-slider__slide number-slide4 slide-stats">
-                        <app-payout-details
-                            [entries]="tournament.entries"
-                            [buyInAmount]="tournament.buyInAmount"
-                            [rebuyAmount]="tournament.rebuyAmount"
-                            [addonAmount]="tournament.addonAmount"
-                            [payout]="tournament.payout"
-                            [players]="tournament.players"
-                            [finishes]="tournament.finishes"
-                            [percentage]="seriesMetadata?.percentage"
-                            [maxCap]="seriesMetadata?.maxAmountPerTournament"
-                            [initialPricePool]="tournament.initialPricePool"
-                            [tournamentId]="tournament.id"
-                        ></app-payout-details>
-                    </div>
-                </div>
-
-                <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
-                <i class="fa fa-chevron-right" (click)="slider.next()"></i>
-
-                <div class="steps">
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 0"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 1"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 2"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 3"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 4"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 5"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 6"></i>
-                    <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 7"></i>
-                </div>
+                class="button-wrapper"
+            >
+                <app-buttons
+                    [running]="running"
+                    [randomId]="randomId"
+                    [tournament]="tournament"
+                    [sub]="sub"
+                    [seriesMetadata]="seriesMetadata"
+                    [isRebuyPhaseFinished]="isRebuyPhaseFinished"
+                    [isSimpleTournament]="isSimpleTournament"
+                    (start)="start()"
+                    (pause)="pause()"
+                    (addMinute)="addMinute()"
+                    (nextLevel)="goToNextLevel()"
+                    (prevLevel)="goToPreviousLevel()"
+                    (toggleAutoSlide)="autoSlide = $event"
+                ></app-buttons>
             </div>
         </div>
+        <div class="right">
+            <h3 class="highlighted">
+                Tournament Info
+            </h3>
 
-        <div class="overview-panel">
+            <app-payout-details
+                [entries]="tournament.entries"
+                [buyInAmount]="tournament.buyInAmount"
+                [rebuyAmount]="tournament.rebuyAmount"
+                [addonAmount]="tournament.addonAmount"
+                [payout]="tournament.payout"
+                [players]="tournament.players"
+                [finishes]="tournament.finishes"
+                [percentage]="seriesMetadata?.percentage"
+                [maxCap]="seriesMetadata?.maxAmountPerTournament"
+                [initialPricePool]="tournament.initialPricePool"
+                [tournamentId]="tournament.id"
+            ></app-payout-details>
+
             <app-player-overview
                 [players]="tournament.players"
                 [finishes]="tournament.finishes"
@@ -143,28 +183,6 @@
                 [addonStack]="tournament.addonStack"
                 [finishes]="tournament.finishes"
             ></app-chips-overview>
-        </div>
-    </div>
-
-    <div class="bottom">
-        <app-current-level
-            *ngIf="!finished && tournament.structure.length > 0"
-            [level]="levels[currentLevelIndex]"
-        ></app-current-level>
-
-        <div class="line"></div>
-
-        <div class="darker"
-             *ngIf="tournament.structure.length > 0"
-        >
-            <app-next-level
-                *ngIf="!finished && currentLevelIndex < levels.length - 1"
-                [level]="levels[currentLevelIndex+1]"
-            ></app-next-level>
-
-            <p *ngIf="finished">
-                FINISHED
-            </p>
         </div>
     </div>
 </div>

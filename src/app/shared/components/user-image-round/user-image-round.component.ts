@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
 export class UserImageRoundComponent {
 
     @Input() imageUrl: string;
-    @Input() size = 40;
+    @Input() size = 32;
     @Input() border: string = 'b-regular';
 
 }

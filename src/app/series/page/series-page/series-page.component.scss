@@ -123,7 +123,6 @@ h2 {
 }
 
 .leaderboard table {
-    width: 100%;
     min-width: 380px;
 }
 
@@ -137,7 +136,6 @@ h2 {
 }
 
 .tournament table {
-    width: 100%;
     min-width: 600px;
 }
 
@@ -168,10 +166,7 @@ h2 {
     }
 }
 
-.flextd {
-    display: flex;
-    align-items: center;
-}
+
 
 table {
     border-spacing: 1px;

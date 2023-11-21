@@ -23,14 +23,14 @@
 <h3>Conducted Addons</h3>
 
 <ng-container *ngIf="data.conductedAddons && data.conductedAddons.length > 0; else noAddons;">
-    <table class="player-table">
+    <table class="dialog-table">
         <ng-container *ngFor="let e of data.conductedAddons">
             <tr>
                 <td class="small-gray">
                     {{ e.time | date:'d.M.yy, hh:mm:ss' }}
                 </td>
                 <td>
-                    <span class="flextd">
+                    <span class="flex-td">
                         <app-user-image-round
                             [imageUrl]="e.image"
                         ></app-user-image-round>

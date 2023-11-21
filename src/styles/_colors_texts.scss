@@ -1,0 +1,29 @@
+$background: #9fb8ad;
+
+$primary: #006dc7;
+$primaryDark: #00437b;
+
+$secondary: #3f403f;
+
+$font: #eee;
+
+.bold {
+    font-weight: bold;
+    font-size: 2.6vh;
+}
+
+p.big {
+    font-size: 6vh;
+    color: #006dc7;
+    font-weight: bold;
+}
+
+span.small {
+    font-size: 2.7vh;
+    transform: translateY(-30%);
+    color: rgba(#006dc7, 0.5);
+}
+
+.stats-container h4 {
+    margin-bottom: 0;
+}

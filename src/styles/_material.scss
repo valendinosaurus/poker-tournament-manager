@@ -18,3 +18,64 @@ mat-tab-body button {
     overflow-x: hidden !important;
     min-height: calc(100vh - 48px) !important;
 }
+
+
+.mdc-dialog__container h2 {
+    font-size: 4vh;
+    border-bottom: solid 2px black;
+    margin-bottom: 40px;
+}
+
+.mdc-dialog__container button {
+    font-size: 2.6vh;
+}
+
+
+.mdc-list-item__primary-text {
+    font-size: 2.6vh !important;
+}
+
+@media (max-width: 800px) {
+    .cdk-overlay-pane {
+        width: 90%;
+    }
+}
+
+#cdk-overlay-0 {
+    left: 0 !important;
+    top: 0 !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+.mat-mdc-dialog-surface {
+    padding: 32px;
+
+    h2 {
+        color: #222;
+        font-size: 1.5vh;
+        margin-bottom: 1vh;
+    }
+
+    h3 {
+        color: #222;
+    }
+
+    p {
+        color: black;
+        font-size: 24px;
+    }
+
+    button {
+        background: #00437b;
+        color: white;
+    }
+
+    mat-form-field {
+        font-size: 32px;
+    }
+
+    .actions {
+        margin-top: 40px;
+    }
+}

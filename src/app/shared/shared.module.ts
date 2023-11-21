@@ -13,6 +13,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatRadioModule } from '@angular/material/radio';
 import { UserImageRoundComponent } from './components/user-image-round/user-image-round.component';
 import { PageWithSlideMenuComponent } from './components/page-with-slide-menu/page-with-slide-menu.component';
+import { BulletsComponent } from './components/bullets/bullets.component';
+import { BlindLevelTextPipe } from './pipes/blind-level-text.pipe';
 
 const SHARED_MODULES = [
     CommonModule,
@@ -32,7 +34,9 @@ const SHARED_MODULES = [
         TimePipe,
         UnsubscribeComponent,
         UserImageRoundComponent,
-        PageWithSlideMenuComponent
+        PageWithSlideMenuComponent,
+        BulletsComponent,
+        BlindLevelTextPipe
     ],
     imports: [
         ...SHARED_MODULES,
@@ -44,7 +48,9 @@ const SHARED_MODULES = [
         FormlyModule,
         UnsubscribeComponent,
         UserImageRoundComponent,
-        PageWithSlideMenuComponent
+        PageWithSlideMenuComponent,
+        BulletsComponent,
+        BlindLevelTextPipe
     ],
 })
 export class SharedModule {

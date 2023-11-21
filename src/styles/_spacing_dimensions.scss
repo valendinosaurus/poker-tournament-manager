@@ -1,0 +1,48 @@
+.inner-container {
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+.stats-container {
+    width: 100%;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-dir-column {
+    flex-direction: column;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-around {
+    justify-content: space-around;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.w-5 {
+    width: 5%;
+    flex: 0 0 5%;
+}
+
+.border-bottom-2 {
+    border-bottom: solid 2px rgba(#00437b, 0.3);
+}

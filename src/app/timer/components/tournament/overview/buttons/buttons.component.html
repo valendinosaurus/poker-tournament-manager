@@ -1,0 +1,220 @@
+<div class="main-buttons">
+    <button
+        *ngIf="!isSimpleTournament"
+        class="main"
+        (click)="seatOpen()"
+    >
+        <i class="fa fa-skull">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 512 512">
+                <path
+                    d="M416 398.9c58.5-41.1 96-104.1 96-174.9C512 100.3 397.4 0 256 0S0 100.3 0 224c0 70.7 37.5 133.8 96 174.9c0 .4 0 .7 0 1.1v64c0 26.5 21.5 48 48 48h48V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h64V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h48c26.5 0 48-21.5 48-48V400c0-.4 0-.7 0-1.1zM96 256a64 64 0 1 1 128 0A64 64 0 1 1 96 256zm256-64a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
+            </svg>
+        </i>
+    </button>
+
+    <button
+        *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
+        class="main"
+        (click)="addRebuy()"
+    >
+        <i class="fa fa-money"></i>
+    </button>
+
+    <button
+        *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
+        class="main"
+        (click)="addAddon()"
+    >
+        <i class="fa fa-database"></i>
+    </button>
+
+    <button
+        class="main mobile-only"
+        (click)="notify()"
+    >
+        <i class="fa fa-bell-o"></i>
+    </button>
+
+    <button
+        class="main hide-800"
+        type="button"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
+        (click)="isOverlayOpen = !isOverlayOpen"
+    >
+        <i class="fa fa-tasks"></i>
+    </button>
+</div>
+
+<ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isOverlayOpen"
+    [cdkConnectedOverlayPositions]="positionPairs"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    (backdropClick)="isOverlayOpen = false"
+>
+    <div class="overlay">
+        <h3 class="highlighted">
+            Menu
+        </h3>
+
+        <div class="button-group">
+
+            <button
+                *ngIf="!isSimpleTournament"
+                (click)="addPlayer()"
+            >
+                <i class="fa fa-user"></i>
+                <span>
+                + PLAYER
+            </span>
+            </button>
+
+            <button
+                *ngIf="!isSimpleTournament"
+                (click)="addEntry(false)"
+            >
+                <i class="fa fa-money"></i>
+                <span>
+                ENTRY
+            </span>
+            </button>
+
+            <button
+                *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
+                (click)="addRebuy()"
+            >
+                <i class="fa fa-money"></i>
+                <span>
+                REBUY
+            </span>
+            </button>
+
+            <button
+                *ngIf="tournament.withReEntry && !isSimpleTournament && !isRebuyPhaseFinished"
+                (click)="addEntry(true)"
+            >
+                <i class="fa fa-money"></i>
+                <span>
+                RE-ENTRY
+            </span>
+            </button>
+
+            <button
+                *ngIf="tournament.withAddon && !isSimpleTournament && !isRebuyPhaseFinished"
+                (click)="addAddon()"
+            >
+                <i class="fa fa-database"></i>
+                <span>
+                ADDON
+            </span>
+            </button>
+
+            <button
+                *ngIf="!isSimpleTournament"
+                (click)="seatOpen()"
+            >
+                <i class="fa fa-skull">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 512 512">
+                        <path
+                            d="M416 398.9c58.5-41.1 96-104.1 96-174.9C512 100.3 397.4 0 256 0S0 100.3 0 224c0 70.7 37.5 133.8 96 174.9c0 .4 0 .7 0 1.1v64c0 26.5 21.5 48 48 48h48V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h64V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h48c26.5 0 48-21.5 48-48V400c0-.4 0-.7 0-1.1zM96 256a64 64 0 1 1 128 0A64 64 0 1 1 96 256zm256-64a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
+                    </svg>
+                </i>
+                <span>
+                SEAT OPEN
+            </span>
+            </button>
+
+            <button
+                *ngIf="!isSimpleTournament && isRebuyPhaseFinished"
+                (click)="makeDeal()"
+            >
+                <i class="fa fa-handshake-o"></i>
+                <span>
+                MAKE DEAL
+            </span>
+            </button>
+        </div>
+
+        <div class="button-group">
+
+            <button *ngIf="running" (click)="pause.emit()">
+                <i class="fa fa-pause"></i>
+                <span>
+                PAUSE
+            </span>
+            </button>
+
+            <button *ngIf="!running" (click)="start.emit()">
+                <i class="fa fa-play"></i>
+                <span>
+                START
+            </span>
+            </button>
+
+            <button (click)="addMinute.emit()">
+                <i class="fa fa-clock-o"></i>
+                <span>
+                + 1 MIN
+            </span>
+            </button>
+
+            <button (click)="prevLevel.emit()">
+                <i class="fa fa-chevron-circle-left"></i>
+                <span>
+                PREV. LEVEL
+            </span>
+            </button>
+
+            <button (click)="nextLevel.emit()">
+                <i class="fa fa-chevron-circle-right"></i>
+                <span>
+                NEXT LEVEL
+            </span>
+            </button>
+        </div>
+
+        <div class="button-group">
+
+            <button (click)="onToggleAutoSlide()">
+                <i *ngIf="autoSlide" class="fa fa-toggle-on"></i>
+                <i *ngIf="!autoSlide" class="fa fa-toggle-off"></i>
+                <span>
+                AUTOSLIDE
+            </span>
+            </button>
+
+            <button
+                *ngIf="!isFullscreen"
+                (click)="fullScreen()"
+            >
+                <i class="fa fa-window-maximize"></i>
+                <span>
+                FULLSCREEN
+            </span>
+            </button>
+
+            <button
+                *ngIf="isFullscreen"
+                (click)="cancelFullscreen()"
+            >
+                <i class="fa fa fa-times-rectangle"></i>
+                <span>
+                NORMAL SCREEN
+            </span>
+            </button>
+
+            <button [routerLink]="['/admin']" *ngIf="isAuthenticated$ | async">
+                <i class="fa fa-address-card"></i>
+                <span>
+                ADMIN
+            </span>
+            </button>
+        </div>
+
+    </div>
+</ng-template>
+
+
+

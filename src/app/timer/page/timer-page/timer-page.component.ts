@@ -33,7 +33,7 @@ export class TimerPageComponent implements OnInit {
         );
 
         if (this.route.snapshot.params['tId'] && !this.route.snapshot.params['password']) {
-
+            // TODO check
         }
     }
 

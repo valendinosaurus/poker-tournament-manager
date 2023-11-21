@@ -1,0 +1,37 @@
+<div class="stats-container flex justify-around align-center buyin-overview border-bottom-2">
+    <div class="flex flex-dir-column justify-center align-center">
+        <h4>
+            Entries
+        </h4>
+        <p class="big">
+            {{ textEntries }}
+        </p>
+        <span class="small">
+            x {{ tournament.startStack | number:'':'de-CH' }}
+        </span>
+    </div>
+
+    <div class="flex flex-dir-column justify-center align-center">
+        <h4
+        >Rebuys
+        </h4>
+        <p class="big">
+            {{ textRebuys }}
+        </p>
+        <span class="small">
+            x {{ tournament.rebuyStack | number:'':'de-CH' }}
+        </span>
+    </div>
+
+    <div class="flex flex-dir-column justify-center align-center">
+        <h4>
+            Addons
+        </h4>
+        <p class="big">
+            {{ textAddons }}
+        </p>
+        <span class="small">
+            x {{ tournament.addonStack | number:'':'de-CH' }}
+        </span>
+    </div>
+</div>

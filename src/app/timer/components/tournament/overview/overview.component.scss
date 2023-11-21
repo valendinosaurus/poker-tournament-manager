@@ -1,22 +1,143 @@
-@import "src/styles/colors";
+@import "src/styles/colors_texts";
+
+.overview {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.overview .overview-wrapper {
+    flex: 0 1 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.overview .right,
+.overview .left {
+    width: 30%;
+    flex: 0 0 30%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.overview .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.overview .center {
+    width: 40%;
+    flex: 0 0 40%;
+    box-sizing: border-box;
+    border-left: solid 2px rgba(#00437b, 0.3);
+    border-right: solid 2px rgba(#00437b, 0.3);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.clock {
+    position: relative;
+    flex: 1 1 66%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(#006dc7, 0.2);
+
+    h1 {
+        font-size: 20vh;
+        color: #00437b;
+    }
+}
+
+.titles {
+    width: 100%;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+h2.series-title {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 7vh;
+    font-weight: 400;
+    width: 100%;
+    text-align: center;
+    color: #00437b;
+}
+
+h2.tourney {
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+    color: #006dc7;
+}
+
+.bottom {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+
+    .darker {
+        width: 100%;
+        background: $primaryDark;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+
+.content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: rgba(#006dc7, .1);
+
+    .left {
+        width: 65%;
+        flex: 0 0 65%;
+        display: flex;
+        flex-direction: column;
+
+        .left-content {
+            display: flex;
+
+
+        }
+    }
+
+    .right {
+        width: 35%;
+        flex: 0 0 35%;
+        border-left: solid 2px rgba(#00437b, 0.3);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+
+        .h-half {
+            flex: 0 0 50%;
+            height: 50%;
+            overflow: hidden;
+        }
+    }
+}
+
 
 p {
     font-size: 64px;
-}
-
-
-.overview {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    position: relative;
-    background: $primary;
-}
-
-.constrainer {
-    width: 70vw;
 }
 
 .top {
@@ -37,37 +158,17 @@ p {
 }
 
 .info-panel {
-    width: 40vw;
-}
-
-.overview-panel {
-    width: 30vw;
-}
-
-.bottom {
     width: 100%;
-    height: 28vh;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-direction: column;
-
-    .darker {
-        width: 100%;
-        background: $primaryDark;
-        flex-grow: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    height: 100%;
 }
+
 
 .popup {
     position: absolute;
     top: 48.8%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 7vh;
+    font-size: 14vh;
     padding: 16px 32px;
     background-color: red;
     color: white;
@@ -86,12 +187,10 @@ p {
 }
 
 .button-wrapper {
-    position: absolute;
-    bottom: 2vh;
-    right: 2vh;
     display: flex;
     flex-direction: column;
-    z-index: 99;
+    background: rgba(#006dc7, 0.2);
+    flex: 1 1 10%;
 
     @media (max-width: 800px) {
         top: 2vh;
@@ -110,9 +209,8 @@ p {
 
 .slider-wrapper {
     position: relative;
-    height: 64vh;
-    border-left: solid 1px black;
-    border-right: solid 1px black;
+    height: 100%;
+    border-left: solid 2px rgba(#00437b, 0.3);
     box-sizing: border-box;
 
     .fa {
@@ -138,7 +236,7 @@ p {
 }
 
 .keen-slider {
-    height: 64vh;
+    //height: 64vh;
 }
 
 .keen-slider__slide {
@@ -183,4 +281,39 @@ p {
     .bottom {
         display: none;
     }
+}
+
+.current-level {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #006dc7;
+    width: 100%;
+    flex: 1 1 12%;
+}
+
+.level {
+    margin: 0;
+    font-size: 10vh;
+    font-weight: bold;
+}
+
+.next-level {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 12%;
+    background: #00437b;
+}
+
+.next-level-title {
+    font-size: 3vh;
+    margin-right: 4vh;
+}
+
+.next-level-text {
+    margin: 0;
+    font-size: 5vh;
+    font-weight: bold;
 }
