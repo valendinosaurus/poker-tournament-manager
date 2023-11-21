@@ -1,0 +1,119 @@
+@import "src/styles/colors_texts";
+
+button {
+    background: white;
+    color: $primary;
+    border: none;
+    font-weight: bold;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.4;
+}
+
+button:hover {
+    opacity: 0.7;
+}
+
+.expandable {
+    max-height: 0;
+    overflow: hidden;
+
+    &.expanded {
+        max-height: 1000px;
+    }
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+    transform-origin: center;
+}
+
+.deletable {
+    cursor: pointer;
+    padding: 2px 8px;
+
+    &:hover {
+        background: aliceblue;
+    }
+}
+
+.sub-group {
+    display: block;
+    margin-bottom: 20px;
+
+    mat-form-field {
+        padding-left: 32px;
+        border-left: solid 2px #ccc;
+        box-sizing: border-box;
+    }
+}
+
+span.formula {
+    font-size: 32px;
+    margin: auto;
+
+}
+
+.clickable {
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.7;
+
+        svg {
+            fill: darkred;
+        }
+    }
+}
+
+.position div {
+    width: 2vh;
+    height: 2vh;
+    border-radius: 2vh;
+    background: $primary;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+}
+
+.indicator {
+    width: 10%;
+    flex: 0 0 10%;
+    font-size: 2vh;
+    text-align: center;
+    color: $primary;
+}
+
+.pause {
+    opacity: 0.7;
+}
+
+.duration {
+    text-align: right;
+    flex-grow: 1;
+}
+
+.rank {
+    width: 2vh;
+    height: 2vh;
+    border-radius: 2vh;
+    background: $primary;
+    color: white;
+    font-size: 1.2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.dark-red-opaque {
+    color: darkred !important;
+    opacity: 0.6;
+}

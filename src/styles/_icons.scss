@@ -14,7 +14,7 @@
 }
 
 .fa-share {
-    color: #00437b;
+    color: $primaryDark;
     cursor: pointer;
 
     &:hover {
@@ -24,7 +24,7 @@
 
 .fa-chevron-circle-up,
 .fa-plus-circle {
-    color: #00437b;
+    color: $primaryDark;
     cursor: pointer;
 
     &:hover {

@@ -1,3 +1,5 @@
+@import "src/styles/colors_texts";
+
 :host {
     display: contents;
 }
@@ -10,7 +12,7 @@ div {
 }
 
 div.b-regular {
-    border: solid 2px #006dc7;
+    border: solid 2px $primary;
 }
 
 div.b-black {

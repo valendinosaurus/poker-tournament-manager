@@ -4,7 +4,7 @@ import { BlindLevel } from '../../../../../shared/models/blind-level.interface';
 @Component({
     selector: 'app-blind-level-overview',
     templateUrl: './blind-level-overview.component.html',
-    styleUrls: ['./blind-level-overview.component.scss']
+    styles: [':host{display: contents}'],
 })
 export class BlindLevelOverviewComponent implements OnChanges {
 

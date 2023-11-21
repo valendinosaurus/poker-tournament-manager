@@ -1,10 +1,11 @@
-<div class="pricepool">
+<div>
     <h1>
         <span>
             effective price pool
         </span>
         {{  totalPricePool | number:'':'de-CH' }} $
     </h1>
+
     <h2
         *ngIf="deduction > 0"
         class="no-mb"
@@ -12,10 +13,11 @@
         <span>
             total price pool
         </span>
-        <span class="deduction">
+        <span>
             {{ +deduction + +totalPricePool  | number:'':'de-CH' }} $
         </span>
     </h2>
+
     <h2
         *ngIf="initialPricePool > 0"
         [class.no-mb]="initialPricePool > 0 && deduction > 0"
@@ -24,42 +26,46 @@
         <span>
             initial pricepool
         </span>
-        <span class="initial">
+        <span class="opaque">
             {{ initialPricePool | number:'':'de-CH' }} $
         </span>
     </h2>
+
     <h2
         *ngIf="deduction > 0"
     >
         <span>
             added to final pot
         </span>
-        <span class="deduction">
+        <span class="dark-red-opaque">
             {{ deduction  | number:'':'de-CH' }} $
         </span>
     </h2>
 </div>
 
-<div class="payout">
+<div class="stats-container border-bottom-2">
     <h4>
         Payout structrue
         <ng-container *ngIf="wasDealMade">
-            <span><i class="fa fa-exclamation-triangle"></i> DEAL WAS MADE</span>
+            <span>
+                <i class="fa fa-exclamation-triangle"></i>
+                DEAL WAS MADE
+            </span>
         </ng-container>
 
         <span *ngIf="playersLeft >= placesPaid"><i class="fa fa-edit" (click)="editPayouts()"></i></span>
     </h4>
 
-    <div class="payouts">
+    <div class="overflow-y-auto">
         <div id="topd"></div>
         <table cellspacing="0" cellpadding="0">
             <ng-container *ngFor="let e of payouts">
                 <tr [class.opaque]="!e.name">
                     <td>
-                        <span class="td-flex">
-                            <div class="rank">
+                        <span class="flex-td">
+                            <span class="rank">
                                 {{ e.rank | number:'1.0-1' }}
-                            </div>
+                            </span>
 
                             <ng-container *ngIf="e.dealMade">
                                 <i class="fa fa-handshake-o"></i>
@@ -69,7 +75,7 @@
                     <td>
                         <div
                             *ngIf="e.name"
-                            class="player"
+                            class="flex align-center"
                         >
                             <app-user-image-round
                                 [imageUrl]="e.image ? e.image : ''"
@@ -77,9 +83,9 @@
                             {{ e.name }}
                         </div>
                     </td>
-                    <td class="price">
+                    <td class="bold text-align-right">
                         {{ e.price | number:'':'de-CH' }} $
-                        <span>({{ e.percentage }})</span>
+                        <span class="regular">({{ e.percentage }})</span>
                     </td>
                 </tr>
             </ng-container>

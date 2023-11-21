@@ -12,34 +12,24 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import { BehaviorSubject, interval, Observable, of, ReplaySubject } from 'rxjs';
-import { debounceTime, map, tap } from 'rxjs/operators';
+import { interval, ReplaySubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
 import { CountdownComponent, CountdownConfig, CountdownEvent, CountdownStatus } from 'ngx-countdown';
 import { Tournament } from '../../../../shared/models/tournament.interface';
-
 import KeenSlider, { KeenSliderInstance } from 'keen-slider';
 import { MatDialog } from '@angular/material/dialog';
-import { CreatePlayerComponent } from '../../../../admin/components/player/create-player/create-player.component';
-import { AddPlayerComponent } from '../../../../dialogs/add-player/add-player.component';
 import { ChipsOverviewComponent } from './chips-overview/chips-overview.component';
 import { PlayerOverviewComponent } from './player-overview/player-overview.component';
-import { AddRebuyComponent } from '../../../../dialogs/add-rebuy/add-rebuy.component';
 import { BuyinOverviewComponent } from './buyin-overview/buyin-overview.component';
-import { AddAddonComponent } from '../../../../dialogs/add-addon/add-addon.component';
 import { PlayerDetailsComponent } from './player-details/player-details.component';
-import { AddFinishComponent } from '../../../../dialogs/add-finish/add-finish.component';
 import { PayoutDetailsComponent } from './payout-details/payout-details.component';
 import { BlindLevelOverviewComponent } from './blind-level-overview/blind-level-overview.component';
 import { AddBlindsComponent } from '../../../../dialogs/add-blinds/add-blinds.component';
 import { RankingComponent } from './ranking/ranking.component';
-import { RankingService } from '../../../../core/services/util/ranking.service';
-import { AddEntryComponent } from '../../../../dialogs/add-entry/add-entry.component';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
-import { MakeDealComponent } from '../../../../dialogs/make-deal/make-deal.component';
-import { TournamentService } from '../../../../core/services/util/tournament.service';
 
 @Component({
     selector: 'app-overview',
@@ -65,18 +55,10 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     running = false;
     finished = false;
 
+    protected readonly window = window;
     countdownConfig: CountdownConfig;
 
     isRebuyPhaseFinished = false;
-
-    resize$: BehaviorSubject<{ width: number; height: number }>;
-
-    radius$: Observable<number> = of(200);
-    radius = window.innerHeight * 0.6 * 0.4;
-    innerStroke$: Observable<number> = of(10);
-    innerStroke = window.innerHeight * 0.01;
-    outerStroke$: Observable<number> = of(32);
-    outerStroke = window.innerHeight * 0.05;
 
     scrollTrigger$: ReplaySubject<string> = new ReplaySubject<string>();
 
@@ -106,18 +88,8 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         }
     };
 
-    private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private tournamentService: TournamentService = inject(TournamentService);
-
-    @HostListener('window:resize', ['$event.target'])
-    onResize(target: any): void {
-        this.resize$.next({
-            width: target.innerWidth,
-            height: target.innerHeight,
-        });
-    }
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownHandler(event: Event) {
@@ -134,13 +106,9 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         if (this.tournament && this.tournament.structure.length > 0) {
             this.levels = this.tournament.structure;
 
-            this.initResizeListener();
             this.initLevels();
             this.initTimeValues();
             this.initCountdownConfig();
-            this.initRadius();
-            this.initInnerStroke();
-            this.initOuterStroke();
 
             this.finished = !this.isSimpleTournament
                 && this.tournament.players.length === this.tournament.finishes.length
@@ -191,13 +159,6 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         ).subscribe();
     }
 
-    private initResizeListener(): void {
-        this.resize$ = new BehaviorSubject<{ width: number; height: number }>({
-            width: window.innerWidth,
-            height: window.innerHeight,
-        });
-    }
-
     private initLevels(): void {
         this.levels = this.levels.map((level) => ({
             ...level,
@@ -226,27 +187,6 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
             notify: 0,
             demand: true,
         };
-    }
-
-    private initRadius(): void {
-        this.radius$ = this.resize$.pipe(
-            debounceTime(100),
-            map((size) => size.height * 0.6 * 0.4)
-        );
-    }
-
-    private initInnerStroke(): void {
-        this.innerStroke$ = this.resize$.pipe(
-            debounceTime(100),
-            map((size) => size.height * 0.01)
-        );
-    }
-
-    private initOuterStroke(): void {
-        this.outerStroke$ = this.resize$.pipe(
-            debounceTime(100),
-            map((size) => size.height * 0.05)
-        );
     }
 
     private checkIsRebuyPhaseFinished(): void {
@@ -389,5 +329,4 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         this.payoutCmp.ngOnChanges({});
         this.rankingCmp.ngOnChanges({});
     }
-
 }

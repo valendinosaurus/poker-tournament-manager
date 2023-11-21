@@ -10,7 +10,7 @@ mat-tab-body h3 {
 }
 
 mat-tab-body button {
-    background: #006dc7;
+    background: $primary;
     color: white;
 }
 
@@ -67,7 +67,7 @@ mat-tab-body button {
     }
 
     button {
-        background: #00437b;
+        background: $primaryDark;
         color: white;
     }
 

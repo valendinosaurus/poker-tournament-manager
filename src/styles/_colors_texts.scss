@@ -7,23 +7,99 @@ $secondary: #3f403f;
 
 $font: #eee;
 
+h1,
+h2,
+h3,
+h4,
+p {
+    color: white;
+    margin: 0;
+}
+
+h3 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+h4 {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: $primaryDark;
+}
+
+h3.highlighted {
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    background: $primary;
+    padding: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    box-sizing: border-box;
+    border-bottom: solid 2px rgba($primaryDark, 0.3);
+
+    .fa {
+        color: white;
+        margin-left: 2vw;
+    }
+}
+
+.info-panel {
+    h3 {
+        width: 100%;
+        text-align: center;
+        text-transform: uppercase;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: $primary;
+        padding: 1vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: solid 2px rgba($primaryDark, 0.3);
+
+        .fa {
+            color: white;
+            margin-left: 2vw;
+        }
+    }
+}
+
+.regular {
+    font-weight: normal !important;
+}
+
 .bold {
     font-weight: bold;
-    font-size: 2.6vh;
 }
 
 p.big {
     font-size: 6vh;
-    color: #006dc7;
+    color: $primary;
     font-weight: bold;
 }
 
 span.small {
     font-size: 2.7vh;
     transform: translateY(-30%);
-    color: rgba(#006dc7, 0.5);
+    color: rgba($primary, 0.5);
 }
 
 .stats-container h4 {
     margin-bottom: 0;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.green {
+    color: green;
+}
+
+.gray {
+    color: #777;
 }
