@@ -22,7 +22,7 @@ button:hover {
     overflow: hidden;
 
     &.expanded {
-        max-height: 1000px;
+        max-height: 100vh;
     }
 }
 
@@ -70,13 +70,13 @@ span.formula {
 }
 
 .position div {
-    width: 2vh;
-    height: 2vh;
-    border-radius: 2vh;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
     background: $primary;
     color: white;
     font-weight: bold;
-    font-size: 1.2vh;
+    font-size: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -86,7 +86,7 @@ span.formula {
 .indicator {
     width: 10%;
     flex: 0 0 10%;
-    font-size: 2vh;
+    font-size: 20px;
     text-align: center;
     color: $primary;
 }
@@ -101,12 +101,12 @@ span.formula {
 }
 
 .rank {
-    width: 2vh;
-    height: 2vh;
-    border-radius: 2vh;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
     background: $primary;
     color: white;
-    font-size: 1.2vh;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;

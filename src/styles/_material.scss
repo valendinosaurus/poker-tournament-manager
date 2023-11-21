@@ -21,18 +21,18 @@ mat-tab-body button {
 
 
 .mdc-dialog__container h2 {
-    font-size: 4vh;
+    font-size: 40px;
     border-bottom: solid 2px black;
     margin-bottom: 40px;
 }
 
 .mdc-dialog__container button {
-    font-size: 2.6vh;
+    font-size: 2.60px;
 }
 
 
 .mdc-list-item__primary-text {
-    font-size: 2.6vh !important;
+    font-size: 2.60px !important;
 }
 
 @media (max-width: 800px) {
@@ -53,8 +53,8 @@ mat-tab-body button {
 
     h2 {
         color: #222;
-        font-size: 1.5vh;
-        margin-bottom: 1vh;
+        font-size: 1.50px;
+        margin-bottom: 10px;
     }
 
     h3 {

@@ -1,5 +1,5 @@
 <div>
-    <h1>
+    <h1 class="border-bottom-1-dark">
         <span>
             effective price pool
         </span>
@@ -8,7 +8,7 @@
 
     <h2
         *ngIf="deduction > 0"
-        class="no-mb"
+        class="no-mb border-bottom-1-dark"
     >
         <span>
             total price pool
@@ -21,7 +21,7 @@
     <h2
         *ngIf="initialPricePool > 0"
         [class.no-mb]="initialPricePool > 0 && deduction > 0"
-        class="no-mb"
+        class="no-mb border-bottom-1-dark"
     >
         <span>
             initial pricepool
@@ -33,6 +33,7 @@
 
     <h2
         *ngIf="deduction > 0"
+        class="border-bottom-1-dark"
     >
         <span>
             added to final pot

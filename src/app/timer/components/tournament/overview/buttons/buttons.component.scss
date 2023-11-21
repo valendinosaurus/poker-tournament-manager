@@ -15,7 +15,7 @@ div.main-buttons {
         flex-direction: column;
         align-items: center;
         height: 100vh;
-        padding: 8vh;
+        padding: 80px;
         box-sizing: border-box;
     }
 }
@@ -27,31 +27,31 @@ div.main-buttons {
 }
 
 button.main {
-    width: 6vh;
-    height: 6vh;
-    border-radius: 6vh;
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
 
     @media (max-width: 800px) {
-        width: 16vh;
-        height: 16vh;
-        border-radius: 16vh;
+        width: 160px;
+        height: 160px;
+        border-radius: 160px;
     }
 
     .fa {
-        font-size: 3vh;
+        font-size: 30px;
 
         @media (max-width: 800px) {
-            font-size: 8vh;
+            font-size: 80px;
         }
     }
 }
 
 button {
     margin: 4px;
-    font-size: 2vh;
+    font-size: 20px;
 }
 
 .overlay {
@@ -84,16 +84,16 @@ button {
         color: #666;
         padding: 12px 24px;
         border-radius: 40px;
-        font-size: 3vh;
+        font-size: 30px;
 
         .fa {
             width: 3vw;
             margin-right: 0.4vw;
-            font-size: 3vh !important;
+            font-size: 30px !important;
 
             @media (max-width: 800px) {
                 width: 20%;
-                font-size: 8vh;
+                font-size: 80px;
                 margin-top: 12px;
                 margin-bottom: 12px;
             }

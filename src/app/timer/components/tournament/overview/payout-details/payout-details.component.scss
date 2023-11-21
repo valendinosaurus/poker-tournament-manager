@@ -14,7 +14,6 @@ h1 {
     justify-content: space-between;
     align-items: center;
     color: green;
-    border-bottom: solid 1px rgba($primaryDark, 0.3);
 
     span {
         color: $primary;
@@ -23,12 +22,11 @@ h1 {
 
 h2 {
     margin-top: 0;
-    margin-bottom: 2vh;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     padding: 8px 20px;
     color: $primary;
-    border-bottom: solid 1px rgba($primaryDark, 0.3);
 
     span:nth-child(2) {
         color: $primaryDark;
@@ -37,12 +35,11 @@ h2 {
 
 h2.no-mb {
     margin-bottom: 0 !important;
-    border-bottom: solid 1px rgba($primaryDark, 0.3);
 }
 
 h1 > span,
 h2 > span {
-    font-size: 1.6vh;
+    font-size: 16px;
 }
 
 h4 {
@@ -54,17 +51,17 @@ h4 {
         display: flex;
         align-items: center;
         margin-left: 16px;
-        font-size: 1.4vh;
+        font-size: 1.40px;
 
         * {
-            font-size: 1.5vh;
+            font-size: 1.50px;
             margin-right: 8px;
         }
     }
 }
 
 th, td {
-    font-size: 2.5vh;
+    font-size: 24px;
     text-align: center;
 }
 
@@ -75,12 +72,10 @@ th, td {
 .payout {
     padding: 0 16px;
     box-sizing: border-box;
-    padding-bottom: 24px;
-    border-bottom: solid 2px rgba($primaryDark, 0.3);
 }
 
 .fa-handshake-o {
     color: #555;
-    font-size: 1.8vh;
+    font-size: 1.80px;
     margin-left: 12px;
 }

@@ -5,6 +5,8 @@ $primaryDark: #00437b;
 
 $secondary: #3f403f;
 
+$borderColor: #fafafa;
+
 $font: #eee;
 
 h1,
@@ -32,13 +34,13 @@ h3.highlighted {
     text-align: center;
     text-transform: uppercase;
     background: $primary;
-    padding: 1vh;
+    padding: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 0;
     box-sizing: border-box;
-    border-bottom: solid 2px rgba($primaryDark, 0.3);
+    border-bottom: solid 2px $borderColor;
 
     .fa {
         color: white;
@@ -55,11 +57,11 @@ h3.highlighted {
         top: 0;
         left: 0;
         background: $primary;
-        padding: 1vh;
+        padding: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
-        border-bottom: solid 2px rgba($primaryDark, 0.3);
+        border-bottom: solid 2px $borderColor;
 
         .fa {
             color: white;
@@ -77,13 +79,13 @@ h3.highlighted {
 }
 
 p.big {
-    font-size: 6vh;
+    font-size: 60px;
     color: $primary;
     font-weight: bold;
 }
 
 span.small {
-    font-size: 2.7vh;
+    font-size: 24px;
     transform: translateY(-30%);
     color: rgba($primary, 0.5);
 }
