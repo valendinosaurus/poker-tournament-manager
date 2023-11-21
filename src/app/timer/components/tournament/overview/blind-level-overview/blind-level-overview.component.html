@@ -15,30 +15,20 @@
     <div class="overflow-y-auto">
         <div id="top"></div>
         <table class="blinds-table">
-            <thead>
-                <tr>
-                    <th colspan="2">
-                        Level
-                    </th>
-                    <th>
-                        Duration
-                    </th>
-                </tr>
-            </thead>
             <tbody>
                 <ng-container *ngFor="let level of levelsToShow; let i = index;">
                     <tr
                         [class.bold]="i === currentLevelIndex"
                         [class.opaque]="i < currentLevelIndex"
                     >
-                        <td>
+                        <td class="m-40">
                             <div class="indicator">
                                 <ng-container *ngIf="i === currentLevelIndex">
                                     ►
                                 </ng-container>
                             </div>
                         </td>
-                        <td>
+                        <td class="m-40">
                             <div class="w-5 position" *ngIf="!level.isPause">
                                 <div>
                                     <span>

@@ -1,3 +1,5 @@
+@import "src/styles/colors_texts";
+
 :host {
     display: contents;
 }
@@ -13,4 +15,5 @@
     height: 10px;
     border-radius: 10px;
     background: $primaryDark;
+    margin-right: 4px;
 }

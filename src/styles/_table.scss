@@ -24,6 +24,18 @@ table tr th {
     text-align: left;
 }
 
+table tr td.m-40,
+table tr th.m-40 {
+    width: 40px;
+    box-sizing: border-box;
+}
+
+table tr td.m-80,
+table tr th.m-80 {
+    width: 80px;
+    box-sizing: border-box;
+}
+
 th.center,
 td.center {
     text-align: center !important;
@@ -38,7 +50,7 @@ table .finished {
 }
 
 td.small-gray {
-    font-size: 1.50px;
+    font-size: 14px;
     color: #aaa;
 }
 
