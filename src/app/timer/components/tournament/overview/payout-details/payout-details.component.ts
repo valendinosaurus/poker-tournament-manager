@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Entry } from '../../../../../shared/models/entry.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
 import { Player } from '../../../../../shared/models/player.interface';
@@ -31,6 +31,8 @@ export class PayoutDetailsComponent implements OnChanges {
 
     deduction: number = 0;
 
+    isAdaptedPayoutSumCorrect = true;
+
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -50,6 +52,8 @@ export class PayoutDetailsComponent implements OnChanges {
     wasDealMade = false;
     playersLeft: number;
     placesPaid: number;
+
+    @Output() localRefresh = new EventEmitter<void>();
 
     ngOnChanges(changes: SimpleChanges): void {
         const ranks = this.finishes.map(f => f.rank);
@@ -72,6 +76,30 @@ export class PayoutDetailsComponent implements OnChanges {
 
             this.scrollDown = !this.scrollDown;
         }
+
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
+
+        console.log('checking sums now');
+
+        if (adaptedPayouts) {
+            const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
+                this.entries,
+                this.buyInAmount,
+                this.rebuyAmount,
+                this.addonAmount,
+                this.initialPricePool,
+                this.percentage,
+                this.maxCap
+            );
+
+            const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
+            console.log('regular', totalPricePool);
+            console.log('adated', adaptedSum);
+            this.isAdaptedPayoutSumCorrect = totalPricePool === adaptedSum;
+        } else {
+            this.isAdaptedPayoutSumCorrect = true;
+        }
+
     }
 
     private calculateRegularList(): void {
@@ -101,8 +129,6 @@ export class PayoutDetailsComponent implements OnChanges {
                 n: this.players.find(p => p.id === f.playerId)?.name ?? ''
             })
         );
-
-        console.log(mappedFinishes);
 
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
 
@@ -180,14 +206,25 @@ export class PayoutDetailsComponent implements OnChanges {
     }
 
     editPayouts(): void {
+
+        const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
+            this.entries,
+            this.buyInAmount,
+            this.rebuyAmount,
+            this.addonAmount,
+            this.initialPricePool,
+            this.percentage,
+            this.maxCap
+        );
         const dialogRef = this.dialog.open(ModifyPayoutComponent, {
             position: {
                 top: '40px'
             },
             data: {
-                pricepool: this.payouts.map(e => e.price).reduce((p, c) => p + c, 0),
+                pricepool: totalPricePool,
                 payouts: this.payouts.map(e => e.price),
-                tId: this.tournamentId
+                tId: this.tournamentId,
+                finishes: this.finishes
             }
         });
 
@@ -195,7 +232,7 @@ export class PayoutDetailsComponent implements OnChanges {
             takeUntilDestroyed(this.destroyRef),
             tap(() => {
                 this.ngOnChanges({});
-
+                this.localRefresh.emit();
             }),
         ).subscribe();
     }

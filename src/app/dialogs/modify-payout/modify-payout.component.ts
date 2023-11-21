@@ -5,6 +5,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { AdaptedPayout } from '../../shared/models/adapted-payout.interface';
+import { Finish } from '../../shared/models/finish.interface';
 
 @Component({
     selector: 'app-modify-payout',
@@ -14,7 +15,12 @@ import { AdaptedPayout } from '../../shared/models/adapted-payout.interface';
 export class ModifyPayoutComponent implements OnInit {
 
     private dialogRef: MatDialogRef<ModifyPayoutComponent> = inject(MatDialogRef<ModifyPayoutComponent>);
-    data: { pricepool: number, payouts: number[], tId: number } = inject(MAT_DIALOG_DATA);
+    data: {
+        pricepool: number,
+        payouts: number[],
+        finishes: Finish[],
+        tId: number
+    } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
@@ -29,19 +35,27 @@ export class ModifyPayoutComponent implements OnInit {
     private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     ngOnInit(): void {
-        const pricePool = this.data.pricepool;
         this.fields = [];
         this.keys = [];
-        this.total = this.data.pricepool;
-        this.toDistribute = 0;
+        this.total = this.data.payouts.reduce((acc, curr) => acc + curr, 0);
+        this.toDistribute = this.data.payouts.reduce((acc, curr) => acc + curr, 0) - this.data.pricepool;
+
+        console.log(this.data.finishes);
 
         this.data.payouts.forEach(
             (payout: number, index: number) => {
                 this.keys.push(index);
                 this.model[index] = payout;
 
+                console.log('should disable', index, this.data.finishes.map(f => +f.rank).includes((index + 1)));
+
                 this.fields.push(
-                    this.formlyFieldService.getDefaultNumberField(index.toString(), (index + 1).toString(), true)
+                    this.formlyFieldService.getDefaultNumberField(
+                        index.toString(),
+                        (index + 1).toString(),
+                        true,
+                        this.data.finishes.map(f => +f.rank).includes((index + 1))
+                    )
                 );
             });
     }

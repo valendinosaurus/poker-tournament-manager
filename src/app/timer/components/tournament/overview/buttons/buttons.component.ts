@@ -1,4 +1,15 @@
-import { Component, DestroyRef, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    DestroyRef,
+    EventEmitter,
+    HostListener,
+    inject,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
@@ -18,13 +29,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { TournamentService } from '../../../../../core/services/util/tournament.service';
 import { SeriesMetadata } from '../../../../../shared/models/series-metadata.interface';
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
+import { RankingService } from '../../../../../core/services/util/ranking.service';
+import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 
 @Component({
     selector: 'app-buttons',
     templateUrl: './buttons.component.html',
     styleUrls: ['./buttons.component.scss']
 })
-export class ButtonsComponent implements OnInit {
+export class ButtonsComponent implements OnInit, OnChanges {
 
     @Input() randomId: number;
     @Input() running: boolean;
@@ -49,6 +62,8 @@ export class ButtonsComponent implements OnInit {
     private authService: AuthService = inject(AuthService);
     private document: Document = inject(DOCUMENT);
     private eventApiService: EventApiService = inject(EventApiService);
+    private rankingService: RankingService = inject(RankingService);
+    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
 
     isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
@@ -62,6 +77,7 @@ export class ButtonsComponent implements OnInit {
     @Output() toggleAutoSlide = new EventEmitter<boolean>();
 
     autoSlide = true;
+    isAdaptedPayoutSumCorrect = true;
 
     positionPairs: ConnectionPositionPair[] = [
 
@@ -86,6 +102,33 @@ export class ButtonsComponent implements OnInit {
 
     ngOnInit(): void {
         this.elem = this.document.documentElement;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        // TODO trigger when adapted payouts changed
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament.id);
+
+        console.log('checking sums now');
+
+        if (adaptedPayouts) {
+            const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
+                this.tournament.entries,
+                this.tournament.buyInAmount,
+                this.tournament.rebuyAmount,
+                this.tournament.addonAmount,
+                this.tournament.initialPricePool,
+                this.seriesMetadata?.percentage,
+                this.seriesMetadata?.maxAmountPerTournament
+            );
+
+            const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
+            console.log('regular', totalPricePool);
+            console.log('adated', adaptedSum);
+            this.isAdaptedPayoutSumCorrect = totalPricePool === adaptedSum;
+        } else {
+            this.isAdaptedPayoutSumCorrect = true;
+        }
+
     }
 
     // TODO include

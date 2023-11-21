@@ -46,15 +46,21 @@
 
 <div class="stats-container border-bottom-2">
     <h4>
-        Payout structrue
+        Payout structure
         <ng-container *ngIf="wasDealMade">
             <span>
-                <i class="fa fa-exclamation-triangle"></i>
+                <i class="fa fa-handshake-o"></i>
                 DEAL WAS MADE
             </span>
         </ng-container>
 
-        <span *ngIf="playersLeft >= placesPaid"><i class="fa fa-edit" (click)="editPayouts()"></i></span>
+        <span *ngIf="playersLeft >= 2">
+            <i class="fa fa-edit clickable" (click)="editPayouts()"></i>
+        </span>
+
+        <span *ngIf="!isAdaptedPayoutSumCorrect">
+            <i class="fa fa-exclamation-triangle adjusted"></i>
+        </span>
     </h4>
 
     <div class="overflow-y-auto">

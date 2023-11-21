@@ -30,6 +30,7 @@ import { RankingComponent } from './ranking/ranking.component';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
+import { ButtonsComponent } from './buttons/buttons.component';
 
 @Component({
     selector: 'app-overview',
@@ -77,6 +78,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     @ViewChild(PayoutDetailsComponent) payoutCmp: PayoutDetailsComponent;
     @ViewChild(RankingComponent) rankingCmp: RankingComponent;
     @ViewChild(BlindLevelOverviewComponent) blindCmp: BlindLevelOverviewComponent;
+    @ViewChild(ButtonsComponent) buttonsCmp: ButtonsComponent;
 
     slider: KeenSliderInstance;
     currentSlide: number = 0;
@@ -328,5 +330,6 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         this.chips.forEach(e => e.ngOnChanges());
         this.payoutCmp.ngOnChanges({});
         this.rankingCmp.ngOnChanges({});
+        this.buttonsCmp.ngOnChanges({});
     }
 }

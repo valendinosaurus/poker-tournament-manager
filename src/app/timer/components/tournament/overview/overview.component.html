@@ -165,6 +165,7 @@
                 [maxCap]="seriesMetadata?.maxAmountPerTournament"
                 [initialPricePool]="tournament.initialPricePool"
                 [tournamentId]="tournament.id"
+                (localRefresh)="buttonsCmp.ngOnChanges({})"
             ></app-payout-details>
 
             <app-player-overview

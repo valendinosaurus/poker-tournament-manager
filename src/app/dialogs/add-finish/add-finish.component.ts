@@ -72,6 +72,7 @@ export class AddFinishComponent implements OnInit {
         } else {
             if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
                 this.price = adaptedPayouts[this.rank - 1];
+                console.log('price for rank', this.rank, 'is', this.price);
             } else {
                 const {totalPricePool} = this.rankingService.getTotalPricePool(
                     this.data.tournament.entries,
@@ -150,7 +151,8 @@ export class AddFinishComponent implements OnInit {
         let price = 0;
 
         if (adaptedPayouts) {
-            price = adaptedPayouts[this.rank - 1];
+            price = adaptedPayouts[this.rank - 2];
+            console.log('price for remaining is', price);
         } else {
             const {totalPricePool} = this.rankingService.getTotalPricePool(
                 this.data.tournament.entries,

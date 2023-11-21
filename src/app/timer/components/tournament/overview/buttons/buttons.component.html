@@ -2,6 +2,7 @@
     <button
         *ngIf="!isSimpleTournament"
         class="main"
+        [disabled]="!isAdaptedPayoutSumCorrect"
         (click)="seatOpen()"
     >
         <i class="fa fa-skull">

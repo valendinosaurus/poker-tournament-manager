@@ -41,14 +41,16 @@ export class FormlyFieldService {
     getDefaultNumberField(
         key: string,
         label: string,
-        required: boolean
+        required: boolean,
+        disabled = false
     ): FormlyFieldConfig {
         return {
             key,
             type: 'number',
             props: {
                 label,
-                required
+                required,
+                disabled: disabled ? true : false
             }
         };
     }

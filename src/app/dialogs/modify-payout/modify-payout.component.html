@@ -21,8 +21,8 @@
         (modelChange)="modelChange(model)"
     ></formly-form>
 
-    <h3 [class.red]="total != toDistribute  ">
-        Total: {{ total }}
+    <h3 [class.red]="total != data.pricepool  ">
+        Total: {{ total | number }}
     </h3>
 
     <button

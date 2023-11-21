@@ -167,7 +167,6 @@ h2 {
 }
 
 
-
 table {
     border-spacing: 1px;
 }
@@ -277,7 +276,7 @@ span.running {
         background-color: green;
     }
     50% {
-        background-color: greenyellow;
+        background-color: rgba(green, 0.2);
     }
     100% {
         background-color: green;
