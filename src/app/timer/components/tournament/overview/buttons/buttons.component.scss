@@ -58,7 +58,6 @@ button {
     background: #ddd;
     padding: 12px;
     display: flex;
-    //width: 80vw;
     flex-direction: column;
     position: fixed;
     left: 5%;
@@ -73,7 +72,6 @@ button {
     .button-group {
         display: flex;
         padding: 32px;
-        //margin-bottom: 32px;
     }
 
     button {
@@ -87,9 +85,8 @@ button {
         font-size: 30px;
 
         .fa {
-            width: 3vw;
-            margin-right: 0.4vw;
             font-size: 30px !important;
+            margin-left: 12px;
 
             @media (max-width: 800px) {
                 width: 20%;
@@ -139,4 +136,11 @@ button {
 .fa-toggle-on,
 .fa-toggle-off {
     color: $primaryDark;
+}
+
+.button-group .action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

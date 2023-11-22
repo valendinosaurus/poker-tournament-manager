@@ -47,8 +47,6 @@ export class AddFinishComponent implements OnInit {
     rank = 0;
     price = 0;
 
-    private dialog: MatDialog = inject(MatDialog);
-
     ngOnInit(): void {
         this.allPlayers = this.data.eligibleForSeatOpen.map(
             player => ({

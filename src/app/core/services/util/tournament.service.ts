@@ -54,6 +54,8 @@ export class TournamentService {
         return tournament.players.filter(
             player => !tournament.finishes.map(f => f.playerId).includes(player.id)
         ).filter(
+            player => tournament.entries.filter(e => e.type === 'ENTRY').map(f => f.playerId).includes(player.id)
+        ).filter(
             player => tournament.entries.filter(
                 (entry: Entry) => entry.playerId === player.id && entry.type === 'REBUY'
             ).length < tournament.noOfRebuys
@@ -77,11 +79,11 @@ export class TournamentService {
     }
 
     getPlayersEligibleForAddon(tournament: Tournament): Player[] {
-        return tournament.players.filter(player => {
-            const finishedIds = tournament.finishes.map(f => f.playerId);
-
-            return !finishedIds.includes(player.id);
-        }).filter(player => {
+        return tournament.players.filter(
+            player => !tournament.finishes.map(f => f.playerId).includes(player.id)
+        ).filter(
+            player => tournament.entries.filter(e => e.type === 'ENTRY').map(f => f.playerId).includes(player.id)
+        ).filter(player => {
             const allowed = 1;
             const addonsOfPlayer = tournament.entries.filter(
                 (entry: Entry) => entry.playerId === player.id && entry.type === 'ADDON'
@@ -108,10 +110,10 @@ export class TournamentService {
     }
 
     getPlayersEligibleForSeatOpen(tournament: Tournament): Player[] {
-        return tournament.players.filter(player => {
-            const finishedIds = tournament.finishes.map(f => f.playerId);
-
-            return !finishedIds.includes(player.id);
-        });
+        return tournament.players.filter(
+            player => !tournament.finishes.map(f => f.playerId).includes(player.id)
+        ).filter(
+            player => tournament.entries.filter(e => e.type === 'ENTRY').map(f => f.playerId).includes(player.id)
+        );
     }
 }
