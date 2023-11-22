@@ -130,7 +130,7 @@ export class AddFinishComponent implements OnInit {
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournament.id,
-                    clientId: this.data.randomId
+                    randomId: this.data.randomId
                 })),
                 tap((result: any) => {
                     if (this.dialogRef) {

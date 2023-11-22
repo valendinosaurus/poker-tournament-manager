@@ -118,7 +118,7 @@ export class MakeDealComponent implements OnInit {
             switchMap(() => this.eventApiService.post$({
                 id: null,
                 tId: this.data.tournament.id,
-                clientId: this.data.randomId
+                randomId: this.data.randomId
             })),
             tap(() => {
                 if (this.dialogRef) {

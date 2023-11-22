@@ -17,8 +17,8 @@ export class EventApiService {
     ) {
     }
 
-    getAll$(tId: number, clientId: number, sub: string): Observable<ActionEvent[]> {
-        return this.http.get<ActionEvent[]>(`${BACKEND_URL}${this.ENDPOINT}/${tId}/${clientId}/${sub}`);
+    getAll$(tId: number, randomId: number, sub: string): Observable<ActionEvent[]> {
+        return this.http.get<ActionEvent[]>(`${BACKEND_URL}${this.ENDPOINT}/${tId}/${randomId}/${sub}`);
     }
 
     post$(event: ActionEvent): Observable<ServerResponse> {

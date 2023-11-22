@@ -22,7 +22,7 @@ export class PlayerDetailsComponent implements OnChanges {
     @Input() players: Player[];
     @Input() entries: Entry[];
     @Input() finishes: Finish[];
-    @Input() clientId: number;
+    @Input() randomId: number;
     @Input() trigger: string | null;
     @Input() tId: number;
 
@@ -118,7 +118,7 @@ export class PlayerDetailsComponent implements OnChanges {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.tId,
-                                clientId: this.clientId
+                                randomId: this.randomId
                             }))
                         )
                     ),

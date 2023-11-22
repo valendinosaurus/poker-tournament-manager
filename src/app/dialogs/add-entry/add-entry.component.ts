@@ -93,7 +93,7 @@ export class AddEntryComponent implements OnInit {
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournamentId,
-                    clientId: this.data.randomId
+                    randomId: this.data.randomId
                 })),
                 tap((result: any) => {
                     if (this.dialogRef) {
@@ -134,7 +134,7 @@ export class AddEntryComponent implements OnInit {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.data.tournamentId,
-                                clientId: this.data.randomId
+                                randomId: this.data.randomId
                             })),
                             tap((result: any) => {
                                 if (this.dialogRef) {

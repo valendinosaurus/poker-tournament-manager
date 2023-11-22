@@ -284,7 +284,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
         return this.eventApiService.post$({
             id: null,
             tId: this.tournament.id,
-            clientId: this.randomId
+            randomId: this.randomId
         });
     }
 }
