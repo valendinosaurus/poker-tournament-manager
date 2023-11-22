@@ -19,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
 import { ActionEvent } from '../../../../shared/models/event.interface';
 import { FetchService } from '../../../../core/services/fetch.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-timer',
@@ -48,6 +49,7 @@ export class TimerComponent implements OnInit, OnChanges {
     private router: Router = inject(Router);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private fetchService: FetchService = inject(FetchService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     private fetchTrigger$: Observable<void>;
 
@@ -156,7 +158,7 @@ export class TimerComponent implements OnInit, OnChanges {
                 entries$,
                 finishes$
             ]).pipe(
-                tap(([tourney, blinds, players, entries, finishes]: [Tournament, BlindLevel[], Player[], Entry[], Finish[]]) => console.log('rebus', entries.length)),
+                tap(() => this.notificationService.success('Tournament is up to date')),
                 map(([tourney, blinds, players, entries, finishes]: [Tournament, BlindLevel[], Player[], Entry[], Finish[]]) => ({
                     ...tourney,
                     structure: blinds.sort((a, b) => (a.position) - (b.position)),
