@@ -26,8 +26,8 @@
         "@types/mathjax": "^0.0.40",
         "font-awesome": "^4.7.0",
         "keen-slider": "^6.8.6",
-        "ng-circle-progress": "^1.7.1",
         "ngx-countdown": "^15.0.0",
+        "notiflix": "^3.2.6",
         "rxjs": "~6.6.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.13.0"

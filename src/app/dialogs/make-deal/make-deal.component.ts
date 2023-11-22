@@ -6,13 +6,14 @@ import { Player } from '../../shared/models/player.interface';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { ServerResponse } from '../../shared/models/server-response';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
 import { EventApiService } from '../../core/services/api/event-api.service';
 import { RankingService } from '../../core/services/util/ranking.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-make-deal',
@@ -43,6 +44,7 @@ export class MakeDealComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
     private rankingService: RankingService = inject(RankingService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     ngOnInit(): void {
         const pricePool = this.rankingService.getSimplePricePool(this.data.tournament);
@@ -104,7 +106,14 @@ export class MakeDealComponent implements OnInit {
 
         forkJoin(streams).pipe(
             take(1),
-            tap(e => console.log('e')),
+            catchError(() => {
+                this.notificationService.error(`Error making Deal`);
+                return of(null);
+            }),
+            tap(() => {
+                const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
+                this.notificationService.success('Deal was made');
+            }),
             tap(() => this.fetchService.trigger()),
             switchMap(() => this.eventApiService.post$({
                 id: null,

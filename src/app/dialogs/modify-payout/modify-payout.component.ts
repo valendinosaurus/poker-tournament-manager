@@ -6,6 +6,7 @@ import { FormlyFieldService } from '../../core/services/util/formly-field.servic
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { AdaptedPayout } from '../../shared/models/adapted-payout.interface';
 import { Finish } from '../../shared/models/finish.interface';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-modify-payout',
@@ -33,14 +34,13 @@ export class ModifyPayoutComponent implements OnInit {
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     ngOnInit(): void {
         this.fields = [];
         this.keys = [];
         this.total = this.data.payouts.reduce((acc, curr) => acc + curr, 0);
         this.toDistribute = this.data.payouts.reduce((acc, curr) => acc + curr, 0) - this.data.pricepool;
-
-        console.log(this.data.finishes);
 
         this.data.payouts.forEach(
             (payout: number, index: number) => {
@@ -79,6 +79,7 @@ export class ModifyPayoutComponent implements OnInit {
         };
 
         this.localStorageService.storeAdaptedPayout(adaptedPayoutObject);
+        this.notificationService.success('Payouts modified');
 
         this.dialogRef.close();
     }

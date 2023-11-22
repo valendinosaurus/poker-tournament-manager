@@ -3,12 +3,13 @@ import { Player } from '../../../../../shared/models/player.interface';
 import { Entry } from '../../../../../shared/models/entry.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
 import { FinishApiService } from '../../../../../core/services/api/finish-api.service';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../../../../core/services/fetch.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { EventApiService } from '../../../../../core/services/api/event-api.service';
+import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-player-details',
@@ -39,6 +40,7 @@ export class PlayerDetailsComponent implements OnChanges {
     private fetchService: FetchService = inject(FetchService);
     private finishApiService: FinishApiService = inject(FinishApiService);
     private eventApiService: EventApiService = inject(EventApiService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     private dialog: MatDialog = inject(MatDialog);
 
@@ -102,6 +104,13 @@ export class PlayerDetailsComponent implements OnChanges {
                     () => result,
                     defer(() => this.finishApiService.delete$(this.tId, pId).pipe(
                             take(1),
+                            catchError(() => {
+                                this.notificationService.error('Error removing Seat Open');
+                                return of(null);
+                            }),
+                            tap(() => {
+                                this.notificationService.success(`Seat Open removed - ${playerName}`);
+                            }),
                             tap(() => {
                                 this.fetchService.trigger();
                             }),

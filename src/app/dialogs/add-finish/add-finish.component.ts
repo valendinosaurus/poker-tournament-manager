@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { RankingService } from '../../core/services/util/ranking.service';
@@ -14,6 +14,7 @@ import { iif, of } from 'rxjs';
 import { FetchService } from '../../core/services/fetch.service';
 import { EventApiService } from '../../core/services/api/event-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-add-finish',
@@ -41,6 +42,7 @@ export class AddFinishComponent implements OnInit {
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -110,6 +112,14 @@ export class AddFinishComponent implements OnInit {
                 timestamp: -1
             }).pipe(
                 take(1),
+                catchError(() => {
+                    this.notificationService.error('Error Seat Open');
+                    return of(null);
+                }),
+                tap(() => {
+                    const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
+                    this.notificationService.success(`Seat Open - ${playerName}`);
+                }),
                 switchMap(() => iif(
                     () => this.rank === 2,
                     this.finishApiService.post$(this.getRemainingFinish()),
@@ -150,7 +160,6 @@ export class AddFinishComponent implements OnInit {
 
         if (adaptedPayouts) {
             price = adaptedPayouts[this.rank - 2];
-            console.log('price for remaining is', price);
         } else {
             const {totalPricePool} = this.rankingService.getTotalPricePool(
                 this.data.tournament.entries,

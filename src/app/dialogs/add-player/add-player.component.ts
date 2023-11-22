@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { Player } from '../../shared/models/player.interface';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
@@ -15,6 +15,7 @@ import { FetchService } from '../../core/services/fetch.service';
 import { EventApiService } from '../../core/services/api/event-api.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-add-player',
@@ -45,6 +46,7 @@ export class AddPlayerComponent implements OnInit {
     private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -122,6 +124,14 @@ export class AddPlayerComponent implements OnInit {
                             timestamp: -1
                         }).pipe(
                             take(1),
+                            catchError(() => {
+                                this.notificationService.error(`Error adding Player`);
+                                return of(null);
+                            }),
+                            tap(() => {
+                                const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
+                                this.notificationService.success(`Re-Entry - ${playerName}`);
+                            }),
                             tap((a) => this.fetchService.trigger()),
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
@@ -142,6 +152,14 @@ export class AddPlayerComponent implements OnInit {
             } else {
                 this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
                     take(1),
+                    catchError(() => {
+                        this.notificationService.error(`Error adding Player`);
+                        return of(null);
+                    }),
+                    tap(() => {
+                        const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
+                        this.notificationService.success(`Entry - ${playerName}`);
+                    }),
                     tap(() => this.fetchService.trigger()),
                     switchMap(() => this.eventApiService.post$({
                         id: null,
@@ -181,9 +199,9 @@ export class AddPlayerComponent implements OnInit {
             ConfirmationDialogComponent,
             {
                 data: {
-                    title: 'Remove Addon',
+                    title: 'Remove Player',
                     body: `Do you really want to remove <strong>${playerName}</strong> from tournament <strong>${this.data.tournament.name}</strong>`,
-                    confirm: 'Remove Addon'
+                    confirm: 'Remove Player'
                 }
             });
 
@@ -192,6 +210,13 @@ export class AddPlayerComponent implements OnInit {
                     () => result,
                     defer(() => this.tournamentApiService.removePlayer$(playerId, this.data.tournament.id, this.data.sub).pipe(
                         take(1),
+                        catchError(() => {
+                            this.notificationService.error('Error removing Player');
+                            return of(null);
+                        }),
+                        tap(() => {
+                            this.notificationService.success(`Player removed - ${playerName}`);
+                        }),
                         tap(() => this.fetchService.trigger()),
                         switchMap(() => this.eventApiService.post$({
                             id: null,

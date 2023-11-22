@@ -4,13 +4,14 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
 import { FetchService } from '../../core/services/fetch.service';
 import { EventApiService } from '../../core/services/api/event-api.service';
 import { ConductedEntry } from '../../shared/models/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-add-rebuy',
@@ -38,6 +39,7 @@ export class AddRebuyComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     allPlayers: { label: string, value: number }[];
 
@@ -78,6 +80,14 @@ export class AddRebuyComponent implements OnInit {
                 timestamp: -1
             }).pipe(
                 take(1),
+                catchError(() => {
+                    this.notificationService.error(`Error adding Rebuy`);
+                    return of(null);
+                }),
+                tap(() => {
+                    const playerName = this.data.eligibleForRebuy.filter(e => e.id === model.playerId)[0].name;
+                    this.notificationService.success(`Rebuy - ${playerName}`);
+                }),
                 tap((a) => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({
                     id: null,
@@ -101,9 +111,9 @@ export class AddRebuyComponent implements OnInit {
                 ConfirmationDialogComponent,
                 {
                     data: {
-                        title: 'Remove Addon',
+                        title: 'Remove Rebuy',
                         body: `Do you really want to remove the rebuy of <strong>${playerName}</strong> from tournament <strong>${this.data.tournamentName}</strong>`,
-                        confirm: 'Remove Addon'
+                        confirm: 'Remove Rebuy'
                     }
                 });
 
@@ -112,6 +122,13 @@ export class AddRebuyComponent implements OnInit {
                         () => result,
                         defer(() => this.entryApiService.delete$(entryId).pipe(
                             take(1),
+                            catchError(() => {
+                                this.notificationService.error('Error removing Rebuy');
+                                return of(null);
+                            }),
+                            tap(() => {
+                                this.notificationService.success(`Rebuy removed - ${playerName}`);
+                            }),
                             tap((a) => this.fetchService.trigger()),
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
