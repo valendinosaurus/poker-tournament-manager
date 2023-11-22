@@ -5,6 +5,7 @@ import { Finish } from '../../../../../shared/models/finish.interface';
 import { Formula, RankingService } from '../../../../../core/services/util/ranking.service';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../../../../shared/models/series-metadata.interface';
+import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-ranking',
@@ -54,9 +55,9 @@ export class RankingComponent implements OnChanges {
                     name: this.players.filter(p => p.id === finish.playerId)[0]?.name,
                     rank: finish.rank,
                     price: finish.price,
-                    rebuys: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'REBUY').length,
-                    addons: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length,
-                    reEntries: this.entries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
+                    rebuys: this.entries.filter(e => e.playerId === finish.playerId && e.type === EntryType.REBUY).length,
+                    addons: this.entries.filter(e => e.playerId === finish.playerId && e.type === EntryType.ADDON).length,
+                    reEntries: this.entries.filter(e => e.playerId === finish.playerId && e.type === EntryType.RE_ENTRY).length,
                 })
             ).sort((a, b) => a.rank - b.rank);
 
@@ -125,10 +126,10 @@ export class RankingComponent implements OnChanges {
 
     private getPricePool(): number {
         return this.entries.filter(
-                (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
+                (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
             ).length * +this.tournament.buyInAmount
-            + this.entries.filter(e => e.type === 'REBUY').length * +this.tournament.rebuyAmount
-            + this.entries.filter(e => e.type === 'ADDON').length * +this.tournament.addonAmount
+            + this.entries.filter(e => e.type === EntryType.REBUY).length * +this.tournament.rebuyAmount
+            + this.entries.filter(e => e.type === EntryType.ADDON).length * +this.tournament.addonAmount
             + +this.tournament.initialPricePool;
     }
 }

@@ -8,6 +8,7 @@ import { tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ModifyPayoutComponent } from '../../../../../dialogs/modify-payout/modify-payout.component';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
+import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-payout-details',
@@ -58,7 +59,7 @@ export class PayoutDetailsComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         const ranks = this.finishes.map(f => f.rank);
         this.wasDealMade = ranks.length !== new Set(ranks).size;
-        this.playersLeft = this.entries.filter(e => e.type === 'ENTRY').length - this.finishes.length;
+        this.playersLeft = this.entries.filter(e => e.type === EntryType.ENTRY).length - this.finishes.length;
         this.placesPaid = this.rankingService.getPayoutById(this.payout).length;
 
         if (this.wasDealMade) {

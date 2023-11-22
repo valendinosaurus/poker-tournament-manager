@@ -10,6 +10,7 @@ import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation
 import { defer, iif, of } from 'rxjs';
 import { EventApiService } from '../../../../../core/services/api/event-api.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-player-details',
@@ -61,9 +62,9 @@ export class PlayerDetailsComponent implements OnChanges {
                     return {
                         image: player.image,
                         name: player.name,
-                        rebuys: this.entries.filter(e => e.playerId === player.id && e.type === 'REBUY').length,
-                        addons: this.entries.filter(e => e.playerId === player.id && e.type === 'ADDON').length,
-                        reEntries: this.entries.filter(e => e.playerId === player.id && (e.type === 'ENTRY' || e.type === 'RE-ENTRY')).length,
+                        rebuys: this.entries.filter(e => e.playerId === player.id && e.type === EntryType.REBUY).length,
+                        addons: this.entries.filter(e => e.playerId === player.id && e.type === EntryType.ADDON).length,
+                        reEntries: this.entries.filter(e => e.playerId === player.id && (e.type === EntryType.ENTRY || e.type === EntryType.RE_ENTRY)).length,
                         isFinished: this.finishes.map(f => f.playerId).includes(player.id),
                         isLastFinished: isLastFinished,
                         rank: rank,

@@ -1,7 +1,9 @@
+import { EntryType } from '../enums/entry-type.enum';
+
 export interface Entry {
     id: number | undefined;
     tournamentId: number;
     playerId: number;
-    type: 'ENTRY' | 'REBUY' | 'ADDON' | 'RE-ENTRY';
+    type: EntryType;
     timestamp: number;
 }

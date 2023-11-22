@@ -21,6 +21,7 @@ import { CombinedRanking } from '../../models/combined-ranking.interface';
 import { OverallRanking } from '../../models/overall-ranking.interface';
 import { CombinedFinish } from '../../models/combined-finish.interface';
 import { MathContent } from '../../../shared/models/math-content.interface';
+import { EntryType } from '../../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-series-page',
@@ -111,9 +112,9 @@ export class SeriesPageComponent implements OnInit {
                                 name: localPlayers.filter(p => p.id === finish.playerId)[0]?.name,
                                 rank: finish.rank,
                                 price: finish.price,
-                                rebuys: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'REBUY').length,
-                                addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'ADDON').length,
-                                reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === 'RE-ENTRY').length,
+                                rebuys: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.REBUY).length,
+                                addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.ADDON).length,
+                                reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.RE_ENTRY).length,
                                 points: 0,
                                 dealMade: wasDealMade && +finish.rank === rankOfDeal,
                             } as CombinedFinish)
@@ -149,8 +150,8 @@ export class SeriesPageComponent implements OnInit {
                             playersAlive: localPlayers.filter(p => !localFinished.map(f => f.playerId).includes(p.id)).map(
                                 (player: Player) => ({
                                     ...player,
-                                    rebuys: localEntries.filter(e => e.playerId === player.id && e.type === 'REBUY').length,
-                                    addons: localEntries.filter(e => e.playerId === player.id && e.type === 'ADDON').length
+                                    rebuys: localEntries.filter(e => e.playerId === player.id && e.type === EntryType.REBUY).length,
+                                    addons: localEntries.filter(e => e.playerId === player.id && e.type === EntryType.ADDON).length
                                 })
                             )
                         });

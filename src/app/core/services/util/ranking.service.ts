@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
+import { EntryType } from '../../../shared/enums/entry-type.enum';
 
 export type FormulaInput = {
     players: number,
@@ -150,10 +151,10 @@ export class RankingService {
         deduction: number
     } {
         const temp = entries.filter(
-                    (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
+                    (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
                 ).length * +buyInAmount
-                + entries.filter(e => e.type === 'REBUY').length * +rebuyAmount
-                + entries.filter(e => e.type === 'ADDON').length * +addonAmount
+                + entries.filter(e => e.type === EntryType.REBUY).length * +rebuyAmount
+                + entries.filter(e => e.type === EntryType.ADDON).length * +addonAmount
                 + +initialPricePool
         ;
 
@@ -170,11 +171,11 @@ export class RankingService {
 
     getSimplePricePool(tournament: Tournament): number {
         const buyInsReEntries: number = tournament.entries.filter(
-            (entry: Entry) => entry.type === 'ENTRY' || entry.type === 'RE-ENTRY'
+            (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
         ).length * tournament.buyInAmount;
 
-        const rebuys: number = tournament.entries.filter(e => e.type === 'REBUY').length * tournament.rebuyAmount;
-        const addons: number = tournament.entries.filter(e => e.type === 'ADDON').length * tournament.addonAmount;
+        const rebuys: number = tournament.entries.filter(e => e.type === EntryType.REBUY).length * tournament.rebuyAmount;
+        const addons: number = tournament.entries.filter(e => e.type === EntryType.ADDON).length * tournament.addonAmount;
 
         return buyInsReEntries + rebuys + addons + +tournament.initialPricePool;
     }

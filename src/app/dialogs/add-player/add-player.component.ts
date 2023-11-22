@@ -16,6 +16,7 @@ import { EventApiService } from '../../core/services/api/event-api.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
+import { EntryType } from '../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-add-player',
@@ -120,7 +121,7 @@ export class AddPlayerComponent implements OnInit {
                             id: undefined,
                             playerId: model.playerId,
                             tournamentId: model.tournamentId,
-                            type: 'ENTRY',
+                            type: EntryType.ENTRY,
                             timestamp: -1
                         }).pipe(
                             take(1),

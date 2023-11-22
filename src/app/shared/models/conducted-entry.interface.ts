@@ -1,3 +1,5 @@
+import { EntryType } from '../enums/entry-type.enum';
+
 export interface ConductedEntry {
     name: string;
     playerId: number;
@@ -5,6 +7,6 @@ export interface ConductedEntry {
     entryId: number;
     image: string;
     isFinished: boolean;
-    type: 'ENTRY' | 'REBUY' | 'ADDON' | 'RE-ENTRY';
+    type: EntryType;
     isBlocked?: boolean;
 }

@@ -2,6 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { Entry } from '../../../../../shared/models/entry.interface';
 import { Player } from '../../../../../shared/models/player.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
+import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-chips-overview',
@@ -21,10 +22,10 @@ export class ChipsOverviewComponent implements OnChanges {
     averageStack: number = 0;
 
     ngOnChanges(): void {
-        const entries = this.entries.filter((e: Entry) => e.type === 'ENTRY').length;
-        const rebuys = this.entries.filter((e: Entry) => e.type === 'REBUY').length;
-        const addons = this.entries.filter((e: Entry) => e.type === 'ADDON').length;
-        const reEntries = this.entries.filter((e: Entry) => e.type === 'RE-ENTRY').length;
+        const entries = this.entries.filter((e: Entry) => e.type === EntryType.ENTRY).length;
+        const rebuys = this.entries.filter((e: Entry) => e.type === EntryType.REBUY).length;
+        const addons = this.entries.filter((e: Entry) => e.type === EntryType.ADDON).length;
+        const reEntries = this.entries.filter((e: Entry) => e.type === EntryType.RE_ENTRY).length;
 
         this.totalChips = entries * this.startStack
             + reEntries * this.startStack

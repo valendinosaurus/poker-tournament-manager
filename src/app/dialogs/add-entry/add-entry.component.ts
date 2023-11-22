@@ -12,6 +12,7 @@ import { ConductedEntry } from '../../shared/models/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
+import { EntryType } from '../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-add-re-entry',
@@ -76,7 +77,7 @@ export class AddEntryComponent implements OnInit {
                 id: undefined,
                 playerId: model.playerId,
                 tournamentId: model.tournamentId,
-                type: this.data.isReentry ? 'RE-ENTRY' : 'ENTRY',
+                type: this.data.isReentry ? EntryType.RE_ENTRY : EntryType.ENTRY,
                 timestamp: -1
             }).pipe(
                 take(1),
