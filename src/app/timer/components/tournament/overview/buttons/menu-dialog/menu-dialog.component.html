@@ -1,0 +1,259 @@
+<h2>Menu</h2>
+
+<h4>
+    Player Actions
+</h4>
+<div class="button-group">
+
+    <div
+        *ngIf="!data.isSimpleTournament"
+        class="action"
+    >
+        <h5><i class="fa fa-plus-circle"></i> Player</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="addPlayer()"
+        >
+            <i class="fa fa-user"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="!data.isSimpleTournament"
+        class="action"
+    >
+        <h5><i class="fa fa-plus-circle"></i> Entry</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="addEntry(false)"
+        >
+            <i class="fa fa-money"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="data.tournament.withRebuy && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
+        class="action"
+    >
+        <h5><i class="fa fa-plus-circle"></i> Rebuy</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="addRebuy()"
+        >
+            <i class="fa fa-money"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="data.tournament.withReEntry && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
+        class="action"
+    >
+        <h5><i class="fa fa-plus-circle"></i> Re-Entry</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="addEntry(true)"
+        >
+            <i class="fa fa-money"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="data.tournament.withAddon && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
+        class="action"
+    >
+        <h5><i class="fa fa-plus-circle"></i> Addon</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="addAddon()"
+        >
+            <i class="fa fa-database"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="!data.isSimpleTournament"
+        class="action"
+    >
+        <h5>Seat Open</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="seatOpen()"
+        >
+            <i class="fa fa-skull">
+                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 0 512 512">
+                    <path
+                        d="M416 398.9c58.5-41.1 96-104.1 96-174.9C512 100.3 397.4 0 256 0S0 100.3 0 224c0 70.7 37.5 133.8 96 174.9c0 .4 0 .7 0 1.1v64c0 26.5 21.5 48 48 48h48V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h64V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h48c26.5 0 48-21.5 48-48V400c0-.4 0-.7 0-1.1zM96 256a64 64 0 1 1 128 0A64 64 0 1 1 96 256zm256-64a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
+                </svg>
+            </i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="!data.isSimpleTournament && data.isRebuyPhaseFinished"
+        class="action"
+    >
+        <h5>Make Deal</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="makeDeal()"
+        >
+            <i class="fa fa-handshake-o"></i>
+        </button>
+    </div>
+</div>
+
+
+<h4>
+    Timer Actions
+</h4>
+<div class="button-group">
+
+    <div
+        *ngIf="data.running"
+        class="action"
+    >
+        <h5>Pause</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="pause.emit()">
+            <i class="fa fa-pause"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="!data.running"
+        class="action"
+    >
+        <h5>Start</h5>
+        <button
+            mat-raised-button
+            class="main"
+            *ngIf="!data.running" (click)="start.emit()">
+            <i class="fa fa-play"></i>
+        </button>
+    </div>
+
+    <div
+        class="action"
+    >
+        <h5><i class="fa fa-plus-circle"></i> 1min</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="addMinute.emit()">
+            <i class="fa fa-clock-o"></i>
+        </button>
+    </div>
+
+    <div
+        class="action"
+    >
+        <h5><i class="fa fa-chevron-circle-left"></i> Level</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="prevLevel.emit()">
+            <i class="fa fa-chevron-circle-left"></i>
+        </button>
+    </div>
+
+    <div
+        class="action"
+    >
+        <h5><i class="fa fa-chevron-circle-right"></i> Level</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="nextLevel.emit()">
+            <i class="fa fa-chevron-circle-right"></i>
+        </button>
+    </div>
+</div>
+
+<h4>Other Actions</h4>
+<div class="button-group">
+
+    <div
+        class="action"
+    >
+        <h5>Autoslide</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="onToggleAutoSlide()">
+            <i *ngIf="autoSlide" class="fa fa-toggle-on"></i>
+            <i *ngIf="!autoSlide" class="fa fa-toggle-off"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="!isFullscreen"
+        class="action"
+    >
+        <h5>Fullscreen</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="fullScreen()"
+        >
+            <i class="fa fa-window-maximize"></i>
+        </button>
+    </div>
+
+    <div
+        *ngIf="isFullscreen"
+        class="action"
+    >
+        <h5>Normal Screen</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="cancelFullscreen()"
+        >
+            <i class="fa fa fa-times-rectangle"></i>
+        </button>
+    </div>
+
+    <div
+        class="action"
+    >
+        <h5>Admin</h5>
+        <button
+            mat-raised-button
+            class="main"
+            [routerLink]="['/admin']" *ngIf="isAuthenticated$ | async">
+            <i class="fa fa-address-card"></i>
+        </button>
+    </div>
+</div>
+
+
+<h4>Tournament settings</h4>
+<form
+    [formGroup]="form"
+>
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!form.valid"
+        (click)="applySettings(model)"
+    >
+        APPLY
+    </button>
+</form>
+<!--</div>-->
