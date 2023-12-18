@@ -36,13 +36,20 @@
                             </div>
                         </td>
                         <td class="m-40">
-                            <div class="w-5 position" *ngIf="!level.isPause">
+                            <div
+                                *ngIf="!level.isPause; else pauseIcon;"
+                                class="w-5 position"
+                            >
                                 <div>
                                     <span>
                                         {{ level.id }}
                                     </span>
                                 </div>
                             </div>
+
+                            <ng-template #pauseIcon>
+                                <i class="fa fa-pause-circle"></i>
+                            </ng-template>
                         </td>
                         <td>
                             <div class="flex justify-between align-center">
