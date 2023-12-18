@@ -12,6 +12,7 @@ import { AuthService, User } from '@auth0/auth0-angular';
 import { TournamentInSeries } from '../../../shared/models/tournament-in-series.interface';
 import { TournamentModel } from '../../../shared/models/tournament-model.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
+import { TournamentSettings } from '../../../shared/models/tournament-settings.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -136,6 +137,18 @@ export class TournamentApiService {
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...tournament,
+                    sub
+                })
+            ))
+        );
+    }
+
+    putSettings$(settings: TournamentSettings): Observable<ServerResponse> {
+        return this.authService.user$.pipe(
+            map((user: User | undefined | null) => user?.sub ?? ''),
+            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}/settings`,
+                JSON.stringify({
+                    ...settings,
                     sub
                 })
             ))

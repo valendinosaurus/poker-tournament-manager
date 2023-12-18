@@ -37,7 +37,7 @@ export class TimerComponent implements OnInit, OnChanges {
     seriesMetadata$: Observable<SeriesMetadata>;
     isSimpleTournament = false;
     isNotAllowed = false;
-    randomId: number;
+    clientId: number;
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private blindLevelApiService: BlindLevelApiService = inject(BlindLevelApiService);
@@ -57,7 +57,7 @@ export class TimerComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.fetchTrigger$ = this.fetchService.getFetchTrigger$();
-        this.randomId = Math.ceil(Math.random() * 100000);
+        this.clientId = Math.ceil(Math.random() * 100000);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -81,13 +81,11 @@ export class TimerComponent implements OnInit, OnChanges {
 
                             this.pullSubscription = timer(5000, 4000).pipe(
                                 takeUntilDestroyed(this.destroyRef),
-                                switchMap(() => this.eventApiService.getAll$(id, this.randomId, sub)),
+                                switchMap(() => this.eventApiService.getAll$(id, this.clientId, sub)),
                                 tap((events: ActionEvent[]) => {
                                     if (events.length > 0 && +(events[0].tId) === +id) {
                                         console.log('*** LIVE *** : event triggered, fetch stuff');
                                         this.fetchService.trigger();
-                                    } else {
-                                        console.log('*** LIVE *** : nothing to do');
                                     }
                                 }),
                                 map((events: ActionEvent[]) => events.length ? ({

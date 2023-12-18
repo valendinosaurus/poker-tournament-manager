@@ -208,8 +208,6 @@ export class SeriesPageComponent implements OnInit {
         this.guaranteed = this.combinedRankings.map(
             (r: CombinedRanking) => r.contribution
         ).reduce((acc: number, curr: number) => +acc + +curr, 0);
-
-        console.log(this.guaranteed);
     }
 
     calcPoints(

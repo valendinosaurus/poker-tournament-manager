@@ -1,4 +1,4 @@
-<h2>Seat open</h2>
+<h2>Seat open - Rank {{ rank }}</h2>
 
 <form
     [formGroup]="form"
@@ -12,10 +12,51 @@
     ></formly-form>
 
     <button
-        mat-flat-button color="primary"
+        mat-raised-button color="primary"
         type="submit"
         [disabled]="!form.valid"
     >
         LEAVE TOURNAMENT
     </button>
 </form>
+
+
+<h3>Seat Opens</h3>
+
+<ng-container *ngIf="data.conductedSeatOpens && data.conductedSeatOpens.length > 0; else noRebuys;">
+    <div class="scrollable-dialog-table-wrapper">
+        <table class="dialog-table">
+            <ng-container *ngFor="let e of data.conductedSeatOpens; let i = index">
+                <tr>
+                    <td class="small-gray w-120px">
+                        {{ e.time | date:'d.M.yy, hh:mm:ss' }}
+                    </td>
+                    <td class="w-5">
+                        <span class="rank">
+                            {{ e.rank }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="flex-td">
+                            <app-user-image-round
+                                [imageUrl]="e.image"
+                            ></app-user-image-round>
+                        <span>{{ e.name }}</span>
+                    </span>
+                    </td>
+                    <td>
+                        <i
+                            *ngIf="i === 0"
+                            class="fa fa-trash"
+                            (click)="removeSeatOpen(e.playerId, e.name)"
+                        ></i>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</ng-container>
+
+<ng-template #noRebuys>
+    No Seat Opens yet
+</ng-template>

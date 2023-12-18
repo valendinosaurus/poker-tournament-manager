@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { MathContent } from '../../shared/models/math-content.interface';
 import { take, takeUntil } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { MathService } from '../../core/math.service';
 @Directive({
     selector: '[appMath]'
 })
-export class MathDirective implements OnInit, OnChanges, OnDestroy {
+export class MathDirective implements OnInit, OnDestroy {
     private alive$ = new Subject<boolean>();
 
     @Input() appMath: MathContent;
@@ -29,10 +29,6 @@ export class MathDirective implements OnInit, OnChanges, OnDestroy {
             ).subscribe(res => {
             this.service.render(this._el, this.appMath);
         });
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        console.log(changes);
     }
 
     ngOnDestroy(): void {

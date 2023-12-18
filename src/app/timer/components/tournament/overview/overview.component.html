@@ -24,7 +24,7 @@
                                 [finishes]="tournament.finishes"
                                 [trigger]="scrollTrigger$ | async"
                                 [tId]="tournament.id"
-                                [randomId]="randomId"
+                                [clientId]="clientId"
                             ></app-player-details>
                         </div>
 
@@ -133,7 +133,7 @@
             >
                 <app-buttons
                     [running]="running"
-                    [randomId]="randomId"
+                    [clientId]="clientId"
                     [tournament]="tournament"
                     [sub]="sub"
                     [seriesMetadata]="seriesMetadata"
@@ -145,6 +145,7 @@
                     (nextLevel)="goToNextLevel()"
                     (prevLevel)="goToPreviousLevel()"
                     (toggleAutoSlide)="autoSlide = $event"
+                    (localRefresh)="refreshViews()"
                 ></app-buttons>
             </div>
         </div>
@@ -165,7 +166,7 @@
                 [maxCap]="seriesMetadata?.maxAmountPerTournament"
                 [initialPricePool]="tournament.initialPricePool"
                 [tournamentId]="tournament.id"
-                (localRefresh)="buttonsCmp.ngOnChanges({})"
+                (localRefresh)="refreshViews()"
             ></app-payout-details>
 
             <app-player-overview

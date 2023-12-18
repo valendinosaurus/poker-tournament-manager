@@ -9,10 +9,7 @@
     </div>
 </div>
 
-<form
-    style="width: 800px"
-    (ngSubmit)="onSubmit(model)"
->
+<form>
     <formly-form
         [form]="form"
         [fields]="fields"
@@ -21,14 +18,23 @@
         (modelChange)="modelChange(model)"
     ></formly-form>
 
+    <button
+        mat-raised-button
+        [disabled]="fields.length >= playersLeft"
+        (click)="addPayoutField()"
+    >
+        Add Payout Step
+    </button>
+
     <h3 [class.red]="total != data.pricepool  ">
         Total: {{ total | number }}
     </h3>
 
     <button
-        mat-flat-button color="primary"
+        mat-raised-button color="primary"
         type="submit"
         [disabled]="!form.valid || toDistribute !== 0"
+        (click)="onSubmit(model)"
     >
         ADAPT PAYOUTS
     </button>

@@ -39,7 +39,7 @@ import { ButtonsComponent } from './buttons/buttons.component';
 })
 export class OverviewComponent implements OnChanges, AfterViewInit {
 
-    @Input() randomId: number;
+    @Input() clientId: number;
     @Input() tournament: Tournament;
     @Input() sub: string | undefined;
     @Input() isSimpleTournament: boolean;
@@ -323,7 +323,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         ).subscribe();
     }
 
-    private refreshViews(): void {
+    refreshViews(): void {
         this.playersCmp.forEach(e => e.ngOnChanges());
         this.playersDCmp.ngOnChanges({});
         this.buyInCmp.forEach(e => e.ngOnChanges());

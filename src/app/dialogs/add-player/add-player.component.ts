@@ -34,7 +34,7 @@ export class AddPlayerComponent implements OnInit {
     data: {
         tournament: Tournament,
         multi: boolean,
-        randomId: number,
+        clientId: number,
         sub: string
     } = inject(MAT_DIALOG_DATA);
 
@@ -137,7 +137,7 @@ export class AddPlayerComponent implements OnInit {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.data.tournament.id,
-                                randomId: this.data.randomId
+                                clientId: this.data.clientId
                             })),
                             tap((result: any) => {
                                 if (this.dialogRef) {
@@ -165,7 +165,7 @@ export class AddPlayerComponent implements OnInit {
                     switchMap(() => this.eventApiService.post$({
                         id: null,
                         tId: this.data.tournament.id,
-                        randomId: this.data.randomId
+                        clientId: this.data.clientId
                     })),
                     tap(() => {
                         if (this.dialogRef) {
@@ -222,13 +222,11 @@ export class AddPlayerComponent implements OnInit {
                         switchMap(() => this.eventApiService.post$({
                             id: null,
                             tId: this.data.tournament.id,
-                            randomId: this.data.randomId
+                            clientId: this.data.clientId
                         })),
-                        tap(() => {
-                            if (this.dialogRef) {
-                                this.dialogRef.close();
-                            }
-                        }))
+                        tap(() => this.data.tournament.players = this.data.tournament.players.filter(
+                            p => p.id !== playerId
+                        )))
                     ),
                     defer(() => of(null))
                 )

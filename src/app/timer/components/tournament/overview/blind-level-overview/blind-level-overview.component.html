@@ -5,11 +5,18 @@
 >
     <h3>
         Blind Levels
-        <i
+
+        <button
             *ngIf="!isSimpleTournament"
-            class="fa fa-plus-circle"
+            mat-mini-fab
+            matTooltip="Add Blind Level"
             (click)="addBlind.emit()"
-        ></i>
+        >
+            <i
+                class="fa fa-plus-circle"
+            ></i>
+        </button>
+
     </h3>
 
     <div class="overflow-y-auto">

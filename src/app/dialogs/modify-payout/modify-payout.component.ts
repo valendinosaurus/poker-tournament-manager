@@ -7,6 +7,7 @@ import { LocalStorageService } from '../../core/services/util/local-storage.serv
 import { AdaptedPayout } from '../../shared/models/adapted-payout.interface';
 import { Finish } from '../../shared/models/finish.interface';
 import { NotificationService } from '../../core/services/notification.service';
+import { Player } from '../../shared/models/player.interface';
 
 @Component({
     selector: 'app-modify-payout',
@@ -20,6 +21,7 @@ export class ModifyPayoutComponent implements OnInit {
         pricepool: number,
         payouts: number[],
         finishes: Finish[],
+        players: Player[],
         tId: number
     } = inject(MAT_DIALOG_DATA);
 
@@ -32,6 +34,8 @@ export class ModifyPayoutComponent implements OnInit {
     total: number = 0;
     keys: number[];
 
+    playersLeft: number;
+
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private notificationService: NotificationService = inject(NotificationService);
@@ -41,13 +45,12 @@ export class ModifyPayoutComponent implements OnInit {
         this.keys = [];
         this.total = this.data.payouts.reduce((acc, curr) => acc + curr, 0);
         this.toDistribute = this.data.payouts.reduce((acc, curr) => acc + curr, 0) - this.data.pricepool;
+        this.playersLeft = this.data.players.length - this.data.finishes.length;
 
         this.data.payouts.forEach(
             (payout: number, index: number) => {
                 this.keys.push(index);
                 this.model[index] = payout;
-
-                console.log('should disable', index, this.data.finishes.map(f => +f.rank).includes((index + 1)));
 
                 this.fields.push(
                     this.formlyFieldService.getDefaultNumberField(
@@ -58,6 +61,23 @@ export class ModifyPayoutComponent implements OnInit {
                     )
                 );
             });
+    }
+
+    addPayoutField(): void {
+        this.model[this.fields.length] = 0;
+        this.keys.push(this.fields.length);
+
+        this.fields = [
+            ...this.fields,
+            this.formlyFieldService.getDefaultNumberField(
+                this.fields.length.toString(),
+                (this.fields.length + 1).toString(),
+                true,
+                this.data.finishes.map(f => +f.rank).includes((this.fields.length + 1))
+            )
+        ];
+
+        console.log(this.fields);
     }
 
     modelChange(model: { [key: string]: number }): void {
@@ -78,9 +98,25 @@ export class ModifyPayoutComponent implements OnInit {
             payouts: payouts
         };
 
-        this.localStorageService.storeAdaptedPayout(adaptedPayoutObject);
-        this.notificationService.success('Payouts modified');
+        if (!this.isAdaptedPayoutSameLikeInitial(adaptedPayoutObject)) {
+            this.localStorageService.storeAdaptedPayout(adaptedPayoutObject);
+            this.notificationService.success('Payouts modified');
+        }
 
         this.dialogRef.close();
+    }
+
+    private isAdaptedPayoutSameLikeInitial(adaptedPayoutObject: AdaptedPayout): boolean {
+        let isSame = true;
+
+        adaptedPayoutObject.payouts.forEach(
+            (payout, index) => {
+                if (payout !== this.data.payouts[index]) {
+                    isSame = false;
+                }
+            }
+        );
+
+        return isSame;
     }
 }

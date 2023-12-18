@@ -78,3 +78,8 @@ mat-tab-body table td {
     padding: 8px 20px;
     text-align: center;
 }
+
+.scrollable-dialog-table-wrapper {
+    max-height: 40vh;
+    overflow-y: auto;
+}

@@ -48,4 +48,8 @@ export class LocalStorageService {
         return undefined;
     }
 
+    deleteAdaptedPayout(tId: number): void {
+        localStorage.removeItem(`ADAPTED_FINISH_${tId}`);
+    }
+
 }

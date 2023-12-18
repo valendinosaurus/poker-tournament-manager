@@ -92,7 +92,7 @@ export class TournamentListItemComponent implements OnInit {
             data: {
                 tournament: this.t,
                 multi: true,
-                randomId: -1
+                clientId: -1
             }
         });
 

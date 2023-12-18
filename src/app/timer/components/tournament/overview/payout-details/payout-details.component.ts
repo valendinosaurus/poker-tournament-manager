@@ -4,11 +4,12 @@ import { Finish } from '../../../../../shared/models/finish.interface';
 import { Player } from '../../../../../shared/models/player.interface';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ModifyPayoutComponent } from '../../../../../dialogs/modify-payout/modify-payout.component';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
+import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-payout-details',
@@ -32,6 +33,7 @@ export class PayoutDetailsComponent implements OnChanges {
 
     deduction: number = 0;
 
+    isPayoutAdapted = false;
     isAdaptedPayoutSumCorrect = true;
 
     private rankingService: RankingService = inject(RankingService);
@@ -80,8 +82,6 @@ export class PayoutDetailsComponent implements OnChanges {
 
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
 
-        console.log('checking sums now');
-
         if (adaptedPayouts) {
             const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
                 this.entries,
@@ -94,11 +94,11 @@ export class PayoutDetailsComponent implements OnChanges {
             );
 
             const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
-            console.log('regular', totalPricePool);
-            console.log('adated', adaptedSum);
             this.isAdaptedPayoutSumCorrect = totalPricePool === adaptedSum;
+            this.isPayoutAdapted = true;
         } else {
             this.isAdaptedPayoutSumCorrect = true;
+            this.isPayoutAdapted = false;
         }
 
     }
@@ -133,7 +133,7 @@ export class PayoutDetailsComponent implements OnChanges {
 
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
 
-        if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
+        if (adaptedPayouts) {
             adaptedPayouts.forEach((payout: number) => {
                 this.payouts.push({
                     rank: index,
@@ -160,8 +160,6 @@ export class PayoutDetailsComponent implements OnChanges {
                 index++;
             });
         }
-
-        console.log(this.payouts);
     }
 
     private calculateAfterDeal(): void {
@@ -225,7 +223,8 @@ export class PayoutDetailsComponent implements OnChanges {
                 pricepool: totalPricePool,
                 payouts: this.payouts.map(e => e.price),
                 tId: this.tournamentId,
-                finishes: this.finishes
+                finishes: this.finishes,
+                players: this.players
             }
         });
 
@@ -235,6 +234,28 @@ export class PayoutDetailsComponent implements OnChanges {
                 this.ngOnChanges({});
                 this.localRefresh.emit();
             }),
+        ).subscribe();
+    }
+
+    removeAdaptedPayouts(): void {
+        const dialogRef = this.dialog.open(
+            ConfirmationDialogComponent,
+            {
+                data: {
+                    title: 'Reset Adapted Payouts',
+                    body: `Do you really want to reset the adapted payouts?`,
+                    confirm: 'Reset'
+                }
+            });
+
+        dialogRef.afterClosed().pipe(
+            take(1),
+            tap((result: boolean) => {
+                if (result) {
+                    this.localStorageService.deleteAdaptedPayout(this.tournamentId);
+                    this.localRefresh.emit();
+                }
+            })
         ).subscribe();
     }
 

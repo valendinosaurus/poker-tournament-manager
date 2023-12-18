@@ -32,7 +32,7 @@ export class AddRebuyComponent implements OnInit {
         tournamentId: number,
         tournamentName: string,
         eligibleForRebuy: Player[]
-        randomId: number,
+        clientId: number,
         conductedRebuys: ConductedEntry[]
     } = inject(MAT_DIALOG_DATA);
 
@@ -93,7 +93,7 @@ export class AddRebuyComponent implements OnInit {
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournamentId,
-                    randomId: this.data.randomId
+                    clientId: this.data.clientId
                 })),
                 tap((result: any) => {
                     if (this.dialogRef) {
@@ -134,14 +134,12 @@ export class AddRebuyComponent implements OnInit {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.data.tournamentId,
-                                randomId: this.data.randomId
+                                clientId: this.data.clientId
                             })),
                             tap((result: any) => {
-                                if (this.dialogRef) {
-                                    this.dialogRef.close({
-                                        entryId: result.id
-                                    });
-                                }
+                                this.data.conductedRebuys = this.data.conductedRebuys.filter(
+                                    crb => crb.entryId !== entryId
+                                );
                             }))
                         ),
                         defer(() => of(null))

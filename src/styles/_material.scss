@@ -1,3 +1,5 @@
+@import "src/styles/colors_texts";
+
 mat-tab-group {
     background: #eee;
 }
@@ -19,11 +21,8 @@ mat-tab-body button {
     min-height: calc(100vh - 48px) !important;
 }
 
-
-.mdc-dialog__container h2 {
-    font-size: 40px;
-    border-bottom: solid 2px black;
-    margin-bottom: 40px;
+.mdc-dialog__container {
+    width: 700px;
 }
 
 .mdc-dialog__container button {
@@ -41,24 +40,24 @@ mat-tab-body button {
     }
 }
 
-#cdk-overlay-0 {
-    left: 0 !important;
-    top: 0 !important;
-    bottom: auto !important;
-    transform: none !important;
-}
-
 .mat-mdc-dialog-surface {
     padding: 32px;
 
     h2 {
-        color: #222;
-        font-size: 14px;
-        margin-bottom: 10px;
+        color: #222 !important;
+        font-size: 32px;
+        margin-bottom: 20px;
+        text-align: center;
+        padding-bottom: 10px;
+        border-bottom: solid 2px black;
     }
 
     h3 {
         color: #222;
+        font-size: 20px;
+        margin-top: 20px;
+        border-bottom: solid 1px $primaryDark;
+        padding-top: 10px;
     }
 
     p {
@@ -69,6 +68,11 @@ mat-tab-body button {
     button {
         background: $primaryDark;
         color: white;
+        padding: 12px 30px;
+        margin: auto;
+        display: block !important;
+        height: fit-content !important;
+        width: 100% !important;
     }
 
     mat-form-field {
@@ -78,4 +82,60 @@ mat-tab-body button {
     .actions {
         margin-top: 40px;
     }
+}
+
+button.main {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 60px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 800px) {
+        width: 160px;
+        height: 160px;
+        border-radius: 160px;
+    }
+
+    .fa {
+        font-size: 30px;
+
+        @media (max-width: 800px) {
+            font-size: 80px;
+        }
+    }
+}
+
+button.main {
+    .fa-clock-o,
+    .fa-user,
+    .fa-window-maximize,
+    .fa-times-rectangle,
+    .fa-address-card,
+    .fa-gears {
+        color: black;
+    }
+
+    .fa-database,
+    .fa-money,
+    .fa-play,
+    .fa-chevron-circle-right,
+    .fa-chevron-circle-left {
+        color: green;
+    }
+
+    .fa-skull {
+        color: red;
+
+        svg {
+            fill: red;
+        }
+    }
+
+    .fa-toggle-on,
+    .fa-toggle-off {
+        color: $primaryDark;
+    }
+
 }

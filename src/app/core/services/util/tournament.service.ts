@@ -4,6 +4,8 @@ import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
 import { ConductedEntry } from '../../../shared/models/conducted-entry.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
+import { ConductedFinish } from '../../../shared/models/conducted-finish.interface';
+import { Finish } from '../../../shared/models/finish.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -115,6 +117,21 @@ export class TournamentService {
             player => !tournament.finishes.map(f => f.playerId).includes(player.id)
         ).filter(
             player => tournament.entries.filter(e => e.type === EntryType.ENTRY).map(f => f.playerId).includes(player.id)
+        );
+    }
+
+    getConductedSeatOpens(tournament: Tournament): ConductedFinish[] {
+        return tournament.finishes.map(
+            (finish: Finish) => ({
+                tId: tournament.id,
+                playerId: finish.playerId,
+                image: tournament.players.filter(p => p.id === finish.playerId)[0].image,
+                name: tournament.players.filter(p => p.id === finish.playerId)[0].name,
+                time: finish.timestamp,
+                rank: +finish.rank
+            })
+        ).sort(
+            (a, b) => a.rank - b.rank
         );
     }
 }

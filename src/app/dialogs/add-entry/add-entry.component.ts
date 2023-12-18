@@ -30,7 +30,7 @@ export class AddEntryComponent implements OnInit {
     data: {
         tournamentId: number,
         isReentry: boolean,
-        randomId: number,
+        clientId: number,
         eligibleForEntryOrReEntry: Player[],
         conductedEntries: ConductedEntry[]
         tournamentName: string,
@@ -93,7 +93,7 @@ export class AddEntryComponent implements OnInit {
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournamentId,
-                    randomId: this.data.randomId
+                    clientId: this.data.clientId
                 })),
                 tap((result: any) => {
                     if (this.dialogRef) {
@@ -134,15 +134,11 @@ export class AddEntryComponent implements OnInit {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.data.tournamentId,
-                                randomId: this.data.randomId
+                                clientId: this.data.clientId
                             })),
-                            tap((result: any) => {
-                                if (this.dialogRef) {
-                                    this.dialogRef.close({
-                                        entryId: result.id
-                                    });
-                                }
-                            }))
+                            tap(() => this.data.conductedEntries = this.data.conductedEntries.filter(
+                                ce => ce.entryId !== entryId
+                            )))
                         ),
                         defer(() => of(null))
                     )

@@ -59,7 +59,8 @@ export class FormlyFieldService {
         key: string,
         label: string,
         required: boolean,
-        options: { label: string, value: any }[]
+        options: { label: string, value: any }[],
+        disabled = false
     ): FormlyFieldConfig {
         return {
             key,
@@ -67,7 +68,8 @@ export class FormlyFieldService {
             props: {
                 label,
                 required,
-                options
+                options,
+                disabled: disabled ? true : false
             }
         };
     }

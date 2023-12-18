@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
@@ -10,11 +10,13 @@ import { RankingService } from '../../core/services/util/ranking.service';
 import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { Finish } from '../../shared/models/finish.interface';
-import { iif, of } from 'rxjs';
+import { defer, iif, of } from 'rxjs';
 import { FetchService } from '../../core/services/fetch.service';
 import { EventApiService } from '../../core/services/api/event-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { NotificationService } from '../../core/services/notification.service';
+import { ConductedFinish } from '../../shared/models/conducted-finish.interface';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-add-finish',
@@ -32,8 +34,9 @@ export class AddFinishComponent implements OnInit {
     data: {
         tournament: Tournament,
         metadata: SeriesMetadata | undefined,
-        randomId: number,
-        eligibleForSeatOpen: Player[]
+        clientId: number,
+        eligibleForSeatOpen: Player[],
+        conductedSeatOpens: ConductedFinish[]
     } = inject(MAT_DIALOG_DATA);
 
     private finishApiService: FinishApiService = inject(FinishApiService);
@@ -44,7 +47,10 @@ export class AddFinishComponent implements OnInit {
     private eventApiService: EventApiService = inject(EventApiService);
     private notificationService: NotificationService = inject(NotificationService);
 
+    private dialog: MatDialog = inject(MatDialog);
+
     allPlayers: { label: string, value: number }[];
+    conductedSeatOpens: Player[];
 
     rank = 0;
     price = 0;
@@ -72,7 +78,6 @@ export class AddFinishComponent implements OnInit {
         } else {
             if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
                 this.price = adaptedPayouts[this.rank - 1];
-                console.log('price for rank', this.rank, 'is', this.price);
             } else {
                 const {totalPricePool} = this.rankingService.getTotalPricePool(
                     this.data.tournament.entries,
@@ -87,6 +92,12 @@ export class AddFinishComponent implements OnInit {
                 this.price = totalPricePool / 100 * payoutPercentage;
             }
         }
+
+        this.conductedSeatOpens = this.data.tournament.players.filter(
+            player => !this.data.eligibleForSeatOpen.map(
+                e => e.id
+            ).includes(player.id)
+        );
     }
 
     private initModel(): void {
@@ -130,7 +141,7 @@ export class AddFinishComponent implements OnInit {
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournament.id,
-                    randomId: this.data.randomId
+                    clientId: this.data.clientId
                 })),
                 tap((result: any) => {
                     if (this.dialogRef) {
@@ -181,6 +192,48 @@ export class AddFinishComponent implements OnInit {
             playerId,
             timestamp: -1
         };
+    }
+
+    removeSeatOpen(pId: number, playerName: string): void {
+        const dialogRef = this.dialog.open(
+            ConfirmationDialogComponent,
+            {
+                data: {
+                    title: 'Remove Seat Open',
+                    body: `Do you really want to remove the seat open of <strong>${playerName}</strong>`,
+                    confirm: 'Remove Seat Open'
+                }
+            });
+
+        dialogRef.afterClosed().pipe(
+            switchMap((result: boolean) => iif(
+                    () => result,
+                    defer(() => this.finishApiService.delete$(this.data.tournament.id, pId).pipe(
+                            take(1),
+                            catchError(() => {
+                                this.notificationService.error('Error removing Seat Open');
+                                return of(null);
+                            }),
+                            tap(() => {
+                                this.notificationService.success(`Seat Open removed - ${playerName}`);
+                            }),
+                            tap(() => {
+                                this.fetchService.trigger();
+                            }),
+                            switchMap(() => this.eventApiService.post$({
+                                id: null,
+                                tId: this.data.tournament.id,
+                                clientId: this.data.clientId
+                            })),
+                            tap(() => this.data.conductedSeatOpens = this.data.conductedSeatOpens.filter(
+                                cso => cso.playerId !== pId
+                            ))
+                        )
+                    ),
+                    defer(() => of(null))
+                )
+            )
+        ).subscribe();
     }
 
 }

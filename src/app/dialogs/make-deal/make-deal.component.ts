@@ -26,7 +26,7 @@ export class MakeDealComponent implements OnInit {
     data: {
         tournament: Tournament,
         metadata: SeriesMetadata | undefined,
-        randomId: number
+        clientId: number
     } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});
@@ -118,7 +118,7 @@ export class MakeDealComponent implements OnInit {
             switchMap(() => this.eventApiService.post$({
                 id: null,
                 tId: this.data.tournament.id,
-                randomId: this.data.randomId
+                clientId: this.data.clientId
             })),
             tap(() => {
                 if (this.dialogRef) {

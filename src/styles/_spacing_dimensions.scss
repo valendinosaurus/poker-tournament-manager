@@ -45,6 +45,11 @@
     flex: 0 0 5%;
 }
 
+.w-120px {
+    width: 120px;
+    flex: 0 0 120px;
+}
+
 .border-bottom-1 {
     border-bottom: solid 1px $borderColor;
 }
@@ -88,5 +93,9 @@
 }
 
 .mr-1 {
-    margin-right: 10px;
+    margin-right: 8px;
+}
+
+.ml-0-5 {
+    margin-left: 8px !important;
 }

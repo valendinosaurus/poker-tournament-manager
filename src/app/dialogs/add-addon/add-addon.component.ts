@@ -30,7 +30,7 @@ export class AddAddonComponent implements OnInit {
     data: {
         tournamentId: number,
         tournamentName: string,
-        randomId: number,
+        clientId: number,
         eligibleForAddon: Player[],
         conductedAddons: ConductedEntry[]
     } = inject(MAT_DIALOG_DATA);
@@ -92,7 +92,7 @@ export class AddAddonComponent implements OnInit {
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournamentId,
-                    randomId: this.data.randomId
+                    clientId: this.data.clientId
                 })),
                 tap((result: any) => {
                     if (this.dialogRef) {
@@ -133,14 +133,12 @@ export class AddAddonComponent implements OnInit {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.data.tournamentId,
-                                randomId: this.data.randomId
+                                clientId: this.data.clientId
                             })),
                             tap((result: any) => {
-                                if (this.dialogRef) {
-                                    this.dialogRef.close({
-                                        entryId: result.id
-                                    });
-                                }
+                                this.data.conductedAddons = this.data.conductedAddons.filter(
+                                    cad => cad.entryId !== entryId
+                                );
                             }))
                         ),
                         defer(() => of(null))

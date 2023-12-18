@@ -22,7 +22,7 @@ export class PlayerDetailsComponent implements OnChanges {
     @Input() players: Player[];
     @Input() entries: Entry[];
     @Input() finishes: Finish[];
-    @Input() randomId: number;
+    @Input() clientId: number;
     @Input() trigger: string | null;
     @Input() tId: number;
 
@@ -47,7 +47,6 @@ export class PlayerDetailsComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         const minRank = Math.min(...this.finishes.map(f => f.rank));
-        console.log('IN', minRank);
 
         if (this.players && this.entries) {
             this.combination = this.players.map(
@@ -96,7 +95,7 @@ export class PlayerDetailsComponent implements OnChanges {
                 data: {
                     title: 'Remove Seat Open',
                     body: `Do you really want to remove the seat open of <strong>${playerName}</strong>`,
-                    confirm: 'Remove Addon'
+                    confirm: 'Remove Seat Open'
                 }
             });
 
@@ -118,7 +117,7 @@ export class PlayerDetailsComponent implements OnChanges {
                             switchMap(() => this.eventApiService.post$({
                                 id: null,
                                 tId: this.tId,
-                                randomId: this.randomId
+                                clientId: this.clientId
                             }))
                         )
                     ),

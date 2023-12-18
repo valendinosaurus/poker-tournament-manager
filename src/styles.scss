@@ -50,7 +50,7 @@ form {
 
 #NotiflixNotifyWrap {
     width: fit-content !important;
-    max-width: 600px;
+    max-width: 900px;
 }
 
 .notiflix-notify {
@@ -62,4 +62,8 @@ form {
     height: 32px !important;
     left: 14px !important;
     top: -2px !important;
+}
+
+.cdk-overlay-container {
+    z-index: 9999;
 }

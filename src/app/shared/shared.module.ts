@@ -15,9 +15,14 @@ import { UserImageRoundComponent } from './components/user-image-round/user-imag
 import { PageWithSlideMenuComponent } from './components/page-with-slide-menu/page-with-slide-menu.component';
 import { BulletsComponent } from './components/bullets/bullets.component';
 import { BlindLevelTextPipe } from './pipes/blind-level-text.pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const SHARED_MODULES = [
     CommonModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     MatDatepickerModule,
     FormsModule,
@@ -26,7 +31,10 @@ const SHARED_MODULES = [
     MatNativeDateModule,
     MatDialogModule,
     OverlayModule,
-    MatRadioModule
+    MatRadioModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule
 ];
 
 @NgModule({

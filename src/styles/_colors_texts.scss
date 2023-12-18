@@ -63,9 +63,8 @@ h3.highlighted {
         align-items: center;
         border-bottom: solid 2px $borderColor;
 
-        .fa {
-            color: white;
-            margin-left: 2vw;
+        .mdc-fab {
+            margin-left: 12px;
         }
     }
 }
@@ -107,14 +106,31 @@ span.small {
 }
 
 h4 .fa {
-    font-size: 24px !important;
-    margin-left: 8px;
-}
-
-h4 .fa.adjusted {
     font-size: 20px !important;
 }
 
+h4 .fa.adjusted {
+    font-size: 18px !important;
+}
+
+h4 .fa-exclamation-triangle {
+    font-size: 26px !important;
+}
+
 .fa-exclamation-triangle {
-    color: red;
+    color: orangered;
+}
+
+.mdc-fab {
+    background: white !important;
+
+    .fa {
+        margin: 0 !important;
+        font-size: 14px !important;
+    }
+}
+
+.mdc-fab--mini {
+    width: 24px !important;
+    height: 24px !important;
 }
