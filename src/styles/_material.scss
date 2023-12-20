@@ -139,3 +139,7 @@ button.main {
     }
 
 }
+
+.mat-mdc-raised-button[color="primary"]:not(:disabled) {
+    background: $primaryDark !important;
+}
