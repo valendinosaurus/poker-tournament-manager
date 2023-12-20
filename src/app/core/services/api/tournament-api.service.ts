@@ -106,6 +106,10 @@ export class TournamentApiService {
         return this.http.get<Tournament>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
     }
 
+    get2$(id: number, sub: string): Observable<Tournament> {
+        return this.http.get<Tournament>(`${BACKEND_URL}${this.ENDPOINT}/2/${id}/${sub}`);
+    }
+
     getInSeries$(sId: number, password: string): Observable<TournamentInSeries[]> {
         return this.http.get<TournamentInSeries[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}/${password}`);
     }

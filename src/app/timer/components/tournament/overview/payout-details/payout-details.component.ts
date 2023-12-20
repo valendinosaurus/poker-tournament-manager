@@ -64,11 +64,15 @@ export class PayoutDetailsComponent implements OnChanges {
         this.playersLeft = this.entries.filter(e => e.type === EntryType.ENTRY).length - this.finishes.length;
         this.placesPaid = this.rankingService.getPayoutById(this.payout).length;
 
+        console.log('finishes', this.finishes);
+
         if (this.wasDealMade) {
             this.calculateAfterDeal();
         } else {
             this.calculateRegularList();
         }
+
+        console.log(this.wasDealMade, this.payouts);
 
         if (changes['trigger']?.currentValue === 'SCROLL') {
             if (this.scrollDown) {

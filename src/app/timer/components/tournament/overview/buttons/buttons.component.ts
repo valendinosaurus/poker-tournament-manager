@@ -194,7 +194,7 @@ export class ButtonsComponent implements OnChanges {
                 opacity: [0, 1],
                 easing: 'easeInOutQuad',
                 duration: 400,
-                delay: (el: any, i: number) => 300 * i
+                delay: (el: any, i: number) => 500 * i
             }).add({
             targets: '.seat-open-animation',
             opacity: 0,

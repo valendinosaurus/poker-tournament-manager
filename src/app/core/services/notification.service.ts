@@ -8,7 +8,7 @@ export class NotificationService {
 
     constructor() {
         Notiflix.Notify.init({
-            fontSize: '32px',
+            fontSize: '20px',
             timeout: 5000,
             fontAwesomeIconSize: '12px',
         });

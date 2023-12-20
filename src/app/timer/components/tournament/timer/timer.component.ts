@@ -1,8 +1,7 @@
 import { Component, DestroyRef, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Tournament } from 'src/app/shared/models/tournament.interface';
-import { Player } from '../../../../shared/models/player.interface';
 import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
-import { combineLatest, defer, iif, Observable, of, Subscription, timer } from 'rxjs';
+import { defer, iif, Observable, of, Subscription, timer } from 'rxjs';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
@@ -11,9 +10,6 @@ import { PlayerApiService } from '../../../../core/services/api/player-api.servi
 import { EntryApiService } from '../../../../core/services/api/entry-api.service';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 import { dummyTourney } from '../../../../shared/data/dummy-tournament.const';
-import { BlindLevel } from '../../../../shared/models/blind-level.interface';
-import { Entry } from '../../../../shared/models/entry.interface';
-import { Finish } from '../../../../shared/models/finish.interface';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventApiService } from '../../../../core/services/api/event-api.service';
@@ -114,57 +110,24 @@ export class TimerComponent implements OnInit, OnChanges {
             map((user: User | undefined | null) => user?.sub ?? '')
         );
 
-        const tourney$ = this.fetchTrigger$.pipe(
-            switchMap(() => sub$.pipe(
-                switchMap((sub: string) => this.tournamentApiService.get$(+tournamentId, sub)),
-                shareReplay(1)
-            ))
-        );
-
-        const blinds$ = this.fetchTrigger$.pipe(
-            switchMap(() => sub$.pipe(
-                switchMap((sub: string) => this.blindLevelApiService.getOfTournament$(+tournamentId, sub)),
-                shareReplay(1)
-            ))
-        );
-
-        const players$ = this.fetchTrigger$.pipe(
-            switchMap(() => sub$.pipe(
-                switchMap((sub: string) => this.playerApiService.getInTournament$(+tournamentId, sub)),
-                shareReplay(1)
-            ))
-        );
-
-        const entries$ = this.fetchTrigger$.pipe(
-            switchMap(() => this.entryApiService.getInTournament$(+tournamentId)),
-            shareReplay(1)
-        );
-        const finishes$ = this.fetchTrigger$.pipe(
-            switchMap(() => this.finishApiService.getInTournament$(+tournamentId)),
-            shareReplay(1)
-        );
-
         this.seriesMetadata$ = sub$.pipe(
             switchMap((sub: string) => this.tournamentApiService.getSeriesMetadata$(+tournamentId, sub)),
         );
 
         this.tournament$ = this.fetchTrigger$.pipe(
-            switchMap(() => combineLatest([
-                tourney$,
-                blinds$,
-                players$,
-                entries$,
-                finishes$
-            ]).pipe(
-                tap(() => this.notificationService.success('Tournament is up to date')),
-                map(([tourney, blinds, players, entries, finishes]: [Tournament, BlindLevel[], Player[], Entry[], Finish[]]) => ({
-                    ...tourney,
-                    structure: blinds.sort((a, b) => (a.position) - (b.position)),
-                    players: players,
-                    entries: entries,
-                    finishes: finishes
-                }) as Tournament)
-            ))
+            switchMap(() => sub$.pipe(
+                    switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub))
+                ),
+            ),
+            tap(() => this.notificationService.success('Tournament is up to date')),
+            shareReplay(1)
         );
+
+        this.fetchTrigger$.pipe(
+            switchMap(() => sub$.pipe(
+                switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub)),
+                tap(console.log)
+            ))
+        ).subscribe();
     }
 }
