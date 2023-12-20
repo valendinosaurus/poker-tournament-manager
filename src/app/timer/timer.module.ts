@@ -16,9 +16,6 @@ import { PlayerDetailsComponent } from './components/tournament/overview/player-
 import { PayoutDetailsComponent } from './components/tournament/overview/payout-details/payout-details.component';
 import { RankingComponent } from './components/tournament/overview/ranking/ranking.component';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MenuDialogComponent } from './components/tournament/overview/buttons/menu-dialog/menu-dialog.component';
 
 @NgModule({
@@ -40,7 +37,7 @@ import { MenuDialogComponent } from './components/tournament/overview/buttons/me
     imports: [
         SharedModule,
         CountdownModule,
-        RouterLink
+        RouterLink,
     ],
     exports: [
         TimerComponent,

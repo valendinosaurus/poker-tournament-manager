@@ -34,7 +34,9 @@
                             "@angular/material/prebuilt-themes/deeppurple-amber.css",
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "src/assets/js/confetti.min.js"
+                        ]
                     },
                     "configurations": {
                         "production": {

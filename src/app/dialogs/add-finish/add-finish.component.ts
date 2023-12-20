@@ -146,7 +146,8 @@ export class AddFinishComponent implements OnInit {
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({
-                            finishId: result.id
+                            finishId: result.id,
+                            name: this.data.tournament.players.find(e => e.id === model.playerId)?.name
                         });
                     }
                 })

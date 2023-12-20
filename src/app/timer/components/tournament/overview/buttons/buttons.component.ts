@@ -3,7 +3,7 @@ import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { Observable } from 'rxjs';
 import { EventApiService } from '../../../../../core/services/api/event-api.service';
 import { ServerResponse } from '../../../../../shared/models/server-response';
-import { take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddRebuyComponent } from '../../../../../dialogs/add-rebuy/add-rebuy.component';
 import { AddAddonComponent } from '../../../../../dialogs/add-addon/add-addon.component';
@@ -11,10 +11,11 @@ import { AddFinishComponent } from '../../../../../dialogs/add-finish/add-finish
 import { MatDialog } from '@angular/material/dialog';
 import { TournamentService } from '../../../../../core/services/util/tournament.service';
 import { SeriesMetadata } from '../../../../../shared/models/series-metadata.interface';
-import { ConnectionPositionPair } from '@angular/cdk/overlay';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
+
+declare var anime: any;
 
 @Component({
     selector: 'app-buttons',
@@ -32,6 +33,8 @@ export class ButtonsComponent implements OnChanges {
     @Input() isRebuyPhaseFinished: boolean;
 
     isOverlayOpen = false;
+    isAnimating = false;
+    lastSeatOpenName = 'TEST NAME';
 
     dialogPosition = {
         position: {
@@ -57,17 +60,6 @@ export class ButtonsComponent implements OnChanges {
 
     isAdaptedPayoutSumCorrect = true;
 
-    positionPairs: ConnectionPositionPair[] = [
-        {
-            offsetX: 0,
-            offsetY: -40,
-            originX: 'center',
-            originY: 'center',
-            overlayX: 'center',
-            overlayY: 'bottom',
-        },
-    ];
-
     ngOnChanges(changes: SimpleChanges): void {
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament.id);
 
@@ -87,6 +79,7 @@ export class ButtonsComponent implements OnChanges {
         } else {
             this.isAdaptedPayoutSumCorrect = true;
         }
+
     }
 
     addRebuy(): void {
@@ -137,6 +130,13 @@ export class ButtonsComponent implements OnChanges {
 
         dialogRef.afterClosed().pipe(
             takeUntilDestroyed(this.destroyRef),
+            tap((e) => {
+                if (e) {
+                    this.lastSeatOpenName = e.name;
+                    this.doConfetti();
+                }
+                ;
+            })
         ).subscribe();
     }
 
@@ -178,6 +178,61 @@ export class ButtonsComponent implements OnChanges {
         dialogRef.componentInstance.previousLevel = this.previousLevel;
         dialogRef.componentInstance.toggleAutoSlide = this.toggleAutoSlide;
         dialogRef.componentInstance.localRefresh = this.localRefresh;
+    }
+
+    hidden = false;
+
+    doConfetti(): void {
+        this.isAnimating = true;
+
+        setTimeout(() => this.isAnimating = false, 6000);
+
+        anime.timeline({loop: false})
+            .add({
+                targets: '.seat-open-animation .word',
+                scale: [14, 1],
+                opacity: [0, 1],
+                easing: 'easeInOutQuad',
+                duration: 400,
+                delay: (el: any, i: number) => 300 * i
+            }).add({
+            targets: '.seat-open-animation',
+            opacity: 0,
+            duration: 1000,
+            easing: 'easeInOutQuad',
+            delay: 1000
+        });
+
+        setTimeout(
+            () => {
+                this.shoot();
+            },
+            2000
+        );
+    }
+
+    shoot() {
+        try {
+            this.confetti({
+                angle: 90,
+                spread: 360,
+                particleCount: this.random(4000, 5000),
+                origin: {
+                    y: 0.4
+                }
+            });
+        } catch (e) {
+            // noop, confettijs may not be loaded yet
+        }
+    }
+
+    random(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+    }
+
+    confetti(args: any) {
+        // @ts-ignore
+        return window['confetti'].apply(this, arguments);
     }
 
 }
