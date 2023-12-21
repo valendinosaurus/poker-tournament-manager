@@ -56,16 +56,35 @@ export class AddFinishComponent implements OnInit {
     price = 0;
 
     ngOnInit(): void {
+        this.determineAllPlayers();
+        this.initModel();
+        this.initFields();
+        this.calcRanksAndPrices();
+    }
+
+    private determineAllPlayers(): void {
         this.allPlayers = this.data.eligibleForSeatOpen.map(
             player => ({
                 label: player.name,
                 value: player.id
             })
         );
+    }
 
-        this.initModel();
-        this.initFields();
+    private initModel(): void {
+        this.model = {
+            playerId: undefined,
+            tournamentId: this.data.tournament.id
+        };
+    }
 
+    private initFields(): void {
+        this.fields = [
+            this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers)
+        ];
+    }
+
+    private calcRanksAndPrices(): void {
         this.rank = this.data.tournament.players.length - this.data.tournament.finishes.length;
         const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
@@ -98,19 +117,6 @@ export class AddFinishComponent implements OnInit {
                 e => e.id
             ).includes(player.id)
         );
-    }
-
-    private initModel(): void {
-        this.model = {
-            playerId: undefined,
-            tournamentId: this.data.tournament.id
-        };
-    }
-
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers)
-        ];
     }
 
     onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
@@ -229,7 +235,21 @@ export class AddFinishComponent implements OnInit {
                             })),
                             tap(() => this.data.conductedSeatOpens = this.data.conductedSeatOpens.filter(
                                 cso => cso.playerId !== pId
-                            ))
+                            )),
+                            tap(() => {
+                                this.allPlayers.push({
+                                    label: playerName,
+                                    value: pId
+                                });
+
+                                this.initModel();
+                                this.initFields();
+                                this.data.tournament.finishes = this.data.tournament.finishes.filter(
+                                    (finish: Finish) => finish.playerId !== pId
+                                );
+
+                                this.calcRanksAndPrices();
+                            })
                         )
                     ),
                     defer(() => of(null))
