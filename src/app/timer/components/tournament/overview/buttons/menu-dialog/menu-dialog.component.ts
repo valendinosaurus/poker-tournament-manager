@@ -50,6 +50,7 @@ export class MenuDialogComponent implements OnInit {
     data: {
         isSimpleTournament: boolean,
         isRebuyPhaseFinished: boolean,
+        isAddPlayerBlocked: boolean,
         tournament: Tournament,
         seriesMetadata: SeriesMetadata,
         clientId: number,

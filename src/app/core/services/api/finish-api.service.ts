@@ -49,4 +49,18 @@ export class FinishApiService {
     delete$(tId: number, pId: number): Observable<any> {
         return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${tId}/${pId}`);
     }
+
+    increaseAllOfTournament$(tId: number, pIds: number[]): Observable<any> {
+        return this.http.put<any>(
+            `${BACKEND_URL}${this.ENDPOINT}/increase/tournament/${tId}`,
+            JSON.stringify({ids: pIds})
+        );
+    }
+
+    decreaseAllOfTournament$(tId: number, pIds: number[]): Observable<any> {
+        return this.http.put<any>(
+            `${BACKEND_URL}${this.ENDPOINT}/decrease/tournament/${tId}`,
+            JSON.stringify({ids: pIds})
+        );
+    }
 }

@@ -5,10 +5,6 @@ import { defer, iif, Observable, of, Subscription, timer } from 'rxjs';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
-import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
-import { PlayerApiService } from '../../../../core/services/api/player-api.service';
-import { EntryApiService } from '../../../../core/services/api/entry-api.service';
-import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 import { dummyTourney } from '../../../../shared/data/dummy-tournament.const';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -36,10 +32,6 @@ export class TimerComponent implements OnInit, OnChanges {
     clientId: number;
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
-    private blindLevelApiService: BlindLevelApiService = inject(BlindLevelApiService);
-    private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private entryApiService: EntryApiService = inject(EntryApiService);
-    private finishApiService: FinishApiService = inject(FinishApiService);
     private eventApiService: EventApiService = inject(EventApiService);
     private authService: AuthService = inject(AuthService);
     private router: Router = inject(Router);

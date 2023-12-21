@@ -20,6 +20,25 @@ div.main-buttons {
     }
 }
 
+.info-panel {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 12px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+
+    span {
+        display: flex;
+        align-items: center;
+    }
+
+    span i {
+        margin-right: 8px;
+    }
+}
+
 .hide-800 {
     @media (max-width: 800px) {
         display: none !important;

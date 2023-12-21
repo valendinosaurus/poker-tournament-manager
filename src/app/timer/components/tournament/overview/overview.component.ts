@@ -31,6 +31,7 @@ import { SeriesMetadata } from '../../../../shared/models/series-metadata.interf
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 import { ButtonsComponent } from './buttons/buttons.component';
+import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 
 @Component({
     selector: 'app-overview',
@@ -92,6 +93,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private finishApiService: FinishApiService = inject(FinishApiService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownHandler(event: Event) {

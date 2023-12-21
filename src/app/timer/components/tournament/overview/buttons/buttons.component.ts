@@ -32,7 +32,7 @@ export class ButtonsComponent implements OnChanges {
     @Input() isSimpleTournament: boolean;
     @Input() isRebuyPhaseFinished: boolean;
 
-    isOverlayOpen = false;
+    isAddPlayerBlocked = false;
     isAnimating = false;
     lastSeatOpenName = 'TEST NAME';
 
@@ -80,6 +80,13 @@ export class ButtonsComponent implements OnChanges {
             this.isAdaptedPayoutSumCorrect = true;
         }
 
+        const numberOfPaidPlaces = adaptedPayouts
+            ? adaptedPayouts.length
+            : this.rankingService.getPayoutById(this.tournament.payout).length;
+
+        const playersLeft = this.tournament.players.length - this.tournament.finishes.length;
+
+        this.isAddPlayerBlocked = playersLeft < numberOfPaidPlaces;
     }
 
     addRebuy(): void {
@@ -165,6 +172,7 @@ export class ButtonsComponent implements OnChanges {
                     clientId: this.clientId,
                     sub: this.sub,
                     running: this.running,
+                    isAddPlayerBlocked: this.isAddPlayerBlocked
                 },
                 height: '80%'
             }

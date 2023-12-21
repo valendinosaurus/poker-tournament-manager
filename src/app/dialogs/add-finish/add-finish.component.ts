@@ -217,6 +217,7 @@ export class AddFinishComponent implements OnInit {
                             }),
                             tap(() => {
                                 this.notificationService.success(`Seat Open removed - ${playerName}`);
+                                this.rank = this.rank + 1;
                             }),
                             tap(() => {
                                 this.fetchService.trigger();

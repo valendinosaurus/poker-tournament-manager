@@ -1,4 +1,14 @@
+<div class="info-panel">
+    <span *ngIf="isAddPlayerBlocked">
+        <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
+    </span>
+    <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished">
+        <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
+    </span>
+</div>
+
 <div class="main-buttons">
+
     <button
         *ngIf="!isSimpleTournament"
         mat-raised-button

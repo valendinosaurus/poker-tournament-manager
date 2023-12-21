@@ -17,6 +17,8 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
+import { FinishApiService } from '../../core/services/api/finish-api.service';
+import { Finish } from '../../shared/models/finish.interface';
 
 @Component({
     selector: 'app-add-player',
@@ -42,6 +44,7 @@ export class AddPlayerComponent implements OnInit {
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private entryApiService: EntryApiService = inject(EntryApiService);
+    private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
@@ -116,6 +119,7 @@ export class AddPlayerComponent implements OnInit {
             // TODO improve
             if (withEntry) {
                 this.tournamentApiService.addPlayer$(model.playerId, model.tournamentId).pipe(
+                    take(1),
                     switchMap(
                         () => this.entryApiService.post$({
                             id: undefined,
@@ -124,14 +128,16 @@ export class AddPlayerComponent implements OnInit {
                             type: EntryType.ENTRY,
                             timestamp: -1
                         }).pipe(
-                            take(1),
                             catchError(() => {
                                 this.notificationService.error(`Error adding Player`);
                                 return of(null);
                             }),
+                            switchMap(() => this.finishApiService.increaseAllOfTournament$(
+                                this.data.tournament.id,
+                                this.data.tournament.finishes.map((finish: Finish) => finish.playerId)
+                            )),
                             tap(() => {
-                                const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
-                                this.notificationService.success(`Re-Entry - ${playerName}`);
+                                this.notificationService.success('Player added');
                             }),
                             tap((a) => this.fetchService.trigger()),
                             switchMap(() => this.eventApiService.post$({
@@ -158,9 +164,12 @@ export class AddPlayerComponent implements OnInit {
                         return of(null);
                     }),
                     tap(() => {
-                        const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
-                        this.notificationService.success(`Entry - ${playerName}`);
+                        this.notificationService.success('Player added');
                     }),
+                    switchMap(() => this.finishApiService.increaseAllOfTournament$(
+                        this.data.tournament.id,
+                        this.data.tournament.finishes.map((finish: Finish) => finish.playerId)
+                    )),
                     tap(() => this.fetchService.trigger()),
                     switchMap(() => this.eventApiService.post$({
                         id: null,
@@ -218,6 +227,10 @@ export class AddPlayerComponent implements OnInit {
                         tap(() => {
                             this.notificationService.success(`Player removed - ${playerName}`);
                         }),
+                        switchMap(() => this.finishApiService.decreaseAllOfTournament$(
+                            this.data.tournament.id,
+                            this.data.tournament.finishes.map((finish: Finish) => finish.playerId)
+                        )),
                         tap(() => this.fetchService.trigger()),
                         switchMap(() => this.eventApiService.post$({
                             id: null,
