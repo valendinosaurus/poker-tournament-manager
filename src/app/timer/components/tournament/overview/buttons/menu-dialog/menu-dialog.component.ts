@@ -103,7 +103,8 @@ export class MenuDialogComponent implements OnInit {
     private initModel(): void {
         this.model = {
             id: this.data.tournament.id,
-            payout: this.data.tournament.payout
+            payout: this.data.tournament.payout,
+            name: this.data.tournament.name
         };
 
         this.payoutCache = this.data.tournament.payout;
@@ -135,7 +136,8 @@ export class MenuDialogComponent implements OnInit {
                 true,
                 payoutsForSelect,
                 payoutDone
-            )
+            ),
+            this.formlyFieldService.getDefaultTextField('name', 'Name', false)
         ];
     }
 
@@ -289,7 +291,6 @@ export class MenuDialogComponent implements OnInit {
                     this.localStorageService.deleteAdaptedPayout(this.data.tournament.id);
                 }
 
-                // this.isOverlayOpen = false;
                 this.localRefresh.emit();
             }),
             tap(() => {
