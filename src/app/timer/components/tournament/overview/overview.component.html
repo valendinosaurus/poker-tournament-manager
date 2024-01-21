@@ -106,9 +106,9 @@
                 *ngIf="!finished && tournament.structure.length > 0"
                 class="current-level"
             >
-                <p class="level">
-                    {{ levels[currentLevelIndex] | blindLevelText }}
-                </p>
+                <p class="level"
+                   [innerHTML]="levels[currentLevelIndex] | blindLevelText"
+                ></p>
             </div>
 
             <div class="next-level">
@@ -116,9 +116,10 @@
                     NEXT
                 </p>
 
-                <p class="next-level-text">
-                    {{ levels[currentLevelIndex + 1] | blindLevelText }}
-                </p>
+                <p
+                    class="next-level-text"
+                    [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText"
+                ></p>
             </div>
 
             <p *ngIf="finished">

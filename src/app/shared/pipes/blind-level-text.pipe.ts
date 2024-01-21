@@ -13,10 +13,26 @@ export class BlindLevelTextPipe implements PipeTransform {
             }`;
         }
 
-        let text = 'PAUSE';
+        let text = `<span>PAUSE (${level.duration}min)</span>`;
+
+        if (level.isChipUp || level.endsRebuy) {
+            text += '<span class="smaller">';
+        }
 
         if (level.isChipUp) {
-            text += ' - CHIP UP';
+            text += 'CHIP UP';
+        }
+
+        if (level.isChipUp && level.endsRebuy) {
+            text += ' | ';
+        }
+
+        if (level.endsRebuy) {
+            text += 'ENDS RE-BUY';
+        }
+
+        if (level.isChipUp || level.endsRebuy) {
+            text += '</span>';
         }
 
         return text;
