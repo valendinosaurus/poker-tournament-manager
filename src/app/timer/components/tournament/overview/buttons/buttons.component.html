@@ -5,6 +5,14 @@
     <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished">
         <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
     </span>
+    <span *ngIf="!canStartTournament; else readyToStart">
+        <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
+    </span>
+    <ng-template #readyToStart>
+        <span>
+            <i class="fa fa-check"></i> Ready to start tournament
+        </span>
+    </ng-template>
 </div>
 
 <div class="main-buttons">

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,10 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
+import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { TournamentService } from '../../core/services/util/tournament.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Tournament } from '../../shared/models/tournament.interface';
 
 @Component({
     selector: 'app-add-rebuy',
@@ -31,31 +35,46 @@ export class AddRebuyComponent implements OnInit {
     data: {
         tournamentId: number,
         tournamentName: string,
-        eligibleForRebuy: Player[]
         clientId: number,
-        conductedRebuys: ConductedEntry[]
+        sub: string
     } = inject(MAT_DIALOG_DATA);
 
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
     private notificationService: NotificationService = inject(NotificationService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allPlayers: { label: string, value: number }[];
+    eligibleForRebuy: Player[];
+    conductedRebuys: ConductedEntry[];
 
     private dialog: MatDialog = inject(MatDialog);
 
     ngOnInit(): void {
-        this.allPlayers = this.data.eligibleForRebuy.map(
-            player => ({
-                label: player.name,
-                value: player.id
-            })
-        );
+        this.fetchService.getFetchTrigger$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            switchMap(() => this.tournamentApiService.get2$(this.data.tournamentId, this.data.sub)),
+            tap((tournament: Tournament) => {
+                this.eligibleForRebuy = this.tournamentService.getPlayersEligibleForRebuy(tournament);
+                this.allPlayers = this.eligibleForRebuy.map(
+                    player => ({
+                        label: player.name,
+                        value: player.id
+                    })
+                );
 
-        this.initModel();
-        this.initFields();
+                this.conductedRebuys = this.tournamentService.getConductedRebuys(tournament);
+
+                this.initModel();
+                this.initFields();
+            })
+        ).subscribe();
+
+        this.fetchService.trigger();
     }
 
     private initModel(): void {
@@ -86,7 +105,7 @@ export class AddRebuyComponent implements OnInit {
                     return of(null);
                 }),
                 tap(() => {
-                    const playerName = this.data.eligibleForRebuy.filter(e => e.id === model.playerId)[0].name;
+                    const playerName = this.eligibleForRebuy.filter(e => e.id === model.playerId)[0].name;
                     this.notificationService.success(`Rebuy - ${playerName}`);
                 }),
                 tap((a) => this.fetchService.trigger()),
@@ -95,13 +114,6 @@ export class AddRebuyComponent implements OnInit {
                     tId: this.data.tournamentId,
                     clientId: this.data.clientId
                 })),
-                tap((result: any) => {
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            entryId: result.id
-                        });
-                    }
-                })
             ).subscribe();
         }
     }
@@ -136,16 +148,17 @@ export class AddRebuyComponent implements OnInit {
                                 tId: this.data.tournamentId,
                                 clientId: this.data.clientId
                             })),
-                            tap((result: any) => {
-                                this.data.conductedRebuys = this.data.conductedRebuys.filter(
-                                    crb => crb.entryId !== entryId
-                                );
-                            }))
-                        ),
+                        )),
                         defer(() => of(null))
                     )
                 )
             ).subscribe();
+        }
+    }
+
+    closeDialog(): void {
+        if (this.dialogRef) {
+            this.dialogRef.close();
         }
     }
 

@@ -23,10 +23,10 @@
 
 <h3>Seat Opens</h3>
 
-<ng-container *ngIf="data.conductedSeatOpens && data.conductedSeatOpens.length > 0; else noRebuys;">
+<ng-container *ngIf="conductedSeatOpens && conductedSeatOpens.length > 0; else noRebuys;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of data.conductedSeatOpens; let i = index">
+            <ng-container *ngFor="let e of conductedSeatOpens; let i = index">
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, hh:mm:ss' }}

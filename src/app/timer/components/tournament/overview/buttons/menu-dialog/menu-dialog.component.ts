@@ -153,8 +153,7 @@ export class MenuDialogComponent implements OnInit {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
                 clientId: this.data.clientId,
-                eligibleForRebuy: this.tournamentService.getPlayersEligibleForRebuy(this.data.tournament),
-                conductedRebuys: this.tournamentService.getConductedRebuys(this.data.tournament)
+                sub: this.data.sub,
             }
         });
 
@@ -170,8 +169,7 @@ export class MenuDialogComponent implements OnInit {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
                 clientId: this.data.clientId,
-                eligibleForAddon: this.tournamentService.getPlayersEligibleForAddon(this.data.tournament),
-                conductedAddons: this.tournamentService.getConductedAddons(this.data.tournament)
+                sub: this.data.sub
             }
         });
 
@@ -187,8 +185,7 @@ export class MenuDialogComponent implements OnInit {
                 tournament: this.data.tournament,
                 metadata: this.data.seriesMetadata,
                 clientId: this.data.clientId,
-                eligibleForSeatOpen: this.tournamentService.getPlayersEligibleForSeatOpen(this.data.tournament),
-                conductedSeatOpens: this.tournamentService.getConductedSeatOpens(this.data.tournament)
+                sub: this.data.sub
             }
         });
 
@@ -218,11 +215,10 @@ export class MenuDialogComponent implements OnInit {
             ...this.dialogPosition,
             data: {
                 tournamentId: this.data.tournament.id,
+                sub: this.data.sub,
                 tournamentName: this.data.tournament.name,
                 isReentry: isReEntry,
                 clientId: this.data.clientId,
-                eligibleForEntryOrReEntry: this.tournamentService.getPlayersEligibleForEntryOrReEntry(this.data.tournament, isReEntry),
-                conductedEntries: this.tournamentService.getConductedEntries(this.data.tournament)
             }
         });
 

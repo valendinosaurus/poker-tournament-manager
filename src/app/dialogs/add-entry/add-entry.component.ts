@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,10 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
+import { Tournament } from '../../shared/models/tournament.interface';
+import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { TournamentService } from '../../core/services/util/tournament.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-re-entry',
@@ -29,33 +33,48 @@ export class AddEntryComponent implements OnInit {
     private dialogRef: MatDialogRef<AddEntryComponent> = inject(MatDialogRef<AddEntryComponent>);
     data: {
         tournamentId: number,
+        sub: string,
         isReentry: boolean,
         clientId: number,
-        eligibleForEntryOrReEntry: Player[],
-        conductedEntries: ConductedEntry[]
         tournamentName: string,
     } = inject(MAT_DIALOG_DATA);
 
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
     private notificationService: NotificationService = inject(NotificationService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allPlayers: { label: string, value: number }[];
+    eligibleForEntryOrReEntry: Player[];
+    conductedEntries: ConductedEntry[];
 
     private dialog: MatDialog = inject(MatDialog);
 
     ngOnInit(): void {
-        this.allPlayers = this.data.eligibleForEntryOrReEntry.map(
-            player => ({
-                label: player.name,
-                value: player.id
-            })
-        );
+        this.fetchService.getFetchTrigger$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            switchMap(() => this.tournamentApiService.get2$(this.data.tournamentId, this.data.sub)),
+            tap((tournament: Tournament) => {
+                this.eligibleForEntryOrReEntry = this.tournamentService.getPlayersEligibleForEntryOrReEntry(tournament, this.data.isReentry);
+                this.allPlayers = this.eligibleForEntryOrReEntry.map(
+                    player => ({
+                        label: player.name,
+                        value: player.id
+                    })
+                );
 
-        this.initModel();
-        this.initFields();
+                this.conductedEntries = this.tournamentService.getConductedEntries(tournament);
+
+                this.initModel();
+                this.initFields();
+            })
+        ).subscribe();
+
+        this.fetchService.trigger();
     }
 
     private initModel(): void {
@@ -86,7 +105,7 @@ export class AddEntryComponent implements OnInit {
                     return of(null);
                 }),
                 tap(() => {
-                    const playerName = this.data.eligibleForEntryOrReEntry.filter(e => e.id === model.playerId)[0].name;
+                    const playerName = this.eligibleForEntryOrReEntry.filter(e => e.id === model.playerId)[0].name;
                     this.notificationService.success(`${this.data.isReentry ? 'Re-Entry' : 'Entry'} - ${playerName}`);
                 }),
                 tap((a) => this.fetchService.trigger()),
@@ -94,14 +113,7 @@ export class AddEntryComponent implements OnInit {
                     id: null,
                     tId: this.data.tournamentId,
                     clientId: this.data.clientId
-                })),
-                tap((result: any) => {
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            entryId: result.id
-                        });
-                    }
-                })
+                }))
             ).subscribe();
         }
     }
@@ -122,28 +134,32 @@ export class AddEntryComponent implements OnInit {
                 switchMap((result: boolean) => iif(
                         () => result,
                         defer(() => this.entryApiService.delete$(entryId).pipe(
-                            take(1),
-                            catchError(() => {
-                                this.notificationService.error('Error removing Entry');
-                                return of(null);
-                            }),
-                            tap(() => {
-                                this.notificationService.success(`Entry deleted - ${playerName}`);
-                            }),
-                            tap((a) => this.fetchService.trigger()),
-                            switchMap(() => this.eventApiService.post$({
-                                id: null,
-                                tId: this.data.tournamentId,
-                                clientId: this.data.clientId
-                            })),
-                            tap(() => this.data.conductedEntries = this.data.conductedEntries.filter(
-                                ce => ce.entryId !== entryId
-                            )))
+                                take(1),
+                                catchError(() => {
+                                    this.notificationService.error('Error removing Entry');
+                                    return of(null);
+                                }),
+                                tap(() => {
+                                    this.notificationService.success(`Entry deleted - ${playerName}`);
+                                }),
+                                tap((a) => this.fetchService.trigger()),
+                                switchMap(() => this.eventApiService.post$({
+                                    id: null,
+                                    tId: this.data.tournamentId,
+                                    clientId: this.data.clientId
+                                })),
+                            )
                         ),
                         defer(() => of(null))
                     )
                 )
             ).subscribe();
+        }
+    }
+
+    closeDialog(): void {
+        if (this.dialogRef) {
+            this.dialogRef.close();
         }
     }
 

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -17,6 +17,9 @@ import { Tournament } from '../../shared/models/tournament.interface';
 import { NotificationService } from '../../core/services/notification.service';
 import { ConductedFinish } from '../../shared/models/conducted-finish.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { TournamentService } from '../../core/services/util/tournament.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-add-finish',
@@ -35,10 +38,11 @@ export class AddFinishComponent implements OnInit {
         tournament: Tournament,
         metadata: SeriesMetadata | undefined,
         clientId: number,
-        eligibleForSeatOpen: Player[],
-        conductedSeatOpens: ConductedFinish[]
+        sub: string
     } = inject(MAT_DIALOG_DATA);
 
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private rankingService: RankingService = inject(RankingService);
@@ -46,24 +50,43 @@ export class AddFinishComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
     private notificationService: NotificationService = inject(NotificationService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     private dialog: MatDialog = inject(MatDialog);
 
     allPlayers: { label: string, value: number }[];
-    conductedSeatOpens: Player[];
+    eligibleForSeatOpen: Player[];
+    conductedSeatOpens: ConductedFinish[];
 
     rank = 0;
     price = 0;
 
     ngOnInit(): void {
-        this.determineAllPlayers();
-        this.initModel();
-        this.initFields();
-        this.calcRanksAndPrices();
+        this.fetchService.getFetchTrigger$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            switchMap(() => this.tournamentApiService.get2$(this.data.tournament.id, this.data.sub)),
+            tap((tournament: Tournament) => {
+                this.eligibleForSeatOpen = this.tournamentService.getPlayersEligibleForSeatOpen(tournament);
+                this.allPlayers = this.eligibleForSeatOpen.map(
+                    player => ({
+                        label: player.name,
+                        value: player.id
+                    })
+                );
+
+                this.conductedSeatOpens = this.tournamentService.getConductedSeatOpens(tournament);
+
+                this.initModel();
+                this.initFields();
+                this.calcRanksAndPrices(tournament);
+            })
+        ).subscribe();
+
+        this.fetchService.trigger();
     }
 
     private determineAllPlayers(): void {
-        this.allPlayers = this.data.eligibleForSeatOpen.map(
+        this.allPlayers = this.eligibleForSeatOpen.map(
             player => ({
                 label: player.name,
                 value: player.id
@@ -84,7 +107,7 @@ export class AddFinishComponent implements OnInit {
         ];
     }
 
-    private calcRanksAndPrices(): void {
+    private calcRanksAndPrices(tournament: Tournament): void {
         this.rank = this.data.tournament.players.length - this.data.tournament.finishes.length;
         const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
@@ -112,11 +135,7 @@ export class AddFinishComponent implements OnInit {
             }
         }
 
-        this.conductedSeatOpens = this.data.tournament.players.filter(
-            player => !this.data.eligibleForSeatOpen.map(
-                e => e.id
-            ).includes(player.id)
-        );
+        this.conductedSeatOpens = this.tournamentService.getConductedSeatOpens(tournament);
     }
 
     onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
@@ -233,22 +252,19 @@ export class AddFinishComponent implements OnInit {
                                 tId: this.data.tournament.id,
                                 clientId: this.data.clientId
                             })),
-                            tap(() => this.data.conductedSeatOpens = this.data.conductedSeatOpens.filter(
-                                cso => cso.playerId !== pId
-                            )),
                             tap(() => {
-                                this.allPlayers.push({
-                                    label: playerName,
-                                    value: pId
-                                });
+                                // this.allPlayers.push({
+                                //     label: playerName,
+                                //     value: pId
+                                // });
 
-                                this.initModel();
-                                this.initFields();
-                                this.data.tournament.finishes = this.data.tournament.finishes.filter(
-                                    (finish: Finish) => finish.playerId !== pId
-                                );
-
-                                this.calcRanksAndPrices();
+                                // this.initModel();
+                                // this.initFields();
+                                // this.data.tournament.finishes = this.data.tournament.finishes.filter(
+                                //     (finish: Finish) => finish.playerId !== pId
+                                // );
+                                //
+                                // this.calcRanksAndPrices();
                             })
                         )
                     ),

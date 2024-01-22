@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,10 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
+import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { TournamentService } from '../../core/services/util/tournament.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Tournament } from '../../shared/models/tournament.interface';
 
 @Component({
     selector: 'app-add-addon',
@@ -31,30 +35,43 @@ export class AddAddonComponent implements OnInit {
         tournamentId: number,
         tournamentName: string,
         clientId: number,
-        eligibleForAddon: Player[],
-        conductedAddons: ConductedEntry[]
+        sub: string
     } = inject(MAT_DIALOG_DATA);
 
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: EventApiService = inject(EventApiService);
     private notificationService: NotificationService = inject(NotificationService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
 
     allPlayers: { label: string, value: number }[];
+    eligibleForAddon: Player[];
+    conductedAddons: ConductedEntry[];
 
     private dialog: MatDialog = inject(MatDialog);
 
     ngOnInit(): void {
-        this.allPlayers = this.data.eligibleForAddon.map(
-            player => ({
-                label: player.name,
-                value: player.id
-            })
-        );
+        this.fetchService.getFetchTrigger$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            switchMap(() => this.tournamentApiService.get2$(this.data.tournamentId, this.data.sub)),
+            tap((tournament: Tournament) => {
+                this.eligibleForAddon = this.tournamentService.getPlayersEligibleForAddon(tournament);
+                this.allPlayers = this.eligibleForAddon.map(
+                    player => ({
+                        label: player.name,
+                        value: player.id
+                    })
+                );
 
-        this.initModel();
-        this.initFields();
+                this.conductedAddons = this.tournamentService.getConductedAddons(tournament);
+
+                this.initModel();
+                this.initFields();
+            })
+        ).subscribe();
     }
 
     private initModel(): void {
@@ -85,7 +102,7 @@ export class AddAddonComponent implements OnInit {
                     return of(null);
                 }),
                 tap(() => {
-                    const playerName = this.data.eligibleForAddon.filter(e => e.id === model.playerId)[0].name;
+                    const playerName = this.eligibleForAddon.filter(e => e.id === model.playerId)[0].name;
                     this.notificationService.success(`Addon - ${playerName}`);
                 }),
                 tap((a) => this.fetchService.trigger()),
@@ -94,13 +111,6 @@ export class AddAddonComponent implements OnInit {
                     tId: this.data.tournamentId,
                     clientId: this.data.clientId
                 })),
-                tap((result: any) => {
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            entryId: result.id
-                        });
-                    }
-                })
             ).subscribe();
         }
     }
@@ -135,16 +145,17 @@ export class AddAddonComponent implements OnInit {
                                 tId: this.data.tournamentId,
                                 clientId: this.data.clientId
                             })),
-                            tap((result: any) => {
-                                this.data.conductedAddons = this.data.conductedAddons.filter(
-                                    cad => cad.entryId !== entryId
-                                );
-                            }))
-                        ),
+                        )),
                         defer(() => of(null))
                     )
                 )
             ).subscribe();
+        }
+    }
+
+    closeDialog(): void {
+        if (this.dialogRef) {
+            this.dialogRef.close();
         }
     }
 

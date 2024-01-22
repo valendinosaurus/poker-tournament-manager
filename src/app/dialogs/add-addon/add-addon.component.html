@@ -18,13 +18,15 @@
     >
         ADD-ON
     </button>
+
+    <button mat-raised-button (click)="closeDialog()">CLOSE</button>
 </form>
 
 <h3>Conducted Addons</h3>
 
-<ng-container *ngIf="data.conductedAddons && data.conductedAddons.length > 0; else noAddons;">
+<ng-container *ngIf="conductedAddons && conductedAddons.length > 0; else noAddons;">
     <table class="dialog-table">
-        <ng-container *ngFor="let e of data.conductedAddons">
+        <ng-container *ngFor="let e of conductedAddons">
             <tr>
                 <td class="small-gray">
                     {{ e.time | date:'d.M.yy, hh:mm:ss' }}

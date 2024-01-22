@@ -48,7 +48,8 @@ export class TournamentService {
                 image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
                 isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId),
                 type: entry.type,
-                isBlocked: tournament.entries.filter(e => e.type === EntryType.ADDON || e.type === EntryType.REBUY).map(e => e.playerId).includes(entry.playerId)
+                isBlocked: tournament.entries.filter(e => e.type === EntryType.ADDON
+                    || e.type === EntryType.REBUY).map(e => e.playerId).includes(entry.playerId)
             })
         );
     }
@@ -134,4 +135,18 @@ export class TournamentService {
             (a, b) => a.rank - b.rank
         );
     }
+
+    getCanStartTournament(tournament: Tournament): boolean {
+        const noOfPlayers = tournament.players.length;
+        const entryIds = tournament.entries.filter(
+            (entry: Entry) => entry.type === EntryType.ENTRY
+        ).map(
+            (entry: Entry) => entry.playerId
+        );
+
+        const noOfDistinctEntries = Array.from(new Set(entryIds)).length;
+
+        return noOfPlayers === noOfDistinctEntries;
+    }
+
 }

@@ -118,7 +118,6 @@ export class TimerComponent implements OnInit, OnChanges {
         this.fetchTrigger$.pipe(
             switchMap(() => sub$.pipe(
                 switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub)),
-                tap(console.log)
             ))
         ).subscribe();
     }

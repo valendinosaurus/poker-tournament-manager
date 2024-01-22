@@ -7,6 +7,7 @@
 </h2>
 
 <form
+    *ngIf="allPlayers"
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
 >
@@ -27,13 +28,15 @@
         </ng-container>
         ENTER
     </button>
+
+    <button mat-raised-button (click)="closeDialog()">CLOSE</button>
 </form>
 
 <h3>Conducted Entries</h3>
-<ng-container *ngIf="data.conductedEntries && data.conductedEntries.length > 0; else noAddons;">
+<ng-container *ngIf="conductedEntries && conductedEntries.length > 0; else noAddons;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of data.conductedEntries">
+            <ng-container *ngFor="let e of conductedEntries">
                 <tr>
                     <td class="small-gray">
                         {{ e.time | date:'d.M.yy, hh:mm:ss' }}

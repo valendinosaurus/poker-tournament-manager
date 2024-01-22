@@ -76,8 +76,6 @@ export class ModifyPayoutComponent implements OnInit {
                 this.data.finishes.map(f => +f.rank).includes((this.fields.length + 1))
             )
         ];
-
-        console.log(this.fields);
     }
 
     modelChange(model: { [key: string]: number }): void {

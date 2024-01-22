@@ -32,6 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 import { ButtonsComponent } from './buttons/buttons.component';
 import { FinishApiService } from '../../../../core/services/api/finish-api.service';
+import { TournamentService } from '../../../../core/services/util/tournament.service';
 
 @Component({
     selector: 'app-overview',
@@ -66,6 +67,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
 
     private dialog: MatDialog = inject(MatDialog);
     autoSlide = true;
+    canStartTournament = false;
 
     @ViewChild('warning') warning!: ElementRef;
     @ViewChild('bleepNext') bleepNext!: ElementRef;
@@ -94,6 +96,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private finishApiService: FinishApiService = inject(FinishApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownHandler(event: Event) {
@@ -133,6 +136,8 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
             }
 
             this.changes++;
+
+            this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
         }
     }
 
@@ -260,7 +265,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
     }
 
     start(): void {
-        if (!this.running) {
+        if (!this.running && this.canStartTournament) {
             this.running = true;
             this.countdown.resume();
         }

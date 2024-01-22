@@ -34,6 +34,7 @@ export class FinishApiService {
     }
 
     post$(player: Finish): Observable<ServerResponse> {
+     //   console
         return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(player)

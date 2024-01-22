@@ -35,6 +35,7 @@ export class ButtonsComponent implements OnChanges {
     isAddPlayerBlocked = false;
     isAnimating = false;
     lastSeatOpenName = 'TEST NAME';
+    canStartTournament = false;
 
     dialogPosition = {
         position: {
@@ -87,6 +88,8 @@ export class ButtonsComponent implements OnChanges {
         const playersLeft = this.tournament.players.length - this.tournament.finishes.length;
 
         this.isAddPlayerBlocked = playersLeft < numberOfPaidPlaces;
+
+        this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
     }
 
     addRebuy(): void {
@@ -96,8 +99,7 @@ export class ButtonsComponent implements OnChanges {
                 tournamentId: this.tournament.id,
                 tournamentName: this.tournament.name,
                 clientId: this.clientId,
-                eligibleForRebuy: this.tournamentService.getPlayersEligibleForRebuy(this.tournament),
-                conductedRebuys: this.tournamentService.getConductedRebuys(this.tournament)
+                sub: this.sub
             }
         });
 
@@ -113,8 +115,7 @@ export class ButtonsComponent implements OnChanges {
                 tournamentId: this.tournament.id,
                 tournamentName: this.tournament.name,
                 clientId: this.clientId,
-                eligibleForAddon: this.tournamentService.getPlayersEligibleForAddon(this.tournament),
-                conductedAddons: this.tournamentService.getConductedAddons(this.tournament)
+                sub: this.sub
             }
         });
 
@@ -130,8 +131,7 @@ export class ButtonsComponent implements OnChanges {
                 tournament: this.tournament,
                 metadata: this.seriesMetadata,
                 clientId: this.clientId,
-                eligibleForSeatOpen: this.tournamentService.getPlayersEligibleForSeatOpen(this.tournament),
-                conductedSeatOpens: this.tournamentService.getConductedSeatOpens(this.tournament)
+                sub: this.sub
             }
         });
 
