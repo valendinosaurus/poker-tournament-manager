@@ -57,6 +57,7 @@ export class AddFinishComponent implements OnInit {
     allPlayers: { label: string, value: number }[];
     eligibleForSeatOpen: Player[];
     conductedSeatOpens: ConductedFinish[];
+    tournament: Tournament;
 
     rank = 0;
     price = 0;
@@ -66,6 +67,7 @@ export class AddFinishComponent implements OnInit {
             takeUntilDestroyed(this.destroyRef),
             switchMap(() => this.tournamentApiService.get2$(this.data.tournament.id, this.data.sub)),
             tap((tournament: Tournament) => {
+                this.tournament = tournament;
                 this.eligibleForSeatOpen = this.tournamentService.getPlayersEligibleForSeatOpen(tournament);
                 this.allPlayers = this.eligibleForSeatOpen.map(
                     player => ({
@@ -108,11 +110,12 @@ export class AddFinishComponent implements OnInit {
     }
 
     private calcRanksAndPrices(tournament: Tournament): void {
-        this.rank = this.data.tournament.players.length - this.data.tournament.finishes.length;
-        const payoutRaw = this.rankingService.getPayoutById(this.data.tournament.payout);
+        console.log('in cal ranks', this.data.tournament);
+        this.rank = tournament.players.length - tournament.finishes.length;
+        const payoutRaw = this.rankingService.getPayoutById(tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.data.tournament.id);
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(tournament.id);
         const placesPaid = payoutRaw.length;
 
         if (this.rank > placesPaid) {
@@ -122,11 +125,11 @@ export class AddFinishComponent implements OnInit {
                 this.price = adaptedPayouts[this.rank - 1];
             } else {
                 const {totalPricePool} = this.rankingService.getTotalPricePool(
-                    this.data.tournament.entries,
-                    this.data.tournament.buyInAmount,
-                    this.data.tournament.rebuyAmount,
-                    this.data.tournament.addonAmount,
-                    this.data.tournament.initialPricePool,
+                    tournament.entries,
+                    tournament.buyInAmount,
+                    tournament.rebuyAmount,
+                    tournament.addonAmount,
+                    tournament.initialPricePool,
                     this.data.metadata?.percentage,
                     this.data.metadata?.maxAmountPerTournament
                 );
@@ -153,6 +156,13 @@ export class AddFinishComponent implements OnInit {
                     return of(null);
                 }),
                 tap(() => {
+                    this.tournament.finishes.push({
+                        playerId: model.playerId ?? -1,
+                        tournamentId: model.tournamentId,
+                        price: this.price,
+                        rank: this.rank,
+                        timestamp: -1
+                    });
                     const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
                     this.notificationService.success(`Seat Open - ${playerName}`);
                 }),
@@ -181,16 +191,16 @@ export class AddFinishComponent implements OnInit {
     }
 
     private getRemainingFinish(): Finish {
-        const playerId = this.data.tournament.players.filter(
+        const playerId = this.tournament.players.filter(
             (player: Player) => {
-                const finishIds = this.data.tournament.finishes.map(f => f.playerId);
+                const finishIds = this.tournament.finishes.map(f => f.playerId);
 
                 return !finishIds.includes(player.id);
             }
         )[0].id;
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.data.tournament.id);
-        const payouts = this.rankingService.getPayoutById(this.data.tournament.payout);
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament.id);
+        const payouts = this.rankingService.getPayoutById(this.tournament.payout);
         const payoutPercentage = +payouts[0];
 
         let price = 0;
@@ -199,11 +209,11 @@ export class AddFinishComponent implements OnInit {
             price = adaptedPayouts[this.rank - 2];
         } else {
             const {totalPricePool} = this.rankingService.getTotalPricePool(
-                this.data.tournament.entries,
-                this.data.tournament.buyInAmount,
-                this.data.tournament.rebuyAmount,
-                this.data.tournament.addonAmount,
-                this.data.tournament.initialPricePool,
+                this.tournament.entries,
+                this.tournament.buyInAmount,
+                this.tournament.rebuyAmount,
+                this.tournament.addonAmount,
+                this.tournament.initialPricePool,
                 this.data.metadata?.percentage,
                 this.data.metadata?.maxAmountPerTournament
             );
@@ -242,6 +252,7 @@ export class AddFinishComponent implements OnInit {
                             }),
                             tap(() => {
                                 this.notificationService.success(`Seat Open removed - ${playerName}`);
+                                console.log('rank + 1');
                                 this.rank = this.rank + 1;
                             }),
                             tap(() => {
