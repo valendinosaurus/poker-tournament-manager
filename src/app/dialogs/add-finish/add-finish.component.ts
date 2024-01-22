@@ -168,7 +168,7 @@ export class AddFinishComponent implements OnInit {
                 }),
                 switchMap(() => iif(
                     () => this.rank === 2,
-                    this.finishApiService.post$(this.getRemainingFinish()),
+                    defer(() => this.finishApiService.post$(this.getRemainingFinish())),
                     of(null)
                 )),
                 tap(() =>
