@@ -89,8 +89,13 @@
                 <h1>
                     {{ currentLevelTimeLeft | time }}
                 </h1>
-                <div *ngIf="!running" class="popup">
+
+                <div *ngIf="!running && !finished" class="popup">
                     PAUSED
+                </div>
+
+                <div *ngIf="finished" class="popup">
+                    FINISHED
                 </div>
 
                 <countdown
@@ -111,7 +116,10 @@
                 ></p>
             </div>
 
-            <div class="next-level">
+            <div
+                *ngIf="!finished && tournament.structure.length > 1 && currentLevelIndex < tournament.structure.length"
+                class="next-level"
+            >
                 <p class="next-level-title">
                     NEXT
                 </p>
@@ -121,10 +129,6 @@
                     [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText:!!(showCondensedBlinds$ | async)"
                 ></p>
             </div>
-
-            <p *ngIf="finished">
-                FINISHED
-            </p>
 
             <div
                 class="button-wrapper"

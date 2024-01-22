@@ -6,7 +6,8 @@ import {
     HostListener,
     inject,
     Input,
-    OnChanges, OnInit,
+    OnChanges,
+    OnInit,
     QueryList,
     SimpleChanges,
     ViewChild,
@@ -270,7 +271,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     start(): void {
-        if (!this.running && this.canStartTournament) {
+        if (!this.running && this.canStartTournament && !this.finished) {
             this.running = true;
             this.countdown.resume();
         }
