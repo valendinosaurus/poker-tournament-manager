@@ -291,6 +291,7 @@ p {
     background: $primary;
     width: 100%;
     flex: 1 1 12%;
+    text-align: center;
 }
 
 .level {
@@ -305,6 +306,7 @@ p {
     justify-content: center;
     flex: 1 1 12%;
     background: $primaryDark;
+    text-align: center;
 }
 
 .next-level-title {

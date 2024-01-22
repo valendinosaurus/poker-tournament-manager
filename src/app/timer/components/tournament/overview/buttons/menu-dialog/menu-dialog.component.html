@@ -195,6 +195,19 @@
     </div>
 
     <div
+        class="action"
+    >
+        <h5>Condense Blinds</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="onToggleShowCondensedBlinds()">
+            <i *ngIf="showCondensedBlinds" class="fa fa-toggle-on"></i>
+            <i *ngIf="!showCondensedBlinds" class="fa fa-toggle-off"></i>
+        </button>
+    </div>
+
+    <div
         *ngIf="!isFullscreen"
         class="action"
     >

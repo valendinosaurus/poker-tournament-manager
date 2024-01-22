@@ -6,13 +6,13 @@ import {
     HostListener,
     inject,
     Input,
-    OnChanges,
+    OnChanges, OnInit,
     QueryList,
     SimpleChanges,
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import { interval, ReplaySubject } from 'rxjs';
+import { interval, Observable, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
 import { CountdownComponent, CountdownConfig, CountdownEvent, CountdownStatus } from 'ngx-countdown';
@@ -39,7 +39,7 @@ import { TournamentService } from '../../../../core/services/util/tournament.ser
     templateUrl: './overview.component.html',
     styleUrls: ['./overview.component.scss'],
 })
-export class OverviewComponent implements OnChanges, AfterViewInit {
+export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() clientId: number;
     @Input() tournament: Tournament;
@@ -67,6 +67,7 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
 
     private dialog: MatDialog = inject(MatDialog);
     autoSlide = true;
+    showCondensedBlinds$: Observable<boolean>;
     canStartTournament = false;
 
     @ViewChild('warning') warning!: ElementRef;
@@ -107,6 +108,10 @@ export class OverviewComponent implements OnChanges, AfterViewInit {
         } else {
             this.start();
         }
+    }
+
+    ngOnInit(): void {
+        this.showCondensedBlinds$ = this.localStorageService.getShowCondensedBlinds$();
     }
 
     ngOnChanges(changes: SimpleChanges): void {

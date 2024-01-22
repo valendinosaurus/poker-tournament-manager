@@ -39,6 +39,7 @@ export class MenuDialogComponent implements OnInit {
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
     @Output() toggleAutoSlide = new EventEmitter<boolean>();
+    @Output() toggleShowCondensedBlinds = new EventEmitter<boolean>();
     @Output() localRefresh = new EventEmitter<void>();
 
     private dialogRef: MatDialogRef<MenuDialogComponent> = inject(MatDialogRef<MenuDialogComponent>);
@@ -84,6 +85,8 @@ export class MenuDialogComponent implements OnInit {
     private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
+
+    showCondensedBlinds = this.localStorageService.getLocalSettings().showCondensedBlinds;
 
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
@@ -277,6 +280,12 @@ export class MenuDialogComponent implements OnInit {
     onToggleAutoSlide(): void {
         this.autoSlide = !this.autoSlide;
         this.toggleAutoSlide.emit(this.autoSlide);
+    }
+
+    onToggleShowCondensedBlinds(): void {
+        this.showCondensedBlinds = !this.showCondensedBlinds;
+        this.toggleShowCondensedBlinds.emit(this.showCondensedBlinds);
+        this.localStorageService.saveShowCondensedBlinds(this.showCondensedBlinds);
     }
 
     applySettings(model: TournamentSettings): void {

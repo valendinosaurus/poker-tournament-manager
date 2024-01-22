@@ -107,7 +107,7 @@
                 class="current-level"
             >
                 <p class="level"
-                   [innerHTML]="levels[currentLevelIndex] | blindLevelText"
+                   [innerHTML]="levels[currentLevelIndex] | blindLevelText:!!(showCondensedBlinds$ | async)"
                 ></p>
             </div>
 
@@ -118,7 +118,7 @@
 
                 <p
                     class="next-level-text"
-                    [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText"
+                    [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText:!!(showCondensedBlinds$ | async)"
                 ></p>
             </div>
 

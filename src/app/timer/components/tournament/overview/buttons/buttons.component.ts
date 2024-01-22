@@ -57,6 +57,7 @@ export class ButtonsComponent implements OnChanges {
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
     @Output() toggleAutoSlide = new EventEmitter<boolean>();
+    @Output() toggleShowCondensedBlinds = new EventEmitter<boolean>();
     @Output() localRefresh = new EventEmitter<void>();
 
     isAdaptedPayoutSumCorrect = true;
@@ -185,6 +186,7 @@ export class ButtonsComponent implements OnChanges {
         dialogRef.componentInstance.prevLevel = this.prevLevel;
         dialogRef.componentInstance.previousLevel = this.previousLevel;
         dialogRef.componentInstance.toggleAutoSlide = this.toggleAutoSlide;
+        dialogRef.componentInstance.toggleShowCondensedBlinds = this.toggleShowCondensedBlinds;
         dialogRef.componentInstance.localRefresh = this.localRefresh;
     }
 

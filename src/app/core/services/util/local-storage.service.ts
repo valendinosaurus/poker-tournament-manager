@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AdaptedPayout } from '../../../shared/models/adapted-payout.interface';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+export interface LocalSettings {
+    autoSlide: boolean;
+    showCondensedBlinds: boolean;
+}
 
 @Injectable({
     providedIn: 'root'
 })
 export class LocalStorageService {
+
+    localSettings: LocalSettings = this.getLocalSettings();
+    showCondensedBlinds$ = new BehaviorSubject<boolean>(this.localSettings.showCondensedBlinds);
 
     storeTournamentState(id: number, levelIndex: number, timeLeft: number): void {
         if (id !== -1) {
@@ -50,6 +59,42 @@ export class LocalStorageService {
 
     deleteAdaptedPayout(tId: number): void {
         localStorage.removeItem(`ADAPTED_FINISH_${tId}`);
+    }
+
+    getLocalSettings(): LocalSettings {
+        const settingsFromLocalStorage = localStorage.getItem('LOCAL_SETTINGS');
+
+        if (settingsFromLocalStorage) {
+            return JSON.parse(settingsFromLocalStorage);
+        } else {
+            return {
+                autoSlide: true,
+                showCondensedBlinds: false
+            };
+        }
+    }
+
+    saveLocalAutoSlide(autoSlide: boolean) {
+        const settings = this.getLocalSettings();
+        localStorage.setItem('LOCAL_SETTINGS', JSON.stringify({
+            ...settings,
+            autoSlide
+        }));
+    }
+
+    saveShowCondensedBlinds(showCondensedBlinds: boolean) {
+        console.log('save condensed', showCondensedBlinds);
+        const settings = this.getLocalSettings();
+        localStorage.setItem('LOCAL_SETTINGS', JSON.stringify({
+            ...settings,
+            showCondensedBlinds
+        }));
+
+        this.showCondensedBlinds$.next(showCondensedBlinds);
+    }
+
+    getShowCondensedBlinds$(): Observable<boolean> {
+        return this.showCondensedBlinds$.asObservable();
     }
 
 }
