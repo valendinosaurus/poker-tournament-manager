@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/components/admin.component';
 import { TimerPageComponent } from './timer/page/timer-page/timer-page.component';
 import { SeriesPageComponent } from './series/page/series-page/series-page.component';
+import { TestDrawPageComponent } from './test/draw/test-draw-page/test-draw-page.component';
 
 const routes: Routes = [
     {
@@ -20,6 +21,10 @@ const routes: Routes = [
     {
         path: 'admin',
         component: AdminComponent
+    },
+    {
+        path: 'test-draw',
+        component: TestDrawPageComponent
     },
     {
         path: '',

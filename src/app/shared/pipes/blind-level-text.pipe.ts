@@ -7,7 +7,7 @@ import { BlindLevel } from '../models/blind-level.interface';
 })
 export class BlindLevelTextPipe implements PipeTransform {
 
-    transform(level: BlindLevel | undefined, showCondensed: boolean): string {
+    transform(level: BlindLevel | undefined, showCondensed: boolean, isCurrent: boolean): string {
         if (!level) {
             return '';
         }
@@ -28,7 +28,13 @@ export class BlindLevelTextPipe implements PipeTransform {
             }`;
         }
 
-        let text = `<span>PAUSE (${level.duration}min)</span>`;
+        let text = `<span>PAUSE`;
+
+        if (!isCurrent) {
+            text += ` (${level.duration}min)`;
+        }
+
+        text += `</span>`;
 
         if (level.isChipUp || level.endsRebuy) {
             text += '<span class="smaller">';

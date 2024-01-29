@@ -35,3 +35,20 @@
 .fa-pause-circle {
     color: green;
 }
+
+span.relative-icon {
+    position: relative;
+
+    i:not(.absolute-icon) {
+        transform: translateY(-6px);
+    }
+
+    i.absolute-icon {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -8px;
+        font-size: 20px;
+        color: #888;
+    }
+}

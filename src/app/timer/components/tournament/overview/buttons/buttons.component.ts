@@ -14,6 +14,9 @@ import { SeriesMetadata } from '../../../../../shared/models/series-metadata.int
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
+import { TableDraw } from '../../../../../shared/models/table-draw.interface';
+import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
+import { TableDrawService } from '../../../../../core/services/table-draw.service';
 
 declare var anime: any;
 
@@ -31,11 +34,16 @@ export class ButtonsComponent implements OnChanges {
     @Input() seriesMetadata: SeriesMetadata | null;
     @Input() isSimpleTournament: boolean;
     @Input() isRebuyPhaseFinished: boolean;
+    @Input() isTournamentFinished: boolean;
 
     isAddPlayerBlocked = false;
     isAnimating = false;
     lastSeatOpenName = 'TEST NAME';
     canStartTournament = false;
+    playerHasToBeMoved = false;
+    tableHasToBeEliminated = false;
+
+    menuVisible = false;
 
     dialogPosition = {
         position: {
@@ -49,6 +57,7 @@ export class ButtonsComponent implements OnChanges {
     private eventApiService: EventApiService = inject(EventApiService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
+    private tableDrawService: TableDrawService = inject(TableDrawService);
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -88,9 +97,33 @@ export class ButtonsComponent implements OnChanges {
 
         const playersLeft = this.tournament.players.length - this.tournament.finishes.length;
 
-        this.isAddPlayerBlocked = playersLeft < numberOfPaidPlaces;
+        this.isAddPlayerBlocked = this.tournament.players.length >= numberOfPaidPlaces && playersLeft < numberOfPaidPlaces;
 
         this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
+
+        console.log('*************** checking draw');
+        const draw: TableDraw = this.localStorageService.getTableDraw(this.tournament.id);
+
+        if (draw) {
+            this.playerHasToBeMoved = this.getPlayerHasToBeMoved(draw);
+            this.tableHasToBeEliminated = draw.tableHasToBeEliminated;
+        }
+    }
+
+    private getPlayerHasToBeMoved(tableDraw: TableDraw): boolean {
+
+        const numberOfRemainingPlayersPerTable: number[] = [];
+
+        tableDraw.tables.forEach(
+            t => {
+                numberOfRemainingPlayersPerTable.push(t.filter(e => !e.eliminated && !e.placeholder).length
+                );
+            });
+
+        const min = Math.min(...numberOfRemainingPlayersPerTable);
+        const max = Math.max(...numberOfRemainingPlayersPerTable);
+
+        return max - min > 1;
     }
 
     addRebuy(): void {
@@ -118,6 +151,20 @@ export class ButtonsComponent implements OnChanges {
                 clientId: this.clientId,
                 sub: this.sub
             }
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe();
+    }
+
+    openDrawDialog(): void {
+        const dialogRef = this.dialog.open(TableDrawDialogComponent, {
+            ...this.dialogPosition,
+            data: {
+                tournament: this.tournament,
+            },
+            id: 'draw'
         });
 
         dialogRef.afterClosed().pipe(
@@ -163,6 +210,9 @@ export class ButtonsComponent implements OnChanges {
     }
 
     openMenu(): void {
+
+//        this.menuVisible = true;
+
         const dialogRef = this.dialog.open(
             MenuDialogComponent, {
                 data: {

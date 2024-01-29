@@ -15,12 +15,19 @@ import { SeriesModule } from './series/series.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { DialogsModule } from './dialogs/dialogs.module';
+import { TestDrawPageComponent } from './test/draw/test-draw-page/test-draw-page.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { CdkListbox } from '@angular/cdk/listbox';
 
 registerLocaleData(localeDECH);
 
 @NgModule({
     declarations: [
         AppComponent,
+        TestDrawPageComponent,
     ],
     imports: [
         AppRoutingModule,
@@ -41,7 +48,12 @@ registerLocaleData(localeDECH);
                 redirect_uri: window.location.origin,
 
             }
-        })
+        }),
+        MatFormFieldModule,
+        MatInputModule,
+        MatOptionModule,
+        MatSelectModule,
+        CdkListbox
     ],
     providers: [
         {provide: LOCALE_ID, useValue: 'de-ch'},

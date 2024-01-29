@@ -32,6 +32,7 @@ div.main-buttons {
     span {
         display: flex;
         align-items: center;
+        margin-bottom: 10px;
     }
 
     span i {
@@ -103,4 +104,20 @@ button:not([type="submit"]) {
         display: none;
         opacity: 0;
     }
+}
+
+.menu {
+    display: none;
+    position: absolute;
+    bottom: 100px;
+    width: 50vh;
+    height: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    z-index: 999;
+}
+
+.menu.visible {
+    display: block;
 }

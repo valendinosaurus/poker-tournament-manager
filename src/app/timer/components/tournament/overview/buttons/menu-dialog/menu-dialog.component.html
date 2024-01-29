@@ -43,7 +43,10 @@
             class="main"
             (click)="addRebuy()"
         >
-            <i class="fa fa-money"></i>
+            <span class="relative-icon">
+                <i class="fa fa-money"></i>
+                <i class="fa fa-refresh absolute-icon"></i>
+            </span>
         </button>
     </div>
 
@@ -57,7 +60,10 @@
             class="main"
             (click)="addEntry(true)"
         >
-            <i class="fa fa-money"></i>
+            <span class="relative-icon">
+                <i class="fa fa-money"></i>
+                <i class="fa fa-plus-circle absolute-icon"></i>
+            </span>
         </button>
     </div>
 
@@ -174,6 +180,18 @@
             class="main"
             (click)="nextLevel.emit()">
             <i class="fa fa-chevron-circle-right"></i>
+        </button>
+    </div>
+
+    <div
+        class="action"
+    >
+        <h5>Table Draw</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="drawTables()">
+            <i class="fa fa-random"></i>
         </button>
     </div>
 </div>

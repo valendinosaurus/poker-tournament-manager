@@ -19,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TableDrawStateComponent } from './components/table-draw-state/table-draw-state.component';
 
 const SHARED_MODULES = [
     CommonModule,
@@ -44,7 +45,8 @@ const SHARED_MODULES = [
         UserImageRoundComponent,
         PageWithSlideMenuComponent,
         BulletsComponent,
-        BlindLevelTextPipe
+        BlindLevelTextPipe,
+        TableDrawStateComponent
     ],
     imports: [
         ...SHARED_MODULES,
@@ -58,7 +60,8 @@ const SHARED_MODULES = [
         UserImageRoundComponent,
         PageWithSlideMenuComponent,
         BulletsComponent,
-        BlindLevelTextPipe
+        BlindLevelTextPipe,
+        TableDrawStateComponent
     ],
 })
 export class SharedModule {

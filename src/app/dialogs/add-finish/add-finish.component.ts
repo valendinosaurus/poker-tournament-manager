@@ -62,6 +62,7 @@ export class AddFinishComponent implements OnInit {
     rank = 0;
     price = 0;
 
+
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
@@ -110,7 +111,6 @@ export class AddFinishComponent implements OnInit {
     }
 
     private calcRanksAndPrices(tournament: Tournament): void {
-        console.log('in cal ranks', this.data.tournament);
         this.rank = tournament.players.length - tournament.finishes.length;
         const payoutRaw = this.rankingService.getPayoutById(tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
@@ -252,7 +252,6 @@ export class AddFinishComponent implements OnInit {
                             }),
                             tap(() => {
                                 this.notificationService.success(`Seat Open removed - ${playerName}`);
-                                console.log('rank + 1');
                                 this.rank = this.rank + 1;
                             }),
                             tap(() => {

@@ -24,6 +24,7 @@ import { FetchService } from '../../../../../../core/services/fetch.service';
 import { DOCUMENT } from '@angular/common';
 import { EventApiService } from '../../../../../../core/services/api/event-api.service';
 import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
+import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -238,6 +239,20 @@ export class MenuDialogComponent implements OnInit {
                 metadata: this.data.seriesMetadata,
                 clientId: this.data.clientId
             }
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe();
+    }
+
+    drawTables(): void {
+        const dialogRef = this.dialog.open(TableDrawDialogComponent, {
+            ...this.dialogPosition,
+            data: {
+                tournament: this.data.tournament,
+            },
+            id: 'draw'
         });
 
         dialogRef.afterClosed().pipe(

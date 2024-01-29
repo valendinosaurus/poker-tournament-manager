@@ -298,6 +298,10 @@ p {
     margin: 0;
     font-size: 100px;
     font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .next-level {

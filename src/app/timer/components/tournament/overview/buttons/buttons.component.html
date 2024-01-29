@@ -1,15 +1,24 @@
 <div class="info-panel">
-    <span *ngIf="isAddPlayerBlocked">
+    <span *ngIf="isAddPlayerBlocked && !isTournamentFinished">
         <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
     </span>
-    <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished">
+    <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished && !isTournamentFinished">
         <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
     </span>
+<!--    <span *ngIf="playerHasToBeMoved" class="clickable" (click)="openDrawDialog()">-->
+    <!--        <i class="fa fa-exclamation-triangle"></i> Player has to be moved-->
+    <!--    </span>-->
+    <!--    <span *ngIf="tableHasToBeEliminated" class="clickable" (click)="openDrawDialog()">-->
+    <!--        <i class="fa fa-exclamation-triangle"></i> Table can be eliminated-->
+    <!--    </span>-->
     <span *ngIf="!canStartTournament; else readyToStart">
         <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
     </span>
+    <span *ngIf="isTournamentFinished">
+        <i class="fa fa-check"></i> Tournament is finished
+    </span>
     <ng-template #readyToStart>
-        <span>
+        <span *ngIf="!isTournamentFinished">
             <i class="fa fa-check"></i> Ready to start tournament
         </span>
     </ng-template>
@@ -40,7 +49,10 @@
         class="main"
         (click)="addRebuy()"
     >
-        <i class="fa fa-money"></i>
+        <span class="relative-icon">
+            <i class="fa fa-money"></i>
+            <i class="fa fa-refresh absolute-icon"></i>
+        </span>
     </button>
 
     <button
@@ -69,7 +81,7 @@
         type="button"
         (click)="openMenu()"
     >
-        <i class="fa fa-tasks"></i>
+        <i class="fa fa-plus"></i>
     </button>
 </div>
 
@@ -95,3 +107,10 @@
     </span>
 </div>
 <div id="confetti"></div>
+
+<div
+    class="menu"
+    [class.visible]="menuVisible"
+>
+
+</div>

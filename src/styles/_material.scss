@@ -21,12 +21,21 @@ mat-tab-body button {
     min-height: calc(100vh - 48px) !important;
 }
 
-.mdc-dialog__container {
-    width: 700px;
+mat-dialog-container:not(#draw) {
+    .mdc-dialog__container {
+        width: 700px; // TODO adapt for table draw
+    }
+
+    .mdc-dialog__container button {
+        font-size: 26px;
+    }
+
+
 }
 
-.mdc-dialog__container button {
-    font-size: 26px;
+mat-dialog-container#draw {
+    width: 80vw;
+    min-height: 80vh;
 }
 
 

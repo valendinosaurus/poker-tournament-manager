@@ -77,6 +77,7 @@ h1 {
             font-size: 18px;
             margin-top: 0;
             color: #222;
+            font-weight: normal;
         }
 
         span {
@@ -123,7 +124,12 @@ h2 {
 }
 
 .leaderboard table {
-    min-width: 380px;
+    min-width: 600px;
+}
+
+.leaderboard th:first-child,
+.leaderboard td:first-child {
+    width: 32px !important;
 }
 
 .tournament {
@@ -247,8 +253,10 @@ tr.finalist td {
         padding: 10px;
     }
 
-    table tr td:first-child {
-        width: 84px;
+    *:not(.leaderboard) {
+        table tr td:first-child {
+            width: 84px;
+        }
     }
 }
 

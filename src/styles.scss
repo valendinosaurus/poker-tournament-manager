@@ -68,6 +68,14 @@ form {
     z-index: 9999;
 }
 
+.current-level span.smaller {
+    font-size: 32px !important;
+}
+
 .next-level-text span.smaller {
     font-size: 32px !important;
+}
+
+.mdc-button__label .fa {
+    transform: translate(1px, 1px);
 }

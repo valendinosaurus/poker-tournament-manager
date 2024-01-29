@@ -14,6 +14,9 @@ import { MakeDealComponent } from './make-deal/make-deal.component';
 import { ModifyPayoutComponent } from './modify-payout/modify-payout.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SharedModule } from '../shared/shared.module';
+import { TableDrawDialogComponent } from './table-draw/table-draw-dialog.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
     declarations: [
@@ -28,11 +31,14 @@ import { SharedModule } from '../shared/shared.module';
         AddTournamentComponent,
         ConfirmationDialogComponent,
         MakeDealComponent,
-        ModifyPayoutComponent
+        ModifyPayoutComponent,
+        TableDrawDialogComponent
     ],
     imports: [
         SharedModule,
-        MatButtonModule
+        MatButtonModule,
+        MatInputModule,
+        MatSelectModule
     ],
     exports: [
         AddAddonComponent,

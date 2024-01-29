@@ -1,0 +1,36 @@
+:host {
+    display: block;
+    padding: 40px;
+}
+
+p {
+    color: black;
+}
+
+.test-player {
+    padding: 6px;
+    margin-bottom: 6px;
+    background: white;
+    cursor: pointer;
+    width: fit-content;
+
+    &:hover {
+        opacity: 0.5;
+    }
+}
+
+.test-players {
+    display: flex;
+    margin-top: 40px;
+
+    .test-player {
+        margin: 4px;
+    }
+}
+
+h1, h2, h3, h4 {
+    color: black !important;
+}
+
+
+/* *************************************** */

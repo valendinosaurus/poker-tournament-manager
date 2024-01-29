@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AdaptedPayout } from '../../../shared/models/adapted-payout.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TableDraw } from '../../../shared/models/table-draw.interface';
 
 export interface LocalSettings {
     autoSlide: boolean;
@@ -83,7 +84,6 @@ export class LocalStorageService {
     }
 
     saveShowCondensedBlinds(showCondensedBlinds: boolean) {
-        console.log('save condensed', showCondensedBlinds);
         const settings = this.getLocalSettings();
         localStorage.setItem('LOCAL_SETTINGS', JSON.stringify({
             ...settings,
@@ -95,6 +95,20 @@ export class LocalStorageService {
 
     getShowCondensedBlinds$(): Observable<boolean> {
         return this.showCondensedBlinds$.asObservable();
+    }
+
+    saveTableDraw(tableDraw: TableDraw): void {
+        localStorage.setItem(`TABLE-DRAW-${tableDraw.tournament.id}`, JSON.stringify(tableDraw));
+    }
+
+    resetTableDraw(tId: number): void {
+        localStorage.removeItem(`TABLE-DRAW-${tId}`);
+    }
+
+    getTableDraw(tId: number): TableDraw {
+        const tableDraw = localStorage.getItem(`TABLE-DRAW-${tId}`);
+
+        return tableDraw ? JSON.parse(tableDraw) : undefined;
     }
 
 }

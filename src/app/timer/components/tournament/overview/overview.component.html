@@ -112,7 +112,7 @@
                 class="current-level"
             >
                 <p class="level"
-                   [innerHTML]="levels[currentLevelIndex] | blindLevelText:!!(showCondensedBlinds$ | async)"
+                   [innerHTML]="levels[currentLevelIndex] | blindLevelText:!!(showCondensedBlinds$ | async):true"
                 ></p>
             </div>
 
@@ -126,7 +126,7 @@
 
                 <p
                     class="next-level-text"
-                    [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText:!!(showCondensedBlinds$ | async)"
+                    [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText:!!(showCondensedBlinds$ | async):false"
                 ></p>
             </div>
 
@@ -141,6 +141,7 @@
                     [seriesMetadata]="seriesMetadata"
                     [isRebuyPhaseFinished]="isRebuyPhaseFinished"
                     [isSimpleTournament]="isSimpleTournament"
+                    [isTournamentFinished]="finished"
                     (start)="start()"
                     (pause)="pause()"
                     (addMinute)="addMinute()"

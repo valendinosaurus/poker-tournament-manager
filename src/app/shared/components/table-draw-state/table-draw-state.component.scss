@@ -1,0 +1,61 @@
+@import 'src/styles/colors_texts';
+
+.draw-state {
+    width: 600px;
+    margin: 20px auto;
+}
+
+.draw-state > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+div.bullets {
+    width: 510px;
+    margin-left: 45px;
+    margin-bottom: 20px;
+}
+
+.draw-state > div > div.bullet {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 40px;
+    background: #ccc;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.draw-state > div > div.bullet.completed {
+    background: green;
+    color: white;
+}
+
+.draw-state > div > div.line {
+    flex: 1 1 auto;
+    height: 2px;
+    background: #ccc;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.draw-state > div > div.line.completed {
+    background: #3f403f;
+}
+
+.draw-state > div > p {
+    width: 130px;
+    text-align: center;
+    color: #ccc;
+}
+
+.draw-state > div > p.completed {
+    font-weight: bold;
+    color: $primary;
+}
+
