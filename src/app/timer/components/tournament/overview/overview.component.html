@@ -77,13 +77,23 @@
             </h3>
             <div class="clock">
                 <span class="titles">
-                <h2 class="series-title">
-                    <span>Valentino's Poker Room</span>
-                </h2>
+<!--                <h2 class="series-title">-->
+                    <!--                    <span>Valentino's Poker Room</span>-->
+                    <!--                </h2>-->
+
+                    <div class="flex">
+                        <i class="fa fa-clock-o"></i>
+
+                    <h2 class="now">
+                        {{ today | date:'HH:mm' }}
+                    </h2>
+                    </div>
 
                 <h2 class="tourney">
                     {{ tournament.name }}
                 </h2>
+
+
                 </span>
 
                 <h1>

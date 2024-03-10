@@ -12,9 +12,15 @@
     margin-top: 4px;
     margin-bottom: 4px;
     width: 100%;
+    position: relative;
 
     & > span {
         min-width: 80px;
+    }
+
+    .fa-trash {
+        position: absolute;
+        right: 0;
     }
 }
 

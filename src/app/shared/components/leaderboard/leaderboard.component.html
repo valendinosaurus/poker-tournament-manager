@@ -1,0 +1,48 @@
+<div class="table-wrapper">
+    <table>
+        <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th class="t-right">Points</th>
+            <th class="t-center">&#x2205; Rank</th>
+            <th class="t-center">Played</th>
+            <th class="t-center">ITM (%)</th>
+            <th class="t-center">Rebuys / Addons</th>
+            <th class="t-right">Price</th>
+        </tr>
+        <ng-container *ngFor="let e of overallRanking; let i = index">
+            <tr [class.finalist]="i < series.finalists">
+                <td>
+                    {{ i + 1 }}.
+                </td>
+                <td>
+                    <span class="flex-td">
+                        <app-user-image-round
+                            [imageUrl]="e.image"
+                        ></app-user-image-round>
+                        {{ e.name }}
+                    </span>
+                </td>
+                <td class="t-right">
+                    <strong>{{ e.points }}</strong>
+                </td>
+                <td class="t-center">
+                    {{ e.rank / e.tournaments | number:'1.1-1' }}
+                </td>
+                <td class="t-center">
+                    {{ e.tournaments }}
+                </td>
+                <td class="t-center">
+                    {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)
+                </td>
+                <td class="t-center">
+                    {{ e.rebuysAddons }}
+                </td>
+                <td class="t-right">
+                    $ {{ e.price | number:'':'de-CH' }}
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+
+</div>

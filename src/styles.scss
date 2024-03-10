@@ -20,6 +20,28 @@ body {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
+    //cursor: url("../src/assets/icons8-cursor-100.png") 12 12, auto !important;
+}
+
+app-overview {
+
+    .deletable,
+    button,
+    button *,
+    .slider-wrapper .fa,
+    .seat:hover,
+    .fa-trash,
+    .fa-chevron-circle-up,
+    .fa-plus-circle,
+    .deletable,
+    .clickable {
+        cursor: url("../src/assets/pointer.png") 16 16, pointer !important;
+    }
+}
+
+.seat:hover,
+.tets-player {
+    cursor: url("../src/assets/pointer.png") 16 16, pointer !important;
 }
 
 

@@ -85,6 +85,8 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     @ViewChild(BlindLevelOverviewComponent) blindCmp: BlindLevelOverviewComponent;
     @ViewChild(ButtonsComponent) buttonsCmp: ButtonsComponent;
 
+    today: number = Date.now();
+
     slider: KeenSliderInstance;
     currentSlide: number = 0;
     changes = 0;
@@ -113,6 +115,10 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
     ngOnInit(): void {
         this.showCondensedBlinds$ = this.localStorageService.getShowCondensedBlinds$();
+
+        setInterval(() => {
+            this.today = Date.now();
+        }, 1);
     }
 
     ngOnChanges(changes: SimpleChanges): void {

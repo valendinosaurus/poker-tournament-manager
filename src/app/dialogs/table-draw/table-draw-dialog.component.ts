@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TableDraw } from '../../shared/models/table-draw.interface';
 import { Player } from '../../shared/models/player.interface';
-import { TableDrawState } from '../../test/draw/test-draw-page/test-draw-page.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { TableDrawService } from '../../core/services/table-draw.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
+import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
 
 @Component({
     selector: 'app-table-draw-dialog',

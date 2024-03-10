@@ -15,7 +15,6 @@ import { SeriesModule } from './series/series.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { DialogsModule } from './dialogs/dialogs.module';
-import { TestDrawPageComponent } from './test/draw/test-draw-page/test-draw-page.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
@@ -27,7 +26,6 @@ registerLocaleData(localeDECH);
 @NgModule({
     declarations: [
         AppComponent,
-        TestDrawPageComponent,
     ],
     imports: [
         AppRoutingModule,

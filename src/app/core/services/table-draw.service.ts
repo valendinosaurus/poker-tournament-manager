@@ -4,7 +4,7 @@ import { TableDrawSeat } from '../../shared/models/table-draw-seat.interface';
 import { Player } from '../../shared/models/player.interface';
 import { TableDraw } from '../../shared/models/table-draw.interface';
 import { Tournament } from '../../shared/models/tournament.interface';
-import { TableDrawState } from '../../test/draw/test-draw-page/test-draw-page.component';
+import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -166,7 +166,6 @@ export class TableDrawService {
                 numberOfRemainingPlayersPerTable.push(t.filter(e => !e.eliminated && !e.placeholder).length
                 );
             });
-
 
         const min = Math.min(...numberOfRemainingPlayersPerTable);
         const max = Math.max(...numberOfRemainingPlayersPerTable);

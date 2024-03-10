@@ -1,0 +1,13 @@
+:host {
+    display: contents;
+}
+
+tr th,
+tr td {
+    color: black;
+}
+
+tr.finalist th,
+tr.finalist td {
+    background: #e8fbe8;
+}

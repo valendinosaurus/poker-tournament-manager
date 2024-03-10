@@ -1,7 +1,7 @@
 import { Player } from './player.interface';
 import { TableDrawSeat } from './table-draw-seat.interface';
-import { TableDrawState } from '../../test/draw/test-draw-page/test-draw-page.component';
 import { Tournament } from './tournament.interface';
+import { TableDrawState } from '../enums/table-draw-state.enum';
 
 export interface TableDraw {
     state: TableDrawState;

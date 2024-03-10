@@ -8,7 +8,7 @@ import { Entry } from '../../../shared/models/entry.interface';
 import { Finish } from '../../../shared/models/finish.interface';
 import { EntryApiService } from '../../../core/services/api/entry-api.service';
 import { FinishApiService } from '../../../core/services/api/finish-api.service';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { PlayerApiService } from '../../../core/services/api/player-api.service';
 import { Player } from '../../../shared/models/player.interface';
 import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
@@ -22,6 +22,14 @@ import { OverallRanking } from '../../models/overall-ranking.interface';
 import { CombinedFinish } from '../../models/combined-finish.interface';
 import { MathContent } from '../../../shared/models/math-content.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
+import { SeriesService } from '../../../core/services/series.service';
+
+interface SimpleStat {
+    playerName: string;
+    value: number;
+    played: number;
+    image: string;
+}
 
 @Component({
     selector: 'app-series-page',
@@ -37,12 +45,48 @@ export class SeriesPageComponent implements OnInit {
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private rankingService: RankingService = inject(RankingService);
+    private seriesService: SeriesService = inject(SeriesService);
 
     series$: Observable<SeriesDetails | null>;
 
     combined: CombinedEntriesFinishes[] = [];
     combinedRankings: CombinedRanking[] = [];
     overallRanking: OverallRanking[];
+
+    bestAverageRank: SimpleStat[];
+    mostPrices: SimpleStat[];
+    mostEffPrices: SimpleStat[];
+    mostRebuysAddons: SimpleStat[];
+    mostRebuysAddonsPerT: SimpleStat[];
+    mostITM: SimpleStat[];
+    mostPercITM: SimpleStat[];
+
+    mostSpilled: SimpleStat[] = [
+        {
+            image: 'https://c8.alamy.com/compde/gc2ebk/ufo-verteiler-lkw-weissbier-in-boston-street-gc2ebk.jpg',
+            played: 3,
+            value: 3,
+            playerName: 'Leon'
+        },
+        {
+            image: 'https://media.wired.com/photos/5af36b4a65806b269bfe8e44/master/w_2560%2Cc_limit/marijuana-522464999.jpg',
+            played: 4,
+            value: 3,
+            playerName: 'Päscu'
+        },
+        {
+            image: 'https://c8.alamy.com/compde/gc2ebk/ufo-verteiler-lkw-weissbier-in-boston-street-gc2ebk.jpg',
+            played: 3,
+            value: 1,
+            playerName: 'Maki'
+        },
+        {
+            image: 'https://media.wired.com/photos/5af36b4a65806b269bfe8e44/master/w_2560%2Cc_limit/marijuana-522464999.jpg',
+            played: 5,
+            value: 1,
+            playerName: 'Valentino'
+        }
+    ];
 
     formula: Formula;
 
@@ -57,6 +101,10 @@ export class SeriesPageComponent implements OnInit {
         this.password = this.route.snapshot.params['password'];
 
         this.series$ = this.seriesApiService.getWithDetailsByPw$(this.seriesId, this.password).pipe(
+            map(series => series ? ({
+                ...series,
+                tournaments: series.tournaments.reverse()
+            }) : null),
             tap((series: SeriesDetails | null) => {
 
                 this.formulaString = {
@@ -80,7 +128,7 @@ export class SeriesPageComponent implements OnInit {
             this.seriesApiService.getSeriesMetadata$(this.seriesId, this.password)
         ]).pipe(
             tap(([finishes, entries, players, tournaments, seriesMetadata]: [Finish[], Entry[], PlayerInSeries[], TournamentInSeries[], SeriesMetadata]) => {
-                const tIds = tournaments.map((t: TournamentInSeries) => t.id);
+                const tIds = tournaments.map((t: TournamentInSeries) => t.id).reverse();
 
                 tIds.forEach(
                     (id: number) => {
@@ -184,7 +232,8 @@ export class SeriesPageComponent implements OnInit {
                         image: f.image,
                         points: +f.points + +element.points,
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
-                        rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons
+                        rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons,
+                        itm: +element.itm + ((+f.rank <= 4) ? 1 : 0)
                     };
 
                 } else {
@@ -195,11 +244,99 @@ export class SeriesPageComponent implements OnInit {
                         price: f.price,
                         rank: f.rank,
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
-                        rebuysAddons: +f.rebuys + +f.addons
+                        rebuysAddons: +f.rebuys + +f.addons,
+                        itm: (+f.rank <= 4) ? 1 : 0
                     });
                 }
             })
         );
+
+        const bar = this.overallRanking.filter(e => e.tournaments > 1).sort(
+            (prev, curr) =>
+                ((prev.rank / prev.tournaments) - (curr.rank / curr.tournaments))
+        );
+
+        this.bestAverageRank = bar.slice(0, 7).map(e => ({
+            playerName: e.name,
+            value: e.rank / e.tournaments,
+            played: e.tournaments,
+            image: e.image
+        }));
+
+        const mp = [...this.overallRanking].sort(
+            (prev, curr) =>
+                (prev.price - curr.price)
+        ).reverse();
+
+        this.mostPrices = mp.slice(0, 7).map(e => ({
+            playerName: e.name,
+            value: e.price,
+            played: e.tournaments,
+            image: e.image
+        }));
+
+        const mep = this.overallRanking
+            .sort(
+                (prev, curr) =>
+                    (
+                        (prev.price - ((prev.tournaments + prev.rebuysAddons) * 50))
+                    ) - (
+                        (curr.price - ((curr.tournaments + curr.rebuysAddons) * 50))
+                    ) || prev.tournaments - curr.tournaments
+            ).reverse();
+
+        this.mostEffPrices = mep.slice(0, 7).map(e => ({
+            playerName: e.name,
+            value: e.price - ((e.tournaments + e.rebuysAddons) * 50),
+            played: e.tournaments,
+            image: e.image
+        }));
+
+        const mostRA = [...this.overallRanking].sort(
+            (prev, curr) =>
+                (prev.rebuysAddons - curr.rebuysAddons) || prev.tournaments - curr.tournaments
+        ).reverse();
+
+        this.mostRebuysAddons = mostRA.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.rebuysAddons,
+            playerName: e.name,
+            image: e.image
+        }));
+
+        const mostRAT = [...this.overallRanking].filter(e => e.tournaments > 1).sort(
+            (prev, curr) =>
+                ((prev.rebuysAddons / prev.tournaments) - (curr.rebuysAddons / curr.tournaments)) || prev.tournaments - curr.tournaments
+        ).reverse();
+
+        this.mostRebuysAddonsPerT = mostRAT.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.rebuysAddons / e.tournaments,
+            playerName: e.name,
+            image: e.image
+        }));
+
+        const mitm = [...this.overallRanking].sort(
+            (a, b) => b.itm - a.itm || a.tournaments - b.tournaments
+        );
+
+        this.mostITM = mitm.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.itm,
+            playerName: e.name,
+            image: e.image
+        }));
+
+        const mpitm = [...this.overallRanking].sort(
+            (a, b) => (b.itm / b.tournaments) - (a.itm / a.tournaments) || a.tournaments - b.tournaments
+        );
+
+        this.mostPercITM = mpitm.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.itm / e.tournaments * 100,
+            playerName: e.name,
+            image: e.image
+        }));
 
         this.overallRanking = this.overallRanking.sort(
             (a: OverallRanking, b: OverallRanking) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
@@ -225,10 +362,6 @@ export class SeriesPageComponent implements OnInit {
             pricePool: +this.rankingService.getSimplePricePool(tournament),
             addonCost: tournament.addonAmount
         }) : 0;
-    }
-
-    getSortedTournaments(t: Tournament[]): Tournament[] {
-        return t.sort((t1, t2) => new Date(t1.date).getTime() - new Date(t2.date).getTime());
     }
 
 }

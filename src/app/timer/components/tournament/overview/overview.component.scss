@@ -81,6 +81,25 @@ h2.tourney {
     color: $primary;
 }
 
+div.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.flex .fa-clock-o {
+    color: rgba($primary, 0.3);
+    font-size: 48px;
+    margin-right: 20px;
+}
+
+h2.now {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgba($primary, 0.5);
+    font-size: 64px;
+}
+
 .bottom {
     width: 100%;
     display: flex;

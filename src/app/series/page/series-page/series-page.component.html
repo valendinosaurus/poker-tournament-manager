@@ -62,7 +62,6 @@
                 </div>
             </div>
 
-
             <div class="series-content-block" *ngIf="formulaString">
                 <div class="li-wide">
                     <h4>
@@ -77,50 +76,59 @@
             </h2>
 
             <div class="leaderboard">
-                <div class="table-wrapper">
-                    <table>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Name</th>
-                            <th class="t-right">Points</th>
-                            <th class="t-center">&#x2205; Rank</th>
-                            <th class="t-center">Played</th>
-                            <th class="t-center">Rebuys / Addons</th>
-                            <th class="t-right">Price</th>
-                        </tr>
-                        <ng-container *ngFor="let e of overallRanking; let i = index">
-                            <tr [class.finalist]="i < series.finalists">
-                                <td>
-                                    {{ i + 1 }}.
-                                </td>
-                                <td>
-                                    <span class="flex-td">
-                                        <app-user-image-round
-                                            [imageUrl]="e.image"
-                                        ></app-user-image-round>
-                                        {{ e.name }}
-                                    </span>
-                                </td>
-                                <td class="t-right">
-                                    <strong>{{ e.points }}</strong>
-                                </td>
-                                <td class="t-center">
-                                    {{ e.rank / e.tournaments | number:'1.1-1' }}
-                                </td>
-                                <td class="t-center">
-                                    {{ e.tournaments }}
-                                </td>
-                                <td class="t-center">
-                                    {{ e.rebuysAddons }}
-                                </td>
-                                <td class="t-right">
-                                    $ {{ e.price | number:'':'de-CH' }}
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </table>
+                <app-leaderboard
+                    [series]="series"
+                    [overallRanking]="overallRanking"
+                ></app-leaderboard>
 
-                </div>
+                <!--                <div class="table-wrapper">-->
+                <!--                    <table>-->
+                <!--                        <tr>-->
+                <!--                            <th>Rank</th>-->
+                <!--                            <th>Name</th>-->
+                <!--                            <th class="t-right">Points</th>-->
+                <!--                            <th class="t-center">&#x2205; Rank</th>-->
+                <!--                            <th class="t-center">Played</th>-->
+                <!--                            <th class="t-center">ITM (%)</th>-->
+                <!--                            <th class="t-center">Rebuys / Addons</th>-->
+                <!--                            <th class="t-right">Price</th>-->
+                <!--                        </tr>-->
+                <!--                        <ng-container *ngFor="let e of overallRanking; let i = index">-->
+                <!--                            <tr [class.finalist]="i < series.finalists">-->
+                <!--                                <td>-->
+                <!--                                    {{ i + 1 }}.-->
+                <!--                                </td>-->
+                <!--                                <td>-->
+                <!--                                    <span class="flex-td">-->
+                <!--                                        <app-user-image-round-->
+                <!--                                            [imageUrl]="e.image"-->
+                <!--                                        ></app-user-image-round>-->
+                <!--                                        {{ e.name }}-->
+                <!--                                    </span>-->
+                <!--                                </td>-->
+                <!--                                <td class="t-right">-->
+                <!--                                    <strong>{{ e.points }}</strong>-->
+                <!--                                </td>-->
+                <!--                                <td class="t-center">-->
+                <!--                                    {{ e.rank / e.tournaments | number:'1.1-1' }}-->
+                <!--                                </td>-->
+                <!--                                <td class="t-center">-->
+                <!--                                    {{ e.tournaments }}-->
+                <!--                                </td>-->
+                <!--                                <td class="t-center">-->
+                <!--                                    {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)-->
+                <!--                                </td>-->
+                <!--                                <td class="t-center">-->
+                <!--                                    {{ e.rebuysAddons }}-->
+                <!--                                </td>-->
+                <!--                                <td class="t-right">-->
+                <!--                                    $ {{ e.price | number:'':'de-CH' }}-->
+                <!--                                </td>-->
+                <!--                            </tr>-->
+                <!--                        </ng-container>-->
+                <!--                    </table>-->
+
+                <!--                </div>-->
 
                 <div class="legend-wrapper">
                     <div class="legend"></div>
@@ -128,28 +136,123 @@
                 </div>
             </div>
 
+            <h2>
+                Stats
+            </h2>
+            <p style="padding-left: 12px; margin-bottom: 12px;">
+                Amount of tournaments played in brackets!<br>
+                <i>RB & A</i>: Rebuys & addons<br>
+                <i>ITM</i>: In the money<br>
+                <i>p</i>: played
+            </p>
+
+            <div class="series-content-block spaced">
+                <div class="li-pair">
+                    <h4>Best &#x2205; rank (p > 1)</h4>
+                    <span class="smaller" *ngFor="let e of bestAverageRank; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value | number:'1.1-1' }}</strong>
+                        ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Most prices
+                    </h4>
+                    <span class="smaller" *ngFor="let e of mostPrices; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value }}$</strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Most effective prices
+                    </h4>
+                    <span class="smaller" *ngFor="let e of mostEffPrices; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value }}$</strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Most RB & A
+                    </h4>
+                    <span class="smaller" *ngFor="let e of mostRebuysAddons; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Most &#x2205; RB & A (p > 1)
+                    </h4>
+                    <span class="smaller" *ngFor="let e of mostRebuysAddonsPerT; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value | number:'1.1-1' }}
+                    </strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Most times ITM
+                    </h4>
+                    <span class="smaller" *ngFor="let e of mostITM; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Most % ITM
+                    </h4>
+                    <span class="smaller" *ngFor="let e of mostPercITM; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value }}%</strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+
+                <div class="li-pair">
+                    <h4>
+                        Spilled & broken
+                    </h4>
+
+                    <span class="smaller" *ngFor="let e of mostSpilled; let i = index;">
+                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
+                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }})</span>
+                    </span>
+                </div>
+            </div>
 
             <h2>
                 Tournaments
             </h2>
 
-            <ng-container *ngFor="let tournament of getSortedTournaments(series.tournaments); let i = index;">
+            <ng-container *ngFor="let tournament of series.tournaments; let i = index;">
                 <div class="tournament">
                     <div class="header">
+                        <h5>
+                            {{ tournament.date | date }}
+                        </h5>
                         <h4>
-                            {{ tournament.date | date }} - {{ tournament.name }}
-                            <ng-container *ngIf="combinedRankings[i] && combinedRankings[i].playersAlive.length > 0">
-                                <span class="running"></span>
-                                RUNNING!
-                            </ng-container>
+                            {{ tournament.name }}
                         </h4>
+                        <h5 *ngIf="combinedRankings[i] && combinedRankings[i].playersAlive.length > 0">
+                            <span class="running"></span>
+                            RUNNING!
+                        </h5>
 
                         <ng-container *ngIf="combinedRankings[i]">
                             <div>
                                 <span>
                                     <p>
-                                        <strong>
-                                            $ {{ combinedRankings[i].pricePool - combinedRankings[i].contribution }}
+                                        <strong class="green">
+                                            $ {{ combinedRankings[i].pricePool - combinedRankings[i].contribution | number:'1.0-0' }}
                                         </strong>
                                     </p>
                                     <h5>
@@ -159,7 +262,7 @@
 
                                 <span>
                                     <p>
-                                        $ {{ combinedRankings[i].pricePool }}
+                                        $ {{ combinedRankings[i].pricePool | number:'1.0-0' }}
                                     </p>
                                     <h5>
                                         Total price pool
@@ -168,7 +271,7 @@
 
                                 <span>
                                     <p>
-                                        $ {{ combinedRankings[i].contribution }}
+                                        $ {{ combinedRankings[i].contribution | number:'1.0-0' }}
                                     </p>
                                     <h5>
                                         Goes to final pot

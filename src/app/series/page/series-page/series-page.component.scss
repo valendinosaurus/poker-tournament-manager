@@ -69,6 +69,8 @@ h1 {
         background: aliceblue;
         padding: 12px;
         box-sizing: border-box;
+        border: solid 2px darkslategray;
+        border-radius: 12px;
 
         h4 {
             display: block;
@@ -86,6 +88,16 @@ h1 {
             margin-bottom: 0;
             color: #222;
             font-weight: bold;
+
+            &.smaller {
+                font-size: 20px;
+                font-weight: normal;
+
+                span {
+                    font-size: 18px;
+                    font-weight: normal;
+                }
+            }
         }
 
         @media (max-width: 800px) {
@@ -133,8 +145,14 @@ h2 {
 }
 
 .tournament {
-    margin-bottom: 64px;
+    margin-bottom: 32px;
     padding-bottom: 20px;
+    border: solid 2px darkslategray;
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background: aliceblue;
 
     * {
         background: aliceblue;
@@ -160,15 +178,18 @@ h2 {
 }
 
 .tournament .header {
-    padding: 12px;
-    padding-bottom: 20px;
+    margin-top: 12px;
+    margin-bottom: 20px;
 
     & > div {
+        width: 100%;
         display: flex;
+        justify-content: space-around;
+    }
 
-        & > span {
-            margin-right: 32px;
-        }
+    h4 {
+        text-align: center;
+        display: block;
     }
 }
 
@@ -209,6 +230,17 @@ tr td:first-child {
     box-sizing: border-box;
     position: sticky;
     left: 0;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: -1px;
+        border-bottom: 1px solid rgba(0, 67, 123, 0.3);
+        pointer-events: none;
+    }
 }
 
 tr th:last-child,
@@ -219,11 +251,6 @@ tr td:last-child {
 th, td {
     background: white;
     box-sizing: border-box;
-}
-
-tr.finalist th,
-tr.finalist td {
-    background: #e8fbe8;
 }
 
 .legend-wrapper {
@@ -260,19 +287,35 @@ tr.finalist td {
     }
 }
 
+.tournament .header div span {
+    box-sizing: border-box;
+    border: solid 1px darkslategray;
+    border-radius: 12px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 8px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
 .tournament .header div span p {
-    margin-top: 32px;
+    margin-top: 0;
     margin-bottom: 8px;
+
+    @media (max-width: 700px) {
+        font-size: 20px;
+    }
 }
 
 .tournament .header div span h5 {
     margin-top: 0;
-    margin-bottom: 24px;
+    margin-bottom: 0;
 }
 
 span.running {
     width: 24px;
     height: 24px;
+    flex: 0 0 24px;
     border-radius: 24px;
     animation: live 3s infinite;
     margin-left: 20px;
@@ -288,5 +331,63 @@ span.running {
     }
     100% {
         background-color: green;
+    }
+}
+
+.spaced .li-pair > h4 {
+    text-align: left !important;
+    font-weight: bold !important;
+    margin-bottom: 12px !important;
+}
+
+.spaced .li-pair > span {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+        display: flex;
+        align-items: center;
+
+        app-user-image-round {
+            display: inline-block;
+            margin-left: 4px;
+        }
+    }
+
+    strong {
+        margin-right: 4px;
+    }
+}
+
+@media (max-width: 800px) {
+    .spaced .li-pair {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        margin-bottom: 2%;
+    }
+}
+
+.green {
+    color: green !important;
+}
+
+.li-wide {
+    box-sizing: border-box;
+    border: solid 2px darkslategray;
+    border-radius: 12px;
+}
+
+@media (max-width: 700px) {
+    .tournament th {
+        max-width: 100px;
+        width: 100px;
+    }
+
+    .tournament .header span p {
+        font-size: 18px !important;
+    }
+
+    .spaced .li-pair h4 {
+        font-size: 16px !important;
     }
 }
