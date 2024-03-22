@@ -259,7 +259,7 @@
                                     <td class="t-center">
                                         <span class="t-flex" *ngIf="!e.isTemp; else temp">
                                             <strong>
-                                                {{ e.points }}
+                                                {{ e.points | number:'1.1-1' }}
                                             </strong>
                                             &nbsp;
                                             ({{ e.rank | number:'1.0-1' }})
@@ -269,7 +269,7 @@
                                         </span>
                                         <ng-template #temp>
                                             <span class="t-flex justify-center align-center">
-                                                {{ e.points }}
+                                                {{ e.points | number:'1.1-1' }}
                                                 <span class="running"></span>
                                             </span>
                                         </ng-template>

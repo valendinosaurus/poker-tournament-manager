@@ -26,7 +26,7 @@
                 <td class="t-right">
                     <div class="flex justify-center align-center">
                         <strong>
-                            {{ e.points }}
+                            {{ e.points | number:'1.1-1' }}
                             <ng-container *ngIf="e.isTemp">(+)</ng-container>
                         </strong>
                         <span *ngIf="e.isTemp" class="running small"></span>
