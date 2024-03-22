@@ -27,6 +27,8 @@ import {
 } from './components/tournament/tournament-list/tournament-list-item/tournament-list-item.component';
 import { SeriesListItemComponent } from './components/series/series-list/series-list-item/series-list-item.component';
 import { MatButtonModule } from '@angular/material/button';
+import { PlayerListItemComponent } from './components/player/player-list/player-list-item/player-list-item.component';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
     declarations: [
@@ -52,11 +54,13 @@ import { MatButtonModule } from '@angular/material/button';
         CreatePauseComponent,
         TournamentListItemComponent,
         SeriesListItemComponent,
+        PlayerListItemComponent,
     ],
     imports: [
         SharedModule,
         MatTabsModule,
-        MatButtonModule
+        MatButtonModule,
+        MatInputModule
     ],
     exports: [
         AdminComponent

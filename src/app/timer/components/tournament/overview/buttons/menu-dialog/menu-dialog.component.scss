@@ -10,6 +10,8 @@ h4 {
     margin-top: 20px !important;
     margin-bottom: 0 !important;
     text-transform: uppercase;
+    width: 100%;
+    text-align: center;
 }
 
 .button-group {
@@ -17,7 +19,7 @@ h4 {
     margin-bottom: 40px;
     padding-top: 12px;
     padding-bottom: 40px;
-    border-bottom: solid 1px black;
+    border-bottom: solid 1px #00437b;
 
     .action {
         display: flex;
@@ -41,5 +43,9 @@ h4 {
             margin-right: 4px;
         }
     }
+}
+
+.fa {
+    color: #00437b;
 }
 

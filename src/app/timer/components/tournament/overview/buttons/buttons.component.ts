@@ -1,9 +1,20 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    DestroyRef,
+    EventEmitter,
+    HostListener,
+    inject,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { Observable } from 'rxjs';
 import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
 import { ServerResponse } from '../../../../../shared/models/server-response';
-import { take, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddRebuyComponent } from '../../../../../dialogs/add-rebuy/add-rebuy.component';
 import { AddAddonComponent } from '../../../../../dialogs/add-addon/add-addon.component';
@@ -16,6 +27,7 @@ import { LocalStorageService } from '../../../../../core/services/util/local-sto
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
+import { DOCUMENT } from '@angular/common';
 
 declare var anime: any;
 
@@ -24,7 +36,7 @@ declare var anime: any;
     templateUrl: './buttons.component.html',
     styleUrls: ['./buttons.component.scss']
 })
-export class ButtonsComponent implements OnChanges {
+export class ButtonsComponent implements OnInit, OnChanges {
 
     @Input() clientId: number;
     @Input() running: boolean;
@@ -41,8 +53,12 @@ export class ButtonsComponent implements OnChanges {
     canStartTournament = false;
     playerHasToBeMoved = false;
     tableHasToBeEliminated = false;
+    isFullscreen = false;
+    elem: HTMLElement;
 
     menuVisible = false;
+
+    isAdaptedPayoutSumCorrect = true;
 
     dialogPosition = {
         position: {
@@ -56,6 +72,7 @@ export class ButtonsComponent implements OnChanges {
     private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
+    private document: Document = inject(DOCUMENT);
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -67,7 +84,17 @@ export class ButtonsComponent implements OnChanges {
     @Output() toggleShowCondensedBlinds = new EventEmitter<boolean>();
     @Output() localRefresh = new EventEmitter<void>();
 
-    isAdaptedPayoutSumCorrect = true;
+    @HostListener('document:fullscreenchange', ['$event'])
+    @HostListener('document:webkitfullscreenchange', ['$event'])
+    @HostListener('document:mozfullscreenchange', ['$event'])
+    @HostListener('document:MSFullscreenChange', ['$event'])
+    fullScreenModes(_event: Event) {
+        this.chkScreenMode();
+    }
+
+    ngOnInit(): void {
+        this.elem = this.document.documentElement;
+    }
 
     ngOnChanges(changes: SimpleChanges): void {
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament.id);
@@ -192,10 +219,36 @@ export class ButtonsComponent implements OnChanges {
         ).subscribe();
     }
 
-    notify(): void {
-        this.getReFetchEvent$().pipe(
-            take(1)
-        ).subscribe();
+    chkScreenMode() {
+        if (this.document.fullscreenElement) {
+            this.isFullscreen = true;
+        } else {
+            this.isFullscreen = false;
+        }
+    }
+
+    fullScreen(): void {
+        if (this.elem.requestFullscreen) {
+            this.elem.requestFullscreen();
+        } else if ((this.elem as any).mozRequestFullScreen) {
+            (this.elem as any).mozRequestFullScreen();
+        } else if ((this.elem as any).webkitRequestFullscreen) {
+            (this.elem as any).webkitRequestFullscreen();
+        } else if ((this.elem as any).msRequestFullscreen) {
+            (this.elem as any).msRequestFullscreen();
+        }
+    }
+
+    cancelFullscreen(): void {
+        if (this.document.exitFullscreen) {
+            this.document.exitFullscreen();
+        } else if ((this.document as any).mozCancelFullScreen) {
+            (this.document as any).mozCancelFullScreen();
+        } else if ((this.document as any).webkitExitFullscreen) {
+            (this.document as any).webkitExitFullscreen();
+        } else if ((this.document as any).msExitFullscreen) {
+            (this.document as any).msExitFullscreen();
+        }
     }
 
     getReFetchEvent$(): Observable<ServerResponse | null> {

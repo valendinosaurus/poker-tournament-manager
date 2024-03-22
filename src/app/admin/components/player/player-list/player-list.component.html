@@ -3,26 +3,7 @@
 <div class="list list-3rd">
 
     <ng-container *ngFor="let p of players$ | async">
-        <div class="list-item list-item-3rd">
-            <i
-                class="fa fa-trash"
-                (click)="deletePlayer(p.id)"
-            ></i>
-
-            <app-user-image-round
-                [imageUrl]="p.image"
-                [size]="64"
-            ></app-user-image-round>
-
-            <div class="li-pair">
-                <h4>
-                    Name
-                </h4>
-                <span>
-                        {{ p.name }}
-                    </span>
-            </div>
-        </div>
+        <app-player-list-item [player]="p"></app-player-list-item>
     </ng-container>
 
 </div>

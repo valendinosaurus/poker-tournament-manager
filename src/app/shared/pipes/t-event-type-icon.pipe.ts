@@ -20,7 +20,7 @@ export class TEventTypeIconPipe implements PipeTransform {
             case TEventType.ELIMINATION:
                 return 'fa-bolt';
             case TEventType.ENTRY:
-                return 'fa-money';
+                return 'fa-money-bill-wave';
             case TEventType.FINISH:
                 return 'fa-skull';
         }

@@ -37,15 +37,4 @@ export class PlayerListComponent implements OnInit {
         );
     }
 
-    deletePlayer(playerId: number | undefined): void {
-        if (playerId) {
-            this.authService.user$.pipe(
-                map((user: User | undefined | null) => user?.sub ?? ''),
-                switchMap((sub: string) => this.playerApiService.delete$(playerId, sub).pipe(
-                    take(1),
-                    tap(() => this.triggerService.triggerPlayers())
-                ))
-            ).subscribe();
-        }
-    }
 }

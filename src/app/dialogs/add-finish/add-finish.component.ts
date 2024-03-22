@@ -94,7 +94,6 @@ export class AddFinishComponent implements OnInit {
 
                 this.initModel();
                 this.initFields();
-                console.log('calc now');
                 this.calcRanksAndPrices(tournament);
             })
         ).subscribe();
@@ -141,7 +140,6 @@ export class AddFinishComponent implements OnInit {
 
     private calcRanksAndPrices(tournament: Tournament): void {
         this.rank = tournament.players.length - tournament.finishes.length;
-        console.log('ran', this.rank);
         const payoutRaw = this.rankingService.getPayoutById(tournament.payout);
         const payoutPercentage = payoutRaw[this.rank - 1];
 

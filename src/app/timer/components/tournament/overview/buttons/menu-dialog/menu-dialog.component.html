@@ -3,13 +3,14 @@
 <h4>
     Player Actions
 </h4>
+
 <div class="button-group">
 
     <div
         *ngIf="!data.isSimpleTournament && !data.isAddPlayerBlocked"
         class="action"
     >
-        <h5><i class="fa fa-plus-circle"></i> Player</h5>
+        <h5><i class="fa fa-plus"></i> Player</h5>
         <button
             mat-raised-button
             class="main"
@@ -23,13 +24,13 @@
         *ngIf="!data.isSimpleTournament"
         class="action"
     >
-        <h5><i class="fa fa-plus-circle"></i> Entry</h5>
+        <h5><i class="fa fa-plus"></i> Entry</h5>
         <button
             mat-raised-button
             class="main"
             (click)="addEntry(false)"
         >
-            <i class="fa fa-money"></i>
+            <i class="fa fa-money-bill-wave"></i>
         </button>
     </div>
 
@@ -37,7 +38,7 @@
         *ngIf="data.tournament.withRebuy && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
         class="action"
     >
-        <h5><i class="fa fa-plus-circle"></i> Rebuy</h5>
+        <h5><i class="fa fa-plus"></i> Rebuy</h5>
         <button
             mat-raised-button
             class="main"
@@ -51,15 +52,15 @@
         *ngIf="data.tournament.withReEntry && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
         class="action"
     >
-        <h5><i class="fa fa-plus-circle"></i> Re-Entry</h5>
+        <h5><i class="fa fa-plus"></i> Re-Entry</h5>
         <button
             mat-raised-button
             class="main"
             (click)="addEntry(true)"
         >
             <span class="relative-icon">
-                <i class="fa fa-money"></i>
-                <i class="fa fa-plus-circle absolute-icon"></i>
+                <i class="fa fa-money-bill-wave"></i>
+                <i class="fa fa-plus absolute-icon"></i>
             </span>
         </button>
     </div>
@@ -68,7 +69,7 @@
         *ngIf="data.tournament.withAddon && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
         class="action"
     >
-        <h5><i class="fa fa-plus-circle"></i> Addon</h5>
+        <h5><i class="fa fa-plus"></i> Addon</h5>
         <button
             mat-raised-button
             class="main"
@@ -88,12 +89,7 @@
             class="main"
             (click)="seatOpen()"
         >
-            <i class="fa fa-skull">
-                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 0 512 512">
-                    <path
-                        d="M416 398.9c58.5-41.1 96-104.1 96-174.9C512 100.3 397.4 0 256 0S0 100.3 0 224c0 70.7 37.5 133.8 96 174.9c0 .4 0 .7 0 1.1v64c0 26.5 21.5 48 48 48h48V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h64V464c0-8.8 7.2-16 16-16s16 7.2 16 16v48h48c26.5 0 48-21.5 48-48V400c0-.4 0-.7 0-1.1zM96 256a64 64 0 1 1 128 0A64 64 0 1 1 96 256zm256-64a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
-                </svg>
-            </i>
+            <i class="fa fa-skull"> </i>
         </button>
     </div>
 
@@ -147,12 +143,12 @@
     <div
         class="action"
     >
-        <h5><i class="fa fa-plus-circle"></i> 1min</h5>
+        <h5><i class="fa fa-plus"></i> 1min</h5>
         <button
             mat-raised-button
             class="main"
             (click)="addMinute.emit()">
-            <i class="fa fa-clock-o"></i>
+            <i class="fa fa-clock"></i>
         </button>
     </div>
 
@@ -212,7 +208,7 @@
     <div
         class="action"
     >
-        <h5>Condense Blinds</h5>
+        <h5>Short Blinds</h5>
         <button
             mat-raised-button
             class="main"
@@ -257,6 +253,7 @@
         <button
             mat-raised-button
             class="main"
+            (click)="closeMenu()"
             [routerLink]="['/admin']" *ngIf="isAuthenticated$ | async">
             <i class="fa fa-address-card"></i>
         </button>

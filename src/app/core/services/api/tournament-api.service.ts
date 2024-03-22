@@ -103,7 +103,6 @@ export class TournamentApiService {
     }
 
     get2$(id: number, sub: string): Observable<Tournament> {
-        console.log('get 2');
         return this.http.get<Tournament>(`${BACKEND_URL}${this.ENDPOINT}/2/${id}/${sub}`);
     }
 

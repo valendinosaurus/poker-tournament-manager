@@ -98,7 +98,6 @@ export class MenuDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
         this.elem = this.document.documentElement;
         this.initModel();
         this.initFields();
@@ -322,5 +321,9 @@ export class MenuDialogComponent implements OnInit {
                 clientId: this.data.clientId
             })),
         ).subscribe();
+    }
+
+    closeMenu(): void {
+        this.dialogRef.close();
     }
 }

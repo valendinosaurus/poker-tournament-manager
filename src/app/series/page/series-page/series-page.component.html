@@ -300,8 +300,10 @@
                         <h4>Live-Ticker</h4>
                         <ng-container *ngFor="let e of combinedRankings[i].events$ | async">
                             <div class="live-ticker-item">
+                                <span class="fa-wrapper">
                                 <i class="fa" [class]="e | tEventTypeIcon"></i>
-                                <span>{{ e.message }}</span>
+                                </span>
+                                <span [innerHTML]="e.message"></span>
                             </div>
                         </ng-container>
                     </div>

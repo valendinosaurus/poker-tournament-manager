@@ -1,5 +1,5 @@
 @import "node_modules/keen-slider/keen-slider.min.css";
-@import "node_modules/font-awesome/css/font-awesome.min.css";
+@import "@fortawesome/fontawesome-free/css/all.css";
 @import "src/styles/colors_texts";
 @import "src/styles/admin";
 @import "src/styles/icons";
@@ -7,43 +7,20 @@
 @import "src/styles/table";
 @import "src/styles/spacing_dimensions";
 @import "src/styles/common-elements";
+@import "src/styles/fonts";
 
 html,
 body {
     margin: 0;
     padding: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    //    background: rgba($primary, 0.1);
     height: 100%;
 }
 
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
-    //cursor: url("../src/assets/icons8-cursor-100.png") 12 12, auto !important;
 }
-
-app-overview {
-
-    .deletable,
-    button,
-    button *,
-    .slider-wrapper .fa,
-    .seat:hover,
-    .fa-trash,
-    .fa-chevron-circle-up,
-    .fa-plus-circle,
-    .deletable,
-    .clickable {
-        cursor: url("../src/assets/pointer.png") 16 16, pointer !important;
-    }
-}
-
-.seat:hover,
-.tets-player {
-    cursor: url("../src/assets/pointer.png") 16 16, pointer !important;
-}
-
 
 svg path {
     stroke-linecap: butt !important;

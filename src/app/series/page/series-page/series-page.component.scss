@@ -389,9 +389,14 @@ th, td {
     margin-bottom: 6px;
     border-bottom: solid 1px #ccc;
 
+    .fa-wrapper {
+        width: 32px;
+        margin-right: 12px;
+        text-align: center;
+    }
+
     .fa {
         font-size: 16px !important;
         color: #777;
-        margin-right: 12px;
     }
 }

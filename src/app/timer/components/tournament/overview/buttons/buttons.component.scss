@@ -18,6 +18,10 @@ div.main-buttons {
         padding: 80px;
         box-sizing: border-box;
     }
+
+    .fa {
+        color: #00437b;
+    }
 }
 
 .info-panel {
@@ -75,8 +79,8 @@ button:not([type="submit"]) {
         font-size: 100px;
     }
 
-    .fa-skull svg {
-        fill: red;
+    .fa-skull {
+        fill: darkred;
     }
 }
 

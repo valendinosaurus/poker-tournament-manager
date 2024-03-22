@@ -116,40 +116,6 @@ button.main {
     }
 }
 
-button.main {
-    .fa-clock-o,
-    .fa-user,
-    .fa-window-maximize,
-    .fa-times-rectangle,
-    .fa-address-card,
-    .fa-gears {
-        color: black;
-    }
-
-    .fa-database,
-    .fa-money,
-    .fa-refresh,
-    .fa-play,
-    .fa-chevron-circle-right,
-    .fa-chevron-circle-left {
-        color: green;
-    }
-
-    .fa-skull {
-        color: red;
-
-        svg {
-            fill: red;
-        }
-    }
-
-    .fa-toggle-on,
-    .fa-toggle-off {
-        color: $primaryDark;
-    }
-
-}
-
 .mat-mdc-raised-button[color="primary"]:not(:disabled) {
     background: $primaryDark !important;
 }
