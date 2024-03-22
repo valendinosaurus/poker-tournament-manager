@@ -21,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableDrawStateComponent } from './components/table-draw-state/table-draw-state.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
+import { TEventTypeIconPipe } from './pipes/t-event-type-icon.pipe';
 
 const SHARED_MODULES = [
     CommonModule,
@@ -48,7 +49,8 @@ const SHARED_MODULES = [
         BulletsComponent,
         BlindLevelTextPipe,
         TableDrawStateComponent,
-        LeaderboardComponent
+        LeaderboardComponent,
+        TEventTypeIconPipe
     ],
     imports: [
         ...SHARED_MODULES,
@@ -64,7 +66,8 @@ const SHARED_MODULES = [
         BulletsComponent,
         BlindLevelTextPipe,
         TableDrawStateComponent,
-        LeaderboardComponent
+        LeaderboardComponent,
+        TEventTypeIconPipe
     ],
 })
 export class SharedModule {

@@ -23,7 +23,7 @@
 
 <h3>Seat Opens</h3>
 
-<ng-container *ngIf="conductedSeatOpens && conductedSeatOpens.length > 0; else noRebuys;">
+<ng-container *ngIf="conductedSeatOpens && conductedSeatOpens.length > 0; else noSeatOpens;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
             <ng-container *ngFor="let e of conductedSeatOpens; let i = index">
@@ -57,6 +57,47 @@
     </div>
 </ng-container>
 
-<ng-template #noRebuys>
+<ng-template #noSeatOpens>
     No Seat Opens yet
 </ng-template>
+
+
+<h3>Eliminations</h3>
+
+<ng-container *ngIf="conductedEliminations && conductedEliminations.length > 0; else noEliminations;">
+    <div class="scrollable-dialog-table-wrapper">
+        <table class="dialog-table">
+            <ng-container *ngFor="let e of conductedEliminations; let i = index">
+                <tr>
+                    <td class="small-gray w-120px">
+                        {{ e.time | date:'d.M.yy, hh:mm:ss' }}
+                    </td>
+                    <td>
+                        <span class="flex-td">
+                            <app-user-image-round
+                                [imageUrl]="e.eliminatorImage"
+                            ></app-user-image-round>
+                            <span>{{ e.eliminatorName }}</span>
+                        </span>
+                    </td>
+                    <td>
+                        eliminated
+                    </td>
+                    <td>
+                        <span class="flex-td">
+                            <app-user-image-round
+                                [imageUrl]="e.eliminatedImage"
+                            ></app-user-image-round>
+                            <span>{{ e.eliminatedName }}</span>
+                        </span>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</ng-container>
+
+<ng-template #noEliminations>
+    No Eliminations yet
+</ng-template>
+

@@ -7,7 +7,7 @@ import { FormlyFieldService } from '../../core/services/util/formly-field.servic
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
 import { FetchService } from '../../core/services/fetch.service';
-import { EventApiService } from '../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConductedEntry } from '../../shared/models/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
@@ -17,6 +17,8 @@ import { TournamentApiService } from '../../core/services/api/tournament-api.ser
 import { TournamentService } from '../../core/services/util/tournament.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tournament } from '../../shared/models/tournament.interface';
+import { TEventApiService } from '../../core/services/api/t-event-api.service';
+import { TEventType } from '../../shared/enums/t-event-type.enum';
 
 @Component({
     selector: 'app-add-addon',
@@ -43,9 +45,10 @@ export class AddAddonComponent implements OnInit {
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private tEventApiService: TEventApiService = inject(TEventApiService);
 
     allPlayers: { label: string, value: number }[];
     eligibleForAddon: Player[];
@@ -105,6 +108,15 @@ export class AddAddonComponent implements OnInit {
                     const playerName = this.eligibleForAddon.filter(e => e.id === model.playerId)[0].name;
                     this.notificationService.success(`Addon - ${playerName}`);
                 }),
+                switchMap(() => {
+                    const playerName = this.eligibleForAddon.filter(e => e.id === model.playerId)[0].name;
+
+                    return this.tEventApiService.post$(
+                        this.data.tournamentId,
+                        `Addon for ${playerName}!`,
+                        TEventType.ADDON
+                    );
+                }),
                 tap((a) => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({
                     id: null,
@@ -138,6 +150,13 @@ export class AddAddonComponent implements OnInit {
                             }),
                             tap(() => {
                                 this.notificationService.success(`Addon deleted - ${playerName}`);
+                            }),
+                            switchMap(() => {
+                                return this.tEventApiService.post$(
+                                    this.data.tournamentId,
+                                    `${playerName} cancelled his Addon!`,
+                                    TEventType.CORRECTION
+                                );
                             }),
                             tap((a) => this.fetchService.trigger()),
                             switchMap(() => this.eventApiService.post$({

@@ -32,3 +32,30 @@
         ADD BLIND
     </button>
 </form>
+
+<h3>Players in Tournament</h3>
+
+<ng-container *ngIf="data.tournament && data.tournament.structure.length > 0; else noBlinds;">
+    <div class="scrollable-dialog-table-wrapper">
+        <table class="dialog-table">
+            <ng-container *ngFor="let e of data.tournament.structure">
+                <tr>
+                    <td class="flex align-center">
+                        <span
+                            class="flex-td"
+                            [innerHTML]="(e | blindLevelText:false:false)"
+                        ></span>
+                        &nbsp;- {{ e.duration }}min
+                    </td>
+                    <td>
+                        <i (click)="removeBlind(e.id)" class="fa fa-trash"></i>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</ng-container>
+
+<ng-template #noBlinds>
+    No players yet
+</ng-template>

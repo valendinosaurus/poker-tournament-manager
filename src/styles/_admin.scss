@@ -3,6 +3,11 @@
     flex-direction: column;
 }
 
+.list-3rd {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .list-item > .fa-trash {
     position: absolute;
     top: 12px;
@@ -47,6 +52,20 @@
     box-sizing: border-box;
     margin-bottom: 8px;
     position: relative;
+    border: solid 2px darkslategrey;
+    border-radius: 20px;
+}
+
+.list-item-3rd {
+    width: 32%;
+    flex: 0 0 32%;
+    margin-right: 1%;
+    flex-direction: row;
+    align-items: center;
+
+    .li-pair {
+        margin-bottom: 0 !important;
+    }
 }
 
 .list-item > div {

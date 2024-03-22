@@ -17,6 +17,7 @@ import { PayoutDetailsComponent } from './components/tournament/overview/payout-
 import { RankingComponent } from './components/tournament/overview/ranking/ranking.component';
 import { RouterLink } from '@angular/router';
 import { MenuDialogComponent } from './components/tournament/overview/buttons/menu-dialog/menu-dialog.component';
+import { LeaderboardInfoComponent } from './components/tournament/overview/leaderboard/leaderboard-info.component';
 
 @NgModule({
     declarations: [
@@ -33,6 +34,7 @@ import { MenuDialogComponent } from './components/tournament/overview/buttons/me
         PayoutDetailsComponent,
         RankingComponent,
         MenuDialogComponent,
+        LeaderboardInfoComponent,
     ],
     imports: [
         SharedModule,

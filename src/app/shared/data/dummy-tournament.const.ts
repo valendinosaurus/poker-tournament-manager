@@ -16,6 +16,7 @@ export const dummyTourney: Tournament = {
     payout: 0,
     players: [],
     entries: [],
+    eliminations: [],
     initialPricePool: 0,
     maxPlayers: 9,
     location: 1,

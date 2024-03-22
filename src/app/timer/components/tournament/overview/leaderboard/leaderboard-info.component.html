@@ -1,0 +1,12 @@
+<div class="inner-container">
+    <h3>
+        Leaderboard
+    </h3>
+
+    <app-leaderboard
+        *ngIf="series$ | async as series"
+        [series]="series"
+        [overallRanking]="overallRanking"
+        [full]="false"
+    ></app-leaderboard>
+</div>

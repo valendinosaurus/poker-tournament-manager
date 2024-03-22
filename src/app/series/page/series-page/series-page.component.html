@@ -81,55 +81,6 @@
                     [overallRanking]="overallRanking"
                 ></app-leaderboard>
 
-                <!--                <div class="table-wrapper">-->
-                <!--                    <table>-->
-                <!--                        <tr>-->
-                <!--                            <th>Rank</th>-->
-                <!--                            <th>Name</th>-->
-                <!--                            <th class="t-right">Points</th>-->
-                <!--                            <th class="t-center">&#x2205; Rank</th>-->
-                <!--                            <th class="t-center">Played</th>-->
-                <!--                            <th class="t-center">ITM (%)</th>-->
-                <!--                            <th class="t-center">Rebuys / Addons</th>-->
-                <!--                            <th class="t-right">Price</th>-->
-                <!--                        </tr>-->
-                <!--                        <ng-container *ngFor="let e of overallRanking; let i = index">-->
-                <!--                            <tr [class.finalist]="i < series.finalists">-->
-                <!--                                <td>-->
-                <!--                                    {{ i + 1 }}.-->
-                <!--                                </td>-->
-                <!--                                <td>-->
-                <!--                                    <span class="flex-td">-->
-                <!--                                        <app-user-image-round-->
-                <!--                                            [imageUrl]="e.image"-->
-                <!--                                        ></app-user-image-round>-->
-                <!--                                        {{ e.name }}-->
-                <!--                                    </span>-->
-                <!--                                </td>-->
-                <!--                                <td class="t-right">-->
-                <!--                                    <strong>{{ e.points }}</strong>-->
-                <!--                                </td>-->
-                <!--                                <td class="t-center">-->
-                <!--                                    {{ e.rank / e.tournaments | number:'1.1-1' }}-->
-                <!--                                </td>-->
-                <!--                                <td class="t-center">-->
-                <!--                                    {{ e.tournaments }}-->
-                <!--                                </td>-->
-                <!--                                <td class="t-center">-->
-                <!--                                    {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)-->
-                <!--                                </td>-->
-                <!--                                <td class="t-center">-->
-                <!--                                    {{ e.rebuysAddons }}-->
-                <!--                                </td>-->
-                <!--                                <td class="t-right">-->
-                <!--                                    $ {{ e.price | number:'':'de-CH' }}-->
-                <!--                                </td>-->
-                <!--                            </tr>-->
-                <!--                        </ng-container>-->
-                <!--                    </table>-->
-
-                <!--                </div>-->
-
                 <div class="legend-wrapper">
                     <div class="legend"></div>
                     Current Finalist
@@ -242,7 +193,10 @@
                         <h4>
                             {{ tournament.name }}
                         </h4>
-                        <h5 *ngIf="combinedRankings[i] && combinedRankings[i].playersAlive.length > 0">
+                        <h5
+                            *ngIf="combinedRankings[i] && combinedRankings[i].playersAlive.length > 0"
+                            class="flex justify-center align-center"
+                        >
                             <span class="running"></span>
                             RUNNING!
                         </h5>
@@ -292,36 +246,6 @@
                                 <th class="t-center">Addons</th>
                                 <th class="t-right">Price</th>
                             </tr>
-                            <ng-container *ngFor="let e of combinedRankings[i].playersAlive">
-                                <tr>
-                                    <td>
-                                        <span class="flex-td">
-                                            <app-user-image-round
-                                                [imageUrl]="e.image"
-                                            ></app-user-image-round>
-                                            {{ e.name }}
-                                        </span>
-                                    </td>
-                                    <td class="t-center">
-                                        <span class="t-flex">
-                                            <strong>
-                                                --
-                                            </strong>
-                                            &nbsp;
-                                            (--)
-                                        </span>
-                                    </td>
-                                    <td class="t-center">
-                                        {{ e.rebuys }}
-                                    </td>
-                                    <td class="t-center">
-                                        {{ e.addons }}
-                                    </td>
-                                    <td class="t-right">
-                                        $ --
-                                    </td>
-                                </tr>
-                            </ng-container>
                             <ng-container *ngFor="let e of combinedRankings[i].combFinishes">
                                 <tr>
                                     <td>
@@ -333,7 +257,7 @@
                                         </span>
                                     </td>
                                     <td class="t-center">
-                                        <span class="t-flex">
+                                        <span class="t-flex" *ngIf="!e.isTemp; else temp">
                                             <strong>
                                                 {{ e.points }}
                                             </strong>
@@ -343,19 +267,43 @@
                                                 <i class="fa fa-handshake-o"></i>
                                             </ng-container>
                                         </span>
+                                        <ng-template #temp>
+                                            <span class="t-flex justify-center align-center">
+                                                {{ e.points }}
+                                                <span class="running"></span>
+                                            </span>
+                                        </ng-template>
                                     </td>
                                     <td class="t-center">
-                                        {{ e.rebuys }}
+                                        <app-bullets [number]="e.rebuys"></app-bullets>
                                     </td>
                                     <td class="t-center">
-                                        {{ e.addons }}
+                                        <app-bullets [number]="e.addons"></app-bullets>
                                     </td>
                                     <td class="t-right">
-                                        $ {{ e.price | number:'':'de-CH' }}
+                                        <span
+                                            [class.green]="e.price > 0"
+                                            [class.bold]="e.price > 0"
+                                        >
+                                            $ {{ e.price | number:'':'de-CH' }}
+                                        </span>
                                     </td>
                                 </tr>
                             </ng-container>
                         </table>
+                    </div>
+
+                    <div
+                        *ngIf="combinedRankings[i]?.events$"
+                        class="live-ticker"
+                    >
+                        <h4>Live-Ticker</h4>
+                        <ng-container *ngFor="let e of combinedRankings[i].events$ | async">
+                            <div class="live-ticker-item">
+                                <i class="fa" [class]="e | tEventTypeIcon"></i>
+                                <span>{{ e.message }}</span>
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
             </ng-container>

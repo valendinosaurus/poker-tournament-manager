@@ -7,4 +7,5 @@ export interface OverallRanking {
     rebuysAddons: number;
     tournaments: number;
     itm: number;
+    isTemp: boolean;
 }

@@ -32,7 +32,6 @@ import { SeriesMetadata } from '../../../../shared/models/series-metadata.interf
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 import { ButtonsComponent } from './buttons/buttons.component';
-import { FinishApiService } from '../../../../core/services/api/finish-api.service';
 import { TournamentService } from '../../../../core/services/util/tournament.service';
 
 @Component({
@@ -99,7 +98,6 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private finishApiService: FinishApiService = inject(FinishApiService);
     private tournamentService: TournamentService = inject(TournamentService);
 
     @HostListener('window:keyup.space', ['$event'])
@@ -136,7 +134,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
             this.checkIsRebuyPhaseFinished();
 
             if (this.changes > 1) {
-                console.log('**** LIVE CHANGE');
+            //    console.log('**** LIVE CHANGE');
 
                 if (this.running) {
                     setTimeout(() => {
@@ -348,7 +346,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
         this.buyInCmp.forEach(e => e.ngOnChanges());
         this.chips.forEach(e => e.ngOnChanges());
         this.payoutCmp.ngOnChanges({});
-        this.rankingCmp.ngOnChanges({});
+        this.rankingCmp?.ngOnChanges({});
         this.buttonsCmp.ngOnChanges({});
     }
 }

@@ -12,7 +12,7 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
-import { EventApiService } from '../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 
 @Component({
     selector: 'app-add-blinds',
@@ -35,7 +35,7 @@ export class AddBlindsComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
 
     allBlinds: { label: string, value: number }[];
     filterDuration: number;
@@ -132,6 +132,10 @@ export class AddBlindsComponent implements OnInit {
                 })
             ).subscribe();
         }
+    }
+
+    removeBlind(blindId: number): void {
+        // TODO
     }
 
 }

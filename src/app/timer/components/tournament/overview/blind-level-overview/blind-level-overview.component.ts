@@ -11,6 +11,7 @@ export class BlindLevelOverviewComponent implements OnChanges {
     @Input() levels: BlindLevel[];
     @Input() currentLevelIndex: number;
     @Input() isSimpleTournament: boolean;
+    @Input() showCondensed: boolean | null;
     @Input() trigger: string | null;
 
     @Output() addBlind = new EventEmitter<void>();
@@ -26,6 +27,7 @@ export class BlindLevelOverviewComponent implements OnChanges {
                 ...l,
                 id: l.isPause ? this.ii : this.ii++
             }));
+            //.slice(this.currentLevelIndex - 3, this.currentLevelIndex + 3);
         }
 
         if (changes['trigger']?.currentValue === 'SCROLL') {

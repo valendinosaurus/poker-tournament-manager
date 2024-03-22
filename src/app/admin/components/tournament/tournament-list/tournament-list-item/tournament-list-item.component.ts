@@ -23,6 +23,8 @@ export class TournamentListItemComponent implements OnInit {
 
     sub$: Observable<string>;
 
+    isExpanded = false;
+
     private dialog: MatDialog = inject(MatDialog);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private router: Router = inject(Router);

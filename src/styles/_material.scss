@@ -1,7 +1,7 @@
 @import "src/styles/colors_texts";
 
 mat-tab-group {
-    background: #eee;
+    // background: #eee;
 }
 
 mat-tab-body p,
@@ -128,6 +128,7 @@ button.main {
 
     .fa-database,
     .fa-money,
+    .fa-refresh,
     .fa-play,
     .fa-chevron-circle-right,
     .fa-chevron-circle-left {
@@ -151,4 +152,23 @@ button.main {
 
 .mat-mdc-raised-button[color="primary"]:not(:disabled) {
     background: $primaryDark !important;
+}
+
+button.round {
+    padding: 0 !important;
+    width: 24px !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    border-radius: 24px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .fa {
+        font-size: 16px;
+    }
+}
+
+h3 > button.round {
+    margin-left: 12px;
 }

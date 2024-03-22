@@ -17,6 +17,7 @@ import { SharedModule } from '../shared/shared.module';
 import { TableDrawDialogComponent } from './table-draw/table-draw-dialog.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import { MatSelectModule } from '@angular/material/select';
         SharedModule,
         MatButtonModule,
         MatInputModule,
-        MatSelectModule
+        MatSelectModule,
+        MatTabsModule
     ],
     exports: [
         AddAddonComponent,

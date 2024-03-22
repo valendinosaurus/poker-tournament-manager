@@ -5,12 +5,12 @@
     <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished && !isTournamentFinished">
         <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
     </span>
-<!--    <span *ngIf="playerHasToBeMoved" class="clickable" (click)="openDrawDialog()">-->
-    <!--        <i class="fa fa-exclamation-triangle"></i> Player has to be moved-->
-    <!--    </span>-->
+    <!--        <span *ngIf="playerHasToBeMoved" class="clickable" (click)="openDrawDialog()">-->
+    <!--            <i class="fa fa-exclamation-triangle"></i> Player has to be moved-->
+    <!--        </span>-->
     <!--    <span *ngIf="tableHasToBeEliminated" class="clickable" (click)="openDrawDialog()">-->
-    <!--        <i class="fa fa-exclamation-triangle"></i> Table can be eliminated-->
-    <!--    </span>-->
+    <!--            <i class="fa fa-exclamation-triangle"></i> Table can be eliminated-->
+    <!--        </span>-->
     <span *ngIf="!canStartTournament; else readyToStart">
         <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
     </span>
@@ -25,6 +25,16 @@
 </div>
 
 <div class="main-buttons">
+
+    <button
+        mat-raised-button
+        matTooltip="Play / Pause"
+        class="main"
+        (click)="toggleRunning()"
+    >
+        <i *ngIf="!running" class="fa fa-play"></i>
+        <i *ngIf="running" class="fa fa-pause"></i>
+    </button>
 
     <button
         *ngIf="!isSimpleTournament"
@@ -49,10 +59,7 @@
         class="main"
         (click)="addRebuy()"
     >
-        <span class="relative-icon">
-            <i class="fa fa-money"></i>
-            <i class="fa fa-refresh absolute-icon"></i>
-        </span>
+        <i class="fa fa-refresh"></i>
     </button>
 
     <button
@@ -72,6 +79,15 @@
         (click)="notify()"
     >
         <i class="fa fa-bell-o"></i>
+    </button>
+
+    <button
+        mat-raised-button
+        class="main mobile-only"
+        matTooltip="Table Draw"
+        (click)="openDrawDialog()"
+    >
+        <i class="fa fa-random"></i>
     </button>
 
     <button

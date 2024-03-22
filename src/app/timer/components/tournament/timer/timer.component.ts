@@ -8,8 +8,8 @@ import { TournamentApiService } from '../../../../core/services/api/tournament-a
 import { dummyTourney } from '../../../../shared/data/dummy-tournament.const';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EventApiService } from '../../../../core/services/api/event-api.service';
-import { ActionEvent } from '../../../../shared/models/event.interface';
+import { ActionEventApiService } from '../../../../core/services/api/action-event-api.service';
+import { ActionEvent } from '../../../../shared/models/action-event.interface';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 
@@ -32,7 +32,7 @@ export class TimerComponent implements OnInit, OnChanges {
     clientId: number;
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private authService: AuthService = inject(AuthService);
     private router: Router = inject(Router);
     private destroyRef: DestroyRef = inject(DestroyRef);
@@ -72,7 +72,7 @@ export class TimerComponent implements OnInit, OnChanges {
                                 switchMap(() => this.eventApiService.getAll$(id, this.clientId, sub)),
                                 tap((events: ActionEvent[]) => {
                                     if (events.length > 0 && +(events[0].tId) === +id) {
-                                        console.log('*** LIVE *** : event triggered, fetch stuff');
+                                        //     console.log('*** LIVE *** : event triggered, fetch stuff');
                                         this.fetchService.trigger();
                                     }
                                 }),
@@ -114,11 +114,5 @@ export class TimerComponent implements OnInit, OnChanges {
             tap(() => this.notificationService.success('Tournament is up to date')),
             shareReplay(1)
         );
-
-        this.fetchTrigger$.pipe(
-            switchMap(() => sub$.pipe(
-                switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub)),
-            ))
-        ).subscribe();
     }
 }

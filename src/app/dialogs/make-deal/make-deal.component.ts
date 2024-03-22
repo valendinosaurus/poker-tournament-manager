@@ -11,9 +11,11 @@ import { ServerResponse } from '../../shared/models/server-response';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
-import { EventApiService } from '../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { RankingService } from '../../core/services/util/ranking.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { TEventApiService } from '../../core/services/api/t-event-api.service';
+import { TEventType } from '../../shared/enums/t-event-type.enum';
 
 @Component({
     selector: 'app-make-deal',
@@ -42,9 +44,10 @@ export class MakeDealComponent implements OnInit {
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private rankingService: RankingService = inject(RankingService);
     private notificationService: NotificationService = inject(NotificationService);
+    private tEventApiService: TEventApiService = inject(TEventApiService);
 
     ngOnInit(): void {
         const pricePool = this.rankingService.getSimplePricePool(this.data.tournament);
@@ -99,7 +102,7 @@ export class MakeDealComponent implements OnInit {
                     price: model[k],
                     rank: this.rankAfterDeal,
                     tournamentId: this.data.tournament.id,
-                    timestamp: -1
+                    timestamp: -1,
                 })
             );
         });
@@ -113,6 +116,36 @@ export class MakeDealComponent implements OnInit {
             tap(() => {
                 const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
                 this.notificationService.success('Deal was made');
+            }),
+            switchMap(() => {
+                let message = 'DEAL!! ';
+
+                let names = ' ';
+
+                for (let i = 0; i < this.keys.length - 1; i++) {
+                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i]);
+
+                    if (i > 0) {
+                        names += ', ';
+                    }
+
+                    names += name;
+                }
+
+                for (let i = this.keys.length - 1; i <= this.keys.length; i++) {
+                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i]);
+
+                    names += ` and ${name} `;
+                }
+
+                message += names + `agreed to share ${this.rankAfterDeal}th place in the tournament with following payout:`;
+
+                this.keys.forEach(k => {
+                    const name = this.data.tournament.players.filter(e => e.id === +k);
+                    message += `<br>${name}: ${model[k]}.-`;
+                });
+
+                return this.tEventApiService.post$(this.data.tournament.id, message, TEventType.DEAL);
             }),
             tap(() => this.fetchService.trigger()),
             switchMap(() => this.eventApiService.post$({

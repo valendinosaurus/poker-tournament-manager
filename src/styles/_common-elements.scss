@@ -20,6 +20,7 @@ button:not(:disabled):hover {
 .expandable {
     max-height: 0;
     overflow: hidden;
+    margin-bottom: 0 !important;
 
     &.expanded {
         max-height: 100vh;
@@ -83,10 +84,19 @@ span.formula {
     opacity: 0.8;
 }
 
-.indicator {
-    width: 10%;
-    flex: 0 0 10%;
+.position-big div {
     font-size: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+}
+
+.position-big.fa-pause-circle {
+    font-size: 36px;
+}
+
+.indicator {
+    font-size: 32px;
     text-align: center;
     color: $primary;
 }
@@ -116,4 +126,56 @@ span.formula {
 .dark-red-opaque {
     color: darkred !important;
     opacity: 0.6;
+}
+
+.talign-center {
+    text-align: center;
+    padding: 4px;
+    font-size: 20px;
+}
+
+.talign-center-big {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.opac8 {
+    opacity: 0.6;
+}
+
+.fa-ellipsis-h.big {
+    font-size: 64px;
+    color: #006dc7;
+    margin: 24px;
+}
+
+span.running {
+    display: block;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    border-radius: 24px;
+    animation: live 3s infinite;
+    margin-left: 20px;
+    margin-right: 8px;
+}
+
+span.running.small {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    border-radius: 16px;
+    margin-top: 10px;
+}
+
+@keyframes live {
+    0% {
+        background-color: green;
+    }
+    50% {
+        background-color: rgba(green, 0.2);
+    }
+    100% {
+        background-color: green;
+    }
 }

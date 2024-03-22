@@ -22,7 +22,7 @@ import { switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../../../core/services/api/tournament-api.service';
 import { FetchService } from '../../../../../../core/services/fetch.service';
 import { DOCUMENT } from '@angular/common';
-import { EventApiService } from '../../../../../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../../../../../core/services/api/action-event-api.service';
 import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 
@@ -82,7 +82,7 @@ export class MenuDialogComponent implements OnInit {
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
     private document: Document = inject(DOCUMENT);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;

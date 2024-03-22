@@ -28,11 +28,13 @@ div.main-buttons {
     background: white;
     display: flex;
     flex-direction: column;
+    border-top: solid 2px #00437b;
+    border-left: solid 2px #00437b;
 
     span {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        margin: 4px 0;
     }
 
     span i {

@@ -1,6 +1,8 @@
 import { BlindLevel } from './blind-level.interface';
 import { Player } from './player.interface';
 import { Finish } from './finish.interface';
+import { Entry } from './entry.interface';
+import { Elimination } from './elimination.interface';
 
 export interface TournamentInSeries {
     id: number;
@@ -24,6 +26,7 @@ export interface TournamentInSeries {
     location: number;
     structure: BlindLevel[];
     players: Player[];
-    entries: any[]; //Entry[];
+    entries: Entry[];
     finishes: Finish[];
+    eliminations: Elimination[];
 }

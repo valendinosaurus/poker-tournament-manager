@@ -1,7 +1,7 @@
 import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { Observable } from 'rxjs';
-import { EventApiService } from '../../../../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
 import { ServerResponse } from '../../../../../shared/models/server-response';
 import { take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,7 +16,6 @@ import { LocalStorageService } from '../../../../../core/services/util/local-sto
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { TableDrawService } from '../../../../../core/services/table-draw.service';
 
 declare var anime: any;
 
@@ -54,10 +53,9 @@ export class ButtonsComponent implements OnChanges {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private rankingService: RankingService = inject(RankingService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
-    private tableDrawService: TableDrawService = inject(TableDrawService);
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -101,7 +99,6 @@ export class ButtonsComponent implements OnChanges {
 
         this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
 
-        console.log('*************** checking draw');
         const draw: TableDraw = this.localStorageService.getTableDraw(this.tournament.id);
 
         if (draw) {
@@ -210,9 +207,6 @@ export class ButtonsComponent implements OnChanges {
     }
 
     openMenu(): void {
-
-//        this.menuVisible = true;
-
         const dialogRef = this.dialog.open(
             MenuDialogComponent, {
                 data: {
@@ -225,7 +219,11 @@ export class ButtonsComponent implements OnChanges {
                     running: this.running,
                     isAddPlayerBlocked: this.isAddPlayerBlocked
                 },
-                height: '80%'
+                height: '95%',
+                width: '20vw',
+                position: {
+                    right: '17vw'
+                }
             }
         );
 
@@ -293,6 +291,14 @@ export class ButtonsComponent implements OnChanges {
     confetti(args: any) {
         // @ts-ignore
         return window['confetti'].apply(this, arguments);
+    }
+
+    toggleRunning(): void {
+        if (this.running) {
+            this.pause.emit();
+        } else {
+            this.start.emit();
+        }
     }
 
 }

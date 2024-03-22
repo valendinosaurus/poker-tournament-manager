@@ -8,7 +8,8 @@
 
         <button
             *ngIf="!isSimpleTournament"
-            mat-mini-fab
+            class="round"
+            mat-raised-button
             matTooltip="Add Blind Level"
             (click)="addBlind.emit()"
         >
@@ -19,12 +20,16 @@
 
     </h3>
 
+    <h1>{{ currentLevelIndex }}</h1>
+
     <div class="overflow-y-auto">
         <div id="top"></div>
+
         <table class="blinds-table">
             <tbody>
                 <ng-container *ngFor="let level of levelsToShow; let i = index;">
                     <tr
+                        *ngIf="i > currentLevelIndex - 3 && i < currentLevelIndex + 4"
                         [class.bold]="i === currentLevelIndex"
                         [class.opaque]="i < currentLevelIndex"
                     >
@@ -38,7 +43,7 @@
                         <td class="m-40">
                             <div
                                 *ngIf="!level.isPause; else pauseIcon;"
-                                class="w-5 position"
+                                class="w-5 position position-big"
                             >
                                 <div>
                                     <span>
@@ -48,15 +53,14 @@
                             </div>
 
                             <ng-template #pauseIcon>
-                                <i class="fa fa-pause-circle"></i>
+                                <i class="fa fa-pause-circle position-big"></i>
                             </ng-template>
                         </td>
                         <td>
-                            <div class="flex justify-between align-center">
+                            <div>
                                 <ng-container *ngIf="!level.isPause; else pause">
-                                    <div class="level">
-                                        {{ level.sb | number }} /
-                                        {{ level.bb | number }}
+                                    <div class="talign-center talign-center-big">
+                                        <span [innerHTML]="level | blindLevelText:!!showCondensed:false"></span>
                                         <ng-container *ngIf="level.ante > 0">
                                             / {{ level.ante | number }}
                                         </ng-container>
@@ -64,76 +68,35 @@
                                             / {{ level.ante | number }} (BA)
                                         </ng-container>
                                     </div>
-                                    <div class="duration">
+
+                                    <div
+                                        *ngIf="level.isPause"
+                                        class="talign-center opac8"
+                                    >
                                         {{ level.duration }} min
                                     </div>
                                 </ng-container>
 
                                 <ng-template #pause>
-                                    <div class="level pause">
+                                    <div class="talign-center pause">
                                         PAUSE - {{ level.isChipUp ? 'CHIP UP' : ''}}
                                         <ng-container *ngIf="level.endsRebuy">
                                             (ENDS REBUY)
                                         </ng-container>
                                     </div>
-                                    <div class="duration pause">
+
+                                    <div class="talign-center opac8">
                                         {{ level.duration }} min
                                     </div>
                                 </ng-template>
                             </div>
                         </td>
                     </tr>
-                    <!--            <div-->
-                    <!--                class="level-wrapper"-->
-                    <!--                [class.bold]="i === currentLevelIndex"-->
-                    <!--                [class.opaque]="i < currentLevelIndex"-->
-                    <!--            >-->
-                    <!--                <div class="position" *ngIf="!level.isPause">-->
-                    <!--                    <div>-->
-                    <!--                        <span>-->
-                    <!--                            {{ level.id }}-->
-                    <!--                        </span>-->
-                    <!--                    </div>-->
-                    <!--                </div>-->
-
-                    <!--                <div class="indicator">-->
-                    <!--                    <ng-container *ngIf="i === currentLevelIndex">-->
-                    <!--                        ►-->
-                    <!--                    </ng-container>-->
-                    <!--                </div>-->
-
-                    <!--                <ng-container *ngIf="!level.isPause; else pause">-->
-                    <!--                    <div class="level">-->
-                    <!--                        {{ level.sb | number }} /-->
-                    <!--                        {{ level.bb | number }}-->
-                    <!--                        <ng-container *ngIf="level.ante > 0">-->
-                    <!--                            / {{ level.ante | number }}-->
-                    <!--                        </ng-container>-->
-                    <!--                        <ng-container *ngIf="level.btnAnte > 0">-->
-                    <!--                            / {{ level.ante | number }} (BA)-->
-                    <!--                        </ng-container>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="duration">-->
-                    <!--                        {{ level.duration }} min-->
-                    <!--                    </div>-->
-                    <!--                </ng-container>-->
-
-                    <!--                <ng-template #pause>-->
-                    <!--                    <div class="level pause">-->
-                    <!--                        {{ level.isChipUp ? 'CHIP UP' : 'PAUSE'}}-->
-                    <!--                        <ng-container *ngIf="level.endsRebuy">-->
-                    <!--                            (ENDS REBUY)-->
-                    <!--                        </ng-container>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="duration pause">-->
-                    <!--                        {{ level.duration }} min-->
-                    <!--                    </div>-->
-                    <!--                </ng-template>-->
-                    <!--            </div>-->
                 </ng-container>
 
             </tbody>
         </table>
+
         <div id="bottom"></div>
     </div>
 </div>

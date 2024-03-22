@@ -7,7 +7,7 @@ import { FormlyFieldService } from '../../core/services/util/formly-field.servic
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
 import { FetchService } from '../../core/services/fetch.service';
-import { EventApiService } from '../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConductedEntry } from '../../shared/models/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
@@ -17,6 +17,10 @@ import { TournamentApiService } from '../../core/services/api/tournament-api.ser
 import { TournamentService } from '../../core/services/util/tournament.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tournament } from '../../shared/models/tournament.interface';
+import { EliminationApiService } from '../../core/services/api/elimination-api.service';
+import { ServerResponse } from '../../shared/models/server-response';
+import { TEventApiService } from '../../core/services/api/t-event-api.service';
+import { TEventType } from '../../shared/enums/t-event-type.enum';
 
 @Component({
     selector: 'app-add-rebuy',
@@ -27,7 +31,12 @@ export class AddRebuyComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: { playerId: number | undefined, tournamentId: number };
+    model: {
+        playerId: number | undefined,
+        tournamentId: number,
+        eliminatedBy: number | undefined,
+        showEliminatedBy: boolean
+    };
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddRebuyComponent> = inject(MatDialogRef<AddRebuyComponent>);
@@ -44,11 +53,14 @@ export class AddRebuyComponent implements OnInit {
     private entryApiService: EntryApiService = inject(EntryApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
+    private eliminationApiService: EliminationApiService = inject(EliminationApiService);
     private notificationService: NotificationService = inject(NotificationService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private tEventApiService: TEventApiService = inject(TEventApiService);
 
     allPlayers: { label: string, value: number }[];
+    eliminators: { label: string, value: number }[];
     eligibleForRebuy: Player[];
     conductedRebuys: ConductedEntry[];
 
@@ -80,17 +92,41 @@ export class AddRebuyComponent implements OnInit {
     private initModel(): void {
         this.model = {
             playerId: undefined,
-            tournamentId: this.data.tournamentId
+            tournamentId: this.data.tournamentId,
+            showEliminatedBy: false,
+            eliminatedBy: undefined
         };
     }
 
     private initFields(): void {
+        this.eliminators = [...this.allPlayers];
+
         this.fields = [
-            this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers)
+            {
+                ...this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers),
+                expressions: {
+                    change: () => this.eliminators = [...this.allPlayers.filter(p => p.value !== this.model.playerId)]
+                }
+            },
+            {
+                key: 'showEliminatedBy',
+                type: 'checkbox',
+                props: {
+                    label: 'Show Eliminated by?'
+                }
+            },
+            {
+                ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', false, this.eliminators),
+                expressions: {
+                    hide: () => !this.model.showEliminatedBy,
+                    'props.options': () => this.eliminators,
+                    'props.disabled': () => this.model.playerId === undefined
+                }
+            }
         ];
     }
 
-    onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
+    onSubmit(model: { playerId: number | undefined, tournamentId: number, eliminatedBy: number | undefined }): void {
         if (model.playerId && model.tournamentId) {
             this.entryApiService.post$({
                 id: undefined,
@@ -104,9 +140,47 @@ export class AddRebuyComponent implements OnInit {
                     this.notificationService.error(`Error adding Rebuy`);
                     return of(null);
                 }),
-                tap(() => {
+                tap((e) => {
                     const playerName = this.eligibleForRebuy.filter(e => e.id === model.playerId)[0].name;
                     this.notificationService.success(`Rebuy - ${playerName}`);
+                }),
+                switchMap((res: ServerResponse | null) => iif(
+                    () => !!model.eliminatedBy,
+                    defer(() =>
+                        model.playerId && model.eliminatedBy
+                            ? this.eliminationApiService.post$({
+                                eliminator: model.eliminatedBy,
+                                eliminated: model.playerId,
+                                tournamentId: model.tournamentId,
+                                timestamp: -1,
+                                eId: `R-${res?.id}`
+                            }).pipe(
+                                tap(() => {
+                                    const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
+                                    const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
+                                    this.notificationService.success(`${eliminator} kicked out ${eliminated}`);
+                                }),
+                                catchError(() => {
+                                    this.notificationService.error('Error Elimination');
+                                    return of(null);
+                                }),
+                            )
+                            : of(null)
+                    ),
+                    of(null)
+                )),
+                switchMap(() => {
+                    const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
+                    const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
+
+                    let message = `Rebuy for ${eliminated}`;
+
+                    if (!!model.eliminatedBy) {
+                        message +=
+                            `, who was kicked out by ${eliminator}!`;
+                    }
+
+                    return this.tEventApiService.post$(this.data.tournamentId, message, TEventType.REBUY);
                 }),
                 tap((a) => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({
@@ -115,6 +189,7 @@ export class AddRebuyComponent implements OnInit {
                     clientId: this.data.clientId
                 })),
             ).subscribe();
+
         }
     }
 
@@ -141,6 +216,24 @@ export class AddRebuyComponent implements OnInit {
                             }),
                             tap(() => {
                                 this.notificationService.success(`Rebuy removed - ${playerName}`);
+                            }),
+                            switchMap(() => this.eliminationApiService.deleteByEId$(
+                                `R-${entryId}`
+                            ).pipe(
+                                tap(() => {
+                                    this.notificationService.success(`Elimination removed`);
+                                }),
+                                catchError(() => {
+                                    this.notificationService.error('Error removing Elimination');
+                                    return of(null);
+                                })
+                            )),
+                            switchMap(() => {
+                                return this.tEventApiService.post$(
+                                    this.data.tournamentId,
+                                    `${playerName} cancelled his Rebuy!`,
+                                    TEventType.CORRECTION
+                                );
                             }),
                             tap((a) => this.fetchService.trigger()),
                             switchMap(() => this.eventApiService.post$({

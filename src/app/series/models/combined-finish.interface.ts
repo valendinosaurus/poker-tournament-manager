@@ -8,4 +8,5 @@ export interface CombinedFinish {
     reEntries: number;
     points: number;
     dealMade: boolean;
+    isTemp: boolean;
 }

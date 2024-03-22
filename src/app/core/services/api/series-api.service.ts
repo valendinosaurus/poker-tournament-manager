@@ -62,18 +62,19 @@ export class SeriesApiService {
         if (tournamentsString) {
             const tournamentsRaw: string = (tournamentsString ?? '').toString() as string;
             const split1 = tournamentsRaw.split(';');
-            const tournamnets: Tournament[] = [];
+            const tournaments: Tournament[] = [];
 
             split1.forEach(s1 => {
                 const split2 = s1.split(',');
 
-                tournamnets.push({
+                tournaments.push({
                     id: +split2[0],
                     date: new Date(split2[1]),
                     name: split2[2],
                     players: [],
                     entries: [],
                     structure: [],
+                    eliminations: [],
                     initialPricePool: 0,
                     payout: 0,
                     location: 0,
@@ -94,7 +95,7 @@ export class SeriesApiService {
                 });
             });
 
-            return tournamnets;
+            return tournaments;
         }
 
         return [];

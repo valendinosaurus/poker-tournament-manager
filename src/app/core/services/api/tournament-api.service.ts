@@ -102,20 +102,13 @@ export class TournamentApiService {
         return [];
     }
 
-    get$(id: number, sub: string): Observable<Tournament> {
-        return this.http.get<Tournament>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
-    }
-
     get2$(id: number, sub: string): Observable<Tournament> {
+        console.log('get 2');
         return this.http.get<Tournament>(`${BACKEND_URL}${this.ENDPOINT}/2/${id}/${sub}`);
     }
 
     getInSeries$(sId: number, password: string): Observable<TournamentInSeries[]> {
         return this.http.get<TournamentInSeries[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}/${password}`);
-    }
-
-    getFormula$(id: number, sub: string): Observable<{ rankFormula: number }> {
-        return this.http.get<{ rankFormula: number }>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}/formula`);
     }
 
     getSeriesMetadata$(id: number, sub: string): Observable<SeriesMetadata> {

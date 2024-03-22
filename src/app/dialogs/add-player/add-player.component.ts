@@ -12,7 +12,7 @@ import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
-import { EventApiService } from '../../core/services/api/event-api.service';
+import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
@@ -49,7 +49,7 @@ export class AddPlayerComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: EventApiService = inject(EventApiService);
+    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
 
     allPlayers: { label: string, value: number }[];

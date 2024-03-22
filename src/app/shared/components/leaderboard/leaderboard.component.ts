@@ -11,5 +11,6 @@ export class LeaderboardComponent {
 
     @Input() overallRanking: OverallRanking[];
     @Input() series: SeriesDetails;
+    @Input() full = true;
 
 }

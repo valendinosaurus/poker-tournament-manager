@@ -6,6 +6,8 @@ import { ConductedEntry } from '../../../shared/models/conducted-entry.interface
 import { EntryType } from '../../../shared/enums/entry-type.enum';
 import { ConductedFinish } from '../../../shared/models/conducted-finish.interface';
 import { Finish } from '../../../shared/models/finish.interface';
+import { ConductedElimination } from '../../../shared/models/conducted-elimination.interface';
+import { Elimination } from '../../../shared/models/elimination.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -134,6 +136,24 @@ export class TournamentService {
         ).sort(
             (a, b) => a.rank - b.rank
         );
+    }
+
+    getConductedEliminations(tournament: Tournament): ConductedElimination[] {
+        return tournament.eliminations
+            .filter((elimination: Elimination) => elimination.eliminator !== -1)
+            .map(
+                (elimination: Elimination) => ({
+                    tId: tournament.id,
+                    eliminatorId: elimination.eliminator,
+                    eliminatorImage: tournament.players.filter(p => p.id === elimination.eliminator)[0].image,
+                    eliminatorName: tournament.players.filter(p => p.id === elimination.eliminator)[0].name,
+                    eliminatedId: elimination.eliminated,
+                    eliminatedImage: tournament.players.filter(p => p.id === elimination.eliminated)[0].image,
+                    eliminatedName: tournament.players.filter(p => p.id === elimination.eliminated)[0].name,
+                    time: elimination.timestamp,
+                    eId: elimination.eId
+                })
+            );
     }
 
     getCanStartTournament(tournament: Tournament): boolean {

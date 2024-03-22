@@ -1,8 +1,4 @@
 <div class="overview">
-    <!--    <app-header-->
-    <!--        [tournament]="tournament"-->
-    <!--    ></app-header>-->
-
     <div class="overview-wrapper">
         <div class="left">
             <div class="info-panel">
@@ -13,6 +9,7 @@
                                 [isSimpleTournament]="isSimpleTournament"
                                 [levels]="tournament.structure"
                                 [currentLevelIndex]="currentLevelIndex"
+                                [showCondensed]="showCondensedBlinds$ | async"
                                 (addBlind)="addBlind()"
                             ></app-blind-level-overview>
                         </div>
@@ -30,29 +27,30 @@
 
                         <div class="keen-slider__slide number-slide3 slide-stats">
                             <app-ranking
+                                *ngIf="tournament.finishes.length > tournament.players.length / 2; else blinds;"
                                 [players]="tournament.players"
                                 [entries]="tournament.entries"
                                 [finishes]="tournament.finishes"
                                 [tournament]="tournament"
                                 [seriesMetadata]="seriesMetadata"
                             ></app-ranking>
+
+                            <ng-template #blinds>
+                                <app-blind-level-overview
+                                    [isSimpleTournament]="isSimpleTournament"
+                                    [levels]="tournament.structure"
+                                    [currentLevelIndex]="currentLevelIndex"
+                                    [showCondensed]="showCondensedBlinds$ | async"
+                                    (addBlind)="addBlind()"
+                                ></app-blind-level-overview>
+                            </ng-template>
                         </div>
 
-                        <!--                        <div class="keen-slider__slide number-slide4 slide-stats">-->
-                        <!--                            <app-payout-details-->
-                        <!--                                [entries]="tournament.entries"-->
-                        <!--                                [buyInAmount]="tournament.buyInAmount"-->
-                        <!--                                [rebuyAmount]="tournament.rebuyAmount"-->
-                        <!--                                [addonAmount]="tournament.addonAmount"-->
-                        <!--                                [payout]="tournament.payout"-->
-                        <!--                                [players]="tournament.players"-->
-                        <!--                                [finishes]="tournament.finishes"-->
-                        <!--                                [percentage]="seriesMetadata?.percentage"-->
-                        <!--                                [maxCap]="seriesMetadata?.maxAmountPerTournament"-->
-                        <!--                                [initialPricePool]="tournament.initialPricePool"-->
-                        <!--                                [tournamentId]="tournament.id"-->
-                        <!--                            ></app-payout-details>-->
-                        <!--                        </div>-->
+                        <div class="keen-slider__slide number-slide4 slide-stats">
+                            <app-leaderboard-info
+                                [seriesMetadata]="seriesMetadata"
+                            ></app-leaderboard-info>
+                        </div>
                     </div>
 
                     <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
@@ -62,11 +60,7 @@
                         <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 0"></i>
                         <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 1"></i>
                         <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 2"></i>
-                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 3"></i>-->
-                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 4"></i>-->
-                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 5"></i>-->
-                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 6"></i>-->
-                        <!--                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 7"></i>-->
+                        <i class="fa fa-circle-o" [class.fa-circle]="currentSlide === 3"></i>
                     </div>
                 </div>
             </div>
@@ -77,23 +71,16 @@
             </h3>
             <div class="clock">
                 <span class="titles">
-<!--                <h2 class="series-title">-->
-                    <!--                    <span>Valentino's Poker Room</span>-->
-                    <!--                </h2>-->
-
                     <div class="flex">
                         <i class="fa fa-clock-o"></i>
-
-                    <h2 class="now">
-                        {{ today | date:'HH:mm' }}
-                    </h2>
+                        <h2 class="now">
+                            {{ today | date:'HH:mm' }}
+                        </h2>
                     </div>
 
-                <h2 class="tourney">
-                    {{ tournament.name }}
-                </h2>
-
-
+                    <h2 class="tourney">
+                        {{ tournament.name }}
+                    </h2>
                 </span>
 
                 <h1>
@@ -162,6 +149,7 @@
                 ></app-buttons>
             </div>
         </div>
+
         <div class="right">
             <h3 class="highlighted">
                 Tournament Info
