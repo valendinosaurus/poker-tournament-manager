@@ -1,0 +1,45 @@
+<div class="list-item list-item-3rd">
+    <ng-container *ngIf="!editMode; else edit">
+        <i
+            class="fa fa-trash"
+            (click)="deletePlayer()"
+        ></i>
+
+        <i
+            class="fa fa-edit"
+            (click)="editPlayer()"
+        ></i>
+
+        <app-user-image-round
+            [imageUrl]="player.image"
+            [size]="64"
+        ></app-user-image-round>
+
+        <div class="li-pair">
+            <h4>
+                Name
+            </h4>
+            <span>
+            {{ player.name }}
+        </span>
+        </div>
+    </ng-container>
+
+    <ng-template #edit>
+        <div class="edit-fields">
+            <div class="edit-field">
+                <h4>Image</h4>
+                <input matInput [(ngModel)]="playerImageModel">
+            </div>
+            <div class="edit-field">
+                <h4>Name</h4>
+                <input matInput [(ngModel)]="playerNameModel">
+            </div>
+        </div>
+
+        <div class="edit-actions">
+            <i class="fa fa-check" (click)="updatePlayer()"></i>
+            <i class="fa fa-cancel" (click)="editMode = false"></i>
+        </div>
+    </ng-template>
+</div>

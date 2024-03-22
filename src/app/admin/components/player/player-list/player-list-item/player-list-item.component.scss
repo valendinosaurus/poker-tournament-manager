@@ -1,0 +1,60 @@
+:host {
+    display: contents;
+}
+
+input {
+    display: block;
+    font-size: 16px;
+}
+
+.edit-fields {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    margin-bottom: 0 !important;
+    width: 80%;
+}
+
+.edit-field {
+    display: flex;
+    align-items: center;
+
+    h4 {
+        width: 50px;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    input {
+        width: calc(100% - 50px);
+    }
+}
+
+.edit-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+    margin: 0;
+
+    .fa {
+        margin: 6px;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    .fa-check {
+        color: green;
+        font-size: 28px;
+    }
+
+    .fa-cancel {
+        color: red;
+        font-size: 22px;
+    }
+}
