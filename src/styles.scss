@@ -83,3 +83,19 @@ form {
 .mdc-button__label .fa {
     transform: translate(1px, 1px);
 }
+
+form .mdc-button,
+.mdc-dialog__container .mdc-button {
+    margin-bottom: 12px !important;
+}
+
+.mdc-dialog__container h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .fa {
+        margin-right: 20px;
+        font-size: 32px;
+    }
+}

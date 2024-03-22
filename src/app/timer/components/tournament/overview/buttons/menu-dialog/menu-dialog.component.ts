@@ -9,7 +9,7 @@ import { TournamentService } from '../../../../../../core/services/util/tourname
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { TournamentSettings } from '../../../../../../shared/models/tournament-settings.interface';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { AuthService } from '@auth0/auth0-angular';
 import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal.component';
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
@@ -51,7 +51,7 @@ export class MenuDialogComponent implements OnInit {
 
     data: {
         isSimpleTournament: boolean,
-        isRebuyPhaseFinished: boolean,
+        isRebuyPhaseFinished$: ReplaySubject<boolean>,
         isAddPlayerBlocked: boolean,
         tournament: Tournament,
         seriesMetadata: SeriesMetadata,

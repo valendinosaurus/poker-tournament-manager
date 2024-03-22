@@ -1,315 +1,51 @@
-<ng-container *ngIf="series$ | async as series; else notAuthorized;">
+<ng-container *ngIf="series$ | async as series; else notAuthorized">
     <div class="series-page">
-        <div class="flex justify-center">
-            <span class="desktop-only">
-                <app-user-image-round
-                    [imageUrl]="series.branding.logo"
-                    [size]="200"
-                    border="b-black"
-                ></app-user-image-round>
-            </span>
-            <span class="mobile-only">
-                <app-user-image-round
-                    [imageUrl]="series.branding.logo"
-                    [size]="100"
-                    border="b-black"
-                ></app-user-image-round>
-            </span>
+        <app-series-header
+            [series]="series"
+            [guaranteed]="guaranteed"
+            [formulaString]="formulaString"
+        ></app-series-header>
+
+        <h2>
+            Current leaderboard
+        </h2>
+
+        <div class="leaderboard">
+            <app-leaderboard
+                [series]="series"
+                [overallRanking]="overallRanking$ | async"
+            ></app-leaderboard>
+
+            <div class="legend-wrapper">
+                <div class="legend"></div>
+                Current Finalist
+            </div>
         </div>
 
-        <h1>
-            {{ series.name }}
-        </h1>
+        <app-series-stats
+            [bestAverageRank]="bestAverageRank"
+            [mostPrices]="mostPrices"
+            [mostEffPrices]="mostEffPrices"
+            [mostRebuysAddons]="mostRebuysAddons"
+            [mostRebuysAddonsPerT]="mostRebuysAddonsPerT"
+            [mostITM]="mostITM"
+            [mostPercITM]="mostPercITM"
+            [mostSpilled]="mostSpilled"
+        ></app-series-stats>
 
-        <hr>
-
-        <div class="series-content">
-            <div class="series-content-block">
-                <div class="li-pair">
-                    <h4>
-                        Tournaments played
-                    </h4>
-                    <span>
-                        {{ series.tournaments.length }} / {{ series.noOfTournaments }}
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        % to final pot
-                    </h4>
-                    <span>
-                        {{ series.percentage }}%
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Max. to final pot
-                    </h4>
-                    <span>
-                        ${{ series.maxAmountPerTournament }}
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Guaranteed
-                    </h4>
-                    <span>
-                        ${{ +guaranteed }}
-                    </span>
-                </div>
-            </div>
-
-            <div class="series-content-block" *ngIf="formulaString">
-                <div class="li-wide">
-                    <h4>
-                        Formula
-                    </h4>
-                    <span class="formula" [appMath]="formulaString"></span>
-                </div>
-            </div>
-
-            <h2>
-                Current leaderboard
-            </h2>
-
-            <div class="leaderboard">
-                <app-leaderboard
-                    [series]="series"
-                    [overallRanking]="overallRanking"
-                ></app-leaderboard>
-
-                <div class="legend-wrapper">
-                    <div class="legend"></div>
-                    Current Finalist
-                </div>
-            </div>
-
-            <h2>
-                Stats
-            </h2>
-            <p style="padding-left: 12px; margin-bottom: 12px;">
-                Amount of tournaments played in brackets!<br>
-                <i>RB & A</i>: Rebuys & addons<br>
-                <i>ITM</i>: In the money<br>
-                <i>p</i>: played
-            </p>
-
-            <div class="series-content-block spaced">
-                <div class="li-pair">
-                    <h4>Best &#x2205; rank (p > 1)</h4>
-                    <span class="smaller" *ngFor="let e of bestAverageRank; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value | number:'1.1-1' }}</strong>
-                        ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Most prices
-                    </h4>
-                    <span class="smaller" *ngFor="let e of mostPrices; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}$</strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Most effective prices
-                    </h4>
-                    <span class="smaller" *ngFor="let e of mostEffPrices; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}$</strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Most RB & A
-                    </h4>
-                    <span class="smaller" *ngFor="let e of mostRebuysAddons; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Most &#x2205; RB & A (p > 1)
-                    </h4>
-                    <span class="smaller" *ngFor="let e of mostRebuysAddonsPerT; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value | number:'1.1-1' }}
-                    </strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Most times ITM
-                    </h4>
-                    <span class="smaller" *ngFor="let e of mostITM; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Most % ITM
-                    </h4>
-                    <span class="smaller" *ngFor="let e of mostPercITM; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}%</strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-
-                <div class="li-pair">
-                    <h4>
-                        Spilled & broken
-                    </h4>
-
-                    <span class="smaller" *ngFor="let e of mostSpilled; let i = index;">
-                        <span>{{i + 1}}. <app-user-image-round [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }})</span>
-                    </span>
-                </div>
-            </div>
-
+        <ng-container *ngIf="combinedRankings$ | async as combined">
             <h2>
                 Tournaments
             </h2>
 
             <ng-container *ngFor="let tournament of series.tournaments; let i = index;">
-                <div class="tournament">
-                    <div class="header">
-                        <h5>
-                            {{ tournament.date | date }}
-                        </h5>
-                        <h4>
-                            {{ tournament.name }}
-                        </h4>
-                        <h5
-                            *ngIf="combinedRankings[i] && combinedRankings[i].playersAlive.length > 0"
-                            class="flex justify-center align-center"
-                        >
-                            <span class="running"></span>
-                            RUNNING!
-                        </h5>
-
-                        <ng-container *ngIf="combinedRankings[i]">
-                            <div>
-                                <span>
-                                    <p>
-                                        <strong class="green">
-                                            $ {{ combinedRankings[i].pricePool - combinedRankings[i].contribution | number:'1.0-0' }}
-                                        </strong>
-                                    </p>
-                                    <h5>
-                                        Effective price pool
-                                    </h5>
-                                </span>
-
-                                <span>
-                                    <p>
-                                        $ {{ combinedRankings[i].pricePool | number:'1.0-0' }}
-                                    </p>
-                                    <h5>
-                                        Total price pool
-                                    </h5>
-                                </span>
-
-                                <span>
-                                    <p>
-                                        $ {{ combinedRankings[i].contribution | number:'1.0-0' }}
-                                    </p>
-                                    <h5>
-                                        Goes to final pot
-                                    </h5>
-                                </span>
-                            </div>
-                        </ng-container>
-                    </div>
-
-                    <div class="table-wrapper">
-                        <table *ngIf="combinedRankings[i]">
-                            <tr>
-                                <th>Name</th>
-                                <th class="t-center">
-                                    Points (Rank)
-                                </th>
-                                <th class="t-center">Rebuys</th>
-                                <th class="t-center">Addons</th>
-                                <th class="t-right">Price</th>
-                            </tr>
-                            <ng-container *ngFor="let e of combinedRankings[i].combFinishes">
-                                <tr>
-                                    <td>
-                                        <span class="flex-td">
-                                            <app-user-image-round
-                                                [imageUrl]="e.image"
-                                            ></app-user-image-round>
-                                            {{ e.name }}
-                                        </span>
-                                    </td>
-                                    <td class="t-center">
-                                        <span class="t-flex" *ngIf="!e.isTemp; else temp">
-                                            <strong>
-                                                {{ e.points | number:'1.1-1' }}
-                                            </strong>
-                                            &nbsp;
-                                            ({{ e.rank | number:'1.0-1' }})
-                                            <ng-container *ngIf="e.dealMade">
-                                                <i class="fa fa-handshake-o"></i>
-                                            </ng-container>
-                                        </span>
-                                        <ng-template #temp>
-                                            <span class="t-flex justify-center align-center">
-                                                {{ e.points | number:'1.1-1' }}
-                                                <span class="running"></span>
-                                            </span>
-                                        </ng-template>
-                                    </td>
-                                    <td class="t-center">
-                                        <app-bullets [number]="e.rebuys"></app-bullets>
-                                    </td>
-                                    <td class="t-center">
-                                        <app-bullets [number]="e.addons"></app-bullets>
-                                    </td>
-                                    <td class="t-right">
-                                        <span
-                                            [class.green]="e.price > 0"
-                                            [class.bold]="e.price > 0"
-                                        >
-                                            $ {{ e.price | number:'':'de-CH' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </table>
-                    </div>
-
-                    <div
-                        *ngIf="combinedRankings[i]?.events$"
-                        class="live-ticker"
-                    >
-                        <h4>Live-Ticker</h4>
-                        <ng-container *ngFor="let e of combinedRankings[i].events$ | async">
-                            <div class="live-ticker-item">
-                                <span class="fa-wrapper">
-                                <i class="fa" [class]="e | tEventTypeIcon"></i>
-                                </span>
-                                <span [innerHTML]="e.message"></span>
-                            </div>
-                        </ng-container>
-                    </div>
-                </div>
+                <app-series-tournament
+                    [tournament]="tournament"
+                    [combined]="combined"
+                    [i]="i"
+                ></app-series-tournament>
             </ng-container>
-        </div>
+        </ng-container>
     </div>
 </ng-container>
 

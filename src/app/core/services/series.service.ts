@@ -14,7 +14,6 @@ import { EntryType } from '../../shared/enums/entry-type.enum';
 import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
 import { SimpleStat } from '../../shared/models/simple-stat.interface';
 import { TEventApiService } from './api/t-event-api.service';
-import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -122,7 +121,6 @@ export class SeriesService {
                     })).sort((a: CombinedFinish, b: CombinedFinish) =>
                         (a.isTemp ? (nextRank - 1) : a.rank) - (b.isTemp ? (nextRank - 1) : b.rank)
                     ),
-                    events$: this.tEventApiService.getAll$(localTournament.id).pipe(shareReplay(1)),
                     tournament: localTournament,
                     seriesMetadata,
                     pricePool: pricePool,

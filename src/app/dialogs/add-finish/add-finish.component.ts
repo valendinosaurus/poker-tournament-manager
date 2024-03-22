@@ -198,7 +198,7 @@ export class AddFinishComponent implements OnInit {
                     const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
                     return this.tEventApiService.post$(
                         this.tournament.id,
-                        `!!! SEAT OPEN !!! - ${playerName} is out of the tournament!`,
+                        `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament!`,
                         TEventType.SEAT_OPEN
                     );
                 }),
@@ -223,7 +223,7 @@ export class AddFinishComponent implements OnInit {
                                     const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
                                     return this.tEventApiService.post$(
                                         this.tournament.id,
-                                        `${eliminated} was kicked out by ${eliminator}!`,
+                                        `<strong>${eliminated}</strong> was kicked out by <strong>${eliminator}</strong>!`,
                                         TEventType.ELIMINATION
                                     );
                                 }),
@@ -245,7 +245,7 @@ export class AddFinishComponent implements OnInit {
 
                             return this.tEventApiService.post$(
                                 this.tournament.id,
-                                `FINISHED! ${name} wins the tournament and takes home ${winner.price}.-! Congratulations!`,
+                                `<strong>FINISHED! ${name}</strong> wins the tournament and takes home ${winner.price}.-! Congratulations!`,
                                 TEventType.FINISH
                             );
                         }),
@@ -338,7 +338,7 @@ export class AddFinishComponent implements OnInit {
                             switchMap(() => {
                                 return this.tEventApiService.post$(
                                     this.tournament.id,
-                                    `Oh no, There was a mistake! ${playerName} is still in the tournament!!`,
+                                    `Oh no, There was a mistake! <strong>${playerName}</strong> is still in the tournament!!`,
                                     TEventType.CORRECTION
                                 );
                             }),

@@ -116,7 +116,7 @@ export class AddEntryComponent implements OnInit {
 
                     return this.tEventApiService.post$(
                         model.tournamentId,
-                        `${playerName} entered the tournament!`,
+                        `<strong>${playerName}</strong> entered the tournament!`,
                         TEventType.ENTRY
                     );
                 }),
@@ -157,7 +157,7 @@ export class AddEntryComponent implements OnInit {
                                 switchMap(() => {
                                     return this.tEventApiService.post$(
                                         this.data.tournamentId,
-                                        `${playerName} left the tournament!`,
+                                        `<strong>${playerName}</strong> left the tournament!`,
                                         TEventType.CORRECTION
                                     );
                                 }),

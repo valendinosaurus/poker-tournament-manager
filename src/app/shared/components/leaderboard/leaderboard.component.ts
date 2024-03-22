@@ -9,7 +9,7 @@ import { SeriesDetails } from '../../models/series-details.interface';
 })
 export class LeaderboardComponent {
 
-    @Input() overallRanking: OverallRanking[];
+    @Input() overallRanking: OverallRanking[] | null;
     @Input() series: SeriesDetails;
     @Input() full = true;
 

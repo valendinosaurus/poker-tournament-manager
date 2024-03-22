@@ -81,9 +81,9 @@ export class MakeDealComponent implements OnInit {
                 this.keys.push(key);
                 this.model[key] = 0;
 
-                this.fields.push(
-                    this.formlyFieldService.getDefaultNumberField(key, player.name, true)
-                );
+                this.fields.push({
+                    ...this.formlyFieldService.getDefaultNumberField(key, player.name, true),
+                });
             });
     }
 
@@ -91,6 +91,21 @@ export class MakeDealComponent implements OnInit {
         this.total = 0;
 
         this.keys.forEach(k => this.total += model[k]);
+    }
+
+    distributeEvenly(event: Event): void {
+        event.preventDefault();
+        const total = this.toDistribute;
+        const noOfRemainingPlaces = this.data.tournament.players.length - this.data.tournament.finishes.length;
+
+        const even = total / noOfRemainingPlaces;
+
+        console.log(this.model);
+
+        this.keys.forEach((key: string) => this.form.get(key)?.patchValue(even));
+
+        this.form.updateValueAndValidity();
+        console.log(this.model);
     }
 
     onSubmit(model: { [key: string]: number }): void {
@@ -114,7 +129,6 @@ export class MakeDealComponent implements OnInit {
                 return of(null);
             }),
             tap(() => {
-                const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
                 this.notificationService.success('Deal was made');
             }),
             switchMap(() => {
@@ -123,25 +137,25 @@ export class MakeDealComponent implements OnInit {
                 let names = ' ';
 
                 for (let i = 0; i < this.keys.length - 1; i++) {
-                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i]);
+                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i])[0].name;
 
                     if (i > 0) {
                         names += ', ';
                     }
 
-                    names += name;
+                    names += `<strong>${name}</strong>`;
                 }
 
-                for (let i = this.keys.length - 1; i <= this.keys.length; i++) {
-                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i]);
+                for (let i = this.keys.length - 1; i <= this.keys.length - 1; i++) {
+                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i])[0].name;
 
-                    names += ` and ${name} `;
+                    names += ` and <strong>${name}</strong> `;
                 }
 
                 message += names + `agreed to share ${this.rankAfterDeal}th place in the tournament with following payout:`;
 
                 this.keys.forEach(k => {
-                    const name = this.data.tournament.players.filter(e => e.id === +k);
+                    const name = this.data.tournament.players.filter(e => e.id === +k)[0].name;
                     message += `<br>${name}: ${model[k]}.-`;
                 });
 

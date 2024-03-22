@@ -2,8 +2,6 @@ import { Tournament } from '../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
 import { CombinedFinish } from './combined-finish.interface';
 import { Player } from '../../shared/models/player.interface';
-import { Observable } from 'rxjs';
-import { TEvent } from '../../shared/models/t-event.interface';
 
 export interface CombinedRanking {
     combFinishes: CombinedFinish[];
@@ -13,5 +11,4 @@ export interface CombinedRanking {
     formulaText: string;
     pricePool: number;
     contribution: number;
-    events$?: Observable<TEvent[]>,
 }

@@ -1,0 +1,52 @@
+:host {
+    display: contents;
+}
+
+.tournament {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border: solid 2px darkslategray;
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background: aliceblue;
+
+    * {
+        background: aliceblue;
+    }
+}
+
+.tournament table {
+    min-width: 600px;
+}
+
+.tournament h5 {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.tournament span > p {
+    font-size: 24px;
+    text-align: center;
+}
+
+.tournament p {
+    margin-bottom: 12px;
+}
+
+.tournament .header {
+    margin-top: 12px;
+    margin-bottom: 20px;
+
+    & > div {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    h4 {
+        text-align: center;
+        display: block;
+    }
+}

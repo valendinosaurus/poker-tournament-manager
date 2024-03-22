@@ -1,0 +1,71 @@
+<div class="flex justify-center">
+            <span class="desktop-only">
+                <app-user-image-round
+                    [imageUrl]="series.branding.logo"
+                    [size]="200"
+                    border="b-black"
+                ></app-user-image-round>
+            </span>
+    <span class="mobile-only">
+                <app-user-image-round
+                    [imageUrl]="series.branding.logo"
+                    [size]="100"
+                    border="b-black"
+                ></app-user-image-round>
+            </span>
+</div>
+
+<h1>
+    {{ series.name }}
+</h1>
+
+<hr>
+
+<div class="series-content">
+    <div class="series-content-block">
+        <div class="li-pair">
+            <h4>
+                Tournaments played
+            </h4>
+            <span>
+                {{ series.tournaments.length }} / {{ series.noOfTournaments }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                % to final pot
+            </h4>
+            <span>
+                {{ series.percentage }}%
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Max. to final pot
+            </h4>
+            <span>
+                ${{ series.maxAmountPerTournament }}
+            </span>
+        </div>
+
+        <div class="li-pair">
+            <h4>
+                Guaranteed
+            </h4>
+            <span>
+                ${{ +guaranteed }}
+            </span>
+        </div>
+    </div>
+
+    <div class="series-content-block" *ngIf="formulaString">
+        <div class="li-wide">
+            <h4>
+                Formula
+            </h4>
+            <span class="formula" [appMath]="formulaString"></span>
+        </div>
+    </div>
+</div>

@@ -30,7 +30,8 @@ div.main-buttons {
     right: 0;
     padding: 12px;
     background: white;
-    display: flex;
+    //display: flex;
+    display: none;
     flex-direction: column;
     border-top: solid 2px #00437b;
     border-left: solid 2px #00437b;

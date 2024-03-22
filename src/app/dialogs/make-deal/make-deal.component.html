@@ -1,16 +1,16 @@
-<h2>Make Deal</h2>
+<h2><i class="fa fa-handshake"></i> Make Deal</h2>
 
 <div class="flexed">
-    <span>
+    <h4>
         To distribute:
-    </span>
-    <div>
+    </h4>
+    <div class="green">
         $ {{ toDistribute }}
     </div>
-    <span>
+    <h4>
         Left:
-    </span>
-    <div>
+    </h4>
+    <div class="green">
         $ {{ toDistribute - total }}
     </div>
 </div>
@@ -27,9 +27,19 @@
         (modelChange)="modelChange(model)"
     ></formly-form>
 
-    <h3 [class.red]="total != toDistribute  ">
-        Total: {{ total }}
-    </h3>
+    <h4 class="total"
+        [class.red]="total != toDistribute"
+    >
+        {{ total }}
+    </h4>
+
+
+    <button
+        mat-raised-button
+        (click)="distributeEvenly($event)"
+    >
+        <i class="fa fa-balance-scale"></i> Distribute evenly
+    </button>
 
     <button
         mat-raised-button color="primary"

@@ -1,5 +1,5 @@
 <ng-container *ngIf="data.multi; else formSingle">
-    <h2>Add Players to "{{ data.tournament.name }}"</h2>
+    <h2><i class="fa fa-user"></i> Add Players to "{{ data.tournament.name }}"</h2>
 
     <form
         [formGroup]="form"
@@ -32,7 +32,7 @@
 </ng-container>
 
 <ng-template #formSingle>
-    <h2>Add Player to "{{ data.tournament.name }}"</h2>
+    <h2><i class="fa fa-user"></i> Add Player to "{{ data.tournament.name }}"</h2>
 
     <form
         [formGroup]="form"

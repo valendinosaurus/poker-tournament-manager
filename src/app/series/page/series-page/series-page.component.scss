@@ -1,15 +1,18 @@
 .series-page {
     background: white;
     padding: 32px;
+    max-width: 1000px;
+    margin: auto;
 }
 
-.series-page * {
+* {
     color: #011627;
 }
 
 hr {
     border-color: #666;
 }
+
 
 h1 {
     text-align: center;
@@ -119,6 +122,7 @@ h1 {
 
 .table-wrapper {
     overflow-x: auto;
+    overflow-y: hidden;
     width: 100%;
 }
 
@@ -144,55 +148,6 @@ h2 {
     width: 32px !important;
 }
 
-.tournament {
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border: solid 2px darkslategray;
-    box-sizing: border-box;
-    border-radius: 12px;
-    padding-left: 12px;
-    padding-right: 12px;
-    background: aliceblue;
-
-    * {
-        background: aliceblue;
-    }
-}
-
-.tournament table {
-    min-width: 600px;
-}
-
-.tournament h5 {
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.tournament span > p {
-    font-size: 24px;
-    text-align: center;
-}
-
-.tournament p {
-    margin-bottom: 12px;
-}
-
-.tournament .header {
-    margin-top: 12px;
-    margin-bottom: 20px;
-
-    & > div {
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-    }
-
-    h4 {
-        text-align: center;
-        display: block;
-    }
-}
-
 
 table {
     border-spacing: 1px;
@@ -213,7 +168,7 @@ table {
     justify-content: center;
 }
 
-.fa-handshake-o {
+.fa-handshake {
     color: #555;
     font-size: 14px;
     margin-left: 12px;

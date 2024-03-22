@@ -3,6 +3,8 @@ import { Player } from './player.interface';
 import { Finish } from './finish.interface';
 import { Entry } from './entry.interface';
 import { Elimination } from './elimination.interface';
+import { PlayerInSeries } from './player-in-series.interface';
+import { TEvent } from './t-event.interface';
 
 export interface Tournament {
     id: number;
@@ -29,4 +31,32 @@ export interface Tournament {
     entries: Entry[];
     finishes: Finish[];
     eliminations: Elimination[];
+}
+
+export interface TournamentS {
+    id: number;
+    name: string;
+    date: Date;
+    maxPlayers: number;
+    buyInAmount: number;
+    startStack: number;
+    withReEntry: boolean;
+    noOfReEntries: number;
+    withRebuy: boolean;
+    noOfRebuys: number;
+    rebuyAmount: number;
+    rebuyStack: number;
+    withAddon: boolean;
+    addonStack: number;
+    addonAmount: number;
+    payout: number;
+    initialPricePool: number;
+    rankFormula: number | null;
+    location: number;
+    structure: BlindLevel[];
+    players: PlayerInSeries[];
+    entries: Entry[];
+    finishes: Finish[];
+    eliminations: Elimination[];
+    liveTicker: TEvent[];
 }

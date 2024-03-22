@@ -156,9 +156,12 @@ export class AddRebuyComponent implements OnInit {
                                 eId: `R-${res?.id}`
                             }).pipe(
                                 tap(() => {
-                                    const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
-                                    const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
-                                    this.notificationService.success(`${eliminator} kicked out ${eliminated}`);
+                                    if (model.eliminatedBy) {
+                                        console.log(model.eliminatedBy);
+                                        const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
+                                        const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
+                                        this.notificationService.success(`${eliminator} kicked out ${eliminated}`);
+                                    }
                                 }),
                                 catchError(() => {
                                     this.notificationService.error('Error Elimination');
@@ -171,11 +174,11 @@ export class AddRebuyComponent implements OnInit {
                 )),
                 switchMap(() => {
                     const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
-                    const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
 
-                    let message = `Rebuy for ${eliminated}`;
+                    let message = `Rebuy for <strong>${eliminated}</strong>`;
 
                     if (!!model.eliminatedBy) {
+                        const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
                         message +=
                             `, who was kicked out by ${eliminator}!`;
                     }
@@ -231,7 +234,7 @@ export class AddRebuyComponent implements OnInit {
                             switchMap(() => {
                                 return this.tEventApiService.post$(
                                     this.data.tournamentId,
-                                    `${playerName} cancelled his Rebuy!`,
+                                    `<strong>${playerName}</strong> cancelled his Rebuy!`,
                                     TEventType.CORRECTION
                                 );
                             }),

@@ -113,7 +113,7 @@ export class AddAddonComponent implements OnInit {
 
                     return this.tEventApiService.post$(
                         this.data.tournamentId,
-                        `Addon for ${playerName}!`,
+                        `Addon for <strong>${playerName}</strong>!`,
                         TEventType.ADDON
                     );
                 }),
@@ -154,7 +154,7 @@ export class AddAddonComponent implements OnInit {
                             switchMap(() => {
                                 return this.tEventApiService.post$(
                                     this.data.tournamentId,
-                                    `${playerName} cancelled his Addon!`,
+                                    `<strong>${playerName}</strong> cancelled his Addon!`,
                                     TEventType.CORRECTION
                                 );
                             }),

@@ -1,16 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
-import { combineLatest, Observable } from 'rxjs';
-import { SeriesDetails } from '../../../shared/models/series-details.interface';
-import { RankingService } from '../../../core/services/util/ranking.service';
+import { combineLatest, Observable, timer } from 'rxjs';
+import { SeriesDetails, SeriesDetailsS } from '../../../shared/models/series-details.interface';
 import { Entry } from '../../../shared/models/entry.interface';
 import { Finish } from '../../../shared/models/finish.interface';
-import { EntryApiService } from '../../../core/services/api/entry-api.service';
-import { FinishApiService } from '../../../core/services/api/finish-api.service';
-import { map, tap } from 'rxjs/operators';
-import { PlayerApiService } from '../../../core/services/api/player-api.service';
-import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { TournamentInSeries } from '../../../shared/models/tournament-in-series.interface';
 import { PlayerInSeries } from '../../../shared/models/player-in-series.interface';
@@ -20,7 +15,7 @@ import { OverallRanking } from '../../models/overall-ranking.interface';
 import { MathContent } from '../../../shared/models/math-content.interface';
 import { SeriesService } from '../../../core/services/series.service';
 import { SimpleStat } from '../../../shared/models/simple-stat.interface';
-import { TEventApiService } from '../../../core/services/api/t-event-api.service';
+import { Tournament } from '../../../shared/models/tournament.interface';
 
 @Component({
     selector: 'app-series-page',
@@ -31,18 +26,12 @@ export class SeriesPageComponent implements OnInit {
 
     private route: ActivatedRoute = inject(ActivatedRoute);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
-    private entryApiService: EntryApiService = inject(EntryApiService);
-    private finishApiService: FinishApiService = inject(FinishApiService);
-    private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
-    private rankingService: RankingService = inject(RankingService);
     private seriesService: SeriesService = inject(SeriesService);
 
-    series$: Observable<SeriesDetails | null>;
-
-    combined: CombinedEntriesFinishes[] = [];
-    combinedRankings: CombinedRanking[] = [];
-    overallRanking: OverallRanking[];
+    series$: Observable<SeriesDetailsS>;
+    combined$: Observable<CombinedEntriesFinishes[]>;
+    combinedRankings$: Observable<CombinedRanking[]>;
+    overallRanking$: Observable<OverallRanking[]>;
 
     bestAverageRank: SimpleStat[];
     mostPrices: SimpleStat[];
@@ -88,60 +77,97 @@ export class SeriesPageComponent implements OnInit {
         this.seriesId = this.route.snapshot.params['sId'];
         this.password = this.route.snapshot.params['password'];
 
-        this.series$ = this.seriesApiService.getWithDetailsByPw$(this.seriesId, this.password).pipe(
-            map(series => series ? ({
-                ...series,
-                tournaments: series.tournaments.reverse()
-            }) : null),
-            tap((series: SeriesDetails | null) => {
+        const base$ = timer(0, 10000);
 
-                this.formulaString = {
-                    latex: this.rankingService.getFormulaDesc(series?.rankFormula)
-                };
+        this.series$ = timer(0, 10000).pipe(
+            switchMap(() => this.seriesApiService.getWithDetailsByPw2$(this.seriesId, this.password).pipe(
+                shareReplay(1)
+            )));
 
-                if (series) {
-                    this.getRankings();
-                }
-
-            })
+        const finishes$: Observable<Finish[]> = this.series$.pipe(
+            map((series: SeriesDetailsS) => series.tournaments),
+            map((tournaments: Tournament[]) => tournaments.map(t => t.finishes)),
+            map((finishesDeep: Finish[][]) => finishesDeep.reduce((acc, val) => acc.concat(val), [])),
+            shareReplay(1)
         );
-    }
 
-    private getRankings(): void {
-        combineLatest([
-            this.finishApiService.getInSeries$(this.seriesId),
-            this.entryApiService.getInSeries$(this.seriesId),
-            this.playerApiService.getInSeries$(this.seriesId, this.password),
-            this.tournamentApiService.getInSeries$(this.seriesId, this.password),
-            this.seriesApiService.getSeriesMetadata$(this.seriesId, this.password),
+        const entries$: Observable<Entry[]> = this.series$.pipe(
+            map((series: SeriesDetailsS) => series.tournaments),
+            map((tournaments: Tournament[]) => tournaments.map(t => t.entries)),
+            map((entriesDeep: Entry[][]) => entriesDeep.reduce((acc, val) => acc.concat(val), [])),
+            shareReplay(1)
+        );
+
+        const players$: Observable<PlayerInSeries[]> = this.series$.pipe(
+            map((series: SeriesDetailsS) => series.tournaments),
+            map((tournaments: Tournament[]) => tournaments.map(t => t.players as PlayerInSeries[])),
+            map((playersDeep: PlayerInSeries[][]) => playersDeep.reduce((acc, val) => acc.concat(val), [])),
+            shareReplay(1)
+        );
+
+        const tournaments$: Observable<TournamentInSeries[]> = this.series$.pipe(
+            map((series: SeriesDetailsS) => series.tournaments),
+            shareReplay(1)
+        );
+
+        const metadata$ = this.seriesApiService.getSeriesMetadata$(this.seriesId, this.password).pipe(
+            shareReplay(1)
+        );
+
+        this.combined$ = combineLatest([
+            finishes$,
+            entries$,
+            players$,
+            tournaments$,
+            metadata$
         ]).pipe(
-            tap(([finishes, entries, players, tournaments, seriesMetadata]: [Finish[], Entry[], PlayerInSeries[], TournamentInSeries[], SeriesMetadata]) => {
-                const res = this.seriesService.calculateRankings(
+            map(([finishes, entries, players, tournaments, seriesMetadata]: [Finish[], Entry[], PlayerInSeries[], TournamentInSeries[], SeriesMetadata]) =>
+                this.seriesService.calculateRankings(
                     finishes,
                     entries,
                     players,
                     tournaments,
                     seriesMetadata
-                );
+                )[0]
+            )
+        );
 
-                this.combined = res[0];
-                this.combinedRankings = res[1];
-                this.overallRanking = this.seriesService.merge(this.combinedRankings);
-                this.overallRanking = this.seriesService.getSoretedOverallRanking([...this.overallRanking]);
-                this.guaranteed = this.seriesService.getGuaranteed(this.combinedRankings);
-                this.calcStats();
-            })
-        ).subscribe();
+        this.combinedRankings$ = combineLatest([
+            finishes$,
+            entries$,
+            players$,
+            tournaments$,
+            metadata$
+        ]).pipe(
+            map(([finishes, entries, players, tournaments, seriesMetadata]: [Finish[], Entry[], PlayerInSeries[], TournamentInSeries[], SeriesMetadata]) =>
+                this.seriesService.calculateRankings(
+                    finishes,
+                    entries,
+                    players,
+                    tournaments,
+                    seriesMetadata
+                )[1]
+            ),
+            tap((c) => this.guaranteed = this.seriesService.getGuaranteed(c))
+        );
+
+        this.overallRanking$ = this.combinedRankings$.pipe(
+            map((combinedRanking: CombinedRanking[]) => this.seriesService.merge(combinedRanking)),
+            map((ranking: OverallRanking[]) => ranking.sort(
+                (a: OverallRanking, b: OverallRanking) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
+            )),
+            tap((or) => this.calcStats2(or)),
+            shareReplay(1)
+        );
     }
 
-    calcStats(): void {
-        this.bestAverageRank = this.seriesService.getBestAverageRank(this.overallRanking);
-        this.mostPrices = this.seriesService.getMostPrices([...this.overallRanking]);
-        this.mostEffPrices = this.seriesService.getMostEffectivePrices([...this.overallRanking]);
-        this.mostRebuysAddons = this.seriesService.getMostRebuysAddons([...this.overallRanking]);
-        this.mostRebuysAddonsPerT = this.seriesService.getMostRebuysAddonsPerTournament([...this.overallRanking]);
-        this.mostITM = this.seriesService.getMostITM([...this.overallRanking]);
-        this.mostPercITM = this.seriesService.getMostPercentualITM([...this.overallRanking]);
-
+    calcStats2(overallRanking: OverallRanking[]): void {
+        this.bestAverageRank = this.seriesService.getBestAverageRank(overallRanking);
+        this.mostPrices = this.seriesService.getMostPrices([...overallRanking]);
+        this.mostEffPrices = this.seriesService.getMostEffectivePrices([...overallRanking]);
+        this.mostRebuysAddons = this.seriesService.getMostRebuysAddons([...overallRanking]);
+        this.mostRebuysAddonsPerT = this.seriesService.getMostRebuysAddonsPerTournament([...overallRanking]);
+        this.mostITM = this.seriesService.getMostITM([...overallRanking]);
+        this.mostPercITM = this.seriesService.getMostPercentualITM([...overallRanking]);
     }
 }

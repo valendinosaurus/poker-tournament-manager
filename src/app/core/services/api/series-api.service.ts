@@ -6,7 +6,7 @@ import { Series } from '../../../shared/models/series.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
 import { Branding } from '../../../shared/models/branding.interface';
 import { map, switchMap } from 'rxjs/operators';
-import { SeriesDetails } from '../../../shared/models/series-details.interface';
+import { SeriesDetails, SeriesDetailsS } from '../../../shared/models/series-details.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { SeriesModel } from '../../../shared/models/series-model.interface';
@@ -51,6 +51,15 @@ export class SeriesApiService {
                     tournaments: this.mapTournaments(t.tournaments)
                 }) : null
             )
+        );
+    }
+
+    getWithDetailsByPw2$(id: number, password: string): Observable<SeriesDetailsS> {
+        return this.http.get<SeriesDetailsS>(`${BACKEND_URL}${this.ENDPOINT}/details/2/pw/${id}/${password}`).pipe(
+            map((s: SeriesDetailsS) => ({
+                ...s,
+                branding: this.mapBranding(s.branding)
+            }))
         );
     }
 

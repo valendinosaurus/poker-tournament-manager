@@ -1,4 +1,4 @@
-<h2>Menu</h2>
+<h2><i class="fa fa-gears"></i> Menu</h2>
 
 <h4>
     Player Actions
@@ -35,7 +35,7 @@
     </div>
 
     <div
-        *ngIf="data.tournament.withRebuy && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
+        *ngIf="data.tournament.withRebuy && !data.isSimpleTournament && !(data.isRebuyPhaseFinished$ | async)"
         class="action"
     >
         <h5><i class="fa fa-plus"></i> Rebuy</h5>
@@ -49,7 +49,7 @@
     </div>
 
     <div
-        *ngIf="data.tournament.withReEntry && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
+        *ngIf="data.tournament.withReEntry && !data.isSimpleTournament && !(data.isRebuyPhaseFinished$ | async)"
         class="action"
     >
         <h5><i class="fa fa-plus"></i> Re-Entry</h5>
@@ -66,7 +66,7 @@
     </div>
 
     <div
-        *ngIf="data.tournament.withAddon && !data.isSimpleTournament && !data.isRebuyPhaseFinished"
+        *ngIf="data.tournament.withAddon && !data.isSimpleTournament && !(data.isRebuyPhaseFinished$ | async)"
         class="action"
     >
         <h5><i class="fa fa-plus"></i> Addon</h5>
@@ -94,7 +94,7 @@
     </div>
 
     <div
-        *ngIf="!data.isSimpleTournament && data.isRebuyPhaseFinished"
+        *ngIf="!data.isSimpleTournament && (data.isRebuyPhaseFinished$ | async) === true"
         class="action"
     >
         <h5>Make Deal</h5>
@@ -103,7 +103,7 @@
             class="main"
             (click)="makeDeal()"
         >
-            <i class="fa fa-handshake-o"></i>
+            <i class="fa fa-handshake"></i>
         </button>
     </div>
 </div>
@@ -262,6 +262,7 @@
 
 
 <h4>Tournament settings</h4>
+<br>
 <form
     [formGroup]="form"
 >

@@ -11,7 +11,7 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
 import { ServerResponse } from '../../../../../shared/models/server-response';
 import { tap } from 'rxjs/operators';
@@ -58,12 +58,15 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
     menuVisible = false;
 
+    isRebuyPhaseFinished$ = new ReplaySubject<boolean>();
+
     isAdaptedPayoutSumCorrect = true;
 
     dialogPosition = {
         position: {
             top: '40px'
-        }
+        },
+        maxHeight: '90vh'
     };
 
     private destroyRef: DestroyRef = inject(DestroyRef);
@@ -131,6 +134,10 @@ export class ButtonsComponent implements OnInit, OnChanges {
         if (draw) {
             this.playerHasToBeMoved = this.getPlayerHasToBeMoved(draw);
             this.tableHasToBeEliminated = draw.tableHasToBeEliminated;
+        }
+
+        if (changes['isRebuyPhaseFinished']?.currentValue !== undefined) {
+            this.isRebuyPhaseFinished$.next(this.isRebuyPhaseFinished);
         }
     }
 
@@ -264,7 +271,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
             MenuDialogComponent, {
                 data: {
                     isSimpleTournament: this.isSimpleTournament,
-                    isRebuyPhaseFinished: this.isRebuyPhaseFinished,
+                    isRebuyPhaseFinished$: this.isRebuyPhaseFinished$,
                     tournament: this.tournament,
                     seriesMetadata: this.seriesMetadata,
                     clientId: this.clientId,
@@ -272,11 +279,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
                     running: this.running,
                     isAddPlayerBlocked: this.isAddPlayerBlocked
                 },
-                height: '95%',
-                width: '20vw',
-                position: {
-                    right: '17vw'
-                }
+                ...this.dialogPosition
             }
         );
 
