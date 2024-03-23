@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { SeriesDetailsS } from '../../../shared/models/series-details.interface';
-import { MathContent } from '../../../shared/models/math-content.interface';
+import { SeriesHeader } from '../../page/series-page/series-page.component';
 
 @Component({
     selector: 'app-series-header',
@@ -12,8 +11,6 @@ import { MathContent } from '../../../shared/models/math-content.interface';
 })
 export class SeriesHeaderComponent {
 
-    @Input() series: SeriesDetailsS;
-    @Input() guaranteed: number;
-    @Input() formulaString: MathContent;
+    @Input() seriesHeader: SeriesHeader | null;
 
 }

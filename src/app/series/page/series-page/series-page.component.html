@@ -1,56 +1,42 @@
-<ng-container *ngIf="series$ | async as series; else notAuthorized">
-    <div class="series-page">
-        <app-series-header
-            [series]="series"
-            [guaranteed]="guaranteed"
-            [formulaString]="formulaString"
-        ></app-series-header>
+<div class="series-page">
+    <app-series-header
+        [seriesHeader]="seriesHeader$ | async"
+    ></app-series-header>
 
-        <h2>
-            Current leaderboard
-        </h2>
+    <h2>
+        Current leaderboard
+    </h2>
 
-        <div class="leaderboard">
-            <app-leaderboard
-                [series]="series"
-                [overallRanking]="overallRanking$ | async"
-            ></app-leaderboard>
+    <div class="leaderboard">
+        <app-leaderboard
+            [leaderboard]="leaderboard$ | async"
+            [series]="series$ | async"
+        ></app-leaderboard>
 
-            <div class="legend-wrapper">
-                <div class="legend"></div>
-                Current Finalist
-            </div>
+        <div class="legend-wrapper">
+            <div class="legend"></div>
+            Current Finalist
         </div>
-
-        <app-series-stats
-            [bestAverageRank]="bestAverageRank"
-            [mostPrices]="mostPrices"
-            [mostEffPrices]="mostEffPrices"
-            [mostRebuysAddons]="mostRebuysAddons"
-            [mostRebuysAddonsPerT]="mostRebuysAddonsPerT"
-            [mostITM]="mostITM"
-            [mostPercITM]="mostPercITM"
-            [mostSpilled]="mostSpilled"
-        ></app-series-stats>
-
-        <ng-container *ngIf="combinedRankings$ | async as combined">
-            <h2>
-                Tournaments
-            </h2>
-
-            <ng-container *ngFor="let tournament of series.tournaments; let i = index;">
-                <app-series-tournament
-                    [tournament]="tournament"
-                    [combined]="combined"
-                    [i]="i"
-                ></app-series-tournament>
-            </ng-container>
-        </ng-container>
     </div>
-</ng-container>
 
-<ng-template #notAuthorized>
-    <h1>
-        You are not authorized to see this Series.
-    </h1>
-</ng-template>
+    <app-series-stats
+        *ngIf="seriesStats$ | async as stats"
+        [bestAverageRank]="stats.bestAverageRank"
+        [mostPrices]="stats.mostPrices"
+        [mostEffPrices]="stats.mostEffPrices"
+        [mostRebuysAddons]="stats.mostRebuysAddons"
+        [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
+        [mostITM]="stats.mostITM"
+        [mostPercITM]="stats.mostPercITM"
+        [mostSpilled]="stats.mostSpilled"
+    ></app-series-stats>
+
+    <h2>Tournaments</h2>
+
+    <ng-container *ngFor="let tournament of tournaments$ | async">
+        <app-series-tournament
+            [test]="tournament"
+        ></app-series-tournament>
+    </ng-container>
+
+</div>

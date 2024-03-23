@@ -18,6 +18,7 @@ import { TableDrawDialogComponent } from './table-draw/table-draw-dialog.compone
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { PlayerStatsComponent } from './player-stats/player-stats.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { MatTabsModule } from '@angular/material/tabs';
         ConfirmationDialogComponent,
         MakeDealComponent,
         ModifyPayoutComponent,
-        TableDrawDialogComponent
+        TableDrawDialogComponent,
+        PlayerStatsComponent
     ],
     imports: [
         SharedModule,

@@ -11,3 +11,46 @@ tr.finalist th,
 tr.finalist td {
     background: #e8fbe8;
 }
+
+.table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+}
+
+
+td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+tr th:first-child,
+tr td:first-child,
+tr th:nth-child(2),
+tr td:nth-child(2) {
+    padding-left: 12px;
+    box-sizing: border-box;
+    position: sticky;
+    left: 0;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: -1px;
+        border-bottom: 1px solid rgba(0, 67, 123, 0.3);
+        pointer-events: none;
+    }
+}
+
+tr th:last-child,
+tr td:last-child {
+    padding-right: 12px;
+}
+
+th, td {
+    background: white;
+    box-sizing: border-box;
+}

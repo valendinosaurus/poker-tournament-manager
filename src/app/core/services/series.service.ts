@@ -1,19 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { Player } from '../../shared/models/player.interface';
-import { OverallRanking } from '../../series/models/overall-ranking.interface';
-import { CombinedRanking } from '../../series/models/combined-ranking.interface';
-import { CombinedFinish } from '../../series/models/combined-finish.interface';
-import { Tournament } from '../../shared/models/tournament.interface';
+import { LeaderboardRow } from '../../series/models/overall-ranking.interface';
+import { SeriesTournament } from '../../series/models/combined-ranking.interface';
+import { SeriesTournamentRow } from '../../series/models/combined-finish.interface';
+import { Tournament, TournamentS } from '../../shared/models/tournament.interface';
 import { Formula, RankingService } from './util/ranking.service';
 import { TournamentInSeries } from '../../shared/models/tournament-in-series.interface';
 import { Finish } from '../../shared/models/finish.interface';
 import { Entry } from '../../shared/models/entry.interface';
 import { PlayerInSeries } from '../../shared/models/player-in-series.interface';
-import { CombinedEntriesFinishes } from '../../series/models/combined-entries-finishes.interface';
 import { EntryType } from '../../shared/enums/entry-type.enum';
 import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
 import { SimpleStat } from '../../shared/models/simple-stat.interface';
-import { TEventApiService } from './api/t-event-api.service';
+import { SeriesDetailsS } from '../../shared/models/series-details.interface';
+import { SeriesStats } from '../../series/page/series-page/series-page.component';
+import { mostSpilled } from '../const/app.const';
 
 @Injectable({
     providedIn: 'root'
@@ -23,44 +24,34 @@ export class SeriesService {
     formula: Formula;
 
     private rankingService: RankingService = inject(RankingService);
-    private tEventApiService: TEventApiService = inject(TEventApiService);
 
-    calculateRankings(
-        finishes: Finish[],
-        entries: Entry[],
-        players: PlayerInSeries[],
-        tournaments: TournamentInSeries[],
+    calculateSeriesTournaments(
+        seriesDetails: SeriesDetailsS,
         seriesMetadata: SeriesMetadata
-    ): [CombinedEntriesFinishes[], CombinedRanking[]] {
-        const tIds = tournaments.map((t: TournamentInSeries) => t.id).reverse();
-        const combined: CombinedEntriesFinishes[] = [];
-        const combinedRankings: CombinedRanking[] = [];
+    ): SeriesTournament[] {
+        const tIds = seriesDetails.tournaments.map((t: TournamentInSeries) => t.id).reverse();
+        const combinedRankings: SeriesTournament[] = [];
 
         tIds.forEach(
             (id: number) => {
-                const localFinished: Finish[] = finishes.filter((f: Finish) => f.tournamentId === id);
-                const localEntries: Entry[] = entries.filter((e: Entry) => e.tournamentId === id);
-                const localPlayers: PlayerInSeries[] = players.filter((p: PlayerInSeries) => p.tId === id);
-                const localTournament: TournamentInSeries = tournaments.filter((t: TournamentInSeries) => t.id === id)[0];
+                const tournament = seriesDetails.tournaments.filter(t => t.id === id)[0];
+                const localFinished: Finish[] = tournament.finishes.filter((f: Finish) => f.tournamentId === id);
+                const localEntries: Entry[] = tournament.entries.filter((e: Entry) => e.tournamentId === id);
+                const localPlayers: PlayerInSeries[] = tournament.players.filter((p: PlayerInSeries) => p.tId === id);
+                const localTournament: TournamentS = tournament; // tournaments.filter((t: TournamentInSeries) => t.id === id)[0];
                 localTournament.players = localPlayers.map((p: PlayerInSeries) => ({
                     image: p.image,
                     id: p.id,
-                    name: p.name
+                    name: p.name,
+                    tId: tournament.id
                 }));
                 localTournament.entries = localEntries;
                 localTournament.finishes = localFinished;
 
-                const combo: CombinedEntriesFinishes = {
-                    finish: localFinished,
-                    entries: localEntries
-                };
-
-                combined.push(combo);
-
                 const wasDealMade = localFinished.length !== new Set(localFinished.map(e => e.rank)).size;
                 const rankOfDeal = Math.min(...localFinished.map(e => e.rank));
 
-                let combFinishes: CombinedFinish[] = localFinished.map(
+                let combFinishes: SeriesTournamentRow[] = localFinished.map(
                     (finish: Finish) => ({
                         image: localPlayers.filter(p => p.id === finish.playerId)[0]?.image,
                         name: localPlayers.filter(p => p.id === finish.playerId)[0]?.name,
@@ -72,7 +63,7 @@ export class SeriesService {
                         points: 0,
                         dealMade: wasDealMade && +finish.rank === rankOfDeal,
                         isTemp: false
-                    } as CombinedFinish)
+                    } as SeriesTournamentRow)
                 );
 
                 const nextRank = Math.min(...localFinished.map(e => e.rank));
@@ -118,7 +109,7 @@ export class SeriesService {
                     combFinishes: combFinishes.map((c, i) => ({
                         ...c,
                         points: this.calcPoints(c, localTournament, this.formula),
-                    })).sort((a: CombinedFinish, b: CombinedFinish) =>
+                    })).sort((a: SeriesTournamentRow, b: SeriesTournamentRow) =>
                         (a.isTemp ? (nextRank - 1) : a.rank) - (b.isTemp ? (nextRank - 1) : b.rank)
                     ),
                     tournament: localTournament,
@@ -137,15 +128,11 @@ export class SeriesService {
             }
         );
 
-        return [
-            combined,
-            combinedRankings
-        ];
-
+        return combinedRankings;
     }
 
-    merge(combinedRankings: CombinedRanking[]): OverallRanking[] {
-        const overallRanking: OverallRanking[] = [];
+    merge(combinedRankings: SeriesTournament[]): LeaderboardRow[] {
+        const overallRanking: LeaderboardRow[] = [];
 
         const allPlayers: Player[] = combinedRankings.map(
             (c) => c.tournament.players
@@ -156,7 +143,7 @@ export class SeriesService {
                 if (overallRanking.filter(e => e.name === f.name).length > 0) {
                     const index = overallRanking.findIndex(o => o.name === f.name);
 
-                    const element: OverallRanking = {...overallRanking[index]};
+                    const element: LeaderboardRow = {...overallRanking[index]};
 
                     overallRanking[index] = {
                         name: f.name,
@@ -189,7 +176,7 @@ export class SeriesService {
         return overallRanking;
     }
 
-    getBestAverageRank(overallRanking: OverallRanking[]): SimpleStat[] {
+    getBestAverageRank(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const bar = overallRanking.filter(e => e.tournaments > 1).sort(
             (prev, curr) =>
                 ((prev.rank / prev.tournaments) - (curr.rank / curr.tournaments))
@@ -203,7 +190,7 @@ export class SeriesService {
         }));
     }
 
-    getMostPrices(overallRanking: OverallRanking[]): SimpleStat[] {
+    getMostPrices(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mp = overallRanking.sort(
             (prev, curr) =>
                 (prev.price - curr.price)
@@ -217,7 +204,7 @@ export class SeriesService {
         }));
     }
 
-    getMostEffectivePrices(overallRanking: OverallRanking[]): SimpleStat[] {
+    getMostEffectivePrices(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mep = overallRanking
             .sort(
                 (prev, curr) =>
@@ -236,7 +223,7 @@ export class SeriesService {
         }));
     }
 
-    getMostRebuysAddons(overallRanking: OverallRanking[]): SimpleStat[] {
+    getMostRebuysAddons(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mostRA = overallRanking.sort(
             (prev, curr) =>
                 (prev.rebuysAddons - curr.rebuysAddons) || prev.tournaments - curr.tournaments
@@ -250,7 +237,7 @@ export class SeriesService {
         }));
     }
 
-    getMostRebuysAddonsPerTournament(overallRanking: OverallRanking[]): SimpleStat[] {
+    getMostRebuysAddonsPerTournament(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mostRAT = overallRanking.filter(e => e.tournaments > 1).sort(
             (prev, curr) =>
                 ((prev.rebuysAddons / prev.tournaments) - (curr.rebuysAddons / curr.tournaments)) || prev.tournaments - curr.tournaments
@@ -264,7 +251,7 @@ export class SeriesService {
         }));
     }
 
-    getMostITM(overallRanking: OverallRanking[]): SimpleStat[] {
+    getMostITM(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mitm = overallRanking.sort(
             (a, b) => b.itm - a.itm || a.tournaments - b.tournaments
         );
@@ -277,7 +264,7 @@ export class SeriesService {
         }));
     }
 
-    getMostPercentualITM(overallRanking: OverallRanking[]): SimpleStat[] {
+    getMostPercentualITM(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mpitm = overallRanking.sort(
             (a, b) => (b.itm / b.tournaments) - (a.itm / a.tournaments) || a.tournaments - b.tournaments
         );
@@ -290,20 +277,29 @@ export class SeriesService {
         }));
     }
 
-    getSoretedOverallRanking(overallRanking: OverallRanking[]): OverallRanking[] {
+    getSoretedOverallRanking(overallRanking: LeaderboardRow[]): LeaderboardRow[] {
         return overallRanking.sort(
-            (a: OverallRanking, b: OverallRanking) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
+            (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
         );
     }
 
-    getGuaranteed(combinedRankings: CombinedRanking[]): number {
-        return combinedRankings.map(
-            (r: CombinedRanking) => r.contribution
-        ).reduce((acc: number, curr: number) => +acc + +curr, 0);
+    getGuaranteedFromSeries(series: SeriesDetailsS): number {
+        const percentage = series.percentage;
+        const cap = +series.maxAmountPerTournament;
+        let guaranteed = 0;
+
+        series.tournaments.forEach((tournament: TournamentS) => {
+            const buyIns = tournament.entries.length * tournament.buyInAmount;
+            const contribution = +(buyIns * percentage / 100);
+
+            guaranteed += contribution >= cap ? cap : contribution;
+        });
+
+        return guaranteed;
     }
 
     calcPoints(
-        combFinish: CombinedFinish,
+        combFinish: SeriesTournamentRow,
         tournament: Tournament,
         formula: Formula | undefined
     ): number {
@@ -317,5 +313,18 @@ export class SeriesService {
             pricePool: +this.rankingService.getSimplePricePool(tournament),
             addonCost: tournament.addonAmount
         }) : 0;
+    }
+
+    calcSeriesStats(leaderboard: LeaderboardRow[]): SeriesStats {
+        return {
+            bestAverageRank: this.getBestAverageRank(leaderboard),
+            mostPrices: this.getMostPrices([...leaderboard]),
+            mostEffPrices: this.getMostEffectivePrices([...leaderboard]),
+            mostRebuysAddons: this.getMostRebuysAddons([...leaderboard]),
+            mostRebuysAddonsPerT: this.getMostRebuysAddonsPerTournament([...leaderboard]),
+            mostITM: this.getMostITM([...leaderboard]),
+            mostPercITM: this.getMostPercentualITM([...leaderboard]),
+            mostSpilled: mostSpilled
+        };
     }
 }

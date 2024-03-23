@@ -1,4 +1,4 @@
-export interface OverallRanking {
+export interface LeaderboardRow {
     image: string;
     name: string;
     rank: number;

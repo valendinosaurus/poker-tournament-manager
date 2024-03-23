@@ -1,4 +1,4 @@
-export interface CombinedFinish {
+export interface SeriesTournamentRow {
     image: string;
     name: string;
     rank: number;

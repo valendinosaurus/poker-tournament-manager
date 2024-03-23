@@ -1,4 +1,4 @@
-<div class="tournament">
+<div class="tournament" *ngIf="tournament && combined">
     <div class="header">
         <h5>
             {{ tournament.date | date }}
@@ -113,6 +113,130 @@
         >
             <h4>Live-Ticker</h4>
             <ng-container *ngFor="let e of tournament.liveTicker">
+                <div class="live-ticker-item">
+                    <span class="fa-wrapper">
+                        <i class="fa" [class]="e | tEventTypeIcon"></i>
+                    </span>
+                    <span [innerHTML]="e.message"></span>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>
+
+<div class="tournament" *ngIf="test">
+    <div class="header">
+        <h5>
+            {{ test.tournament.date | date }}
+        </h5>
+        <h4>
+            {{ test.tournament.name }}
+        </h4>
+        <h5
+            *ngIf="test.playersAlive.length > 0"
+            class="flex justify-center align-center"
+        >
+            <span class="running"></span>
+            RUNNING!
+        </h5>
+
+        <div>
+            <span>
+                <p>
+                    <strong class="green">
+                        $ {{ test.pricePool - test.contribution | number:'1.0-0' }}
+                    </strong>
+                </p>
+                <h5>
+                    Effective price pool
+                </h5>
+            </span>
+
+            <span>
+                <p>
+                    $ {{ test.pricePool | number:'1.0-0' }}
+                </p>
+                <h5>
+                    Total price pool
+                </h5>
+            </span>
+
+            <span>
+                <p>
+                    $ {{ test.contribution | number:'1.0-0' }}
+                </p>
+                <h5>
+                    Goes to final pot
+                </h5>
+            </span>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th class="t-center">
+                    Points (Rank)
+                </th>
+                <th class="t-center">Rebuys</th>
+                <th class="t-center">Addons</th>
+                <th class="t-right">Price</th>
+            </tr>
+            <ng-container *ngFor="let e of test.combFinishes">
+                <tr>
+                    <td>
+                        <span class="flex-td">
+                            <app-user-image-round
+                                [imageUrl]="e.image"
+                            ></app-user-image-round>
+                            {{ e.name }}
+                        </span>
+                    </td>
+                    <td class="t-center">
+                        <span class="t-flex" *ngIf="!e.isTemp; else temp">
+                            <strong>
+                                {{ e.points | number:'1.1-1' }}
+                            </strong>
+                            &nbsp;
+                            ({{ e.rank | number:'1.0-1' }})
+                            <ng-container *ngIf="e.dealMade">
+                                <i class="fa fa-handshake"></i>
+                            </ng-container>
+                        </span>
+                        <ng-template #temp>
+                            <span class="t-flex justify-center align-center">
+                                {{ e.points | number:'1.1-1' }}
+                                <span class="running"></span>
+                            </span>
+                        </ng-template>
+                    </td>
+                    <td class="t-center">
+                        <app-bullets [number]="e.rebuys"></app-bullets>
+                    </td>
+                    <td class="t-center">
+                        <app-bullets [number]="e.addons"></app-bullets>
+                    </td>
+                    <td class="t-right">
+                        <span
+                            [class.green]="e.price > 0"
+                            [class.bold]="e.price > 0"
+                        >
+                            $ {{ e.price | number:'':'de-CH' }}
+                        </span>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+
+    <ng-container *ngIf="test.tournament.liveTicker">
+        <div
+            *ngIf="test.tournament.liveTicker.length > 0"
+            class="live-ticker"
+        >
+            <h4>Live-Ticker</h4>
+            <ng-container *ngFor="let e of test.tournament.liveTicker">
                 <div class="live-ticker-item">
                     <span class="fa-wrapper">
                         <i class="fa" [class]="e | tEventTypeIcon"></i>

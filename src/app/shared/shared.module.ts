@@ -22,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableDrawStateComponent } from './components/table-draw-state/table-draw-state.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { TEventTypeIconPipe } from './pipes/t-event-type-icon.pipe';
+import { MatStepperModule } from '@angular/material/stepper';
 
 const SHARED_MODULES = [
     CommonModule,
@@ -37,7 +38,8 @@ const SHARED_MODULES = [
     MatRadioModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatStepperModule
 ];
 
 @NgModule({

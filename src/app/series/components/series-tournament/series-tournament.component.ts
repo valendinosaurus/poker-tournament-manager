@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { TournamentS } from '../../../shared/models/tournament.interface';
-import { CombinedRanking } from '../../models/combined-ranking.interface';
+import { SeriesTournament } from '../../models/combined-ranking.interface';
 
 @Component({
     selector: 'app-series-tournament',
@@ -13,7 +13,8 @@ import { CombinedRanking } from '../../models/combined-ranking.interface';
 export class SeriesTournamentComponent {
 
     @Input() tournament: TournamentS;
-    @Input() combined: CombinedRanking[];
+    @Input() combined: SeriesTournament[];
     @Input() i: number;
 
+    @Input() test: SeriesTournament | null;
 }

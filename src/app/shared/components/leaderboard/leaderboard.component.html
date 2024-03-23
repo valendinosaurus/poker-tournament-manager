@@ -1,5 +1,5 @@
 <div
-    *ngIf="overallRanking"
+    *ngIf="leaderboard"
     class="table-wrapper"
 >
     <table>
@@ -13,8 +13,8 @@
             <th *ngIf="full" class="t-center">Rebuys / Addons</th>
             <th *ngIf="full" class="t-right">Price</th>
         </tr>
-        <ng-container *ngFor="let e of overallRanking; let i = index">
-            <tr [class.finalist]="i < series.finalists">
+        <ng-container *ngFor="let e of leaderboard; let i = index">
+            <tr [class.finalist]="series && i < series.finalists">
                 <td>
                     {{ i + 1 }}.
                 </td>

@@ -1,20 +1,12 @@
 import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { OverallRanking } from '../../../../../series/models/overall-ranking.interface';
-import { SeriesDetails } from '../../../../../shared/models/series-details.interface';
+import { LeaderboardRow } from '../../../../../series/models/overall-ranking.interface';
+import { SeriesDetailsS } from '../../../../../shared/models/series-details.interface';
 import { SeriesService } from '../../../../../core/services/series.service';
-import { Finish } from '../../../../../shared/models/finish.interface';
-import { Entry } from '../../../../../shared/models/entry.interface';
 import { combineLatest, Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { PlayerInSeries } from '../../../../../shared/models/player-in-series.interface';
-import { TournamentInSeries } from '../../../../../shared/models/tournament-in-series.interface';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../../../shared/models/series-metadata.interface';
-import { CombinedRanking } from '../../../../../series/models/combined-ranking.interface';
+import { SeriesTournament } from '../../../../../series/models/combined-ranking.interface';
 import { SeriesApiService } from '../../../../../core/services/api/series-api.service';
-import { EntryApiService } from '../../../../../core/services/api/entry-api.service';
-import { FinishApiService } from '../../../../../core/services/api/finish-api.service';
-import { PlayerApiService } from '../../../../../core/services/api/player-api.service';
-import { TournamentApiService } from '../../../../../core/services/api/tournament-api.service';
 import { FetchService } from '../../../../../core/services/fetch.service';
 
 @Component({
@@ -26,16 +18,11 @@ export class LeaderboardInfoComponent implements OnChanges {
 
     @Input() seriesMetadata: SeriesMetadata | null;
 
-    combinedRankings: CombinedRanking[];
-    overallRanking: OverallRanking[];
-    series$: Observable<SeriesDetails | null>;
+    series$: Observable<SeriesDetailsS>;
+    leaderboard$: Observable<any>;
 
     private seriesService: SeriesService = inject(SeriesService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
-    private entryApiService: EntryApiService = inject(EntryApiService);
-    private finishApiService: FinishApiService = inject(FinishApiService);
-    private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -45,54 +32,38 @@ export class LeaderboardInfoComponent implements OnChanges {
             && this.seriesMetadata
         ) {
 
-            const metadata = this.seriesMetadata;
+            const id = this.seriesMetadata.id;
+            const pw = this.seriesMetadata.password;
 
-            this.series$ = this.seriesApiService.getWithDetailsByPw$(
+            this.series$ = this.fetchService.getFetchTrigger$().pipe(
+                switchMap(() => this.seriesApiService.getWithDetailsByPw2$(id, pw)),
+                shareReplay(1)
+            );
+
+            const metadata$ = this.seriesApiService.getSeriesMetadata$(
                 this.seriesMetadata.id,
                 this.seriesMetadata.password
             ).pipe(
-                map(series => series ? ({
-                    ...series,
-                    tournaments: series.tournaments.reverse()
-                }) : null)
+                shareReplay(1)
             );
 
-            this.fetchService.getFetchTrigger$().pipe(
-                switchMap(() => combineLatest([
-                    this.finishApiService.getInSeries$(metadata.id),
-                    this.entryApiService.getInSeries$(metadata.id),
-                    this.playerApiService.getInSeries$(
-                        metadata.id,
-                        metadata.password
-                    ),
-                    this.tournamentApiService.getInSeries$(
-                        metadata.id,
-                        metadata.password
-                    ),
-                    this.seriesApiService.getSeriesMetadata$(
-                        metadata.id,
-                        metadata.password
-                    )
-                ]).pipe(
-                    tap(([finishes, entries, players, tournaments, seriesMetadata]: [Finish[], Entry[], PlayerInSeries[], TournamentInSeries[], SeriesMetadata]) => {
-                        const res = this.seriesService.calculateRankings(
-                            finishes,
-                            entries,
-                            players,
-                            tournaments,
-                            seriesMetadata
-                        );
+            const tournaments$ = combineLatest([
+                this.series$,
+                metadata$
+            ]).pipe(
+                map(([series, metadata]: [SeriesDetailsS, SeriesMetadata]) =>
+                    this.seriesService.calculateSeriesTournaments(series, metadata)
+                )
+            );
 
-                        this.combinedRankings = res[1];
-                        this.overallRanking = this.seriesService.merge(this.combinedRankings);
-                        this.overallRanking = this.seriesService.getSoretedOverallRanking([...this.overallRanking]);
-                    })
-                ))
-            ).subscribe();
+            this.leaderboard$ = tournaments$.pipe(
+                map((tournaments: SeriesTournament[]) => this.seriesService.merge(tournaments)),
+                map((ranking: LeaderboardRow[]) => ranking.sort(
+                    (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
+                )),
+            );
+
         }
-    }
-
-    ngOnInit(): void {
     }
 
 }
