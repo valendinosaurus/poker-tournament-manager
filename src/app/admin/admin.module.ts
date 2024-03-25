@@ -63,7 +63,8 @@ import { MatInputModule } from '@angular/material/input';
         MatInputModule
     ],
     exports: [
-        AdminComponent
+        AdminComponent,
+        PlayerListItemComponent
     ],
     providers: [
         {provide: MatDialogRef, useValue: {}},

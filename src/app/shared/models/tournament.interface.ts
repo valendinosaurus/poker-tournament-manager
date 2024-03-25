@@ -31,6 +31,7 @@ export interface Tournament {
     entries: Entry[];
     finishes: Finish[];
     eliminations: Elimination[];
+    temp: boolean;
 }
 
 export interface TournamentS {
@@ -59,4 +60,5 @@ export interface TournamentS {
     finishes: Finish[];
     eliminations: Elimination[];
     liveTicker: TEvent[];
+    temp: boolean;
 }

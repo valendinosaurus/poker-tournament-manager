@@ -1,29 +1,35 @@
-<button mat-raised-button color="primary" (click)="logout()">logout</button>
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
 
-<mat-tab-group>
-    <mat-tab label="Tournament">
-        <app-tournament-tab></app-tournament-tab>
-    </mat-tab>
+<div class="page-with-header">
 
-    <mat-tab label="Series">
-        <app-series-tab></app-series-tab>
-    </mat-tab>
+    <mat-tab-group>
+        <mat-tab label="Tournament">
+            <app-tournament-tab></app-tournament-tab>
+        </mat-tab>
 
-    <mat-tab label="Player">
-        <app-player-tab></app-player-tab>
-    </mat-tab>
+        <mat-tab label="Series">
+            <app-series-tab></app-series-tab>
+        </mat-tab>
 
-    <mat-tab label="Blind Level">
-        <app-blind-level-tab></app-blind-level-tab>
-    </mat-tab>
+        <mat-tab label="Player">
+            <app-player-tab></app-player-tab>
+        </mat-tab>
 
-<!--    <mat-tab label="Location">-->
-    <!--        <app-location-tab></app-location-tab>-->
-    <!--    </mat-tab>-->
+        <mat-tab label="Blind Level">
+            <app-blind-level-tab></app-blind-level-tab>
+        </mat-tab>
 
-    <!--    <mat-tab label="Branding">-->
-    <!--        <app-branding-tab></app-branding-tab>-->
-    <!--    </mat-tab>-->
+        <!--    <mat-tab label="Location">-->
+        <!--        <app-location-tab></app-location-tab>-->
+        <!--    </mat-tab>-->
 
-</mat-tab-group>
+        <!--    <mat-tab label="Branding">-->
+        <!--        <app-branding-tab></app-branding-tab>-->
+        <!--    </mat-tab>-->
 
+    </mat-tab-group>
+
+
+</div>

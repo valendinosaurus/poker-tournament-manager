@@ -5,7 +5,6 @@ import { SeriesMetadata } from '../../../../../../shared/models/series-metadata.
 import { CreatePlayerComponent } from '../../../../../../admin/components/player/create-player/create-player.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
-import { TournamentService } from '../../../../../../core/services/util/tournament.service';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { TournamentSettings } from '../../../../../../shared/models/tournament-settings.interface';
@@ -25,6 +24,7 @@ import { DOCUMENT } from '@angular/common';
 import { ActionEventApiService } from '../../../../../../core/services/api/action-event-api.service';
 import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
+import { DEFAULT_DIALOG_POSITION } from '../../../../../../core/const/app.const';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -60,11 +60,6 @@ export class MenuDialogComponent implements OnInit {
         running: boolean,
     } = inject(MAT_DIALOG_DATA);
 
-    dialogPosition = {
-        position: {
-            top: '40px'
-        }
-    };
     payoutCache: number;
 
     form = new FormGroup({});
@@ -76,7 +71,6 @@ export class MenuDialogComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
-    private tournamentService: TournamentService = inject(TournamentService);
     private authService: AuthService = inject(AuthService);
     private rankingService: RankingService = inject(RankingService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
@@ -151,7 +145,7 @@ export class MenuDialogComponent implements OnInit {
 
     addRebuy(): void {
         const dialogRef = this.dialog.open(AddRebuyComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
@@ -167,7 +161,7 @@ export class MenuDialogComponent implements OnInit {
 
     addAddon(): void {
         const dialogRef = this.dialog.open(AddAddonComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
@@ -183,7 +177,7 @@ export class MenuDialogComponent implements OnInit {
 
     seatOpen(): void {
         const dialogRef = this.dialog.open(AddFinishComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournament: this.data.tournament,
                 metadata: this.data.seriesMetadata,
@@ -199,7 +193,7 @@ export class MenuDialogComponent implements OnInit {
 
     addPlayer(): void {
         const dialogRef = this.dialog.open(AddPlayerComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournament: this.data.tournament,
                 clientId: this.data.clientId,
@@ -215,7 +209,7 @@ export class MenuDialogComponent implements OnInit {
 
     addEntry(isReEntry: boolean): void {
         const dialogRef = this.dialog.open(AddEntryComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournamentId: this.data.tournament.id,
                 sub: this.data.sub,
@@ -232,7 +226,7 @@ export class MenuDialogComponent implements OnInit {
 
     makeDeal(): void {
         const dialogRef = this.dialog.open(MakeDealComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournament: this.data.tournament,
                 metadata: this.data.seriesMetadata,
@@ -247,7 +241,7 @@ export class MenuDialogComponent implements OnInit {
 
     drawTables(): void {
         const dialogRef = this.dialog.open(TableDrawDialogComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournament: this.data.tournament,
             },

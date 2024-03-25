@@ -31,10 +31,6 @@ export class TimerPageComponent implements OnInit {
                 tournamentId: this.route.snapshot.params['tId']
             }))
         );
-
-        if (this.route.snapshot.params['tId'] && !this.route.snapshot.params['password']) {
-            // TODO check
-        }
     }
 
 }

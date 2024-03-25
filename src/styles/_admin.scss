@@ -21,6 +21,12 @@
     right: 36px;
 }
 
+.list-item > .fa-circle-user {
+    position: absolute;
+    top: 12px;
+    right: 60px;
+}
+
 .list-item h4 .fa-plus-circle {
     color: green;
 }
@@ -32,6 +38,7 @@
     h4 {
         font-size: 14px;
         margin-bottom: 8px;
+        margin-top: 0;
         width: fit-content;
     }
 
@@ -55,6 +62,10 @@
     position: relative;
     border: solid 2px darkslategrey;
     border-radius: 20px;
+}
+
+.list-item.list-item-temp {
+    background: linen;
 }
 
 .list-item-3rd {

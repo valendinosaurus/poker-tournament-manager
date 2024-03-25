@@ -1,0 +1,61 @@
+.connection-request {
+    border: solid 2px darkslategrey;
+    border-radius: 20px;
+    padding: 12px;
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    background: aliceblue;
+}
+
+p {
+    flex: 0 0 calc(100% - 120px);
+    width: calc(100% - 120px);
+    margin: 0;
+}
+
+.status {
+    width: 60px;
+    flex: 0 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa {
+    font-size: 20px;
+}
+
+.fa-hourglass-half {
+    color: #999;
+}
+
+.fa-circle-check {
+    color: green;
+}
+
+.fa-comment-slash {
+    color: red;
+}
+
+.actions {
+    width: 60px;
+    flex: 0 0 60px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .fa {
+        margin: 8px;
+    }
+
+    .fa-check {
+        color: green;
+        font-size: 26px;
+    }
+
+    .fa-cancel {
+        color: red;
+    }
+}

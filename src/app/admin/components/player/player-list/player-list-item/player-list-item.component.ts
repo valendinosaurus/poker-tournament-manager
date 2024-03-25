@@ -4,6 +4,11 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { PlayerApiService } from '../../../../../core/services/api/player-api.service';
 import { TriggerService } from '../../../../../core/services/util/trigger.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+    ThatsMeDialogComponent
+} from '../../../../../welcome/components/dialogs/thats-me-dialog/thats-me-dialog.component';
+import { DEFAULT_DIALOG_POSITION } from '../../../../../core/const/app.const';
 
 @Component({
     selector: 'app-player-list-item',
@@ -13,12 +18,14 @@ import { TriggerService } from '../../../../../core/services/util/trigger.servic
 export class PlayerListItemComponent implements OnChanges {
 
     @Input() player: Player;
+    @Input() myEmail: string | null | undefined;
 
     editMode = false;
 
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private authService: AuthService = inject(AuthService);
+    private matDialog: MatDialog = inject(MatDialog);
 
     playerImageModel: string;
     playerNameModel: string;
@@ -42,6 +49,15 @@ export class PlayerListItemComponent implements OnChanges {
 
     editPlayer(): void {
         this.editMode = true;
+    }
+
+    thatsMe(): void {
+        this.matDialog.open(ThatsMeDialogComponent, {
+            ...DEFAULT_DIALOG_POSITION,
+            data: {
+                player: this.player
+            }
+        });
     }
 
     updatePlayer(): void {

@@ -1,0 +1,34 @@
+header {
+    width: 100%;
+    height: 64px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #00437b;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 64px;
+    box-sizing: border-box;
+    z-index: 99999;
+}
+
+header > span {
+    display: flex;
+    align-items: center;
+}
+
+header > span.links {
+    justify-content: flex-start;
+}
+
+header > span.links a {
+    display: block;
+    margin: 0 20px;
+    color: white;
+}
+
+header > span.links a.active {
+    font-weight: bold;
+}

@@ -1,0 +1,36 @@
+<h2>
+    <i class="fa fa-user"></i>
+    Is this you?
+</h2>
+
+<div class="user">
+    <div class="flex align-center">
+        <app-user-image-round
+            [imageUrl]="data.player.image"
+            [size]="64"
+        ></app-user-image-round>
+        <h3>
+            {{ data.player.name }}
+        </h3>
+    </div>
+</div>
+
+<form
+    (ngSubmit)="onSubmit()"
+>
+    <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+    >
+        YES, that's me!
+    </button>
+
+    <button
+        mat-raised-button
+        color="warn"
+        (click)="closeDialog($event)"
+    >
+        No
+    </button>
+</form>

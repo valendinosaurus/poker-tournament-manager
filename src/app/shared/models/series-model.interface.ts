@@ -13,4 +13,5 @@ export interface SeriesModel {
     finalists: number;
     sub: string;
     password: string;
+    temp: boolean;
 }

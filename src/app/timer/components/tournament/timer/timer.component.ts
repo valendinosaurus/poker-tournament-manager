@@ -108,9 +108,8 @@ export class TimerComponent implements OnInit, OnChanges {
 
         this.tournament$ = this.fetchTrigger$.pipe(
             switchMap(() => sub$.pipe(
-                    switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub))
-                ),
-            ),
+                switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub))
+            )),
             tap(() => this.notificationService.success('Tournament is up to date')),
             shareReplay(1)
         );

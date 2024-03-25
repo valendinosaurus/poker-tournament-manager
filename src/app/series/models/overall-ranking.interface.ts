@@ -1,4 +1,5 @@
 export interface LeaderboardRow {
+    playerId: number;
     image: string;
     name: string;
     rank: number;
@@ -8,4 +9,5 @@ export interface LeaderboardRow {
     tournaments: number;
     itm: number;
     isTemp: boolean;
+    email: string | undefined | null;
 }

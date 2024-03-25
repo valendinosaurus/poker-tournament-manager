@@ -19,6 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlayerStatsComponent } from './player-stats/player-stats.component';
+import { EditPlayerComponent } from './edit-player/edit-player.component';
+import { MapPlayerComponent } from './map-player/map-player.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +37,9 @@ import { PlayerStatsComponent } from './player-stats/player-stats.component';
         MakeDealComponent,
         ModifyPayoutComponent,
         TableDrawDialogComponent,
-        PlayerStatsComponent
+        PlayerStatsComponent,
+        EditPlayerComponent,
+        MapPlayerComponent
     ],
     imports: [
         SharedModule,

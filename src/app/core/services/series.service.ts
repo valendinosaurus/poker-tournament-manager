@@ -39,11 +39,13 @@ export class SeriesService {
                 const localEntries: Entry[] = tournament.entries.filter((e: Entry) => e.tournamentId === id);
                 const localPlayers: PlayerInSeries[] = tournament.players.filter((p: PlayerInSeries) => p.tId === id);
                 const localTournament: TournamentS = tournament; // tournaments.filter((t: TournamentInSeries) => t.id === id)[0];
+
                 localTournament.players = localPlayers.map((p: PlayerInSeries) => ({
                     image: p.image,
                     id: p.id,
                     name: p.name,
-                    tId: tournament.id
+                    tId: tournament.id,
+                    email: p.email
                 }));
                 localTournament.entries = localEntries;
                 localTournament.finishes = localFinished;
@@ -62,7 +64,9 @@ export class SeriesService {
                         reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.RE_ENTRY).length,
                         points: 0,
                         dealMade: wasDealMade && +finish.rank === rankOfDeal,
-                        isTemp: false
+                        isTemp: false,
+                        email: localPlayers.filter(p => p.id === finish.playerId)[0]?.email,
+                        playerId: finish.playerId
                     } as SeriesTournamentRow)
                 );
 
@@ -82,9 +86,12 @@ export class SeriesService {
                     price: 0,
                     points: 0,
                     dealMade: false,
-                    isTemp: true
+                    isTemp: true,
+                    email: localPlayers.filter(p => p.id === finish.playerId)[0]?.email,
+                    playerId: finish.playerId
                 }));
 
+                console.log(combFinishes);
                 combFinishes = combFinishes.sort(
                     (a, b) => (b.isTemp ? nextRank : b.rank) - (a.isTemp ? nextRank : a.rank));
 
@@ -139,7 +146,7 @@ export class SeriesService {
         ).reduce((a, b) => a.concat(b), []);
 
         combinedRankings.forEach(
-            c => c.combFinishes.forEach(f => {
+            c => c.combFinishes.forEach((f: SeriesTournamentRow) => {
                 if (overallRanking.filter(e => e.name === f.name).length > 0) {
                     const index = overallRanking.findIndex(o => o.name === f.name);
 
@@ -154,7 +161,9 @@ export class SeriesService {
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
                         rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons,
                         itm: +element.itm + ((+f.rank <= 4) ? 1 : 0),
-                        isTemp: f.isTemp ? true : element.isTemp
+                        isTemp: f.isTemp ? true : element.isTemp,
+                        email: f.email,
+                        playerId: f.playerId
                     };
 
                 } else {
@@ -167,7 +176,9 @@ export class SeriesService {
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
                         rebuysAddons: +f.rebuys + +f.addons,
                         itm: (+f.rank <= 4) ? 1 : 0,
-                        isTemp: f.isTemp
+                        isTemp: f.isTemp,
+                        email: f.email,
+                        playerId: f.playerId
                     });
                 }
             })

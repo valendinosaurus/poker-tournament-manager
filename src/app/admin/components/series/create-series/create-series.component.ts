@@ -68,7 +68,8 @@ export class CreateSeriesComponent implements OnInit {
             noOfTournaments: 0,
             finalists: 0,
             sub: this.sub,
-            password: ''
+            password: '',
+            temp: false
         };
     }
 
@@ -85,6 +86,7 @@ export class CreateSeriesComponent implements OnInit {
             this.formlyFieldService.getDefaultNumberField('noOfTournaments', 'Cap per Tournament', true),
             this.formlyFieldService.getDefaultNumberField('finalists', 'Cap per Tournament', true),
             this.formlyFieldService.getDefaultTextField('password', 'password', false, 1000),
+            this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Series?'),
         ];
     }
 

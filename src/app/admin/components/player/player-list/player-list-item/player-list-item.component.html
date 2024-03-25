@@ -10,18 +10,26 @@
             (click)="editPlayer()"
         ></i>
 
+        <i
+            *ngIf="!player.email"
+            class="fa fa-circle-user deletable"
+            (click)="thatsMe()"
+        ></i>
+
         <app-user-image-round
             [imageUrl]="player.image"
             [size]="64"
+            [border]="player.email === myEmail ? 'b-my-user' : 'b-regular'"
         ></app-user-image-round>
 
         <div class="li-pair">
-            <h4>
-                Name
-            </h4>
-            <span>
-            {{ player.name }}
-        </span>
+            <span class="name">
+                <i *ngIf="player.email === myEmail" class="fa fa-user"></i>
+                {{ player.name }}
+            </span>
+            <span *ngIf="player.email">
+                <small>{{ player.email }}</small>
+            </span>
         </div>
     </ng-container>
 

@@ -3,7 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { Player } from '../../../../shared/models/player.interface';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
-import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { AuthService, User } from '@auth0/auth0-angular';
 
 @Component({
@@ -14,6 +14,7 @@ import { AuthService, User } from '@auth0/auth0-angular';
 export class PlayerListComponent implements OnInit {
 
     players$: Observable<Player[]>;
+    email$: Observable<string>;
 
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private triggerService: TriggerService = inject(TriggerService);
@@ -34,6 +35,12 @@ export class PlayerListComponent implements OnInit {
                 })))
             )),
             shareReplay(1)
+        );
+
+        this.email$ = this.authService.user$.pipe(
+            filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
+            map((user: User) => user.email),
+            filter((email: string | undefined): email is string => email !== undefined)
         );
     }
 

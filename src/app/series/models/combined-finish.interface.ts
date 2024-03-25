@@ -1,4 +1,5 @@
 export interface SeriesTournamentRow {
+    playerId: number;
     image: string;
     name: string;
     rank: number;
@@ -9,4 +10,5 @@ export interface SeriesTournamentRow {
     points: number;
     dealMade: boolean;
     isTemp: boolean;
+    email: string | undefined | null;
 }

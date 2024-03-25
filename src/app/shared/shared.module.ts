@@ -23,6 +23,10 @@ import { TableDrawStateComponent } from './components/table-draw-state/table-dra
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { TEventTypeIconPipe } from './pipes/t-event-type-icon.pipe';
 import { MatStepperModule } from '@angular/material/stepper';
+import { AppHeaderComponent } from './components/app-header/app-header.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 const SHARED_MODULES = [
     CommonModule,
@@ -39,7 +43,9 @@ const SHARED_MODULES = [
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatStepperModule
+    MatStepperModule,
+    MatFormFieldModule,
+    MatInputModule
 ];
 
 @NgModule({
@@ -52,11 +58,14 @@ const SHARED_MODULES = [
         BlindLevelTextPipe,
         TableDrawStateComponent,
         LeaderboardComponent,
-        TEventTypeIconPipe
+        TEventTypeIconPipe,
+        AppHeaderComponent
     ],
     imports: [
         ...SHARED_MODULES,
         FormlyModule.forChild(),
+        RouterLink,
+        RouterLinkActive,
     ],
     exports: [
         TimePipe,
@@ -69,7 +78,8 @@ const SHARED_MODULES = [
         BlindLevelTextPipe,
         TableDrawStateComponent,
         LeaderboardComponent,
-        TEventTypeIconPipe
+        TEventTypeIconPipe,
+        AppHeaderComponent
     ],
 })
 export class SharedModule {

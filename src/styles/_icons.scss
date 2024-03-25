@@ -31,7 +31,16 @@
     }
 }
 
-.fa-chevron-circle-up,
+.fa-chevron-circle-up {
+    color: $secondary;
+    opacity: 0.4;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
 .fa-plus-circle {
     color: $primaryDark;
     cursor: pointer;

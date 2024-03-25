@@ -3,4 +3,5 @@ export interface PlayerInSeries {
     name: string;
     image: string;
     tId: number;
+    email?: string;
 }

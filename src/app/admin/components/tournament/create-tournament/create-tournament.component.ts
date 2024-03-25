@@ -1,7 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { Tournament } from '../../../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { RankingService } from '../../../../core/services/util/ranking.service';
@@ -74,7 +73,8 @@ export class CreateTournamentComponent implements OnInit {
             entries: [],
             structure: [],
             players: [],
-            finishes: []
+            finishes: [],
+            temp: false
         };
     }
 
@@ -122,6 +122,7 @@ export class CreateTournamentComponent implements OnInit {
             this.formlyFieldService.getDefaultSelectField('payout', 'payout structure', true, this.rankingService.getAllPayoutsForSelect()),
             this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect()),
             this.formlyFieldService.getDefaultSelectField('location', 'location', true, this.allLocations),
+            this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Tournament?'),
         ];
     }
 

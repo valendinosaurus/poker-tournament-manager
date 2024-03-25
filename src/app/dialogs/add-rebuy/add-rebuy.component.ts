@@ -157,7 +157,6 @@ export class AddRebuyComponent implements OnInit {
                             }).pipe(
                                 tap(() => {
                                     if (model.eliminatedBy) {
-                                        console.log(model.eliminatedBy);
                                         const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
                                         const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
                                         this.notificationService.success(`${eliminator} kicked out ${eliminated}`);

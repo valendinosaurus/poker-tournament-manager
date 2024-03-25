@@ -6,13 +6,14 @@ import { Tournament } from '../../../shared/models/tournament.interface';
 import { Player } from '../../../shared/models/player.interface';
 import { BlindLevel } from '../../../shared/models/blind-level.interface';
 import { TournamentDetails } from '../../../shared/models/tournament-details.interface';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { TournamentInSeries } from '../../../shared/models/tournament-in-series.interface';
 import { TournamentModel } from '../../../shared/models/tournament-model.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
 import { TournamentSettings } from '../../../shared/models/tournament-settings.interface';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +24,8 @@ export class TournamentApiService {
 
     constructor(
         private http: HttpClient,
-        private authService: AuthService
+        private authService: AuthService,
+        private router: Router
     ) {
     }
 
@@ -103,7 +105,14 @@ export class TournamentApiService {
     }
 
     get2$(id: number, sub: string): Observable<Tournament> {
-        return this.http.get<Tournament>(`${BACKEND_URL}${this.ENDPOINT}/2/${id}/${sub}`);
+        return this.http.get<Tournament | null>(`${BACKEND_URL}${this.ENDPOINT}/2/${id}/${sub}`).pipe(
+            tap((res: Tournament | null) => {
+                if (res === null) {
+                    this.router.navigate(['/home']);
+                }
+            }),
+            filter((res: Tournament | null): res is Tournament => res !== null)
+        );
     }
 
     getInSeries$(sId: number, password: string): Observable<TournamentInSeries[]> {

@@ -13,4 +13,5 @@ export interface Series {
     finalists: number;
     sub: string;
     password: string;
+    temp: boolean;
 }

@@ -20,6 +20,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { CdkListbox } from '@angular/cdk/listbox';
+import { NotFoundPageComponent } from './not-found/not-found-page/not-found-page.component';
+import { NotFoundModule } from './not-found/not-found.module';
+import { WelcomeModule } from './welcome/welcome.module';
 
 registerLocaleData(localeDECH);
 
@@ -51,7 +54,9 @@ registerLocaleData(localeDECH);
         MatInputModule,
         MatOptionModule,
         MatSelectModule,
-        CdkListbox
+        CdkListbox,
+        NotFoundModule,
+        WelcomeModule
     ],
     providers: [
         {provide: LOCALE_ID, useValue: 'de-ch'},

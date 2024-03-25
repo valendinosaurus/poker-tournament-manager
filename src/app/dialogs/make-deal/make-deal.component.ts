@@ -100,12 +100,9 @@ export class MakeDealComponent implements OnInit {
 
         const even = total / noOfRemainingPlaces;
 
-        console.log(this.model);
-
         this.keys.forEach((key: string) => this.form.get(key)?.patchValue(even));
 
         this.form.updateValueAndValidity();
-        console.log(this.model);
     }
 
     onSubmit(model: { [key: string]: number }): void {

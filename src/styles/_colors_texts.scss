@@ -9,13 +9,15 @@ $borderColor: #fafafa;
 
 $font: #eee;
 
-h1,
-h2,
-h3,
-h4,
-p {
-    color: white;
-    margin: 0;
+.overview {
+    h1,
+    h2,
+    h3,
+    h4,
+    p {
+        color: white;
+        margin: 0;
+    }
 }
 
 h3 {
@@ -95,6 +97,10 @@ span.small {
 
 .text-align-right {
     text-align: right;
+}
+
+.text-align-center {
+    text-align: center;
 }
 
 .green {

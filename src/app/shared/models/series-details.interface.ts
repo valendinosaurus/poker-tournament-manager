@@ -16,6 +16,7 @@ export interface SeriesDetails {
     noOfTournaments: number;
     finalists: number;
     password: string;
+    temp: boolean;
 }
 
 export interface SeriesDetailsS {
@@ -33,5 +34,6 @@ export interface SeriesDetailsS {
     noOfTournaments: number;
     finalists: number;
     password: string;
+    temp: boolean;
 }
 

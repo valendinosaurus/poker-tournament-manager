@@ -25,5 +25,6 @@ export const dummyTourney: Tournament = {
     withRebuy: true,
     withReEntry: false,
     rebuyStack: 1000,
-    rankFormula: 0
+    rankFormula: 0,
+    temp: true
 };

@@ -1,4 +1,3 @@
-
 import { BlindLevel } from './blind-level.interface';
 import { Player } from './player.interface';
 import { Finish } from './finish.interface';
@@ -27,4 +26,5 @@ export interface TournamentModel {
     players: Player[];
     entries: any[]; //Entry[];
     finishes: Finish[];
+    temp: boolean;
 }

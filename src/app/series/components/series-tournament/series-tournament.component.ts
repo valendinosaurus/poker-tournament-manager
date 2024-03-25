@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { TournamentS } from '../../../shared/models/tournament.interface';
 import { SeriesTournament } from '../../models/combined-ranking.interface';
 
 @Component({
@@ -12,9 +11,7 @@ import { SeriesTournament } from '../../models/combined-ranking.interface';
 })
 export class SeriesTournamentComponent {
 
-    @Input() tournament: TournamentS;
-    @Input() combined: SeriesTournament[];
-    @Input() i: number;
-
     @Input() test: SeriesTournament | null;
+    @Input() myEmail: string | undefined | null;
+
 }

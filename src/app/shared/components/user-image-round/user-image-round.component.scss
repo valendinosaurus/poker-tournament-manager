@@ -11,10 +11,36 @@ div {
     margin-right: 10px;
 }
 
+div.b-live {
+    animation: live 3s infinite;
+}
+
 div.b-regular {
-    border: solid 2px $primary;
+    border-color: $primary;
+    border-style: solid;
+}
+
+div.b-my-user {
+    border-color: greenyellow;
+    border-style: solid;
 }
 
 div.b-black {
-    border: solid 4px #666;
+    border-color: #666;
+    border-style: solid;
+}
+
+@keyframes live {
+    0% {
+        border-color: green;
+        border-style: solid;
+    }
+    50% {
+        border-color: $primary;
+        border-style: solid;
+    }
+    100% {
+        border-color: green;
+        border-style: solid;
+    }
 }

@@ -1,5 +1,11 @@
 import { SimpleStat } from '../../shared/models/simple-stat.interface';
 
+export const DEFAULT_DIALOG_POSITION = {
+    position: {
+        top: '40px'
+    }
+};
+
 export const mostSpilled: SimpleStat[] = [
     {
         image: 'https://c8.alamy.com/compde/gc2ebk/ufo-verteiler-lkw-weissbier-in-boston-street-gc2ebk.jpg',

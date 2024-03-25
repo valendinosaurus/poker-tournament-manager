@@ -1,0 +1,21 @@
+<header>
+    <span>
+        <p *ngIf="user">
+            Hello {{ user.name }}
+        </p>
+    </span>
+
+    <span class="links">
+        <a [routerLink]="['/home']" routerLinkActive="active">Home</a>
+        <a [routerLink]="['/admin']" routerLinkActive="active">Admin</a>
+    </span>
+
+    <span>
+        <button *ngIf="isAuthenticated$ | async; else loginButton" mat-raised-button (click)="logout()">logout</button>
+
+        <ng-template #loginButton>
+            <button mat-raised-button (click)="login()">login</button>
+        </ng-template>
+    </span>
+
+</header>

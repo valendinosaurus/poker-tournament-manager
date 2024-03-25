@@ -3,7 +3,10 @@
 <div class="list list-3rd">
 
     <ng-container *ngFor="let p of players$ | async">
-        <app-player-list-item [player]="p"></app-player-list-item>
+        <app-player-list-item
+            [player]="p"
+            [myEmail]="email$ | async"
+        ></app-player-list-item>
     </ng-container>
 
 </div>

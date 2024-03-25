@@ -43,17 +43,6 @@ export class SeriesApiService {
         );
     }
 
-    getWithDetailsByPw$(id: number, password: string): Observable<SeriesDetails | null> {
-        return this.http.get<SeriesDetails | null>(`${BACKEND_URL}${this.ENDPOINT}/details/pw/${id}/${password}`).pipe(
-            map((t: SeriesDetails | null) => t ? ({
-                    ...t,
-                    branding: this.mapBranding(t.branding),
-                    tournaments: this.mapTournaments(t.tournaments)
-                }) : null
-            )
-        );
-    }
-
     getWithDetailsByPw2$(id: number, password: string): Observable<SeriesDetailsS> {
         return this.http.get<SeriesDetailsS>(`${BACKEND_URL}${this.ENDPOINT}/details/2/pw/${id}/${password}`).pipe(
             map((s: SeriesDetailsS) => ({
@@ -80,6 +69,7 @@ export class SeriesApiService {
                     id: +split2[0],
                     date: new Date(split2[1]),
                     name: split2[2],
+                    temp: !!+split2[3],
                     players: [],
                     entries: [],
                     structure: [],
