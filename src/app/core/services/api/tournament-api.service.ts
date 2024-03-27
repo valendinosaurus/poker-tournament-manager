@@ -5,11 +5,10 @@ import { BACKEND_URL } from '../../../app.const';
 import { Tournament } from '../../../shared/models/tournament.interface';
 import { Player } from '../../../shared/models/player.interface';
 import { BlindLevel } from '../../../shared/models/blind-level.interface';
-import { TournamentDetails } from '../../../shared/models/tournament-details.interface';
+import { AdminTournament, TournamentDetails } from '../../../shared/models/tournament-details.interface';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
-import { TournamentInSeries } from '../../../shared/models/tournament-in-series.interface';
 import { TournamentModel } from '../../../shared/models/tournament-model.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
 import { TournamentSettings } from '../../../shared/models/tournament-settings.interface';
@@ -38,17 +37,11 @@ export class TournamentApiService {
     }
 
     getAllWithDetails$(sub: string): Observable<TournamentDetails[]> {
-        return this.http.get<TournamentDetails[]>(`${BACKEND_URL}${this.ENDPOINT}/details/${sub}`).pipe(
-            map(tournaments => tournaments.map(
-                t => {
-                    return {
-                        ...t,
-                        players: this.mapPlayers(t.players),
-                        structure: this.mapBlinds(t.structure)
-                    };
-                }
-            ))
-        );
+        return this.http.get<TournamentDetails[]>(`${BACKEND_URL}${this.ENDPOINT}/details/${sub}`).pipe();
+    }
+
+    getForAdmin$(sub: string): Observable<AdminTournament[]> {
+        return this.http.get<AdminTournament[]>(`${BACKEND_URL}${this.ENDPOINT}/admin/${sub}`).pipe();
     }
 
     private mapPlayers(playersString: any): Player[] {
@@ -115,10 +108,6 @@ export class TournamentApiService {
         );
     }
 
-    getInSeries$(sId: number, password: string): Observable<TournamentInSeries[]> {
-        return this.http.get<TournamentInSeries[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}/${password}`);
-    }
-
     getSeriesMetadata$(id: number, sub: string): Observable<SeriesMetadata> {
         return this.http.get<SeriesMetadata>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}/meta`);
     }
@@ -136,7 +125,7 @@ export class TournamentApiService {
         );
     }
 
-    put$(tournament: Tournament): Observable<ServerResponse> {
+    put$(tournament: TournamentModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,

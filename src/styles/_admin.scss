@@ -108,3 +108,59 @@ h4 {
 .deletable:hover .fa-trash {
     display: block;
 }
+
+
+/* NEW */
+
+div.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+table.admin-table {
+    th, td {
+        text-align: left;
+    }
+
+    tr {
+        border-bottom: solid 1px rgba(darkslategray, 0.5);
+    }
+
+    tr.temp {
+        background: linen;
+    }
+
+    tr td:last-child,
+    tr th:last-child {
+        text-align: right !important;
+    }
+
+    tr:hover {
+        background: aliceblue;
+    }
+
+    .fa {
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .fa {
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.table-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    .fa {
+        font-size: 18px;
+        margin-left: 8px;
+        margin-right: 0 !important;
+    }
+}

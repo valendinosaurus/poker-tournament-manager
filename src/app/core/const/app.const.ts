@@ -2,7 +2,7 @@ import { SimpleStat } from '../../shared/models/simple-stat.interface';
 
 export const DEFAULT_DIALOG_POSITION = {
     position: {
-        top: '40px'
+        top: '10vh'
     }
 };
 

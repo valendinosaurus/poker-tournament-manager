@@ -10,6 +10,8 @@ import { LocationApiService } from '../../../../core/services/api/location-api.s
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { TournamentModel } from '../../../../shared/models/tournament-model.interface';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TournamentDetails } from '../../../../shared/models/tournament-details.interface';
 
 @Component({
     selector: 'app-create-tournament',
@@ -17,6 +19,12 @@ import { TournamentModel } from '../../../../shared/models/tournament-model.inte
     styleUrls: ['./create-tournament.component.scss']
 })
 export class CreateTournamentComponent implements OnInit {
+
+    private dialogRef: MatDialogRef<CreateTournamentComponent> = inject(MatDialogRef<CreateTournamentComponent>);
+
+    data: {
+        tournament?: TournamentDetails;
+    } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
@@ -51,34 +59,36 @@ export class CreateTournamentComponent implements OnInit {
 
     private initModel(): void {
         this.model = {
-            id: undefined,
-            name: '',
-            date: new Date(),
-            maxPlayers: 0,
-            startStack: 0,
-            initialPricePool: 0,
-            buyInAmount: 0,
-            noOfRebuys: 0,
-            rebuyAmount: 0,
-            addonStack: 0,
-            noOfReEntries: 0,
-            addonAmount: 0,
-            withRebuy: false,
-            withAddon: false,
-            withReEntry: false,
-            rebuyStack: 0,
-            payout: 0,
-            rankFormula: null,
-            location: -1,
+            id: this.data?.tournament?.id ?? undefined,
+            name: this.data?.tournament?.name ?? '',
+            date: this.data?.tournament?.date ? new Date(this.data.tournament.date).toISOString() : new Date().toISOString(),
+            maxPlayers: this.data?.tournament?.maxPlayers ?? 0,
+            startStack: this.data?.tournament?.startStack ?? 0,
+            initialPricePool: this.data?.tournament?.initialPricePool ?? 0,
+            buyInAmount: this.data?.tournament?.buyInAmount ?? 0,
+            noOfRebuys: this.data?.tournament?.noOfRebuys ?? 0,
+            rebuyAmount: this.data?.tournament?.rebuyAmount ?? 0,
+            addonStack: this.data?.tournament?.addonStack ?? 0,
+            noOfReEntries: this.data?.tournament?.noOfReEntries ?? 0,
+            addonAmount: this.data?.tournament?.addonAmount ?? 0,
+            withRebuy: this.data?.tournament?.withRebuy ?? false,
+            withAddon: this.data?.tournament?.withAddon ?? false,
+            withReEntry: this.data?.tournament?.withReEntry ?? false,
+            rebuyStack: this.data?.tournament?.rebuyStack ?? 0,
+            payout: this.data?.tournament?.payout ?? 0,
+            rankFormula: this.data?.tournament?.rankFormula ?? null,
+            location: this.data?.tournament?.location ?? -1,
             entries: [],
             structure: [],
             players: [],
             finishes: [],
-            temp: false
+            temp: this.data?.tournament?.temp ?? false,
+            password: ''
         };
     }
 
     private initFields(): void {
+        console.log(this.model.date);
         this.fields = [
             this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
             this.formlyFieldService.getDefaultDateField('date', 'Date', true),
@@ -123,13 +133,24 @@ export class CreateTournamentComponent implements OnInit {
             this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect()),
             this.formlyFieldService.getDefaultSelectField('location', 'location', true, this.allLocations),
             this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Tournament?'),
+            this.formlyFieldService.getDefaultTextField('password', 'Password', false, 100),
         ];
     }
 
     onSubmit(model: TournamentModel): void {
-        this.tournamentApiService.post$(model).pipe(
-            take(1),
-            tap(() => this.triggerService.triggerTournaments())
-        ).subscribe();
+        if (this.data?.tournament) {
+
+            this.tournamentApiService.put$(model).pipe(
+                take(1),
+                tap(() => this.triggerService.triggerTournaments()),
+                tap(() => this.dialogRef.close())
+            ).subscribe();
+        } else {
+            this.tournamentApiService.post$(model).pipe(
+                take(1),
+                tap(() => this.triggerService.triggerTournaments()),
+                tap(() => this.dialogRef.close())
+            ).subscribe();
+        }
     }
 }

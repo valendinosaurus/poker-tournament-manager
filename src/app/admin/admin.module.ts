@@ -11,7 +11,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlayerListComponent } from './components/player/player-list/player-list.component';
 import { SeriesListComponent } from './components/series/series-list/series-list.component';
-import { TournamentListComponent } from './components/tournament/tournament-list/tournament-list.component';
 import { BlindLevelListComponent } from './components/blind-level/blind-level-list/blind-level-list.component';
 import { LocationListComponent } from './components/location/location-list/location-list.component';
 import { LocationTabComponent } from './components/location/location-tab.component';
@@ -29,6 +28,9 @@ import { SeriesListItemComponent } from './components/series/series-list/series-
 import { MatButtonModule } from '@angular/material/button';
 import { PlayerListItemComponent } from './components/player/player-list/player-list-item/player-list-item.component';
 import { MatInputModule } from '@angular/material/input';
+import { EditPlayersAndBlindsComponent } from './components/tournament/edit-players-and-blinds/edit-players-and-blinds.component';
+import { AdminTournamentComponent } from './admin-tournament/admin-tournament.component';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
     declarations: [
@@ -41,7 +43,6 @@ import { MatInputModule } from '@angular/material/input';
         CreateBlindLevelComponent,
         PlayerListComponent,
         SeriesListComponent,
-        TournamentListComponent,
         BlindLevelListComponent,
         LocationListComponent,
         LocationTabComponent,
@@ -55,12 +56,15 @@ import { MatInputModule } from '@angular/material/input';
         TournamentListItemComponent,
         SeriesListItemComponent,
         PlayerListItemComponent,
+        EditPlayersAndBlindsComponent,
+        AdminTournamentComponent,
     ],
     imports: [
         SharedModule,
         MatTabsModule,
         MatButtonModule,
-        MatInputModule
+        MatInputModule,
+        RouterLink
     ],
     exports: [
         AdminComponent,

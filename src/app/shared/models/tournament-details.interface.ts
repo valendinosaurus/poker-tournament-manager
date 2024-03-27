@@ -3,6 +3,14 @@ import { Player } from './player.interface';
 import { Finish } from './finish.interface';
 import { Entry } from './entry.interface';
 
+export interface AdminTournament {
+    id: number;
+    name: string;
+    date: Date;
+    location: string;
+    temp: boolean;
+}
+
 export interface TournamentDetails {
     id: number;
     name: string;
@@ -22,7 +30,9 @@ export interface TournamentDetails {
     payout: number;
     initialPricePool: number;
     rankFormula: number | null;
-    location: string;
+    location: number;
+    password: string;
+    locationName: string;
     structure: BlindLevel[];
     players: Player[];
     entries: Entry[];

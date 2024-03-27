@@ -5,7 +5,7 @@ import { Finish } from './finish.interface';
 export interface TournamentModel {
     id: number | undefined;
     name: string;
-    date: Date;
+    date: string;
     maxPlayers: number;
     buyInAmount: number;
     startStack: number;
@@ -18,6 +18,7 @@ export interface TournamentModel {
     withAddon: boolean;
     addonStack: number;
     addonAmount: number;
+    password: string;
     payout: number;
     initialPricePool: number;
     rankFormula: number | null;

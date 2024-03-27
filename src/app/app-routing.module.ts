@@ -5,6 +5,7 @@ import { TimerPageComponent } from './timer/page/timer-page/timer-page.component
 import { SeriesPageComponent } from './series/page/series-page/series-page.component';
 import { NotFoundPageComponent } from './not-found/not-found-page/not-found-page.component';
 import { WelcomePageComponent } from './welcome/welcome-page/welcome-page.component';
+import { AdminTournamentComponent } from './admin/admin-tournament/admin-tournament.component';
 
 const routes: Routes = [
     {
@@ -26,6 +27,10 @@ const routes: Routes = [
     {
         path: 'admin',
         component: AdminComponent
+    },
+    {
+        path: `admin/tournament/:id`,
+        component: AdminTournamentComponent
     },
     {
         path: 'not-found',

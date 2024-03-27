@@ -7,7 +7,7 @@
 
     <span class="links">
         <a [routerLink]="['/home']" routerLinkActive="active">Home</a>
-        <a [routerLink]="['/admin']" routerLinkActive="active">Admin</a>
+        <a *ngIf="isAuthenticated$ | async" [routerLink]="['/admin']" routerLinkActive="active">Admin</a>
     </span>
 
     <span>

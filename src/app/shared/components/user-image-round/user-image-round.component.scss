@@ -9,6 +9,8 @@ div {
     background-position: center center;
     box-sizing: border-box;
     margin-right: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
 div.b-live {
