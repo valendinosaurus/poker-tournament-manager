@@ -4,13 +4,24 @@ import { Entry } from '../../../../../shared/models/entry.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
 import { Formula, RankingService } from '../../../../../core/services/util/ranking.service';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../../../../shared/models/series-metadata.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
+import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
+import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { SeriesMetadata } from '../../../../../shared/models/series.interface';
 
 @Component({
     selector: 'app-ranking',
     templateUrl: './ranking.component.html',
     styles: [':host{display: contents}'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgFor,
+        UserImageRoundComponent,
+        BulletsComponent,
+        DecimalPipe,
+    ],
 })
 export class RankingComponent implements OnChanges {
 

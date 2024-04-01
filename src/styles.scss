@@ -30,6 +30,20 @@ body {
     margin: auto;
 }
 
+.page-with-header.wide {
+    max-width: 100%;
+    padding-left: 0 !important;
+}
+
+.page-with-header .page-header {
+    padding: 32px;
+}
+
+.page-with-header .page-header h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 svg path {
     stroke-linecap: butt !important;
 }

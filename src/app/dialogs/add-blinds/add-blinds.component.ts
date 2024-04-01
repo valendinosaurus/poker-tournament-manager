@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
@@ -13,11 +13,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
 import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
+import { BlindLevelTextPipe } from '../../shared/pipes/blind-level-text.pipe';
+import { NgIf, NgFor } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
     selector: 'app-add-blinds',
     templateUrl: './add-blinds.component.html',
-    styleUrls: ['./add-blinds.component.scss']
+    styleUrls: ['./add-blinds.component.scss'],
+    standalone: true,
+    imports: [MatRadioModule, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, BlindLevelTextPipe]
 })
 export class AddBlindsComponent implements OnInit {
 

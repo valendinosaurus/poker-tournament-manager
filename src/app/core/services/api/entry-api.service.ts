@@ -25,14 +25,6 @@ export class EntryApiService {
         return this.http.get<Entry>(`${BACKEND_URL}${this.ENDPOINT}/${id}`);
     }
 
-    getInTournament$(tId: number): Observable<Entry[]> {
-        return this.http.get<Entry[]>(`${BACKEND_URL}${this.ENDPOINT}/tournament/${tId}`);
-    }
-
-    getInSeries$(sId: number): Observable<Entry[]> {
-        return this.http.get<Entry[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}`);
-    }
-
     post$(entry: Entry): Observable<ServerResponse> {
         return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,

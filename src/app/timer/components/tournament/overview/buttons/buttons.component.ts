@@ -21,20 +21,24 @@ import { AddAddonComponent } from '../../../../../dialogs/add-addon/add-addon.co
 import { AddFinishComponent } from '../../../../../dialogs/add-finish/add-finish.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TournamentService } from '../../../../../core/services/util/tournament.service';
-import { SeriesMetadata } from '../../../../../shared/models/series-metadata.interface';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgIf } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { SeriesMetadata } from '../../../../../shared/models/series.interface';
 
 declare var anime: any;
 
 @Component({
     selector: 'app-buttons',
     templateUrl: './buttons.component.html',
-    styleUrls: ['./buttons.component.scss']
+    styleUrls: ['./buttons.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButtonModule, MatTooltipModule]
 })
 export class ButtonsComponent implements OnInit, OnChanges {
 

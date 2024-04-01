@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Player } from '../../../shared/models/player.interface';
 import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
-import { ConductedEntry } from '../../../shared/models/conducted-entry.interface';
+import { ConductedEntry } from '../../../shared/models/util/conducted-entry.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
-import { ConductedFinish } from '../../../shared/models/conducted-finish.interface';
+import { ConductedFinish } from '../../../shared/models/util/conducted-finish.interface';
 import { Finish } from '../../../shared/models/finish.interface';
-import { ConductedElimination } from '../../../shared/models/conducted-elimination.interface';
+import { ConductedElimination } from '../../../shared/models/util/conducted-elimination.interface';
 import { Elimination } from '../../../shared/models/elimination.interface';
 
 @Injectable({

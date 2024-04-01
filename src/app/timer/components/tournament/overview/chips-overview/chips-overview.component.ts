@@ -3,11 +3,14 @@ import { Entry } from '../../../../../shared/models/entry.interface';
 import { Player } from '../../../../../shared/models/player.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-chips-overview',
     templateUrl: './chips-overview.component.html',
     styles: [':host{display: contents}'],
+    standalone: true,
+    imports: [DecimalPipe],
 })
 export class ChipsOverviewComponent implements OnChanges {
 

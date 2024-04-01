@@ -10,11 +10,17 @@ import { ModifyPayoutComponent } from '../../../../../dialogs/modify-payout/modi
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-payout-details',
     templateUrl: './payout-details.component.html',
-    styleUrls: ['./payout-details.component.scss']
+    styleUrls: ['./payout-details.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe]
 })
 export class PayoutDetailsComponent implements OnChanges {
 

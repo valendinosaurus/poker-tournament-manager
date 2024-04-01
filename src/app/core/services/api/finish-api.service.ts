@@ -17,10 +17,6 @@ export class FinishApiService {
         return this.http.get<Finish[]>(`${BACKEND_URL}${this.ENDPOINT}`);
     }
 
-    getInSeries$(sId: number): Observable<Finish[]> {
-        return this.http.get<Finish[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}`);
-    }
-
     post$(player: Finish): Observable<ServerResponse> {
         return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,

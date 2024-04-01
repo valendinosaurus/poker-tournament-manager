@@ -5,7 +5,8 @@ import { take, takeUntil } from 'rxjs/operators';
 import { MathService } from '../../core/math.service';
 
 @Directive({
-    selector: '[appMath]'
+    selector: '[appMath]',
+    standalone: true
 })
 export class MathDirective implements OnInit, OnDestroy {
     private alive$ = new Subject<boolean>();

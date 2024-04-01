@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { SimpleStat } from '../../../shared/models/simple-stat.interface';
+import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
+import { NgFor, DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-series-stats',
@@ -7,7 +9,9 @@ import { SimpleStat } from '../../../shared/models/simple-stat.interface';
     styleUrls: [
         './series-stats.component.scss',
         '../../page/series-page/series-page.component.scss'
-    ]
+    ],
+    standalone: true,
+    imports: [NgFor, UserImageRoundComponent, DecimalPipe]
 })
 export class SeriesStatsComponent {
 

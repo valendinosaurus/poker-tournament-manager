@@ -5,11 +5,17 @@ import { AuthService, User } from '@auth0/auth0-angular';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { ConnectionRequestState } from '../../../../shared/enums/connection-request-state.enum';
 import { FetchService } from '../../../../core/services/fetch.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-connect-to-other-user-dialog',
     templateUrl: './connect-to-other-user-dialog.component.html',
-    styleUrls: ['./connect-to-other-user-dialog.component.scss']
+    styleUrls: ['./connect-to-other-user-dialog.component.scss'],
+    standalone: true,
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule]
 })
 export class ConnectToOtherUserDialogComponent {
 

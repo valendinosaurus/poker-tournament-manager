@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { Player } from '../../shared/models/player.interface';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
@@ -19,11 +19,16 @@ import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { Finish } from '../../shared/models/finish.interface';
+import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
     selector: 'app-add-player',
     templateUrl: './add-player.component.html',
-    styleUrls: ['./add-player.component.scss']
+    styleUrls: ['./add-player.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent]
 })
 export class AddPlayerComponent implements OnInit {
 

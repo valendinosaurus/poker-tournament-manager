@@ -5,11 +5,15 @@ import { PlayerApiService } from '../../../../core/services/api/player-api.servi
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { PlayerListItemComponent } from './player-list-item/player-list-item.component';
+import { NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-player-list',
     templateUrl: './player-list.component.html',
-    styleUrls: ['./player-list.component.scss']
+    styleUrls: ['./player-list.component.scss'],
+    standalone: true,
+    imports: [NgFor, PlayerListItemComponent, AsyncPipe]
 })
 export class PlayerListComponent implements OnInit {
 

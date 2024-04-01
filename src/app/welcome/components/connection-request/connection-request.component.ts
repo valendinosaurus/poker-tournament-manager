@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { ConnectionRequest } from '../../../shared/models/connection-request.interface';
+import { ConnectionRequest } from '../../../shared/models/util/connection-request.interface';
 import { ConnectionRequestApiService } from '../../../core/services/api/connection-request-api.service';
 import { take, tap } from 'rxjs/operators';
 import { FetchService } from '../../../core/services/fetch.service';
@@ -7,11 +7,14 @@ import { ConnectionRequestState } from '../../../shared/enums/connection-request
 import { MatDialog } from '@angular/material/dialog';
 import { MapPlayerComponent } from '../../../dialogs/map-player/map-player.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { NgSwitch, NgSwitchCase, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-connection-request',
     templateUrl: './connection-request.component.html',
-    styleUrls: ['./connection-request.component.scss']
+    styleUrls: ['./connection-request.component.scss'],
+    standalone: true,
+    imports: [NgSwitch, NgSwitchCase, NgIf]
 })
 export class ConnectionRequestComponent {
 

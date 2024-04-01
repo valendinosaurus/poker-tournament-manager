@@ -1,12 +1,11 @@
 import { Component, DestroyRef, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../../../../../shared/models/series-metadata.interface';
 import { CreatePlayerComponent } from '../../../../../../admin/components/player/create-player/create-player.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { TournamentSettings } from '../../../../../../shared/models/tournament-settings.interface';
 import { Observable, ReplaySubject } from 'rxjs';
 import { AuthService } from '@auth0/auth0-angular';
@@ -20,16 +19,21 @@ import { AddPlayerComponent } from '../../../../../../dialogs/add-player/add-pla
 import { switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../../../core/services/api/tournament-api.service';
 import { FetchService } from '../../../../../../core/services/fetch.service';
-import { DOCUMENT } from '@angular/common';
+import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
 import { ActionEventApiService } from '../../../../../../core/services/api/action-event-api.service';
 import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../../../../core/const/app.const';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
 
 @Component({
     selector: 'app-menu-dialog',
     templateUrl: './menu-dialog.component.html',
-    styleUrls: ['./menu-dialog.component.scss']
+    styleUrls: ['./menu-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButtonModule, RouterLink, FormsModule, ReactiveFormsModule, FormlyModule, AsyncPipe]
 })
 export class MenuDialogComponent implements OnInit {
 

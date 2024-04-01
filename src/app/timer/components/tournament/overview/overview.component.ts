@@ -28,16 +28,38 @@ import { PayoutDetailsComponent } from './payout-details/payout-details.componen
 import { BlindLevelOverviewComponent } from './blind-level-overview/blind-level-overview.component';
 import { AddBlindsComponent } from '../../../../dialogs/add-blinds/add-blinds.component';
 import { RankingComponent } from './ranking/ranking.component';
-import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
 import { ButtonsComponent } from './buttons/buttons.component';
 import { TournamentService } from '../../../../core/services/util/tournament.service';
+import { BlindLevelTextPipe } from '../../../../shared/pipes/blind-level-text.pipe';
+import { TimePipe } from '../../../../shared/pipes/time.pipe';
+import { LeaderboardInfoComponent } from './leaderboard/leaderboard-info.component';
+import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
+import { SeriesMetadata } from '../../../../shared/models/series.interface';
 
 @Component({
     selector: 'app-overview',
     templateUrl: './overview.component.html',
     styleUrls: ['./overview.component.scss'],
+    standalone: true,
+    imports: [
+        BlindLevelOverviewComponent,
+        PlayerDetailsComponent,
+        NgIf,
+        RankingComponent,
+        LeaderboardInfoComponent,
+        CountdownComponent,
+        ButtonsComponent,
+        PayoutDetailsComponent,
+        PlayerOverviewComponent,
+        BuyinOverviewComponent,
+        ChipsOverviewComponent,
+        TimePipe,
+        AsyncPipe,
+        DatePipe,
+        BlindLevelTextPipe,
+    ],
 })
 export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
@@ -134,7 +156,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
             this.checkIsRebuyPhaseFinished();
 
             if (this.changes > 1) {
-            //    console.log('**** LIVE CHANGE');
+                //    console.log('**** LIVE CHANGE');
 
                 if (this.running) {
                     setTimeout(() => {

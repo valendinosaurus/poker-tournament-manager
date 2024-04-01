@@ -1,4 +1,4 @@
-import { EntryType } from '../enums/entry-type.enum';
+import { EntryType } from '../../enums/entry-type.enum';
 
 export interface ConductedEntry {
     name: string;

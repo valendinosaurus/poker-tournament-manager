@@ -1,13 +1,13 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { RankingService } from '../../core/services/util/ranking.service';
-import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
+import { SeriesMetadata } from '../../shared/models/series.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { Finish } from '../../shared/models/finish.interface';
 import { defer, iif, of } from 'rxjs';
@@ -15,20 +15,25 @@ import { FetchService } from '../../core/services/fetch.service';
 import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { NotificationService } from '../../core/services/notification.service';
-import { ConductedFinish } from '../../shared/models/conducted-finish.interface';
+import { ConductedFinish } from '../../shared/models/util/conducted-finish.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { TournamentService } from '../../core/services/util/tournament.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ConductedElimination } from '../../shared/models/conducted-elimination.interface';
+import { ConductedElimination } from '../../shared/models/util/conducted-elimination.interface';
 import { EliminationApiService } from '../../core/services/api/elimination-api.service';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
+import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-add-finish',
     templateUrl: './add-finish.component.html',
-    styleUrls: ['./add-finish.component.scss']
+    styleUrls: ['./add-finish.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe]
 })
 export class AddFinishComponent implements OnInit {
 
@@ -78,7 +83,7 @@ export class AddFinishComponent implements OnInit {
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get2$(this.data.tournament.id, this.data.sub)),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournament.id, this.data.sub)),
             tap((tournament: Tournament) => {
                 this.tournament = tournament;
                 this.eligibleForSeatOpen = this.tournamentService.getPlayersEligibleForSeatOpen(tournament);

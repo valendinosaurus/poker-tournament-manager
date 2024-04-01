@@ -1,16 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { Branding } from '../../../../shared/models/branding.interface';
 import { BrandingApiService } from '../../../../core/services/api/branding-api.service';
 import { take } from 'rxjs/operators';
 import { BrandingModel } from '../../../../shared/models/branding-model.interface';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-create-branding',
     templateUrl: './create-branding.component.html',
-    styleUrls: ['./create-branding.component.scss']
+    styleUrls: ['./create-branding.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
 })
 export class CreateBrandingComponent implements OnInit {
 

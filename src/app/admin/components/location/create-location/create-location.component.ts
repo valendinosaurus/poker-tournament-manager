@@ -1,16 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { LocationApiService } from '../../../../core/services/api/location-api.service';
 import { Location } from '../../../../shared/models/location.interface';
 import { take } from 'rxjs/operators';
 import { LocationModel } from '../../../../shared/models/location-model.interface';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-create-location',
     templateUrl: './create-location.component.html',
-    styleUrls: ['./create-location.component.scss']
+    styleUrls: ['./create-location.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
 })
 export class CreateLocationComponent implements OnInit {
 

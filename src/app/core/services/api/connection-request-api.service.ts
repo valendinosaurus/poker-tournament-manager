@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { ServerResponse } from '../../../shared/models/server-response';
-import { ConnectionRequest } from '../../../shared/models/connection-request.interface';
+import { ConnectionRequest } from '../../../shared/models/util/connection-request.interface';
 import { filter, map, switchMap } from 'rxjs/operators';
 
 @Injectable({

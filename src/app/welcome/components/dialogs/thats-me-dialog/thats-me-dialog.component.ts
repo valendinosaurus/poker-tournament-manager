@@ -5,11 +5,16 @@ import { PlayerApiService } from '../../../../core/services/api/player-api.servi
 import { AuthService, User } from '@auth0/auth0-angular';
 import { filter, switchMap, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { UserImageRoundComponent } from '../../../../shared/components/user-image-round/user-image-round.component';
 
 @Component({
     selector: 'app-thats-me-dialog',
     templateUrl: './thats-me-dialog.component.html',
-    styleUrls: ['./thats-me-dialog.component.scss']
+    styleUrls: ['./thats-me-dialog.component.scss'],
+    standalone: true,
+    imports: [UserImageRoundComponent, FormsModule, MatButtonModule]
 })
 export class ThatsMeDialogComponent {
 

@@ -3,7 +3,8 @@ import { TEventType } from '../enums/t-event-type.enum';
 import { TEvent } from '../models/t-event.interface';
 
 @Pipe({
-    name: 'tEventTypeIcon'
+    name: 'tEventTypeIcon',
+    standalone: true
 })
 export class TEventTypeIconPipe implements PipeTransform {
 

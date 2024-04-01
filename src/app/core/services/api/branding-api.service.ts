@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Branding } from '../../../shared/models/branding.interface';
+import { Branding, BrandingModel } from '../../../shared/models/branding.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, switchMap } from 'rxjs/operators';
-import { BrandingModel } from '../../../shared/models/branding-model.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({

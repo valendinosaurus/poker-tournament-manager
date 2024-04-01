@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AdaptedPayout } from '../../../shared/models/adapted-payout.interface';
+import { AdaptedPayout } from '../../../shared/models/util/adapted-payout.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TableDraw } from '../../../shared/models/table-draw.interface';
 

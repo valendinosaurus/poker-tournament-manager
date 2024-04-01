@@ -5,11 +5,16 @@ import { BlindLevel } from '../../../../shared/models/blind-level.interface';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
     selector: 'app-blind-level-list',
     templateUrl: './blind-level-list.component.html',
-    styleUrls: ['./blind-level-list.component.scss']
+    styleUrls: ['./blind-level-list.component.scss'],
+    standalone: true,
+    imports: [MatRadioModule, FormsModule, NgFor, NgIf, AsyncPipe]
 })
 export class BlindLevelListComponent implements OnInit {
 

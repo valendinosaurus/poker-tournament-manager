@@ -9,11 +9,17 @@ import {
     ThatsMeDialogComponent
 } from '../../../../../welcome/components/dialogs/thats-me-dialog/thats-me-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../../../core/const/app.const';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-player-list-item',
     templateUrl: './player-list-item.component.html',
-    styleUrls: ['./player-list-item.component.scss']
+    styleUrls: ['./player-list-item.component.scss'],
+    standalone: true,
+    imports: [NgIf, UserImageRoundComponent, MatInputModule, FormsModule]
 })
 export class PlayerListItemComponent implements OnChanges {
 

@@ -4,3 +4,11 @@ export interface Player {
     image: string;
     email?: string | null;
 }
+
+export interface PlayerInSeries extends Player {
+    tId: number;
+}
+
+export interface PlayerModel extends Omit<Player, 'id' | 'email'> {
+    id: number | undefined;
+}

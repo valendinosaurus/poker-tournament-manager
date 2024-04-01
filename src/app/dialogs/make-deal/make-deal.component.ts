@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
+import { SeriesMetadata } from '../../shared/models/series.interface';
 import { Player } from '../../shared/models/player.interface';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { FormGroup } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
+import { FormGroup, FormsModule } from '@angular/forms';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { forkJoin, Observable, of } from 'rxjs';
 import { ServerResponse } from '../../shared/models/server-response';
@@ -16,11 +16,14 @@ import { RankingService } from '../../core/services/util/ranking.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-make-deal',
     templateUrl: './make-deal.component.html',
-    styleUrls: ['./make-deal.component.scss']
+    styleUrls: ['./make-deal.component.scss'],
+    standalone: true,
+    imports: [FormsModule, FormlyModule, MatButtonModule]
 })
 export class MakeDealComponent implements OnInit {
 

@@ -1,18 +1,23 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
-import { Player } from '../../../../shared/models/player.interface';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
-import { PlayerModel } from '../../../../shared/models/player-model.interface';
+import { PlayerModel } from '../../../../shared/models/player.interface';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-create-player',
     templateUrl: './create-player.component.html',
-    styleUrls: ['./create-player.component.scss']
+    styleUrls: ['./create-player.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, MatDialogModule],
+    providers: [
+        {provide: MatDialogRef, useValue: {}},
+    ]
 })
 export class CreatePlayerComponent implements OnInit {
 

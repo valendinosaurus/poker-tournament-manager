@@ -1,19 +1,22 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
-import { Series } from '../../shared/models/series.interface';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { SeriesApiService } from '../../core/services/api/series-api.service';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { MatButtonModule } from '@angular/material/button';
+import { Series } from '../../shared/models/series.interface';
 
 @Component({
     selector: 'app-add-tournament',
     templateUrl: './add-tournament.component.html',
-    styleUrls: ['./add-tournament.component.scss']
+    styleUrls: ['./add-tournament.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
 })
 export class AddTournamentComponent implements OnInit {
 

@@ -2,9 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
 import { combineLatest, Observable, timer } from 'rxjs';
-import { SeriesDetailsS } from '../../../shared/models/series-details.interface';
+import { SeriesS, SeriesMetadata } from '../../../shared/models/series.interface';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
 import { SeriesTournament } from '../../models/combined-ranking.interface';
 import { LeaderboardRow } from '../../models/overall-ranking.interface';
 import { MathContent } from '../../../shared/models/math-content.interface';
@@ -13,6 +12,13 @@ import { SimpleStat } from '../../../shared/models/simple-stat.interface';
 import { RankingService } from '../../../core/services/util/ranking.service';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { FetchService } from '../../../core/services/fetch.service';
+import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
+import { SeriesStatsComponent } from '../../components/series-stats/series-stats.component';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { LeaderboardComponent } from '../../../shared/components/leaderboard/leaderboard.component';
+import { SeriesHeaderComponent } from '../../components/series-header/series-header.component';
+import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export interface SeriesHeader {
     logo: string;
@@ -39,13 +45,25 @@ export interface SeriesStats {
 @Component({
     selector: 'app-series-page',
     templateUrl: './series-page.component.html',
-    styleUrls: ['./series-page.component.scss']
+    styleUrls: ['./series-page.component.scss'],
+    standalone: true,
+    imports: [
+        AppHeaderComponent,
+        SeriesHeaderComponent,
+        LeaderboardComponent,
+        NgIf,
+        SeriesStatsComponent,
+        NgFor,
+        SeriesTournamentComponent,
+        AsyncPipe,
+        MatDialogModule
+    ]
 })
 export class SeriesPageComponent implements OnInit {
 
     user$: Observable<User | undefined | null>;
     myEmail$: Observable<string | undefined | null>;
-    series$: Observable<SeriesDetailsS>;
+    series$: Observable<SeriesS>;
     seriesHeader$: Observable<SeriesHeader>;
     leaderboard$: Observable<any>;
     seriesStats$: Observable<SeriesStats>;
@@ -70,14 +88,13 @@ export class SeriesPageComponent implements OnInit {
 
         this.myEmail$ = this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.email),
-            tap((e) => console.log('email', e))
         );
 
         this.series$ = combineLatest([
             timer(0, 10000),
             this.fetchService.getFetchTrigger$()
         ]).pipe(
-            switchMap(() => this.seriesApiService.getWithDetailsByPw2$(this.seriesId, this.password).pipe(
+            switchMap(() => this.seriesApiService.getWithDetailsByPw$(this.seriesId, this.password).pipe(
                 tap((e) => {
                     if (Object.keys(e).length < 3) {
                         this.router.navigate(['not-found']);
@@ -87,7 +104,7 @@ export class SeriesPageComponent implements OnInit {
             )));
 
         this.seriesHeader$ = this.series$.pipe(
-            map((series: SeriesDetailsS) => ({
+            map((series: SeriesS) => ({
                     logo: series.branding.logo,
                     name: series.name,
                     tournamentsPlayed: series.tournaments.length,
@@ -110,7 +127,7 @@ export class SeriesPageComponent implements OnInit {
             this.series$,
             metadata$
         ]).pipe(
-            map(([series, metadata]: [SeriesDetailsS, SeriesMetadata]) =>
+            map(([series, metadata]: [SeriesS, SeriesMetadata]) =>
                 this.seriesService.calculateSeriesTournaments(series, metadata)
             )
         );

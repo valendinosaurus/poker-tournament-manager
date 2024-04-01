@@ -1,8 +1,43 @@
-<app-page-with-slide-menu>
-    <ng-container page>
-        <app-series-list></app-series-list>
+<div class="admin-header">
+    <h2>Series</h2>
+
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="createSeries()"
+    >
+        CREATE SERIES
+    </button>
+</div>
+
+<table class="admin-table">
+    <tr>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    <ng-container *ngFor="let s of series$ | async">
+        <a style="display: contents" [routerLink]="['/admin/series', s.id]">
+            <tr
+                [class.temp]="s.temp"
+
+            >
+                <td>
+                    <i *ngIf="s.temp" class="fa fa-exclamation-triangle"></i> {{ s.name }}
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <i
+                            class="fa fa-share"
+                            (click)="openSeries(s.id)"
+                        ></i>
+
+                        <i
+                            class="fa fa-trash"
+                            (click)="deleteSeries(s.id)"
+                        ></i>
+                    </div>
+                </td>
+            </tr>
+        </a>
     </ng-container>
-    <ng-container side>
-        <app-create-series></app-create-series>
-    </ng-container>
-</app-page-with-slide-menu>
+</table>

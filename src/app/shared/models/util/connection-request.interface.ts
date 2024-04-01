@@ -1,4 +1,4 @@
-import { ConnectionRequestState } from '../enums/connection-request-state.enum';
+import { ConnectionRequestState } from '../../enums/connection-request-state.enum';
 
 export interface ConnectionRequest {
     id: number;

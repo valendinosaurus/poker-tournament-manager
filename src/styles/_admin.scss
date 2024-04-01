@@ -115,7 +115,15 @@ h4 {
 div.admin-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+
+    h2 {
+        margin-top: 0;
+    }
+
+    h4 {
+        color: #666;
+    }
 }
 
 table.admin-table {
@@ -163,4 +171,14 @@ table.admin-table {
         margin-left: 8px;
         margin-right: 0 !important;
     }
+}
+
+
+div.date {
+    background: #006dc7;
+    color: #fff;
+    font-weight: bold;
+    font-weight: 20px;
+    padding: 12px 24px;
+    border-radius: 12px;
 }

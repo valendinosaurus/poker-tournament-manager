@@ -3,7 +3,8 @@ import { BlindLevel } from '../models/blind-level.interface';
 
 @Pipe({
     name: 'blindLevelText',
-    pure: false
+    pure: false,
+    standalone: true
 })
 export class BlindLevelTextPipe implements PipeTransform {
 

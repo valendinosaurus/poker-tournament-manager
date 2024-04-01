@@ -11,13 +11,6 @@ export class TriggerService {
     triggerPlayers$ = new ReplaySubject<void>();
     triggerBlinds$ = new ReplaySubject<void>();
 
-    constructor() {
-        this.triggerBlinds();
-        this.triggerTournaments();
-        this.triggerPlayers();
-        this.triggerSeriess();
-    }
-
     triggerSeriess(): void {
         this.triggerSeries$.next();
     }

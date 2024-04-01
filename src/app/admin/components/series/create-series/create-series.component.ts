@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { SeriesApiService } from '../../../../core/services/api/series-api.service';
 import { BrandingApiService } from '../../../../core/services/api/branding-api.service';
@@ -9,12 +9,15 @@ import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, User } from '@auth0/auth0-angular';
-import { SeriesModel } from '../../../../shared/models/series-model.interface';
+import { MatButtonModule } from '@angular/material/button';
+import { SeriesModel } from '../../../../shared/models/series.interface';
 
 @Component({
     selector: 'app-create-series',
     templateUrl: './create-series.component.html',
-    styleUrls: ['./create-series.component.scss']
+    styleUrls: ['./create-series.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
 })
 export class CreateSeriesComponent implements OnInit {
 

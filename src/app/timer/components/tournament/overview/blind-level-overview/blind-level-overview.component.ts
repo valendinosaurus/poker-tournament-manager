@@ -1,10 +1,21 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { BlindLevel } from '../../../../../shared/models/blind-level.interface';
+import { BlindLevelTextPipe } from '../../../../../shared/pipes/blind-level-text.pipe';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-blind-level-overview',
     templateUrl: './blind-level-overview.component.html',
     styles: [':host{display: contents}'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatTooltipModule,
+        NgFor,
+        DecimalPipe,
+        BlindLevelTextPipe,
+    ],
 })
 export class BlindLevelOverviewComponent implements OnChanges {
 

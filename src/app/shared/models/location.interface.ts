@@ -3,3 +3,7 @@ export interface Location {
     name: string;
     image: string;
 }
+
+export interface LocationModel extends Omit<Location, 'id'>{
+    id: number | undefined;
+}

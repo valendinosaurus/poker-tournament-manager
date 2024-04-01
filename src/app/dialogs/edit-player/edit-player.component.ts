@@ -5,11 +5,18 @@ import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { AuthService } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
 import { take, tap } from 'rxjs/operators';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-edit-player',
     templateUrl: './edit-player.component.html',
-    styleUrls: ['./edit-player.component.scss']
+    styleUrls: ['./edit-player.component.scss'],
+    standalone: true,
+    imports: [FormsModule, UserImageRoundComponent, MatFormFieldModule, MatInputModule, MatButtonModule]
 })
 export class EditPlayerComponent implements OnInit {
 

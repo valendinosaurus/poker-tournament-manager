@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Player } from '../../../shared/models/player.interface';
+import { Player, PlayerModel } from '../../../shared/models/player.interface';
 import { BACKEND_URL } from '../../../app.const';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, switchMap } from 'rxjs/operators';
-import { PlayerModel } from '../../../shared/models/player-model.interface';
-import { PlayerInSeries } from '../../../shared/models/player-in-series.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
@@ -28,14 +26,6 @@ export class PlayerApiService {
 
     get$(id: number, sub: string): Observable<Player> {
         return this.http.get<Player>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
-    }
-
-    getInTournament$(tId: number, sub: string): Observable<Player[]> {
-        return this.http.get<Player[]>(`${BACKEND_URL}${this.ENDPOINT}/tournament/${tId}/${sub}`);
-    }
-
-    getInSeries$(sId: number, password: string): Observable<PlayerInSeries[]> {
-        return this.http.get<PlayerInSeries[]>(`${BACKEND_URL}${this.ENDPOINT}/series/${sId}/${password}`);
     }
 
     post$(player: PlayerModel): Observable<ServerResponse> {

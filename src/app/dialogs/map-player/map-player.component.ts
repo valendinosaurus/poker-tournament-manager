@@ -1,18 +1,26 @@
 import { Component, inject, mergeApplicationConfig, OnInit, signal, WritableSignal } from '@angular/core';
 import { ConnectionRequestApiService } from '../../core/services/api/connection-request-api.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ConnectionRequest } from '../../shared/models/connection-request.interface';
+import { ConnectionRequest } from '../../shared/models/util/connection-request.interface';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { Player } from '../../shared/models/player.interface';
 import { AuthService } from '@auth0/auth0-angular';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 import { FetchService } from '../../core/services/fetch.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-map-player',
     templateUrl: './map-player.component.html',
-    styleUrls: ['./map-player.component.scss']
+    styleUrls: ['./map-player.component.scss'],
+    standalone: true,
+    imports: [FormsModule, NgIf, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatButtonModule]
 })
 export class MapPlayerComponent implements OnInit {
 
@@ -45,7 +53,6 @@ export class MapPlayerComponent implements OnInit {
     }
 
     selectPlayer(player: Player): void {
-        console.log(player);
         this.model.set(player);
     }
 

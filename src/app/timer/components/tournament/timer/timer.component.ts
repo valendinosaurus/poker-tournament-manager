@@ -1,6 +1,5 @@
 import { Component, DestroyRef, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Tournament } from 'src/app/shared/models/tournament.interface';
-import { SeriesMetadata } from '../../../../shared/models/series-metadata.interface';
 import { defer, iif, Observable, of, Subscription, timer } from 'rxjs';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
@@ -12,10 +11,19 @@ import { ActionEventApiService } from '../../../../core/services/api/action-even
 import { ActionEvent } from '../../../../shared/models/action-event.interface';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { OverviewComponent } from '../overview/overview.component';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { SeriesMetadata } from '../../../../shared/models/series.interface';
 
 @Component({
     selector: 'app-timer',
     templateUrl: './timer.component.html',
+    standalone: true,
+    imports: [
+        NgIf,
+        OverviewComponent,
+        AsyncPipe,
+    ],
 })
 export class TimerComponent implements OnInit, OnChanges {
 
@@ -108,7 +116,7 @@ export class TimerComponent implements OnInit, OnChanges {
 
         this.tournament$ = this.fetchTrigger$.pipe(
             switchMap(() => sub$.pipe(
-                switchMap((sub: string) => this.tournamentApiService.get2$(+tournamentId, sub))
+                switchMap((sub: string) => this.tournamentApiService.get$(+tournamentId, sub))
             )),
             tap(() => this.notificationService.success('Tournament is up to date')),
             shareReplay(1)

@@ -8,6 +8,7 @@ import { debounceTime, map } from 'rxjs/operators';
     selector: 'app-player-overview',
     templateUrl: './player-overview.component.html',
     styles: [':host{display: contents}'],
+    standalone: true,
 })
 export class PlayerOverviewComponent implements OnChanges {
 

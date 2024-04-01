@@ -2,14 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Series } from '../../../shared/models/series.interface';
-import { Tournament } from '../../../shared/models/tournament.interface';
-import { Branding } from '../../../shared/models/branding.interface';
+import { AdminTournament } from '../../../shared/models/tournament.interface';
 import { map, switchMap } from 'rxjs/operators';
-import { SeriesDetails, SeriesDetailsS } from '../../../shared/models/series-details.interface';
+import { Series, SeriesS, SeriesModel } from '../../../shared/models/series.interface';
 import { AuthService, User } from '@auth0/auth0-angular';
-import { SeriesMetadata } from '../../../shared/models/series-metadata.interface';
-import { SeriesModel } from '../../../shared/models/series-model.interface';
+import { SeriesMetadata } from '../../../shared/models/series.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
 
 @Injectable({
@@ -25,100 +22,16 @@ export class SeriesApiService {
     ) {
     }
 
-    getAll$(sub: string): Observable<Series[]> {
-        return this.http.get<Series[]>(`${BACKEND_URL}${this.ENDPOINT}/${sub}`);
+    getForAdmin$(sub: string): Observable<AdminTournament[]> {
+        return this.http.get<AdminTournament[]>(`${BACKEND_URL}${this.ENDPOINT}/admin/${sub}`).pipe();
     }
 
-    getAllWithDetails$(sub: string): Observable<SeriesDetails[]> {
-        return this.http.get<SeriesDetails[]>(`${BACKEND_URL}${this.ENDPOINT}/details/${sub}`).pipe(
-            map(tournaments => tournaments.map(
-                t => {
-                    return {
-                        ...t,
-                        branding: this.mapBranding(t.branding),
-                        tournaments: this.mapTournaments(t.tournaments)
-                    };
-                }
-            ))
-        );
-    }
-
-    getWithDetailsByPw2$(id: number, password: string): Observable<SeriesDetailsS> {
-        return this.http.get<SeriesDetailsS>(`${BACKEND_URL}${this.ENDPOINT}/details/2/pw/${id}/${password}`).pipe(
-            map((s: SeriesDetailsS) => ({
-                ...s,
-                branding: this.mapBranding(s.branding)
-            }))
-        );
+    getWithDetailsByPw$(id: number, password: string): Observable<SeriesS> {
+        return this.http.get<SeriesS>(`${BACKEND_URL}${this.ENDPOINT}/details/pw/${id}/${password}`);
     }
 
     getSeriesMetadata$(id: number, password: string): Observable<SeriesMetadata> {
         return this.http.get<SeriesMetadata>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${password}/meta`);
-    }
-
-    private mapTournaments(tournamentsString: any): Tournament[] {
-        if (tournamentsString) {
-            const tournamentsRaw: string = (tournamentsString ?? '').toString() as string;
-            const split1 = tournamentsRaw.split(';');
-            const tournaments: Tournament[] = [];
-
-            split1.forEach(s1 => {
-                const split2 = s1.split(',');
-
-                tournaments.push({
-                    id: +split2[0],
-                    date: new Date(split2[1]),
-                    name: split2[2],
-                    temp: !!+split2[3],
-                    players: [],
-                    entries: [],
-                    structure: [],
-                    eliminations: [],
-                    initialPricePool: 0,
-                    payout: 0,
-                    location: 0,
-                    addonStack: 0,
-                    addonAmount: 0,
-                    noOfReEntries: 0,
-                    rebuyAmount: 0,
-                    startStack: 0,
-                    buyInAmount: 0,
-                    maxPlayers: 0,
-                    finishes: [],
-                    noOfRebuys: 0,
-                    rebuyStack: 0,
-                    withReEntry: false,
-                    withRebuy: false,
-                    withAddon: false,
-                    rankFormula: 0
-                });
-            });
-
-            return tournaments;
-        }
-
-        return [];
-    }
-
-    private mapBranding(brandingString: any): Branding {
-        if (brandingString) {
-            const brandingRaw: string = (brandingString ?? '').toString() as string;
-            const split1 = brandingRaw.split(',');
-
-            return {
-                id: +split1[0],
-                name: split1[1],
-                description: split1[2],
-                logo: split1[3]
-            };
-        }
-
-        return {
-            id: 0,
-            logo: '',
-            name: '',
-            description: ''
-        };
     }
 
     get$(id: number, sub: string): Observable<Series> {
@@ -138,7 +51,7 @@ export class SeriesApiService {
         );
     }
 
-    put$(series: Series): Observable<ServerResponse> {
+    put$(series: SeriesModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,

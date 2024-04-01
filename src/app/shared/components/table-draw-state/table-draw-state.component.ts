@@ -4,7 +4,8 @@ import { TableDrawState } from '../../enums/table-draw-state.enum';
 @Component({
     selector: 'app-table-draw-state',
     templateUrl: './table-draw-state.component.html',
-    styleUrls: ['./table-draw-state.component.scss']
+    styleUrls: ['./table-draw-state.component.scss'],
+    standalone: true
 })
 export class TableDrawStateComponent {
 

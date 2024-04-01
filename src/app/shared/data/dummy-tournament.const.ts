@@ -20,11 +20,14 @@ export const dummyTourney: Tournament = {
     initialPricePool: 0,
     maxPlayers: 9,
     location: 1,
+    password: '',
+    locationName: 'Location Test',
     finishes: [],
     withAddon: true,
     withRebuy: true,
     withReEntry: false,
     rebuyStack: 1000,
     rankFormula: 0,
+    liveTicker: [],
     temp: true
 };

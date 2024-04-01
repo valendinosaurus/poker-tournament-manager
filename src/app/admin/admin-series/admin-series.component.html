@@ -1,0 +1,91 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin/series']">BACK</a>
+
+
+<ng-container *ngIf="series$ | async as series">
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Series</h4>
+            <h2>
+                {{ series.name }}
+            </h2>
+        </div>
+
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="editSeries(series)"
+        >
+            <i class="fa fa-edit hoverable"></i> EDIT
+        </button>
+    </div>
+
+    <mat-tab-group>
+        <mat-tab label="Overview">
+            <h4>Branding</h4>
+            <app-user-image-round
+                [imageUrl]="series.branding.logo"
+                [size]="78"
+            ></app-user-image-round>
+
+            <h4>Short description</h4>
+            <p>{{ series.shortDesc }}</p>
+
+            <h4>Long description</h4>
+            <p>{{ series.longDesc }}</p>
+
+            <h4> % to final pot / cap</h4>
+            <p>$ {{ series.percentage }} / {{ series.maxAmountPerTournament }}</p>
+
+            <h4>Password</h4>
+            <p>{{ series.password }}</p>
+
+            <h4>Number of tournaments</h4>
+            <p>$ {{ series.noOfTournaments }}</p>
+
+            <h4>Number of finalists</h4>
+            <p>$ {{ series.finalists }}</p>
+
+            <h4>Rank formula</h4>
+            <p>$ {{ series.rankFormula }}</p>
+        </mat-tab>
+
+        <mat-tab label="Tournaments">
+
+            <button
+                mat-raised-button
+                color="primary"
+                (click)="addTournament(series)"
+            >
+                ADD TOURNAMENTS
+            </button>
+            <h2>Tournaments</h2>
+
+            <table class="admin-table">
+                <ng-container *ngFor="let tournament of series.tournaments">
+                    <tr>
+                        <td>
+                            {{ tournament.date | date:'dd.MM.YYYY' }}
+                        </td>
+                        <td>
+                            {{ tournament.name }}
+                        </td>
+                        <td>
+                            <i
+                                class="fa fa-trash"
+                                (click)="deleteTournamentFromSeries(series, tournament.id)"
+                            ></i>
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
+
+        </mat-tab>
+
+    </mat-tab-group>
+
+</ng-container>
+

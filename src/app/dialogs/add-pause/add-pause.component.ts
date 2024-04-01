@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { BlindLevelApiService } from '../../core/services/api/blind-level-api.service';
@@ -10,11 +10,15 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlindLevel } from '../../shared/models/blind-level.interface';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
     selector: 'app-add-pause',
     templateUrl: './add-pause.component.html',
-    styleUrls: ['./add-pause.component.scss']
+    styleUrls: ['./add-pause.component.scss'],
+    standalone: true,
+    imports: [MatRadioModule, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
 })
 export class AddPauseComponent implements OnInit {
 

@@ -3,11 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { AsyncPipe } from '@angular/common';
+import { TimerComponent } from '../../components/tournament/timer/timer.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-timer-page',
     templateUrl: './timer-page.component.html',
-    styleUrls: ['./timer-page.component.scss']
+    styleUrls: ['./timer-page.component.scss'],
+    standalone: true,
+    imports: [TimerComponent, AsyncPipe, MatDialogModule]
 })
 export class TimerPageComponent implements OnInit {
 

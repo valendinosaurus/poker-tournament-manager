@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
@@ -8,7 +8,7 @@ import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { Player } from '../../shared/models/player.interface';
 import { FetchService } from '../../core/services/fetch.service';
 import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
-import { ConductedEntry } from '../../shared/models/conducted-entry.interface';
+import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
@@ -19,11 +19,16 @@ import { TournamentService } from '../../core/services/util/tournament.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
+import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-add-re-entry',
     templateUrl: './add-entry.component.html',
-    styleUrls: ['./add-entry.component.scss']
+    styleUrls: ['./add-entry.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe]
 })
 export class AddEntryComponent implements OnInit {
 
@@ -60,7 +65,7 @@ export class AddEntryComponent implements OnInit {
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get2$(this.data.tournamentId, this.data.sub)),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId, this.data.sub)),
             tap((tournament: Tournament) => {
                 this.eligibleForEntryOrReEntry = this.tournamentService.getPlayersEligibleForEntryOrReEntry(tournament, this.data.isReentry);
                 this.allPlayers = this.eligibleForEntryOrReEntry.map(

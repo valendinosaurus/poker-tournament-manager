@@ -1,18 +1,22 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
-import { AdaptedPayout } from '../../shared/models/adapted-payout.interface';
+import { AdaptedPayout } from '../../shared/models/util/adapted-payout.interface';
 import { Finish } from '../../shared/models/finish.interface';
 import { NotificationService } from '../../core/services/notification.service';
 import { Player } from '../../shared/models/player.interface';
+import { DecimalPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-modify-payout',
     templateUrl: './modify-payout.component.html',
-    styleUrls: ['./modify-payout.component.scss']
+    styleUrls: ['./modify-payout.component.scss'],
+    standalone: true,
+    imports: [FormsModule, FormlyModule, MatButtonModule, DecimalPipe]
 })
 export class ModifyPayoutComponent implements OnInit {
 

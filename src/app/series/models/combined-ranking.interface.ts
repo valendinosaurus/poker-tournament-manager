@@ -1,5 +1,5 @@
-import { Tournament, TournamentS } from '../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
+import { TournamentS } from '../../shared/models/tournament.interface';
+import { SeriesMetadata } from '../../shared/models/series.interface';
 import { SeriesTournamentRow } from './combined-finish.interface';
 import { Player } from '../../shared/models/player.interface';
 

@@ -4,7 +4,8 @@ import { Subject } from 'rxjs';
 @Component({
     selector: 'app-unsubscribe',
     template: '',
-    styleUrls: []
+    styleUrls: [],
+    standalone: true
 })
 export class UnsubscribeComponent implements OnDestroy {
 

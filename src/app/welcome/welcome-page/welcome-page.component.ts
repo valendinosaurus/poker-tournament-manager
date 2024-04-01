@@ -1,32 +1,51 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { combineLatest, Observable, timer } from 'rxjs';
-import { AuthService, User } from '@auth0/auth0-angular';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { ConnectionRequest } from '../../shared/models/connection-request.interface';
+import { User } from '@auth0/auth0-angular';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { ConnectionRequest } from '../../shared/models/util/connection-request.interface';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 import {
     ConnectToOtherUserDialogComponent
 } from '../components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConnectionRequestApiService } from '../../core/services/api/connection-request-api.service';
 import { FetchService } from '../../core/services/fetch.service';
 import { Player } from '../../shared/models/player.interface';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
+import { ConnectionRequestComponent } from '../components/connection-request/connection-request.component';
+import { MatButtonModule } from '@angular/material/button';
+import {
+    PlayerListItemComponent
+} from '../../admin/components/player/player-list/player-list-item/player-list-item.component';
+import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
+import { AuthUtilService } from '../../core/services/auth-util.service';
 
 @Component({
     selector: 'app-welcome-page',
     templateUrl: './welcome-page.component.html',
-    styleUrls: ['./welcome-page.component.scss']
+    styleUrls: ['./welcome-page.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        AppHeaderComponent,
+        NgIf,
+        UserImageRoundComponent,
+        NgFor,
+        PlayerListItemComponent,
+        MatButtonModule,
+        ConnectionRequestComponent,
+        AsyncPipe
+    ]
 })
 export class WelcomePageComponent implements OnInit {
 
-    user$: Observable<User | null | undefined>;
+    user$: Observable<User>;
     userImage$: Observable<string | null | undefined>;
     sub$: Observable<string>;
     email$: Observable<string | null | undefined>;
-
-    private authService: AuthService = inject(AuthService);
 
     allRequests$: Observable<ConnectionRequest[]>;
     incomingRequests$: Observable<ConnectionRequest[]>;
@@ -41,21 +60,17 @@ export class WelcomePageComponent implements OnInit {
     private dialog: MatDialog = inject(MatDialog);
     private connectionRequestApiService: ConnectionRequestApiService = inject(ConnectionRequestApiService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
 
     trigger(): void {
         this.fetchService.trigger();
     }
 
     ngOnInit() {
-        localStorage.setItem('route', `${window.location.href.split(window.location.origin).pop()}`);
 
-        this.user$ = this.authService.user$.pipe(shareReplay(1));
+        this.user$ = this.authUtilService.getUser$();
+        this.sub$ = this.authUtilService.getSub$();
         this.email$ = this.user$.pipe(map(user => user?.email));
-        this.sub$ = this.user$.pipe(
-            filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
-            map(user => user.sub),
-            filter((sub: string | undefined): sub is string => sub !== undefined)
-        );
 
         this.allRequests$ = combineLatest([
             timer(0, 10000),

@@ -138,3 +138,13 @@ button.round {
 h3 > button.round {
     margin-left: 12px;
 }
+
+.mat-sidenav {
+    overflow: hidden;
+    min-height: 50vh !important;
+}
+
+.mat-drawer-inner-container {
+    overflow: hidden !important;
+    min-height: 50vh !important;
+}

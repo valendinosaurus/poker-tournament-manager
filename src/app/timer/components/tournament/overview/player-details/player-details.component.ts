@@ -9,11 +9,22 @@ import { ActionEventApiService } from '../../../../../core/services/api/action-e
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { EliminationApiService } from '../../../../../core/services/api/elimination-api.service';
+import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
+import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
+import { NgFor, NgIf, DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-player-details',
     templateUrl: './player-details.component.html',
     styles: [':host{display: contents}'],
+    standalone: true,
+    imports: [
+        NgFor,
+        NgIf,
+        UserImageRoundComponent,
+        BulletsComponent,
+        DecimalPipe,
+    ],
 })
 export class PlayerDetailsComponent implements OnChanges {
 

@@ -6,11 +6,21 @@ import { Tournament } from '../../shared/models/tournament.interface';
 import { TableDrawService } from '../../core/services/table-draw.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { TableDrawStateComponent } from '../../shared/components/table-draw-state/table-draw-state.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
     selector: 'app-table-draw-dialog',
     templateUrl: './table-draw-dialog.component.html',
-    styleUrls: ['./table-draw-dialog.component.scss']
+    styleUrls: ['./table-draw-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButtonModule, TableDrawStateComponent, NgFor, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule]
 })
 export class TableDrawDialogComponent implements OnInit {
 

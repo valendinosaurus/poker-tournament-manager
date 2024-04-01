@@ -2,11 +2,14 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { Entry } from '../../../../../shared/models/entry.interface';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-buyin-overview',
     templateUrl: './buyin-overview.component.html',
     styles: [':host{display: contents}'],
+    standalone: true,
+    imports: [DecimalPipe],
 })
 export class BuyinOverviewComponent implements OnChanges {
 

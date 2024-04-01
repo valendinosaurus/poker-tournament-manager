@@ -1,18 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { Player } from '../../shared/models/player.interface';
+import { Player, PlayerInSeries } from '../../shared/models/player.interface';
 import { LeaderboardRow } from '../../series/models/overall-ranking.interface';
 import { SeriesTournament } from '../../series/models/combined-ranking.interface';
 import { SeriesTournamentRow } from '../../series/models/combined-finish.interface';
 import { Tournament, TournamentS } from '../../shared/models/tournament.interface';
 import { Formula, RankingService } from './util/ranking.service';
-import { TournamentInSeries } from '../../shared/models/tournament-in-series.interface';
 import { Finish } from '../../shared/models/finish.interface';
 import { Entry } from '../../shared/models/entry.interface';
-import { PlayerInSeries } from '../../shared/models/player-in-series.interface';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { SeriesMetadata } from '../../shared/models/series-metadata.interface';
+import { SeriesMetadata, SeriesS } from '../../shared/models/series.interface';
 import { SimpleStat } from '../../shared/models/simple-stat.interface';
-import { SeriesDetailsS } from '../../shared/models/series-details.interface';
 import { SeriesStats } from '../../series/page/series-page/series-page.component';
 import { mostSpilled } from '../const/app.const';
 
@@ -26,19 +23,19 @@ export class SeriesService {
     private rankingService: RankingService = inject(RankingService);
 
     calculateSeriesTournaments(
-        seriesDetails: SeriesDetailsS,
+        series: SeriesS,
         seriesMetadata: SeriesMetadata
     ): SeriesTournament[] {
-        const tIds = seriesDetails.tournaments.map((t: TournamentInSeries) => t.id).reverse();
+        const tIds = series.tournaments.map((t: TournamentS) => t.id).reverse();
         const combinedRankings: SeriesTournament[] = [];
 
         tIds.forEach(
             (id: number) => {
-                const tournament = seriesDetails.tournaments.filter(t => t.id === id)[0];
+                const tournament = series.tournaments.filter(t => t.id === id)[0];
                 const localFinished: Finish[] = tournament.finishes.filter((f: Finish) => f.tournamentId === id);
                 const localEntries: Entry[] = tournament.entries.filter((e: Entry) => e.tournamentId === id);
                 const localPlayers: PlayerInSeries[] = tournament.players.filter((p: PlayerInSeries) => p.tId === id);
-                const localTournament: TournamentS = tournament; // tournaments.filter((t: TournamentInSeries) => t.id === id)[0];
+                const localTournament: TournamentS = tournament;
 
                 localTournament.players = localPlayers.map((p: PlayerInSeries) => ({
                     image: p.image,
@@ -91,7 +88,6 @@ export class SeriesService {
                     playerId: finish.playerId
                 }));
 
-                console.log(combFinishes);
                 combFinishes = combFinishes.sort(
                     (a, b) => (b.isTemp ? nextRank : b.rank) - (a.isTemp ? nextRank : a.rank));
 
@@ -294,7 +290,7 @@ export class SeriesService {
         );
     }
 
-    getGuaranteedFromSeries(series: SeriesDetailsS): number {
+    getGuaranteedFromSeries(series: SeriesS): number {
         const percentage = series.percentage;
         const cap = +series.maxAmountPerTournament;
         let guaranteed = 0;

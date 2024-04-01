@@ -1,16 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../../core/services/util/formly-field.service';
 import { BlindLevelApiService } from '../../../../core/services/api/blind-level-api.service';
 import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../../core/services/util/trigger.service';
-import { BlindLevelModel } from '../../../../shared/models/blind-level-model.interface';
+import { BlindLevelModel } from '../../../../shared/models/blind-level.interface';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-create-pause',
     templateUrl: './create-pause.component.html',
-    styleUrls: ['./create-pause.component.scss']
+    styleUrls: ['./create-pause.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
 })
 export class CreatePauseComponent implements OnInit {
 
