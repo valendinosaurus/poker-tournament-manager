@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
@@ -11,6 +11,7 @@ import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AdminTournament } from '../../../shared/models/tournament.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-tournament-tab',
@@ -44,28 +45,55 @@ export class TournamentTabComponent implements OnInit {
         this.trigger$.next();
     }
 
-    reload(): void {
-        this.trigger$.next();
-    }
+    deleteTournament(tournament: AdminTournament, event: Event): void {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
 
-    deleteTournament(tId: number): void {
-        this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.tournamentApiService.delete$(tId, sub).pipe(
-                take(1),
-                tap(() => this.reload())
+        const dialogRef = this.dialog.open(
+            ConfirmationDialogComponent,
+            {
+                data: {
+                    title: 'Delete Tournament?',
+                    body: `Do you really want to delete tournament <strong>${tournament.name}</strong>`,
+                    confirm: 'Delete Tournament',
+                    isDelete: true
+                }
+            });
+
+        dialogRef.afterClosed().pipe(
+            switchMap((confirmed) => iif(
+                () => confirmed,
+                defer(() => this.authUtilService.getSub$().pipe(
+                    switchMap((sub: string) => this.tournamentApiService.delete$(tournament.id, sub).pipe(
+                        take(1),
+                        tap(() => this.trigger$.next())
+                    ))
+                )),
+                of(null)
             ))
         ).subscribe();
     }
 
-    openTournament(tId: number): void {
+    openTournament(tId: number, event: Event): void {
+        event.preventDefault();
         const link = this.router.serializeUrl(this.router.createUrlTree(['timer', tId]));
         window.open(link, '_blank');
     }
 
     createTournament(): void {
-        this.dialog.open(CreateTournamentComponent, {
+        const ref = this.dialog.open(CreateTournamentComponent, {
             ...DEFAULT_DIALOG_POSITION,
             height: '80vh'
         });
+
+        ref.afterClosed().pipe(
+            take(1),
+            tap((e) => {
+                if (e) {
+                    this.trigger$.next();
+                }
+            })
+        ).subscribe();
     }
 }

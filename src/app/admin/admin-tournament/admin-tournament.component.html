@@ -13,13 +13,23 @@
             </h2>
         </div>
 
-        <button
-            mat-raised-button
-            color="primary"
-            (click)="editTournament(tournament)"
-        >
-            <i class="fa fa-edit hoverable"></i> EDIT
-        </button>
+        <span class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                (click)="editTournament(tournament)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                (click)="deleteTournament(tournament)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+        </span>
     </div>
 
     <mat-tab-group>

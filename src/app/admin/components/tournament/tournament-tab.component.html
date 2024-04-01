@@ -36,12 +36,12 @@
                     <div class="table-actions">
                         <i
                             class="fa fa-share"
-                            (click)="openTournament(t.id)"
+                            (click)="openTournament(t.id, $event)"
                         ></i>
 
                         <i
                             class="fa fa-trash"
-                            (click)="deleteTournament(t.id)"
+                            (click)="deleteTournament(t, $event)"
                         ></i>
                     </div>
                 </td>

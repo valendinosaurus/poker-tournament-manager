@@ -323,7 +323,8 @@ export class AddFinishComponent implements OnInit {
                 data: {
                     title: 'Remove Seat Open',
                     body: `Do you really want to remove the seat open of <strong>${playerName}</strong>`,
-                    confirm: 'Remove Seat Open'
+                    confirm: 'Remove Seat Open',
+                    isDelete: true
                 }
             });
 

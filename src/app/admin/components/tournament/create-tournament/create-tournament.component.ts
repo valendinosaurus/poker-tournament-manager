@@ -82,7 +82,7 @@ export class CreateTournamentComponent implements OnInit {
             rebuyStack: this.data?.tournament?.rebuyStack ?? 0,
             payout: this.data?.tournament?.payout ?? 0,
             rankFormula: this.data?.tournament?.rankFormula ?? null,
-            location: this.data?.tournament?.location ?? -1,
+            location: this.data?.tournament?.location ?? this.allLocations[0].value,
             temp: this.data?.tournament?.temp ?? false,
             password: '',
         };
@@ -142,14 +142,18 @@ export class CreateTournamentComponent implements OnInit {
             this.tournamentApiService.put$(model).pipe(
                 take(1),
                 tap(() => this.triggerService.triggerTournaments()),
-                tap(() => this.dialogRef.close())
+                tap(() => this.dialogRef.close(true))
             ).subscribe();
         } else {
             this.tournamentApiService.post$(model).pipe(
                 take(1),
                 tap(() => this.triggerService.triggerTournaments()),
-                tap(() => this.dialogRef.close())
+                tap(() => this.dialogRef.close(true))
             ).subscribe();
         }
+    }
+
+    cancel(): void {
+        this.dialogRef.close(false);
     }
 }

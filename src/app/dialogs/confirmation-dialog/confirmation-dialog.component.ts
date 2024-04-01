@@ -15,7 +15,8 @@ export class ConfirmationDialogComponent {
     data: {
         title: string,
         body: string,
-        confirm: string
+        confirm: string,
+        isDelete?: boolean
     } = inject(MAT_DIALOG_DATA);
 
     confirm(): void {

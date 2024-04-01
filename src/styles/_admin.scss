@@ -124,7 +124,14 @@ div.admin-header {
     h4 {
         color: #666;
     }
+
+    .admin-header-buttons {
+        button {
+            margin-left: 8px;
+        }
+    }
 }
+
 
 table.admin-table {
     th, td {

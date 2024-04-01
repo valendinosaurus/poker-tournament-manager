@@ -140,7 +140,8 @@ export class AddAddonComponent implements OnInit {
                     data: {
                         title: 'Remove Addon',
                         body: `Do you really want to remove the addon of <strong>${playerName}</strong> from tournament <strong>${this.data.tournamentName}</strong>`,
-                        confirm: 'Remove Addon'
+                        confirm: 'Remove Addon',
+                        isDelete: true
                     }
                 });
 

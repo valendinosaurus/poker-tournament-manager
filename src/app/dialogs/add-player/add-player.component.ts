@@ -216,7 +216,8 @@ export class AddPlayerComponent implements OnInit {
                 data: {
                     title: 'Remove Player',
                     body: `Do you really want to remove <strong>${playerName}</strong> from tournament <strong>${this.data.tournament.name}</strong>`,
-                    confirm: 'Remove Player'
+                    confirm: 'Remove Player',
+                    isDelete: true
                 }
             });
 

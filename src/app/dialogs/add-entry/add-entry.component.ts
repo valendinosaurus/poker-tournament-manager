@@ -143,7 +143,8 @@ export class AddEntryComponent implements OnInit {
                     data: {
                         title: 'Remove Entry',
                         body: `Do you really want to remove the entry of <strong>${playerName}</strong> from tournament <strong>${this.data.tournamentName}</strong>`,
-                        confirm: 'Remove Entry'
+                        confirm: 'Remove Entry',
+                        isDelete: true
                     }
                 });
 

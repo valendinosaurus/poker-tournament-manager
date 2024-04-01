@@ -8,7 +8,7 @@
 <div class="actions" mat-dialog-actions>
     <button
         mat-raised-button
-        color="primary"
+        [color]="data.isDelete ? 'warn' : 'primary'"
         (click)="confirm()"
     >
         {{ data.confirm}}

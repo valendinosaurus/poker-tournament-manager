@@ -5,7 +5,6 @@
 </h2>
 
 <form
-    *ngIf="true; else createTournament;"
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
 >
@@ -17,7 +16,8 @@
     ></formly-form>
 
     <button
-        mat-raised-button color="primary"
+        mat-raised-button
+        color="primary"
         type="submit"
         [disabled]="!form.valid"
     >
@@ -26,21 +26,9 @@
     </button>
 </form>
 
-<ng-template #createTournament>
-    <mat-stepper linear #stepper>
-        <mat-step>
-            <h1>dadsfasdfas</h1>
-        </mat-step>
-        <mat-step [editable]="false">
-            <h1>dfasdfas</h1>
-        </mat-step>
-        <mat-step [editable]="false">
-            <ng-template matStepLabel>Done</ng-template>
-            <p>You are now done.</p>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button (click)="stepper.reset()">Reset</button>
-            </div>
-        </mat-step>
-    </mat-stepper>
-</ng-template>
+<button
+    mat-raised-button
+    (click)="cancel()"
+>
+    CANCEL
+</button>

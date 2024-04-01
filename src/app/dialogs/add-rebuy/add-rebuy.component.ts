@@ -208,7 +208,8 @@ export class AddRebuyComponent implements OnInit {
                     data: {
                         title: 'Remove Rebuy',
                         body: `Do you really want to remove the rebuy of <strong>${playerName}</strong> from tournament <strong>${this.data.tournamentName}</strong>`,
-                        confirm: 'Remove Rebuy'
+                        confirm: 'Remove Rebuy',
+                        isDelete: true
                     }
                 });
 

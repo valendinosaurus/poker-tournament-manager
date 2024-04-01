@@ -1,8 +1,8 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, RouterLink } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { AuthUtilService } from '../../core/services/auth-util.service';
-import { combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
@@ -19,6 +19,7 @@ import { AddBlindsComponent } from '../../dialogs/add-blinds/add-blinds.componen
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPauseComponent } from '../../dialogs/add-pause/add-pause.component';
 import { AddPlayerComponent } from '../../dialogs/add-player/add-player.component';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-admin-tournament',
@@ -35,6 +36,7 @@ export class AdminTournamentComponent implements OnInit {
     tId$: Observable<number>;
 
     private route: ActivatedRoute = inject(ActivatedRoute);
+    private router: Router = inject(Router);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private dialog: MatDialog = inject(MatDialog);
@@ -96,13 +98,22 @@ export class AdminTournamentComponent implements OnInit {
     }
 
     editTournament(tournament: Tournament): void {
-        this.dialog.open(CreateTournamentComponent, {
+        const ref = this.dialog.open(CreateTournamentComponent, {
             ...DEFAULT_DIALOG_POSITION,
             height: '80vh',
             data: {
                 tournament
             }
         });
+
+        ref.afterClosed().pipe(
+            take(1),
+            tap((e) => {
+                if (e) {
+                    this.trigger$.next();
+                }
+            })
+        ).subscribe();
     }
 
     addBlinds(tournament: Tournament): void {
@@ -146,6 +157,32 @@ export class AdminTournamentComponent implements OnInit {
         dialogRef.afterClosed().pipe(
             takeUntilDestroyed(this.destroyRef),
             tap(() => this.trigger$.next())
+        ).subscribe();
+    }
+
+    deleteTournament(tournament: Tournament): void {
+        const dialogRef = this.dialog.open(
+            ConfirmationDialogComponent,
+            {
+                data: {
+                    title: 'Delete Tournament?',
+                    body: `Do you really want to delete tournament <strong>${tournament.name}</strong>`,
+                    confirm: 'Delete Tournament',
+                    isDelete: true
+                }
+            });
+
+        dialogRef.afterClosed().pipe(
+            switchMap((confirmed) => iif(
+                () => confirmed,
+                defer(() => this.authUtilService.getSub$().pipe(
+                    switchMap((sub: string) => this.tournamentApiService.delete$(tournament.id, sub).pipe(
+                        take(1),
+                        tap(() => this.router.navigate(['/admin']))
+                    ))
+                )),
+                of(null)
+            ))
         ).subscribe();
     }
 

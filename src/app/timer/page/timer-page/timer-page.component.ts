@@ -6,13 +6,14 @@ import { AuthService, User } from '@auth0/auth0-angular';
 import { AsyncPipe } from '@angular/common';
 import { TimerComponent } from '../../components/tournament/timer/timer.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
 
 @Component({
     selector: 'app-timer-page',
     templateUrl: './timer-page.component.html',
     styleUrls: ['./timer-page.component.scss'],
     standalone: true,
-    imports: [TimerComponent, AsyncPipe, MatDialogModule]
+    imports: [TimerComponent, AsyncPipe, MatDialogModule, AppHeaderComponent]
 })
 export class TimerPageComponent implements OnInit {
 

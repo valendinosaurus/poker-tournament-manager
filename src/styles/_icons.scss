@@ -2,10 +2,13 @@
 
 .fa {
     width: fit-content;
+}
+
+.fa:not(.fa-ib) {
     font-size: 24px;
 }
 
-.fa-trash {
+.fa-trash:not(.fa-ib) {
     color: red;
     cursor: pointer;
 
@@ -14,8 +17,8 @@
     }
 }
 
-.fa-edit,
-.fa-wand-magic-sparkles {
+.fa-edit:not(.fa-ib),
+.fa-wand-magic-sparkles:not(.fa-ib) {
     cursor: pointer;
 
     &:hover {
@@ -23,7 +26,7 @@
     }
 }
 
-.fa-share {
+.fa-share:not(.fa-ib) {
     color: $primaryDark;
     cursor: pointer;
 
@@ -32,7 +35,7 @@
     }
 }
 
-.fa-chevron-circle-up {
+.fa-chevron-circle-up:not(.fa-ib) {
     color: $secondary;
     opacity: 0.4;
     cursor: pointer;
@@ -42,7 +45,7 @@
     }
 }
 
-.fa-plus-circle {
+.fa-plus-circle:not(.fa-ib) {
     color: $primaryDark;
     cursor: pointer;
 
@@ -68,6 +71,6 @@ span.relative-icon {
     }
 }
 
-.fa-skull {
+.fa-skull:not(.fa-ib) {
     color: red !important;
 }
