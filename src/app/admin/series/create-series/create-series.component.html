@@ -1,0 +1,33 @@
+<h2>
+    <ng-container *ngIf="!data?.series">Create</ng-container>
+    <ng-container *ngIf="data?.series">Edit</ng-container>
+    Series
+</h2>
+
+<form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit(model)"
+>
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!form.valid"
+    >
+        <ng-container *ngIf="!data?.series">CREATE</ng-container>
+        <ng-container *ngIf="data?.series">EDIT</ng-container>
+    </button>
+</form>
+
+<button
+    mat-raised-button
+    (click)="cancel()"
+>
+    CANCEL
+</button>

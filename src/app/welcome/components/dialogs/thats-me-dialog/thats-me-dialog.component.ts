@@ -8,19 +8,21 @@ import { TriggerService } from '../../../../core/services/util/trigger.service';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { UserImageRoundComponent } from '../../../../shared/components/user-image-round/user-image-round.component';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-thats-me-dialog',
     templateUrl: './thats-me-dialog.component.html',
     styleUrls: ['./thats-me-dialog.component.scss'],
     standalone: true,
-    imports: [UserImageRoundComponent, FormsModule, MatButtonModule]
+    imports: [UserImageRoundComponent, FormsModule, MatButtonModule, NgIf]
 })
 export class ThatsMeDialogComponent {
 
     private dialogRef: MatDialogRef<ThatsMeDialogComponent> = inject(MatDialogRef<ThatsMeDialogComponent>);
     data: {
         player: Player,
+        itsMe: boolean
     } = inject(MAT_DIALOG_DATA);
 
     private playerApiService: PlayerApiService = inject(PlayerApiService);
@@ -33,19 +35,18 @@ export class ThatsMeDialogComponent {
             filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
             switchMap((user: User) => this.playerApiService.put$({
                 ...this.data.player,
-                email: user.email
+                email: this.data.itsMe ? user.email : ''
             })),
             tap(() => {
-                this.closeDialog(new Event('hello'));
+                this.dialogRef.close(true);
                 this.triggerService.triggerPlayers();
             })
         ).subscribe();
 
     }
 
-    closeDialog(event: Event): void {
-        event.preventDefault();
-        this.dialogRef.close();
+    closeDialog(): void {
+        this.dialogRef.close(false);
     }
 
 }

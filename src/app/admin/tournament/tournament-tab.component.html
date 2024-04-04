@@ -1,0 +1,57 @@
+<div class="admin-header">
+    <h2>Tournaments</h2>
+
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="createTournament()"
+    >
+        CREATE TOURNAMENT
+    </button>
+</div>
+
+<table class="admin-table">
+    <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Actions</th>
+    </tr>
+    <ng-container *ngFor="let tournament of tournaments$ | async">
+        <a style="display: contents" [routerLink]="['/admin/tournament', tournament.id]">
+            <tr
+                [class.temp]="tournament.temp"
+
+            >
+                <td>
+                    {{ tournament.date | date:'dd.MM.YYYY' }}
+                </td>
+                <td>
+                    <i *ngIf="tournament.temp" class="fa fa-exclamation-triangle"></i> {{ tournament.name }}
+                </td>
+                <td>
+                    {{ tournament.location }}
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <i
+                            class="fa fa-share"
+                            (click)="openTournament(tournament.id, $event)"
+                        ></i>
+
+                        <i
+                            *ngIf="!tournament.locked"
+                            class="fa fa-trash"
+                            (click)="deleteTournament(tournament, $event)"
+                        ></i>
+
+                        <i
+                            *ngIf="tournament.locked"
+                            class="fa fa-lock"
+                        ></i>
+                    </div>
+                </td>
+            </tr>
+        </a>
+    </ng-container>
+</table>

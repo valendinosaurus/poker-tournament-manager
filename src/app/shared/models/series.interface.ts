@@ -17,6 +17,7 @@ export interface SeriesBase {
     password: string;
     temp: boolean;
     sub: string;
+    locked: boolean;
 }
 
 export interface Series extends SeriesBase {

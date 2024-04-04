@@ -11,19 +11,29 @@ import { provideRouter, Routes, withRouterConfig } from '@angular/router';
 import { WelcomePageComponent } from './app/welcome/welcome-page/welcome-page.component';
 import { TimerPageComponent } from './app/timer/page/timer-page/timer-page.component';
 import { SeriesPageComponent } from './app/series/page/series-page/series-page.component';
-import { AdminComponent } from './app/admin/components/admin.component';
+import { AdminComponent } from './app/admin/admin.component';
 import { NotFoundPageComponent } from './app/not-found/not-found-page/not-found-page.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
-import localeDe from '@angular/common/locales/de';
-import { SeriesTabComponent } from './app/admin/components/series/series-tab.component';
-import { TournamentTabComponent } from './app/admin/components/tournament/tournament-tab.component';
-import { AdminTournamentComponent } from './app/admin/admin-tournament/admin-tournament.component';
-import { AdminSeriesComponent } from './app/admin/admin-series/admin-series.component';
+import { SeriesTabComponent } from './app/admin/series/series-tab.component';
+import { TournamentTabComponent } from './app/admin/tournament/tournament-tab.component';
+import { AdminTournamentComponent } from './app/admin/tournament/admin-tournament/admin-tournament.component';
+import { AdminSeriesComponent } from './app/admin/series/admin-series/admin-series.component';
+import { PlayersTabComponent } from './app/admin/players/players-tab/players-tab.component';
+import { AdminPlayerComponent } from './app/admin/players/admin-player/admin-player.component';
+import { AdminBlindLevelComponent } from './app/admin/blind-level/admin-blind-level/admin-blind-level.component';
+import { BlindLevelTabComponent } from './app/admin/blind-level/blind-level-tab.component';
+import localeDeCh from '@angular/common/locales/de-CH';
+import { AdminLocationComponent } from './app/admin/location/admin-location/admin-location.component';
+import { AdminBrandingComponent } from './app/admin/branding/admin-branding/admin-branding.component';
+import { BrandingTabComponent } from './app/admin/branding/branding-tab.component';
+import { LocationTabComponent } from './app/admin/location/location-tab.component';
 
 if (environment.production) {
     enableProdMode();
 }
+
+registerLocaleData(localeDeCh, 'de-CH');
 
 const routes: Routes = [
     {
@@ -66,6 +76,38 @@ const routes: Routes = [
                 loadComponent: () => AdminSeriesComponent
             },
             {
+                path: `player`,
+                loadComponent: () => PlayersTabComponent
+            },
+            {
+                path: `player/:id`,
+                loadComponent: () => AdminPlayerComponent
+            },
+            {
+                path: `blind-level`,
+                loadComponent: () => BlindLevelTabComponent
+            },
+            {
+                path: `blind-level/:id`,
+                loadComponent: () => AdminBlindLevelComponent
+            },
+            {
+                path: `location`,
+                loadComponent: () => LocationTabComponent
+            },
+            {
+                path: `location/:id`,
+                loadComponent: () => AdminLocationComponent
+            },
+            {
+                path: `branding`,
+                loadComponent: () => BrandingTabComponent
+            },
+            {
+                path: `branding/:id`,
+                loadComponent: () => AdminBrandingComponent
+            },
+            {
                 path: '',
                 redirectTo: 'tournament',
                 pathMatch: 'full'
@@ -82,8 +124,6 @@ const routes: Routes = [
         pathMatch: 'full'
     }
 ];
-
-registerLocaleData(localeDe, 'de-ch');
 
 bootstrapApplication(AppComponent, {
     providers: [

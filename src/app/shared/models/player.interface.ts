@@ -3,6 +3,7 @@ export interface Player {
     name: string;
     image: string;
     email?: string | null;
+    locked: boolean;
 }
 
 export interface PlayerInSeries extends Player {

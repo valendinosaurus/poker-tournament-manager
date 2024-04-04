@@ -16,7 +16,8 @@ export class TableDrawService {
     emptySeatPlayer: Player = {
         name: '----',
         image: '',
-        id: -1
+        id: -1,
+        locked: false
     };
 
     private localStorageService: LocalStorageService = inject(LocalStorageService);
@@ -62,7 +63,8 @@ export class TableDrawService {
                     player: {
                         name: 'tbd',
                         image: '',
-                        id: -1
+                        id: -1,
+                        locked: false
                     },
                     isButton: j === 0,
                     table: i,
@@ -84,7 +86,8 @@ export class TableDrawService {
                     player: {
                         name: 'tbd',
                         image: '',
-                        id: -1
+                        id: -1,
+                        locked: false
                     },
                     isButton: false,
                     table: i,

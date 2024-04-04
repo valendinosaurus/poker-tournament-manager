@@ -1,0 +1,34 @@
+.admin-menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-left: 24px;
+    padding-right: 24px;
+    overflow: hidden;
+    min-height: 30vh;
+}
+
+.admin-menu-container a {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.admin-content {
+    padding-left: 24px;
+
+}
+
+.fa.fa-bars {
+    font-size: 32px;
+    margin-right: 20px;
+    margin-bottom: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 300ms ease;
+
+}
+
+.fa.fa-bars.open {
+    transform: rotate(90deg);
+}

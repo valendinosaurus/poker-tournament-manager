@@ -3,6 +3,7 @@ export interface Branding {
     name: string;
     description: string;
     logo: string;
+    locked: boolean;
 }
 
 export interface BrandingModel extends Omit<Branding, 'id'> {

@@ -1,0 +1,57 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin/location']">BACK</a>
+
+<ng-container *ngIf="location$ | async as location">
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Location</h4>
+            <h2>
+                {{ location.name }}
+            </h2>
+        </div>
+
+        <div class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!!location.locked"
+                (click)="editLocation(location)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                [disabled]="!!location.locked"
+                (click)="deleteLocation(location)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+
+            <button
+                *ngIf="location.locked"
+                mat-raised-button
+                (click)="unlock(location)"
+            >
+                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+            </button>
+
+            <button
+                *ngIf="!location.locked"
+                mat-raised-button
+                (click)="lock(location)"
+            >
+                <i class="fa fa-lock fa-ib"></i> LOCK
+            </button>
+        </div>
+    </div>
+
+    <h4>Image</h4>
+    <img style="max-width: 100%;" [src]="location.image">
+
+</ng-container>
+

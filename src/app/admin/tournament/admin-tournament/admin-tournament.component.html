@@ -1,0 +1,230 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin']">BACK</a>
+
+<ng-container *ngIf="tournament$ | async as tournament">
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Tournament</h4>
+            <h2>
+                {{ tournament.name }}
+            </h2>
+        </div>
+
+        <span class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!!tournament.locked"
+                (click)="editTournament(tournament)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                [disabled]="!!tournament.locked"
+                (click)="deleteTournament(tournament)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+
+            <button
+                *ngIf="tournament.locked"
+                mat-raised-button
+                (click)="unlock(tournament)"
+            >
+                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+            </button>
+
+            <button
+                *ngIf="!tournament.locked"
+                mat-raised-button
+                (click)="lock(tournament)"
+            >
+                <i class="fa fa-lock fa-ib"></i> LOCK
+            </button>
+        </span>
+    </div>
+
+    <mat-tab-group>
+        <mat-tab label="Overview">
+
+            <div class="admin-body admin-body-flexed">
+                <span>
+                    <h4>Date</h4>
+                    <p>{{ tournament.date | date:'dd.MM.YYYY' }}</p>
+                </span>
+
+                <span>
+                    <h4>Location</h4>
+                    <p>{{ tournament.locationName }}</p>
+                </span>
+
+                <span>
+                    <h4>Password</h4>
+                    <p>{{ tournament.password }}</p>
+                </span>
+
+                <span>
+                    <h4>Buy-In</h4>
+                    <p>$ {{ tournament.buyInAmount }}</p>
+                </span>
+
+                <span>
+                    <h4>Number of Rebus</h4>
+                    <p>{{ tournament.noOfRebuys }}</p>
+                </span>
+
+                <span>
+                    <h4>With Re-Entry?</h4>
+                    <p>$ {{ tournament.withReEntry }}</p>
+                </span>
+
+                <span>
+                    <h4>Number of Re-eEntries</h4>
+                    <p>$ {{ tournament.noOfReEntries }}</p>
+                </span>
+
+                <span>
+                    <h4>Rebuy Stack</h4>
+                    <p>$ {{ tournament.rebuyStack }}</p>
+                </span>
+
+                <span>
+                    <h4>Rebuy Cost</h4>
+                    <p>$ {{ tournament.rebuyAmount }}</p>
+                </span>
+
+                <span>
+                    <h4>Addon Stack</h4>
+                    <p>$ {{ tournament.addonStack }}</p>
+                </span>
+
+                <span>
+                    <h4>Addon Cost</h4>
+                    <p>$ {{ tournament.addonAmount }}</p>
+                </span>
+
+                <span>
+                    <h4>Initial Pricepool</h4>
+                    <p>$ {{ tournament.initialPricePool }}</p>
+                </span>
+
+
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Players">
+            <!-- extract -->
+            <div class="flex">
+                <div class="flex-50">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="!!tournament.locked"
+                        (click)="addPlayers(tournament)"
+                    >
+                        ADD PAYERS
+                    </button>
+                    <h2>Players</h2>
+
+                    <table class="admin-table">
+                        <ng-container *ngFor="let player of tournament.players">
+                            <tr>
+                                <td>
+                                    <app-user-image-round [imageUrl]="player.image"></app-user-image-round>
+                                </td>
+                                <td>
+                                    {{ player.name }}
+                                </td>
+                                <td>
+                                    <i
+                                        *ngIf="!tournament.locked"
+                                        class="fa fa-trash"
+                                        (click)="deletePlayerFromTournament(player.id)"
+                                    ></i>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </table>
+                </div>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Blinds">
+            <!-- extract -->
+            <div class="flex">
+                <div class="flex-50">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="!!tournament.locked"
+                        (click)="addBlinds(tournament)"
+                    >
+                        ADD BLINDS
+                    </button>
+
+                    <ng-container *ngFor="let b of tournament.structure; let i = index;">
+                        <div
+                            class="blind"
+                            [class.pause]="b.isPause"
+                        >
+                            <span>
+                                <ng-container *ngIf="!b.isPause">
+                                    <span>
+                                         <strong>{{ b.sb | number:'1.0-0' }}</strong>
+                                    </span>
+                                    <span>
+                                        <strong>{{ b.bb | number:'1.0-0' }}</strong>
+                                    </span>
+                                </ng-container>
+
+                                <span>
+                                    {{ b.duration}}min
+                                </span>
+
+                                <ng-container *ngIf="b.isPause">
+                                    <span>
+                                         PAUSE
+                                    </span>
+                                    <span *ngIf="b.isChipUp">
+                                        (CHIP UP)
+                                    </span>
+                                    <span *ngIf="b.endsRebuy">
+                                        ENDS REBUY
+                                    </span>
+                                </ng-container>
+                            </span>
+
+                            <i
+                                *ngIf="!tournament.locked"
+                                class="fa fa-trash"
+                                (click)="deleteBlindFromTournament(b.id)"
+                            ></i>
+                        </div>
+
+                        <div
+                            *ngIf="blindPositions.indexOf(b.position + 1) === -1 && !tournament.locked"
+                            class="insert-pause"
+                            (click)="addPause(tournament, b.position)"
+                        >
+                            <i
+                                class="fa fa-plus-circle"
+                            ></i>
+                            <span>
+                                INSERT PAUSE
+                            </span>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+        </mat-tab>
+    </mat-tab-group>
+
+</ng-container>
+

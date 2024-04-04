@@ -1,0 +1,52 @@
+<div class="admin-header">
+    <h2>Players</h2>
+
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="createPlayer()"
+    >
+        CREATE PLAYER
+    </button>
+</div>
+
+<table class="admin-table">
+    <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+    </tr>
+    <ng-container *ngFor="let player of players$ | async">
+        <a style="display: contents" [routerLink]="['/admin/player', player.id]">
+            <tr>
+                <td>
+                    <app-user-image-round
+                        [imageUrl]="player.image"
+                        [size]="40"
+                    ></app-user-image-round>
+                </td>
+                <td>
+                    {{ player.name }}
+                </td>
+                <td>
+                    {{ player.email }}
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <i
+                            *ngIf="!player.locked"
+                            class="fa fa-trash"
+                            (click)="deletePlayer(player, $event)"
+                        ></i>
+
+                        <i
+                            *ngIf="player.locked"
+                            class="fa fa-lock"
+                        ></i>
+                    </div>
+                </td>
+            </tr>
+        </a>
+    </ng-container>
+</table>

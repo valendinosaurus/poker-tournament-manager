@@ -41,7 +41,7 @@ export class BrandingApiService {
         );
     }
 
-    put$(branding: Branding): Observable<ServerResponse> {
+    put$(branding: BrandingModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,

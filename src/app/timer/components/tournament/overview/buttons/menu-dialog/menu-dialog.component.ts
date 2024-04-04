@@ -1,7 +1,6 @@
 import { Component, DestroyRef, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../../../../shared/models/tournament.interface';
-import { CreatePlayerComponent } from '../../../../../../admin/components/player/create-player/create-player.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +26,7 @@ import { DEFAULT_DIALOG_POSITION } from '../../../../../../core/const/app.const'
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
+import { CreatePlayerComponent } from '../../../../../../dialogs/create-player/create-player.component';
 
 @Component({
     selector: 'app-menu-dialog',

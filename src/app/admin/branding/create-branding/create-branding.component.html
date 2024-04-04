@@ -1,0 +1,36 @@
+<h2>
+    <ng-container *ngIf="!data?.branding">Create</ng-container>
+    <ng-container *ngIf="data?.branding">Edit</ng-container>
+    Create Branding
+</h2>
+
+<form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit(model)"
+>
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
+
+    <h4>Preview</h4>
+    <img [src]="model.logo" style="max-height: 100px;"/>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!form.valid"
+    >
+        <ng-container *ngIf="!data?.branding">CREATE</ng-container>
+        <ng-container *ngIf="data?.branding">EDIT</ng-container>
+    </button>
+</form>
+
+<button
+    mat-raised-button
+    (click)="cancel()"
+>
+    CANCEL
+</button>

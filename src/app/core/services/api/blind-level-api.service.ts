@@ -45,7 +45,7 @@ export class BlindLevelApiService {
         );
     }
 
-    put$(blindLevel: BlindLevel): Observable<ServerResponse> {
+    put$(blindLevel: BlindLevelModel): Observable<ServerResponse> {
         return this.authService.user$.pipe(
             map((user: User | undefined | null) => user?.sub ?? ''),
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,

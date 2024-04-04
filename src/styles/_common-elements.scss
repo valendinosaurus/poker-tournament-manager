@@ -32,15 +32,6 @@ button:not(:disabled):hover {
     transform-origin: center;
 }
 
-.deletable {
-    cursor: pointer;
-    padding: 2px 8px;
-
-    &:hover {
-        background: aliceblue;
-    }
-}
-
 .sub-group {
     display: block;
     margin-bottom: 20px;

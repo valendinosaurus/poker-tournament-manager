@@ -42,7 +42,8 @@ export class SeriesService {
                     id: p.id,
                     name: p.name,
                     tId: tournament.id,
-                    email: p.email
+                    email: p.email,
+                    locked: false
                 }));
                 localTournament.entries = localEntries;
                 localTournament.finishes = localFinished;

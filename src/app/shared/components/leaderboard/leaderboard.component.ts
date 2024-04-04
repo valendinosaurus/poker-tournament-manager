@@ -2,11 +2,11 @@ import { Component, inject, Input } from '@angular/core';
 import { LeaderboardRow } from '../../../series/models/overall-ranking.interface';
 import { Series, SeriesS } from '../../models/series.interface';
 import { MatDialog } from '@angular/material/dialog';
-import { EditPlayerComponent } from '../../../dialogs/edit-player/edit-player.component';
+import { CreatePlayerComponent } from '../../../dialogs/create-player/create-player.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
 import { Player } from '../../models/player.interface';
 import { UserImageRoundComponent } from '../user-image-round/user-image-round.component';
-import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-leaderboard',
@@ -36,10 +36,11 @@ export class LeaderboardComponent {
             name: row.name,
             image: row.image,
             email: row.email,
-            id: row.playerId
+            id: row.playerId,
+            locked: false
         };
 
-        this.dialog.open(EditPlayerComponent, {
+        this.dialog.open(CreatePlayerComponent, {
             ...DEFAULT_DIALOG_POSITION,
             data: {
                 player: playerToEdit

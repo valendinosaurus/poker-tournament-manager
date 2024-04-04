@@ -1,0 +1,44 @@
+<h2>
+    <ng-container *ngIf="data?.player">
+        <i class="fa fa-edit"></i>
+        Edit
+    </ng-container>
+    <ng-container *ngIf="!data?.player">Create</ng-container>
+    Player
+</h2>
+
+<form
+    (ngSubmit)="onSubmit()"
+>
+    <div class="flex justify-center">
+        <app-user-image-round
+            [imageUrl]="model.userImage()"
+            [size]="128"
+        ></app-user-image-round>
+    </div>
+
+    <mat-form-field>
+        <mat-label>Email of tournament owner</mat-label>
+        <input matInput [ngModel]="model.userImage()" (ngModelChange)="model.userImage.set($event)" name="userImage"/>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Your name</mat-label>
+        <input matInput [ngModel]="model.name()" (ngModelChange)="model.name.set($event)" name="name"/>
+    </mat-form-field>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!model.isValid()"
+    >
+        <ng-container *ngIf="data?.player">
+            EDIT
+        </ng-container>
+        <ng-container *ngIf="!data?.player">
+            CREATE
+        </ng-container>
+    </button>
+</form>
+
+<button mat-raised-button (click)="closeDialog($event)">CLOSE</button>

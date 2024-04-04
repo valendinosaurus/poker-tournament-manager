@@ -1,0 +1,83 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin/blind-level']">BACK</a>
+
+
+<ng-container *ngIf="blindLevel$ | async as blindLevel">
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Blind Level</h4>
+            <h2>
+                <ng-container *ngIf="!blindLevel.isPause">
+                    {{ blindLevel.sb | number:'1.0-0' }} /
+                    {{ blindLevel.bb | number:'1.0-0' }}
+                </ng-container>
+
+                <ng-container *ngIf="blindLevel.isPause">
+                    PAUSE
+                </ng-container>
+
+                - {{ blindLevel.duration | number:'1.0-0' }} min
+            </h2>
+        </div>
+
+        <div class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                (click)="editBlindLevel(blindLevel)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                (click)="deleteBlindLevel(blindLevel)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+        </div>
+    </div>
+
+    <div class="admin-body admin-body-flexed">
+        <span *ngIf="!blindLevel.isPause">
+            <h4>Ante</h4>
+            <p>
+                {{ blindLevel.ante | number:'1.0-0' }}
+            </p>
+        </span>
+
+        <span *ngIf="!blindLevel.isPause">
+            <h4>Button Ante</h4>
+            <p>
+                {{ blindLevel.btnAnte | number:'1.0-0' }}
+            </p>
+        </span>
+
+        <span *ngIf="blindLevel.isPause">
+            <h4>is Chip-Up</h4>
+            <p>
+                <ng-container *ngIf="blindLevel.isChipUp; else times;">
+                    <i class="fa fa-check"></i>
+                </ng-container>
+            </p>
+        </span>
+
+        <span *ngIf="blindLevel.isPause">
+            <h4>ends Rebuy</h4>
+            <p>
+                <ng-container *ngIf="blindLevel.endsRebuy; else times;">
+                    <i class="fa fa-check"></i>
+                </ng-container>
+            </p>
+        </span>
+    </div>
+</ng-container>
+
+
+<ng-template #times>
+    <i class="fa fa-times"></i>
+</ng-template>

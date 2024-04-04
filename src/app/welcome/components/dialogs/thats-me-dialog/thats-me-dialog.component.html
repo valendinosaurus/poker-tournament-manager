@@ -23,14 +23,24 @@
         color="primary"
         type="submit"
     >
-        YES, that's me!
-    </button>
-
-    <button
-        mat-raised-button
-        color="warn"
-        (click)="closeDialog($event)"
-    >
-        No
+        <ng-container *ngIf="data.itsMe">
+            YES, that's me!
+        </ng-container>
+        <ng-container *ngIf="!data.itsMe">
+            No, that's not me!
+        </ng-container>
     </button>
 </form>
+
+<button
+    mat-raised-button
+    color="warn"
+    (click)="closeDialog()"
+>
+    <ng-container *ngIf="data.itsMe">
+        No
+    </ng-container>
+    <ng-container *ngIf="!data.itsMe">
+        Cancel
+    </ng-container>
+</button>

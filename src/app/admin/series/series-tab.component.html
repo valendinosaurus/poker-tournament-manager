@@ -1,0 +1,49 @@
+<div class="admin-header">
+    <h2>Series</h2>
+
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="createSeries()"
+    >
+        CREATE SERIES
+    </button>
+</div>
+
+<table class="admin-table">
+    <tr>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    <ng-container *ngFor="let series of series$ | async">
+        <a style="display: contents" [routerLink]="['/admin/series', series.id]">
+            <tr
+                [class.temp]="series.temp"
+
+            >
+                <td>
+                    <i *ngIf="series.temp" class="fa fa-exclamation-triangle"></i> {{ series.name }}
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <i
+                            class="fa fa-share"
+                            (click)="openSeries(series.id)"
+                        ></i>
+
+                        <i
+                            *ngIf="!series.locked"
+                            class="fa fa-trash"
+                            (click)="deleteSeries(series, $event)"
+                        ></i>
+
+                        <i
+                            *ngIf="series.locked"
+                            class="fa fa-lock"
+                        ></i>
+                    </div>
+                </td>
+            </tr>
+        </a>
+    </ng-container>
+</table>

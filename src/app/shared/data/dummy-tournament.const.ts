@@ -29,5 +29,6 @@ export const dummyTourney: Tournament = {
     rebuyStack: 1000,
     rankFormula: 0,
     liveTicker: [],
-    temp: true
+    temp: true,
+    locked: false
 };

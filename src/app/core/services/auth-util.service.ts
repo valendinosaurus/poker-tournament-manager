@@ -24,4 +24,11 @@ export class AuthUtilService {
             shareReplay(1)
         );
     }
+
+    getEmail$(): Observable<string | undefined> {
+        return this.getUser$().pipe(
+            map((user: User) => user.email),
+            shareReplay(1)
+        );
+    }
 }

@@ -1,0 +1,84 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin/player']">BACK</a>
+
+
+<ng-container *ngIf="player$ | async as player">
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Player</h4>
+            <h2>
+                {{ player.name }}
+            </h2>
+        </div>
+
+        <div class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!!player.locked"
+                (click)="editPlayer(player)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                [disabled]="!!player.locked"
+                (click)="deletePlayer(player)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+
+            <button
+                *ngIf="(email$ | async) !== player.email"
+                mat-raised-button
+                color="accent"
+                [disabled]="!!player.locked"
+                (click)="thatsMe(player)"
+            >
+                <i class="fa fa-user fa-ib"></i> THAT'S ME
+            </button>
+
+            <button
+                *ngIf="(email$ | async) === player.email"
+                mat-raised-button
+                color="accent"
+                [disabled]="!!player.locked"
+                (click)="thatsNotMe(player)"
+            >
+                <i class="fa fa-user fa-ib"></i> THAT'S NOT ME
+            </button>
+
+            <button
+                *ngIf="player.locked"
+                mat-raised-button
+                (click)="unlock(player)"
+            >
+                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+            </button>
+
+            <button
+                *ngIf="!player.locked"
+                mat-raised-button
+                (click)="lock(player)"
+            >
+                <i class="fa fa-lock fa-ib"></i> LOCK
+            </button>
+        </div>
+    </div>
+
+    <h4>Image</h4>
+    <app-user-image-round
+        [imageUrl]="player.image"
+        [size]="78"
+    ></app-user-image-round>
+
+    <h4>Email</h4>
+    <p>{{ player.email ?? '-' }}</p>
+
+</ng-container>
+

@@ -17,6 +17,10 @@
     }
 }
 
+.fa-lock:not(.fa-ib) {
+    color: #777;
+}
+
 .fa-edit:not(.fa-ib),
 .fa-wand-magic-sparkles:not(.fa-ib) {
     cursor: pointer;

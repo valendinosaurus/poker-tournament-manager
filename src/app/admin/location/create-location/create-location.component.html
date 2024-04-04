@@ -1,0 +1,37 @@
+<h2>
+    <ng-container *ngIf="!data?.location">Create</ng-container>
+    <ng-container *ngIf="data?.location">Edit</ng-container>
+    Location
+</h2>
+
+<form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit(model)"
+>
+
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
+
+    <h4>Preview</h4>
+    <img [src]="model.image" style="max-height: 100px;"/>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!form.valid"
+    >
+        <ng-container *ngIf="!data?.location">CREATE</ng-container>
+        <ng-container *ngIf="data?.location">EDIT</ng-container>
+    </button>
+</form>
+
+<button
+    mat-raised-button
+    (click)="cancel()"
+>
+    CANCEL
+</button>

@@ -15,13 +15,11 @@ import { Player } from '../../shared/models/player.interface';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { ConnectionRequestComponent } from '../components/connection-request/connection-request.component';
 import { MatButtonModule } from '@angular/material/button';
-import {
-    PlayerListItemComponent
-} from '../../admin/components/player/player-list/player-list-item/player-list-item.component';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { AuthUtilService } from '../../core/services/auth-util.service';
+import { PlayerListItemComponent } from '../../admin/players/player-list-item/player-list-item.component';
 
 @Component({
     selector: 'app-welcome-page',

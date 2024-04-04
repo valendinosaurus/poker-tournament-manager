@@ -1,0 +1,100 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<div class="page-with-header wide">
+    <div class="page-header flex align-center">
+        <i
+            class="fa fa-bars"
+            [class.open]="isOpen()"
+            (click)="toggleSidenav()"
+        ></i>
+
+        <h1>Admin</h1>
+    </div>
+
+    <mat-sidenav-container class="example-container">
+        <mat-sidenav
+            mode="side"
+            [opened]="isOpen()"
+        >
+            <div class="admin-menu-container">
+                <a
+                    [routerLink]="['tournament']"
+                    mat-menu-item
+                >
+                    Tournaments
+                </a>
+                <a
+                    [routerLink]="['series']"
+                    mat-menu-item
+                >
+                    Series
+                </a>
+                <a
+                    [routerLink]="['player']"
+                    mat-menu-item
+                >
+                    Players
+                </a>
+                <a
+                    [routerLink]="['blind-level']"
+                    mat-menu-item
+                >
+                    Blind Levels
+                </a>
+                <a
+                    [routerLink]="['location']"
+                    mat-menu-item
+                >
+                    Locations
+                </a>
+                <a
+                    [routerLink]="['branding']"
+                    mat-menu-item
+                >
+                    Branding
+                </a>
+            </div>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="admin-content">
+                <router-outlet></router-outlet>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+
+</div>
+
+
+<!--<div class="page-with-header">-->
+
+<!--    <mat-tab-group>-->
+<!--        <mat-tab label="Tournament">-->
+<!--            <app-tournament-tab></app-tournament-tab>-->
+<!--        </mat-tab>-->
+
+<!--        <mat-tab label="Series">-->
+<!--            <app-series-tab></app-series-tab>-->
+<!--        </mat-tab>-->
+
+<!--        <mat-tab label="Player">-->
+<!--            <app-player-tab></app-player-tab>-->
+<!--        </mat-tab>-->
+
+<!--        <mat-tab label="Blind Level">-->
+<!--            <app-blind-level-tab></app-blind-level-tab>-->
+<!--        </mat-tab>-->
+
+<!--        &lt;!&ndash;    <mat-tab label="Location">&ndash;&gt;-->
+<!--        &lt;!&ndash;        <app-location-tab></app-location-tab>&ndash;&gt;-->
+<!--        &lt;!&ndash;    </mat-tab>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;    <mat-tab label="Branding">&ndash;&gt;-->
+<!--        &lt;!&ndash;        <app-branding-tab></app-branding-tab>&ndash;&gt;-->
+<!--        &lt;!&ndash;    </mat-tab>&ndash;&gt;-->
+
+<!--    </mat-tab-group>-->
+
+
+<!--</div>-->

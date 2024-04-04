@@ -1,0 +1,33 @@
+<h2>
+    <ng-container *ngIf="!data?.blindLevel">Create</ng-container>
+    <ng-container *ngIf="data?.blindLevel">Edit</ng-container>
+    Pause
+</h2>
+
+<form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit(model)"
+>
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!form.valid"
+    >
+        <ng-container *ngIf="!data?.blindLevel">CREATE</ng-container>
+        <ng-container *ngIf="data?.blindLevel">EDIT</ng-container>
+    </button>
+</form>
+
+<button
+    mat-raised-button
+    (click)="cancel()"
+>
+    CANCEL
+</button>

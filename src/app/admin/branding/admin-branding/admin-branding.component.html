@@ -1,0 +1,61 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin/branding']">BACK</a>
+
+<ng-container *ngIf="branding$ | async as branding">
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Branding</h4>
+            <h2>
+                {{ branding.name }}
+            </h2>
+        </div>
+
+        <div class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!!branding.locked"
+                (click)="editBranding(branding)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                [disabled]="!!branding.locked"
+                (click)="deleteBranding(branding)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+
+            <button
+                *ngIf="branding.locked"
+                mat-raised-button
+                (click)="unlock(branding)"
+            >
+                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+            </button>
+
+            <button
+                *ngIf="!branding.locked"
+                mat-raised-button
+                (click)="lock(branding)"
+            >
+                <i class="fa fa-lock fa-ib"></i> LOCK
+            </button>
+        </div>
+    </div>
+
+    <h4>Description</h4>
+    <p>{{ branding.description }}</p>
+
+    <h4>Logo</h4>
+    <img style="max-width: 100%;" [src]="branding.logo">
+
+
+</ng-container>
+

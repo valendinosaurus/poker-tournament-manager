@@ -1,0 +1,116 @@
+<div class="admin-header">
+    <h2>Blind Levels</h2>
+
+    <div class="admin-header-buttons">
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="createBlindLevel()"
+        >
+            CREATE BLIND LEVEL
+        </button>
+
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="createPause()"
+        >
+            CREATE PAUSE
+        </button>
+    </div>
+</div>
+
+<div class="admin-table-filter">
+    <div class="admin-table-filter-row">
+        <strong>Blind Type</strong>
+
+        <mat-radio-group [ngModel]="type" (ngModelChange)="filterType($event)">
+            <mat-radio-button value="ALL">ALL</mat-radio-button>
+            <mat-radio-button value="REGULAR">REGULAR</mat-radio-button>
+            <mat-radio-button value="PAUSE">PAUSE</mat-radio-button>
+        </mat-radio-group>
+    </div>
+
+    <div class="admin-table-filter-row">
+        <strong>Duration</strong>
+
+        <mat-radio-group [ngModel]="type" (ngModelChange)="filterDuration($event)">
+            <mat-radio-button value="-1">ALL</mat-radio-button>
+            <ng-container *ngFor="let d of durations$ | async">
+                <mat-radio-button [value]="d">{{ d }} min</mat-radio-button>
+            </ng-container>
+        </mat-radio-group>
+    </div>
+</div>
+
+<table class="admin-table">
+    <tr>
+        <th>Type</th>
+        <th (click)="sortBy('sb')">SB</th>
+        <th (click)="sortBy('bb')">BB</th>
+        <th (click)="sortBy('ante')">Ante</th>
+        <th (click)="sortBy('btnAnte')">Btn Ante</th>
+        <th (click)="sortBy('duration')">Duration</th>
+        <th (click)="sortBy('isPause')">is Pause</th>
+        <th (click)="sortBy('isChipUp')">is Chip-Up</th>
+        <th (click)="sortBy('endsRebuy')">ends Rebuy</th>
+        <th>Actions</th>
+    </tr>
+    <ng-container *ngFor="let blindLevel of sortedAndFilteredBlindLevels$ | async">
+        <a style="display: contents" [routerLink]="['/admin/blind-level', blindLevel.id]">
+            <tr [class.blind-pause]="blindLevel.isPause">
+                <td>
+                    <ng-container *ngIf="!blindLevel.isPause">
+                        <i class="fa fa-clock"></i>
+                    </ng-container>
+
+                    <ng-container *ngIf="blindLevel.isPause">
+                        <i class="fa fa-pause-circle"></i>
+                    </ng-container>
+                </td>
+                <td>
+                    {{ (blindLevel.sb > 0) ? (blindLevel.sb | number:'1.0-0') : '-' }}
+                </td>
+                <td>
+                    {{ (blindLevel.bb > 0) ? (blindLevel.bb | number:'1.0-0') : '-' }}
+                </td>
+                <td>
+                    {{ (blindLevel.ante > 0) ? (blindLevel.ante | number:'1.0-0') : '-' }}
+                </td>
+                <td>
+                    {{ (blindLevel.btnAnte > 0) ? (blindLevel.btnAnte | number:'1.0-0') : '-' }}
+                </td>
+                <td>
+                    {{ blindLevel.duration | number:'1.0-0' }} min
+                </td>
+                <td>
+                    <ng-container *ngIf="blindLevel.isPause; else times;">
+                        <i class="fa fa-check"></i>
+                    </ng-container>
+                </td>
+                <td>
+                    <ng-container *ngIf="blindLevel.isChipUp; else times;">
+                        <i class="fa fa-check"></i>
+                    </ng-container>
+                </td>
+                <td>
+                    <ng-container *ngIf="blindLevel.endsRebuy; else times;">
+                        <i class="fa fa-check"></i>
+                    </ng-container>
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <i
+                            class="fa fa-trash"
+                            (click)="deleteBlindLevel(blindLevel, $event)"
+                        ></i>
+                    </div>
+                </td>
+            </tr>
+        </a>
+    </ng-container>
+</table>
+
+<ng-template #times>
+    <i class="fa fa-times"></i>
+</ng-template>

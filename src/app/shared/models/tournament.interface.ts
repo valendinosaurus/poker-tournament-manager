@@ -34,6 +34,7 @@ export interface TournamentBase {
     liveTicker: TEvent[];
     temp: boolean;
     password: string;
+    locked: boolean;
 }
 
 export interface AdminTournament {
@@ -42,6 +43,7 @@ export interface AdminTournament {
     date: Date;
     location: string;
     temp: boolean;
+    locked: boolean;
 }
 
 export interface Tournament extends TournamentBase {
