@@ -36,8 +36,7 @@ export class TournamentTabComponent implements OnInit {
 
         this.tournaments$ = this.trigger$.pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.authUtilService.getSub$()),
-            switchMap((sub: string) => this.tournamentApiService.getForAdmin$(sub)),
+            switchMap(() => this.tournamentApiService.getForAdmin$()),
             shareReplay(1)
         );
 
@@ -63,11 +62,9 @@ export class TournamentTabComponent implements OnInit {
         dialogRef.afterClosed().pipe(
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.tournamentApiService.delete$(tournament.id, sub).pipe(
-                        take(1),
-                        tap(() => this.trigger$.next())
-                    ))
+                defer(() => this.tournamentApiService.delete$(tournament.id).pipe(
+                    take(1),
+                    tap(() => this.trigger$.next())
                 )),
                 of(null)
             ))

@@ -20,7 +20,7 @@ import { Tournament } from '../../shared/models/tournament.interface';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -41,8 +41,7 @@ export class AddAddonComponent implements OnInit {
     data: {
         tournamentId: number,
         tournamentName: string,
-        clientId: number,
-        sub: string
+        clientId: number
     } = inject(MAT_DIALOG_DATA);
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
@@ -64,7 +63,7 @@ export class AddAddonComponent implements OnInit {
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId, this.data.sub)),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId)),
             tap((tournament: Tournament) => {
                 this.eligibleForAddon = this.tournamentService.getPlayersEligibleForAddon(tournament);
                 this.allPlayers = this.eligibleForAddon.map(
@@ -178,7 +177,9 @@ export class AddAddonComponent implements OnInit {
         }
     }
 
-    closeDialog(): void {
+    closeDialog(event: Event): void {
+        event.preventDefault();
+
         if (this.dialogRef) {
             this.dialogRef.close();
         }

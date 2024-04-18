@@ -1,0 +1,77 @@
+<app-app-header
+    [user]="user$ | async"
+></app-app-header>
+
+<a [routerLink]="['/admin/blind-structure']">BACK</a>
+
+<ng-container *ngIf="blindStructure$ | async as blindStructure">
+
+    <div class="admin-header">
+        <div class="flex flex-dir-column">
+            <h4>Blind Structure</h4>
+            <h2>
+                {{ blindStructure.name }}
+            </h2>
+        </div>
+
+        <div class="admin-header-buttons">
+            <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!!blindStructure.locked"
+                (click)="editStructure(blindStructure)"
+            >
+                <i class="fa fa-edit fa-ib"></i> EDIT
+            </button>
+
+            <button
+                mat-raised-button
+                color="accent"
+                [disabled]="!!blindStructure.locked"
+                (click)="addBlinds(blindStructure)"
+            >
+                <i class="fa fa-edit fa-ib"></i> ADD MORE LEVELS
+            </button>
+
+            <button
+                mat-raised-button
+                color="warn"
+                [disabled]="!!blindStructure.locked"
+                (click)="delete(blindStructure)"
+            >
+                <i class="fa fa-trash fa-ib"></i> DELETE
+            </button>
+
+            <button
+                *ngIf="!!blindStructure.locked"
+                mat-raised-button
+                (click)="unlock(blindStructure)"
+            >
+                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+            </button>
+
+            <button
+                *ngIf="!blindStructure.locked"
+                mat-raised-button
+                (click)="lock(blindStructure)"
+            >
+                <i class="fa fa-lock fa-ib"></i> LOCK
+            </button>
+        </div>
+    </div>
+
+    <div class="admin-body">
+        <app-blind-structure-view
+            *ngIf="blindStructure.structure"
+            [structure]="blindStructure.structure"
+            [locked]="blindStructure.locked"
+            (deleteBlind)="deleteBlindFromStructure(blindStructure, $event)"
+            (addPause)="addPauseToStructure(blindStructure, $event)"
+        ></app-blind-structure-view>
+    </div>
+</ng-container>
+
+
+<ng-template #times>
+    <i class="fa fa-times"></i>
+</ng-template>

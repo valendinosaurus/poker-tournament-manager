@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
@@ -14,10 +14,7 @@ export class TEventApiService {
 
     private readonly ENDPOINT = 't-event';
 
-    constructor(
-        private http: HttpClient
-    ) {
-    }
+    private http: HttpClient = inject(HttpClient);
 
     getAll$(tId: number): Observable<TEvent[]> {
         return this.http.get<TEvent[]>(`${BACKEND_URL}${this.ENDPOINT}/${tId}`).pipe(map(e => e.reverse()));

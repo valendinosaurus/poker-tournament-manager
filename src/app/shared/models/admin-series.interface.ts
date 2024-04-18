@@ -3,4 +3,5 @@ export interface AdminSeries {
     name: string;
     temp: boolean;
     locked: boolean;
+    password: string;
 }

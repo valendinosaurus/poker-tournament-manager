@@ -28,7 +28,7 @@ export interface SeriesS extends SeriesBase {
     tournaments: TournamentS[];
 }
 
-export interface SeriesModel extends Omit<Series, 'id' | 'branding' | 'finalTournament' | 'tournaments'> {
+export interface SeriesModel extends Omit<Series, 'id' | 'branding' | 'finalTournament' | 'tournaments' | 'sub'> {
     id: number | undefined;
     branding: number;
     finalTournament: number;

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { combineLatest, Observable, timer } from 'rxjs';
 import { User } from '@auth0/auth0-angular';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ConnectionRequest } from '../../shared/models/util/connection-request.interface';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 import {
@@ -16,10 +16,9 @@ import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { ConnectionRequestComponent } from '../components/connection-request/connection-request.component';
 import { MatButtonModule } from '@angular/material/button';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { AuthUtilService } from '../../core/services/auth-util.service';
-import { PlayerListItemComponent } from '../../admin/players/player-list-item/player-list-item.component';
 
 @Component({
     selector: 'app-welcome-page',
@@ -32,18 +31,20 @@ import { PlayerListItemComponent } from '../../admin/players/player-list-item/pl
         NgIf,
         UserImageRoundComponent,
         NgFor,
-        PlayerListItemComponent,
         MatButtonModule,
         ConnectionRequestComponent,
-        AsyncPipe
+        AsyncPipe,
+        JsonPipe
     ]
 })
 export class WelcomePageComponent implements OnInit {
 
+    isAuthenticated$: Observable<boolean>;
     user$: Observable<User>;
     userImage$: Observable<string | null | undefined>;
     sub$: Observable<string>;
     email$: Observable<string | null | undefined>;
+    roles$: Observable<string[]>;
 
     allRequests$: Observable<ConnectionRequest[]>;
     incomingRequests$: Observable<ConnectionRequest[]>;
@@ -53,6 +54,8 @@ export class WelcomePageComponent implements OnInit {
 
     myPlayers$: Observable<Player[]>;
     mappedUsers$: Observable<Player[]>;
+
+    userImageSize = window.innerWidth >= 800 ? 64 : 42;
 
     private fetchService: FetchService = inject(FetchService);
     private dialog: MatDialog = inject(MatDialog);
@@ -65,16 +68,19 @@ export class WelcomePageComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
 
         this.user$ = this.authUtilService.getUser$();
         this.sub$ = this.authUtilService.getSub$();
         this.email$ = this.user$.pipe(map(user => user?.email));
+        this.roles$ = this.authUtilService.getRoles$();
 
         this.allRequests$ = combineLatest([
             timer(0, 10000),
             this.fetchService.getFetchTrigger$()
         ]).pipe(
-            switchMap(() => this.connectionRequestApiService.getAllByEmail$())
+            switchMap(() => this.connectionRequestApiService.getAllByEmail$()),
+            shareReplay(1)
         );
 
         const email$: Observable<string> = this.user$.pipe(
@@ -112,12 +118,9 @@ export class WelcomePageComponent implements OnInit {
         );
 
         this.myPlayers$ = this.fetchService.getFetchTrigger$().pipe(
-            switchMap(() => combineLatest([
-                this.email$,
-                this.sub$
-            ]).pipe(
-                switchMap(([email, sub]: [string | undefined | null, string]) =>
-                    this.playerApiService.getAll$(sub).pipe(
+            switchMap(() => this.email$.pipe(
+                switchMap((email: string | null | undefined) =>
+                    this.playerApiService.getAll$().pipe(
                         map((players: Player[]) => players.filter(
                             (player: Player) => player.email === email
                         ))
@@ -127,12 +130,9 @@ export class WelcomePageComponent implements OnInit {
         );
 
         this.mappedUsers$ = this.fetchService.getFetchTrigger$().pipe(
-            switchMap(() => combineLatest([
-                this.email$,
-                this.sub$
-            ]).pipe(
-                switchMap(([email, sub]: [string | undefined | null, string]) =>
-                    this.playerApiService.getAll$(sub).pipe(
+            switchMap(() => this.email$.pipe(
+                switchMap((email: string | undefined | null) =>
+                    this.playerApiService.getAll$().pipe(
                         map((players: Player[]) => players.filter(
                             (player: Player) => player.email && player.email !== email
                         ))

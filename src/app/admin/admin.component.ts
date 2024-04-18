@@ -1,8 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService, User } from '@auth0/auth0-angular';
-import { shareReplay } from 'rxjs/operators';
-import { AsyncPipe, JsonPipe, NgForOf } from '@angular/common';
+import { User } from '@auth0/auth0-angular';
+import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { BlindLevelTabComponent } from './blind-level/blind-level-tab.component';
 import { SeriesTabComponent } from './series/series-tab.component';
 import { TournamentTabComponent } from './tournament/tournament-tab.component';
@@ -17,6 +16,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AuthUtilService } from '../core/services/auth-util.service';
 
 @Component({
     selector: 'app-admin',
@@ -41,20 +42,26 @@ import { RouterLink, RouterOutlet } from '@angular/router';
         MatMenuModule,
         RouterOutlet,
         RouterLink,
-        JsonPipe
+        JsonPipe,
+        NgIf
     ]
 })
 export class AdminComponent implements OnInit {
 
-    user$: Observable<User | null | undefined>;
-    isOpen = signal(true);
+    isAuthenticated$: Observable<boolean>;
+    user$: Observable<User>;
+    isAdmin$: Observable<boolean>;
+    isPro$: Observable<boolean>;
 
-    private authService: AuthService = inject(AuthService);
+    isOpen = signal(window.innerWidth >= 800);
+
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
 
     ngOnInit() {
-        localStorage.setItem('route', `${window.location.href.split(window.location.origin).pop()}`);
-
-        this.user$ = this.authService.user$.pipe(shareReplay(1));
+        this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
+        this.user$ = this.authUtilService.getUser$();
+        this.isAdmin$ = this.authUtilService.isAdmin$();
+        this.isPro$ = this.authUtilService.isPro$();
     }
 
     toggleSidenav(): void {

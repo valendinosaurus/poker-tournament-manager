@@ -7,7 +7,6 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { TournamentSettings } from '../../../../../../shared/models/tournament-settings.interface';
 import { Observable, ReplaySubject } from 'rxjs';
-import { AuthService } from '@auth0/auth0-angular';
 import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal.component';
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
 import { AddAddonComponent } from '../../../../../../dialogs/add-addon/add-addon.component';
@@ -27,6 +26,7 @@ import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
 import { CreatePlayerComponent } from '../../../../../../dialogs/create-player/create-player.component';
+import { AuthUtilService } from '../../../../../../core/services/auth-util.service';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -75,7 +75,7 @@ export class MenuDialogComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
-    private authService: AuthService = inject(AuthService);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
     private rankingService: RankingService = inject(RankingService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
@@ -83,7 +83,7 @@ export class MenuDialogComponent implements OnInit {
     private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
 
-    isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
+    isAuthenticated$: Observable<boolean> = this.authUtilService.getIsAuthenticated$();
 
     showCondensedBlinds = this.localStorageService.getLocalSettings().showCondensedBlinds;
 
@@ -169,8 +169,7 @@ export class MenuDialogComponent implements OnInit {
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
-                clientId: this.data.clientId,
-                sub: this.data.sub
+                clientId: this.data.clientId
             }
         });
 
@@ -185,8 +184,7 @@ export class MenuDialogComponent implements OnInit {
             data: {
                 tournament: this.data.tournament,
                 metadata: this.data.seriesMetadata,
-                clientId: this.data.clientId,
-                sub: this.data.sub
+                clientId: this.data.clientId
             }
         });
 
@@ -201,8 +199,7 @@ export class MenuDialogComponent implements OnInit {
             data: {
                 tournament: this.data.tournament,
                 clientId: this.data.clientId,
-                multi: false,
-                sub: this.data.sub
+                multi: false
             }
         });
 
@@ -216,7 +213,6 @@ export class MenuDialogComponent implements OnInit {
             ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournamentId: this.data.tournament.id,
-                sub: this.data.sub,
                 tournamentName: this.data.tournament.name,
                 isReentry: isReEntry,
                 clientId: this.data.clientId,

@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { AdminTournament, Tournament, TournamentModel } from '../../../shared/models/tournament.interface';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../shared/models/series.interface';
-import { AuthService, User } from '@auth0/auth0-angular';
-import { ServerResponse } from '../../../shared/models/server-response';
 import { TournamentSettings } from '../../../shared/models/tournament-settings.interface';
 import { Router } from '@angular/router';
+import { ServerResponseType } from '../../../shared/types/server-response.type';
+import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,40 +17,52 @@ export class TournamentApiService {
 
     private readonly ENDPOINT = 'tournament';
 
-    constructor(
-        private http: HttpClient,
-        private authService: AuthService,
-        private router: Router
-    ) {
-    }
+    private http: HttpClient = inject(HttpClient);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
+    private router: Router = inject(Router);
 
-    getAllWithoutSeries$(sub: string): Observable<{ label: string, value: number }[]> {
-        return this.http.get<{ label: string, value: number }[]>(`${BACKEND_URL}${this.ENDPOINT}/no-series/${sub}`);
-    }
-
-    getForAdmin$(sub: string): Observable<AdminTournament[]> {
-        return this.http.get<AdminTournament[]>(`${BACKEND_URL}${this.ENDPOINT}/admin/${sub}`).pipe();
-    }
-
-    get$(id: number, sub: string): Observable<Tournament> {
-        return this.http.get<Tournament | null>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`).pipe(
-            tap((res: Tournament | null) => {
-                if (res === null) {
-                    this.router.navigate(['/home']);
-                }
-            }),
-            filter((res: Tournament | null): res is Tournament => res !== null)
+    getAllWithoutSeries$(): Observable<{ label: string, value: number }[]> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.get<{ label: string, value: number }[]>(
+                `${BACKEND_URL}${this.ENDPOINT}/no-series/${sub}`
+            ))
         );
     }
 
-    getSeriesMetadata$(id: number, sub: string): Observable<SeriesMetadata> {
-        return this.http.get<SeriesMetadata>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}/meta`);
+    getForAdmin$(): Observable<AdminTournament[]> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.get<AdminTournament[]>(
+                `${BACKEND_URL}${this.ENDPOINT}/admin/${sub}`
+            ))
+        );
     }
 
-    post$(tournament: TournamentModel): Observable<ServerResponse> {
-        return this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.post<ServerResponse>(
+    get$(id: number): Observable<Tournament> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.get<Tournament | null>(
+                `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
+            ).pipe(
+                tap((res: Tournament | null) => {
+                    if (res === null) {
+                        this.router.navigate(['/home']);
+                    }
+                }),
+                filter((res: Tournament | null): res is Tournament => res !== null)
+            ))
+        );
+    }
+
+    getSeriesMetadata$(id: number): Observable<SeriesMetadata> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.get<SeriesMetadata>(
+                `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}/meta`
+            ))
+        );
+    }
+
+    post$(tournament: TournamentModel): Observable<ServerResponseType> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.post<ServerResponseType>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...tournament,
@@ -60,10 +72,9 @@ export class TournamentApiService {
         );
     }
 
-    put$(tournament: TournamentModel): Observable<ServerResponse> {
-        return this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
+    put$(tournament: TournamentModel): Observable<ServerResponseType> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.put<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
                     ...tournament,
                     sub
@@ -72,10 +83,9 @@ export class TournamentApiService {
         );
     }
 
-    putSettings$(settings: TournamentSettings): Observable<ServerResponse> {
-        return this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}/settings`,
+    putSettings$(settings: TournamentSettings): Observable<ServerResponseType> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.put<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}/settings`,
                 JSON.stringify({
                     ...settings,
                     sub
@@ -84,12 +94,16 @@ export class TournamentApiService {
         );
     }
 
-    delete$(id: number, sub: string): Observable<any> {
-        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
+    delete$(id: number): Observable<any> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.delete<any>(
+                `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
+            ))
+        );
     }
 
-    addPlayer$(playerId: number, tournamentId: number): Observable<ServerResponse> {
-        return this.http.post<ServerResponse>(
+    addPlayer$(playerId: number, tournamentId: number): Observable<ServerResponseType> {
+        return this.http.post<ServerResponseType>(
             `${BACKEND_URL}${this.ENDPOINT}/add-player`,
             JSON.stringify({
                 tId: tournamentId,
@@ -98,8 +112,8 @@ export class TournamentApiService {
         );
     }
 
-    addPlayers$(playerId: number[], tournamentId: number): Observable<ServerResponse> {
-        return this.http.post<ServerResponse>(
+    addPlayers$(playerId: number[], tournamentId: number): Observable<ServerResponseType> {
+        return this.http.post<ServerResponseType>(
             `${BACKEND_URL}${this.ENDPOINT}/add-players`,
             JSON.stringify({
                 tId: tournamentId,
@@ -108,23 +122,16 @@ export class TournamentApiService {
         );
     }
 
-    removePlayer$(playerId: number, tournamentId: number, sub: string): Observable<any> {
-        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${tournamentId}/player/${playerId}/${sub}`);
-    }
-
-    addBlind$(blindId: number, tournamentId: number, position: number): Observable<ServerResponse> {
-        return this.http.post<ServerResponse>(
-            `${BACKEND_URL}${this.ENDPOINT}/add-blind`,
-            JSON.stringify({
-                tId: tournamentId,
-                bId: blindId,
-                position
-            })
+    removePlayer$(playerId: number, tournamentId: number): Observable<any> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.delete<any>(
+                `${BACKEND_URL}${this.ENDPOINT}/${tournamentId}/player/${playerId}/${sub}`
+            ))
         );
     }
 
-    addBlinds$(blindId: number[], tournamentId: number, positions: number[]): Observable<ServerResponse> {
-        return this.http.post<ServerResponse>(
+    addBlinds$(blindId: number[], tournamentId: number, positions: number[]): Observable<ServerResponseType> {
+        return this.http.post<ServerResponseType>(
             `${BACKEND_URL}${this.ENDPOINT}/add-blinds`,
             JSON.stringify({
                 tId: tournamentId,
@@ -134,8 +141,8 @@ export class TournamentApiService {
         );
     }
 
-    addPause$(blindId: number, tournamentId: number, position: number): Observable<ServerResponse> {
-        return this.http.post<ServerResponse>(
+    addPause$(blindId: number, tournamentId: number, position: number): Observable<ServerResponseType> {
+        return this.http.post<ServerResponseType>(
             `${BACKEND_URL}${this.ENDPOINT}/add-pause`,
             JSON.stringify({
                 tId: tournamentId,
@@ -145,7 +152,35 @@ export class TournamentApiService {
         );
     }
 
-    removeBlind$(blindId: number, tournamentId: number, sub: string): Observable<any> {
-        return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${tournamentId}/blind/${blindId}/${sub}`);
+    removeBlind$(blindId: number, tournamentId: number): Observable<ServerResponseType> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.delete<ServerResponseType>(
+                `${BACKEND_URL}${this.ENDPOINT}/${tournamentId}/blind/${blindId}/${sub}`
+            ))
+        );
+    }
+
+    copyTournament$(
+        tournament: Tournament,
+        newName: string,
+        newDate: string,
+        withPlayers: boolean,
+        withStructure: boolean,
+        asTest: boolean
+    ): Observable<ServerResponseType> {
+        return this.http.post<ServerResponseType>(
+            `${BACKEND_URL}copy-tournament`,
+            JSON.stringify({
+                ...tournament,
+                name: newName,
+                date: newDate,
+                withPlayers,
+                withStructure,
+                asTest,
+                playerIds: withPlayers ? tournament.players.map(p => p.id) : [],
+                blindIds: withStructure ? tournament.structure.map(b => b.id) : [],
+                positions: withStructure ? tournament.structure.map(b => b.position) : []
+            })
+        );
     }
 }

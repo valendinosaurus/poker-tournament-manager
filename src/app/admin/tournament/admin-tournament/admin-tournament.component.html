@@ -33,6 +33,14 @@
             </button>
 
             <button
+                mat-raised-button
+                color="accent"
+                (click)="copyTournament(tournament)"
+            >
+                <i class="fa fa-copy fa-ib"></i> COPY
+            </button>
+
+            <button
                 *ngIf="tournament.locked"
                 mat-raised-button
                 (click)="unlock(tournament)"
@@ -122,15 +130,20 @@
             <!-- extract -->
             <div class="flex">
                 <div class="flex-50">
-                    <button
-                        mat-raised-button
-                        color="primary"
-                        [disabled]="!!tournament.locked"
-                        (click)="addPlayers(tournament)"
-                    >
-                        ADD PAYERS
-                    </button>
-                    <h2>Players</h2>
+                    <div class="admin-header">
+                        <h2>Players</h2>
+
+                        <span class="admin-header-buttons">
+                            <button
+                                mat-raised-button
+                                color="primary"
+                                [disabled]="!!tournament.locked"
+                                (click)="addPlayers(tournament)"
+                            >
+                                ADD PAYERS
+                            </button>
+                        </span>
+                    </div>
 
                     <table class="admin-table">
                         <ng-container *ngFor="let player of tournament.players">
@@ -159,67 +172,99 @@
             <!-- extract -->
             <div class="flex">
                 <div class="flex-50">
-                    <button
-                        mat-raised-button
-                        color="primary"
-                        [disabled]="!!tournament.locked"
-                        (click)="addBlinds(tournament)"
-                    >
-                        ADD BLINDS
-                    </button>
+                    <div class="admin-header">
+                        <h2>Blinds</h2>
 
-                    <ng-container *ngFor="let b of tournament.structure; let i = index;">
-                        <div
-                            class="blind"
-                            [class.pause]="b.isPause"
-                        >
-                            <span>
-                                <ng-container *ngIf="!b.isPause">
-                                    <span>
-                                         <strong>{{ b.sb | number:'1.0-0' }}</strong>
-                                    </span>
-                                    <span>
-                                        <strong>{{ b.bb | number:'1.0-0' }}</strong>
-                                    </span>
-                                </ng-container>
+                        <span class="admin-header-buttons">
+                            <button
+                                mat-raised-button
+                                color="primary"
+                                [disabled]="!!tournament.locked"
+                                (click)="addBlinds(tournament)"
+                            >
+                                ADD BLINDS
+                            </button>
 
-                                <span>
-                                    {{ b.duration}}min
-                                </span>
+                            <button
+                                *ngIf="tournament.structure.length > 0"
+                                mat-raised-button
+                                color="accent"
+                                (click)="saveAsBlindStructure(tournament.structure)"
+                            >
+                                SAVE AS BLIND STRUCTURE
+                            </button>
 
-                                <ng-container *ngIf="b.isPause">
-                                    <span>
-                                         PAUSE
-                                    </span>
-                                    <span *ngIf="b.isChipUp">
-                                        (CHIP UP)
-                                    </span>
-                                    <span *ngIf="b.endsRebuy">
-                                        ENDS REBUY
-                                    </span>
-                                </ng-container>
-                            </span>
+                            <button
+                                *ngIf="tournament.structure.length === 0"
+                                mat-raised-button
+                                color="accent"
+                                (click)="assignBlindStructrue(tournament)"
+                            >
+                                ASSIGN EXISTING BLIND STRUCTURE
+                            </button>
+                        </span>
+                    </div>
 
-                            <i
-                                *ngIf="!tournament.locked"
-                                class="fa fa-trash"
-                                (click)="deleteBlindFromTournament(b.id)"
-                            ></i>
-                        </div>
 
-                        <div
-                            *ngIf="blindPositions.indexOf(b.position + 1) === -1 && !tournament.locked"
-                            class="insert-pause"
-                            (click)="addPause(tournament, b.position)"
-                        >
-                            <i
-                                class="fa fa-plus-circle"
-                            ></i>
-                            <span>
-                                INSERT PAUSE
-                            </span>
-                        </div>
-                    </ng-container>
+                    <app-blind-structure-view
+                        [structure]="tournament.structure"
+                        [locked]="tournament.locked"
+                        (addPause)="addPause(tournament, $event)"
+                        (deleteBlind)="deleteBlindFromTournament($event)"
+                    ></app-blind-structure-view>
+
+                    <!--                    <ng-container *ngFor="let b of tournament.structure; let i = index;">-->
+                    <!--                        <div-->
+                    <!--                            class="blind"-->
+                    <!--                            [class.pause]="b.isPause"-->
+                    <!--                        >-->
+                    <!--                            <span>-->
+                    <!--                                <ng-container *ngIf="!b.isPause">-->
+                    <!--                                    <span>-->
+                    <!--                                         <strong>{{ b.sb | number:'1.0-0' }}</strong>-->
+                    <!--                                    </span>-->
+                    <!--                                    <span>-->
+                    <!--                                        <strong>{{ b.bb | number:'1.0-0' }}</strong>-->
+                    <!--                                    </span>-->
+                    <!--                                </ng-container>-->
+
+                    <!--                                <span>-->
+                    <!--                                    {{ b.duration}}min-->
+                    <!--                                </span>-->
+
+                    <!--                                <ng-container *ngIf="b.isPause">-->
+                    <!--                                    <span>-->
+                    <!--                                         PAUSE-->
+                    <!--                                    </span>-->
+                    <!--                                    <span *ngIf="b.isChipUp">-->
+                    <!--                                        (CHIP UP)-->
+                    <!--                                    </span>-->
+                    <!--                                    <span *ngIf="b.endsRebuy">-->
+                    <!--                                        ENDS REBUY-->
+                    <!--                                    </span>-->
+                    <!--                                </ng-container>-->
+                    <!--                            </span>-->
+
+                    <!--                            <i-->
+                    <!--                                *ngIf="!tournament.locked"-->
+                    <!--                                class="fa fa-trash"-->
+                    <!--                                (click)="deleteBlindFromTournament(b.id)"-->
+                    <!--                            ></i>-->
+                    <!--                        </div>-->
+
+                    <!--                        <div-->
+                    <!--                            *ngIf="blindPositions.indexOf(b.position + 1) === -1 && !tournament.locked"-->
+                    <!--                            class="insert-pause"-->
+                    <!--                            (click)="addPause(tournament, b.position)"-->
+                    <!--                        >-->
+                    <!--                            <i-->
+                    <!--                                class="fa fa-plus-circle"-->
+                    <!--                            ></i>-->
+                    <!--                            <span>-->
+                    <!--                                INSERT PAUSE-->
+                    <!--                            </span>-->
+                    <!--                        </div>-->
+                    <!--                    </ng-container>-->
                 </div>
             </div>
 

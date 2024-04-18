@@ -43,73 +43,76 @@
     </div>
 </div>
 
-<table class="admin-table">
-    <tr>
-        <th>Type</th>
-        <th (click)="sortBy('sb')">SB</th>
-        <th (click)="sortBy('bb')">BB</th>
-        <th (click)="sortBy('ante')">Ante</th>
-        <th (click)="sortBy('btnAnte')">Btn Ante</th>
-        <th (click)="sortBy('duration')">Duration</th>
-        <th (click)="sortBy('isPause')">is Pause</th>
-        <th (click)="sortBy('isChipUp')">is Chip-Up</th>
-        <th (click)="sortBy('endsRebuy')">ends Rebuy</th>
-        <th>Actions</th>
-    </tr>
-    <ng-container *ngFor="let blindLevel of sortedAndFilteredBlindLevels$ | async">
-        <a style="display: contents" [routerLink]="['/admin/blind-level', blindLevel.id]">
-            <tr [class.blind-pause]="blindLevel.isPause">
-                <td>
-                    <ng-container *ngIf="!blindLevel.isPause">
-                        <i class="fa fa-clock"></i>
-                    </ng-container>
+<div class="table-wrapper">
+    <table class="admin-table">
+        <tr>
+            <th>Type</th>
+            <th (click)="sortBy('sb')">SB</th>
+            <th (click)="sortBy('bb')">BB</th>
+            <th (click)="sortBy('ante')">Ante</th>
+            <th (click)="sortBy('btnAnte')">Btn Ante</th>
+            <th (click)="sortBy('duration')">Duration</th>
+            <th (click)="sortBy('isPause')">is Pause</th>
+            <th (click)="sortBy('isChipUp')">is Chip-Up</th>
+            <th (click)="sortBy('endsRebuy')">ends Rebuy</th>
+            <th>Actions</th>
+        </tr>
+        <ng-container *ngFor="let blindLevel of sortedAndFilteredBlindLevels$ | async">
+            <a style="display: contents" [routerLink]="['/admin/blind-level', blindLevel.id]">
+                <tr [class.blind-pause]="blindLevel.isPause">
+                    <td>
+                        <ng-container *ngIf="!blindLevel.isPause">
+                            <i class="fa fa-clock"></i>
+                        </ng-container>
 
-                    <ng-container *ngIf="blindLevel.isPause">
-                        <i class="fa fa-pause-circle"></i>
-                    </ng-container>
-                </td>
-                <td>
-                    {{ (blindLevel.sb > 0) ? (blindLevel.sb | number:'1.0-0') : '-' }}
-                </td>
-                <td>
-                    {{ (blindLevel.bb > 0) ? (blindLevel.bb | number:'1.0-0') : '-' }}
-                </td>
-                <td>
-                    {{ (blindLevel.ante > 0) ? (blindLevel.ante | number:'1.0-0') : '-' }}
-                </td>
-                <td>
-                    {{ (blindLevel.btnAnte > 0) ? (blindLevel.btnAnte | number:'1.0-0') : '-' }}
-                </td>
-                <td>
-                    {{ blindLevel.duration | number:'1.0-0' }} min
-                </td>
-                <td>
-                    <ng-container *ngIf="blindLevel.isPause; else times;">
-                        <i class="fa fa-check"></i>
-                    </ng-container>
-                </td>
-                <td>
-                    <ng-container *ngIf="blindLevel.isChipUp; else times;">
-                        <i class="fa fa-check"></i>
-                    </ng-container>
-                </td>
-                <td>
-                    <ng-container *ngIf="blindLevel.endsRebuy; else times;">
-                        <i class="fa fa-check"></i>
-                    </ng-container>
-                </td>
-                <td>
-                    <div class="table-actions">
-                        <i
-                            class="fa fa-trash"
-                            (click)="deleteBlindLevel(blindLevel, $event)"
-                        ></i>
-                    </div>
-                </td>
-            </tr>
-        </a>
-    </ng-container>
-</table>
+                        <ng-container *ngIf="blindLevel.isPause">
+                            <i class="fa fa-pause-circle"></i>
+                        </ng-container>
+                    </td>
+                    <td>
+                        {{ (blindLevel.sb > 0) ? (blindLevel.sb | number:'1.0-0') : '-' }}
+                    </td>
+                    <td>
+                        {{ (blindLevel.bb > 0) ? (blindLevel.bb | number:'1.0-0') : '-' }}
+                    </td>
+                    <td>
+                        {{ (blindLevel.ante > 0) ? (blindLevel.ante | number:'1.0-0') : '-' }}
+                    </td>
+                    <td>
+                        {{ (blindLevel.btnAnte > 0) ? (blindLevel.btnAnte | number:'1.0-0') : '-' }}
+                    </td>
+                    <td>
+                        {{ blindLevel.duration | number:'1.0-0' }} min
+                    </td>
+                    <td>
+                        <ng-container *ngIf="blindLevel.isPause; else times;">
+                            <i class="fa fa-check"></i>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="blindLevel.isChipUp; else times;">
+                            <i class="fa fa-check"></i>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="blindLevel.endsRebuy; else times;">
+                            <i class="fa fa-check"></i>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <i
+                                class="fa fa-trash"
+                                (click)="deleteBlindLevel(blindLevel, $event)"
+                            ></i>
+                        </div>
+                    </td>
+                </tr>
+            </a>
+        </ng-container>
+    </table>
+</div>
+
 
 <ng-template #times>
     <i class="fa fa-times"></i>

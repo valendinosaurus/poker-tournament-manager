@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { UserImageRoundComponent } from '../../../../shared/components/user-image-round/user-image-round.component';
 import { NgIf } from '@angular/common';
+import { AuthUtilService } from '../../../../core/services/auth-util.service';
 
 @Component({
     selector: 'app-thats-me-dialog',
@@ -26,11 +27,11 @@ export class ThatsMeDialogComponent {
     } = inject(MAT_DIALOG_DATA);
 
     private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private authService: AuthService = inject(AuthService);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
     private triggerService: TriggerService = inject(TriggerService);
 
     onSubmit(): void {
-        this.authService.user$.pipe(
+        this.authUtilService.getUser$().pipe(
             take(1),
             filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
             switchMap((user: User) => this.playerApiService.put$({
@@ -45,7 +46,8 @@ export class ThatsMeDialogComponent {
 
     }
 
-    closeDialog(): void {
+    closeDialog(event: Event): void {
+        event.preventDefault();
         this.dialogRef.close(false);
     }
 

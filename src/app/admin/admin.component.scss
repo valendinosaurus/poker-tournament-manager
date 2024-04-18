@@ -9,6 +9,13 @@
     min-height: 30vh;
 }
 
+h1 {
+    @media (max-width: 800px) {
+        font-size: 30px;
+
+    }
+}
+
 .admin-menu-container a {
     width: 100%;
     margin-top: 5px;

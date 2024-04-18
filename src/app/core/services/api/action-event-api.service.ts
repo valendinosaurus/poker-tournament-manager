@@ -14,13 +14,9 @@ export class ActionEventApiService {
 
     private readonly ENDPOINT = 'event';
     private notificationService: NotificationService = inject(NotificationService);
+    private http: HttpClient = inject(HttpClient);
 
     private isEnabled = false;
-
-    constructor(
-        private http: HttpClient
-    ) {
-    }
 
     getAll$(tId: number, clientId: number, sub: string): Observable<ActionEvent[]> {
         return this.isEnabled

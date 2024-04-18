@@ -1,0 +1,25 @@
+h1 {
+    @media (max-width: 800px) {
+        font-size: 20px;
+    }
+}
+
+h2 {
+    @media (max-width: 800px) {
+        font-size: 16px;
+    }
+}
+
+.user-list-item {
+    @media (max-width: 800px) {
+        margin-bottom: 12px;
+    }
+}
+
+button {
+    margin-left: 40px;
+
+    @media (max-width: 800px) {
+        margin-left: 0;
+    }
+}

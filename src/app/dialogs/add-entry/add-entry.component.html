@@ -30,7 +30,12 @@
         ENTER
     </button>
 
-    <button mat-raised-button (click)="closeDialog()">CLOSE</button>
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
 </form>
 
 <h3>Conducted Entries</h3>

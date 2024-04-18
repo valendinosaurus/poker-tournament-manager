@@ -1,0 +1,88 @@
+<div class="blind-structure">
+    <div class="header">
+        <div class="b-name">
+            <strong>Duration</strong>
+        </div>
+        <div class="b-name">
+            <strong>Small Blind</strong>
+        </div>
+        <div class="b-name">
+            <strong>Big Blind</strong>
+        </div>
+        <div class="b-name">
+            <strong>Ante</strong>
+        </div>
+        <div class="b-name">
+            <strong>Button-Ante</strong>
+        </div>
+    </div>
+
+    <ng-container *ngFor="let blind of structure; let i = index;">
+        <ng-container *ngIf="!blind.isPause; else pause;">
+            <div class="blind-element">
+                <div class="b-duration">
+                    {{ blind.duration}}min
+                </div>
+
+                <div class="b-small">
+                    <strong>{{ blind.sb | number:'1.0-0' }}</strong>
+                </div>
+                <div class="b-big">
+                    <strong>{{ blind.bb | number:'1.0-0' }}</strong>
+                </div>
+                <div class="b-ante">
+                    <strong>{{ blind.ante | number:'1.0-0' }}</strong>
+                </div>
+                <div class="b-btn-ante">
+                    <strong>{{ blind.btnAnte | number:'1.0-0' }}</strong>
+                </div>
+                <div class="b-action">
+                    <i
+                        *ngIf="!locked"
+                        class="fa fa-trash"
+                        (click)="deleteBlind.emit(blind.id)"
+                    ></i>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #pause>
+            <div class="pause-element">
+                <div class="b-name">
+                    PAUSE
+                </div>
+                <div class="b-long-name">
+                    <ng-container *ngIf="blind.isChipUp">
+                        (CHIP UP)
+                    </ng-container>
+                    <ng-container *ngIf="blind.endsRebuy">
+                        ENDS REBUY
+                    </ng-container>
+                </div>
+                <div class="b-action">
+                    <i
+                        *ngIf="!locked"
+                        class="fa fa-trash"
+                        (click)="deleteBlind.emit(blind.id)"
+                    ></i>
+                </div>
+            </div>
+        </ng-template>
+
+
+        <div
+            *ngIf="blindPositions.indexOf(blind.position + 1) === -1 && i < structure.length - 1 && !locked"
+            class="b-insert-pause"
+            (click)="addPause.emit(blind.position)"
+        >
+            <div>
+                <i
+                    class="fa fa-plus-circle"
+                ></i>
+                <span>
+                    INSERT PAUSE
+                </span>
+            </div>
+        </div>
+    </ng-container>
+</div>

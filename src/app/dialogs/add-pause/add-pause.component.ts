@@ -5,13 +5,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { BlindLevelApiService } from '../../core/services/api/blind-level-api.service';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
-import { AuthService, User } from '@auth0/auth0-angular';
+import { AuthService } from '@auth0/auth0-angular';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { shareReplay, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlindLevel } from '../../shared/models/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
+import { BlindStructureApiService } from '../../core/services/api/blind-structure-api.service';
 
 @Component({
     selector: 'app-add-pause',
@@ -24,26 +25,31 @@ export class AddPauseComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: { blindId: number | undefined, tournamentId: number };
+    model: {
+        blindId: number | undefined,
+        parentId: number
+    };
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddPauseComponent> = inject(MatDialogRef<AddPauseComponent>);
-    data: { tId: number, position: number } = inject(MAT_DIALOG_DATA);
+    data: {
+        tId: number | undefined,
+        sId: number | undefined,
+        position: number
+    } = inject(MAT_DIALOG_DATA);
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
 
     allPauses: { label: string, value: number }[];
     filterDuration: number;
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
 
     ngOnInit(): void {
-        const allBlinds$ = this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.blindApiService.getAll$(sub)),
+        const allBlinds$ = this.blindApiService.getAll$().pipe(
             shareReplay(1)
         );
 
@@ -88,7 +94,7 @@ export class AddPauseComponent implements OnInit {
     private initModel(): void {
         this.model = {
             blindId: undefined,
-            tournamentId: this.data.tId
+            parentId: this.data.tId ?? this.data.sId ?? -1
         };
     }
 
@@ -102,19 +108,37 @@ export class AddPauseComponent implements OnInit {
         this.filterDurationTrigger$.next(event);
     }
 
-    onSubmit(model: { blindId: number | undefined, tournamentId: number }): void {
-        if (model.blindId && model.tournamentId) {
+    onSubmit(model: { blindId: number | undefined, parentId: number }): void {
+        if (model.blindId && model.parentId && model.parentId >= 0) {
 
-            this.tournamentApiService.addPause$(model.blindId, model.tournamentId, this.data.position).pipe(
-                take(1),
-                tap(() => {
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            blindId: model.blindId
-                        });
-                    }
-                })
-            ).subscribe();
+            if (this.data.tId) {
+                this.tournamentApiService.addPause$(model.blindId, model.parentId, this.data.position).pipe(
+                    take(1),
+                    tap(() => {
+                        if (this.dialogRef) {
+                            this.dialogRef.close(true);
+                        }
+                    })
+                ).subscribe();
+            }
+
+            if (this.data.sId) {
+                this.blindStructureApiService.addPause$(model.blindId, model.parentId, this.data.position).pipe(
+                    take(1),
+                    tap(() => {
+                        if (this.dialogRef) {
+                            this.dialogRef.close(true);
+                        }
+                    })
+                ).subscribe();
+            }
         }
     }
+
+    closeDialog(event: Event): void {
+        event.preventDefault();
+
+        this.dialogRef.close(false);
+    }
+
 }

@@ -35,8 +35,7 @@ export class PlayersTabComponent implements OnInit {
 
         this.players$ = this.trigger$.pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.authUtilService.getSub$()),
-            switchMap((sub: string) => this.playerApiService.getAll$(sub)),
+            switchMap(() => this.playerApiService.getAll$()),
             shareReplay(1)
         );
 
@@ -46,7 +45,10 @@ export class PlayersTabComponent implements OnInit {
     createPlayer(): void {
         const ref = this.dialog.open(CreatePlayerComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                blockName: false
+            }
         });
 
         ref.afterClosed().pipe(
@@ -79,11 +81,9 @@ export class PlayersTabComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.playerApiService.delete$(player.id, sub).pipe(
-                        take(1),
-                        tap(() => this.trigger$.next())
-                    ))
+                defer(() => this.playerApiService.delete$(player.id).pipe(
+                    take(1),
+                    tap(() => this.trigger$.next())
                 )),
                 of(null)
             ))

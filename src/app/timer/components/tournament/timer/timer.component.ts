@@ -1,7 +1,6 @@
 import { Component, DestroyRef, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Tournament } from 'src/app/shared/models/tournament.interface';
 import { defer, iif, Observable, of, Subscription, timer } from 'rxjs';
-import { AuthService, User } from '@auth0/auth0-angular';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { dummyTourney } from '../../../../shared/data/dummy-tournament.const';
@@ -41,7 +40,6 @@ export class TimerComponent implements OnInit, OnChanges {
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private eventApiService: ActionEventApiService = inject(ActionEventApiService);
-    private authService: AuthService = inject(AuthService);
     private router: Router = inject(Router);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private fetchService: FetchService = inject(FetchService);
@@ -106,18 +104,10 @@ export class TimerComponent implements OnInit, OnChanges {
     }
 
     getStuff(tournamentId: number): void {
-        const sub$ = this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? '')
-        );
-
-        this.seriesMetadata$ = sub$.pipe(
-            switchMap((sub: string) => this.tournamentApiService.getSeriesMetadata$(+tournamentId, sub)),
-        );
+        this.seriesMetadata$ = this.tournamentApiService.getSeriesMetadata$(+tournamentId);
 
         this.tournament$ = this.fetchTrigger$.pipe(
-            switchMap(() => sub$.pipe(
-                switchMap((sub: string) => this.tournamentApiService.get$(+tournamentId, sub))
-            )),
+            switchMap(() => this.tournamentApiService.get$(+tournamentId)),
             tap(() => this.notificationService.success('Tournament is up to date')),
             shareReplay(1)
         );

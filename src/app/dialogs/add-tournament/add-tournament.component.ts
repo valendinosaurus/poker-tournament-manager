@@ -5,9 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { SeriesApiService } from '../../core/services/api/series-api.service';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService, User } from '@auth0/auth0-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { Series } from '../../shared/models/series.interface';
 
@@ -32,21 +31,17 @@ export class AddTournamentComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
 
     allTournaments: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.authService.user$.pipe(
-            map((user: User | null | undefined) => user?.sub ?? ''),
-            switchMap((sub: string) => this.tournamentApiService.getAllWithoutSeries$(sub).pipe(
-                takeUntilDestroyed(this.destroyRef),
-                tap((t: { label: string, value: number }[]) => {
-                    this.allTournaments = t;
-                    this.initModel();
-                    this.initFields();
-                })
-            ))
+        this.tournamentApiService.getAllWithoutSeries$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap((t: { label: string, value: number }[]) => {
+                this.allTournaments = t;
+                this.initModel();
+                this.initFields();
+            })
         ).subscribe();
     }
 

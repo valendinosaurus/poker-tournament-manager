@@ -47,8 +47,7 @@ export class SeriesTabComponent implements OnInit {
 
         this.series$ = this.trigger$.pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.authUtilService.getSub$()),
-            switchMap((sub: string) => this.seriesApiService.getForAdmin$(sub)),
+            switchMap(() => this.seriesApiService.getForAdmin$()),
             shareReplay(1)
         );
 
@@ -75,27 +74,34 @@ export class SeriesTabComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.seriesApiService.delete$(series.id, sub).pipe(
-                        take(1),
-                        tap(() => this.trigger$.next())
-                    ))
+                defer(() => this.seriesApiService.delete$(series.id).pipe(
+                    take(1),
+                    tap(() => this.trigger$.next())
                 )),
                 of(null)
             ))
         ).subscribe();
     }
 
-    openSeries(tId: number): void {
-        const link = this.router.serializeUrl(this.router.createUrlTree(['timer', tId]));
+    openSeries(sId: number, password: string): void {
+        const link = this.router.serializeUrl(this.router.createUrlTree(['series', sId, password]));
         window.open(link, '_blank');
     }
 
     createSeries(): void {
-        this.dialog.open(CreateSeriesComponent, {
+        const dialogRef = this.dialog.open(CreateSeriesComponent, {
             ...DEFAULT_DIALOG_POSITION,
             height: '80vh'
         });
+
+        dialogRef.afterClosed().pipe(
+            take(1),
+            tap((e) => {
+                if (e) {
+                    this.trigger$.next();
+                }
+            })
+        ).subscribe();
     }
 
 }

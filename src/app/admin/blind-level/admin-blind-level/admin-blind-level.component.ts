@@ -50,11 +50,10 @@ export class AdminBlindLevelComponent implements OnInit {
 
         this.blindLevel$ = combineLatest([
             this.trigger$,
-            this.sId$,
-            this.sub$
+            this.sId$
         ]).pipe(
-            switchMap(([_, sId, sub]: [void, number, string]) =>
-                this.blindLevelApiService.get$(sId, sub)
+            switchMap(([_, sId]: [void, number]) =>
+                this.blindLevelApiService.get$(sId)
             )
         );
 

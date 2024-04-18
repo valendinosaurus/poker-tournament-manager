@@ -22,7 +22,7 @@ import { ServerResponse } from '../../shared/models/server-response';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -74,7 +74,7 @@ export class AddRebuyComponent implements OnInit {
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId, this.data.sub)),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId)),
             tap((tournament: Tournament) => {
                 this.eligibleForRebuy = this.tournamentService.getPlayersEligibleForRebuy(tournament);
                 this.allPlayers = this.eligibleForRebuy.map(
@@ -113,17 +113,17 @@ export class AddRebuyComponent implements OnInit {
                     change: () => this.eliminators = [...this.allPlayers.filter(p => p.value !== this.model.playerId)]
                 }
             },
+            // {
+            //     key: 'showEliminatedBy',
+            //     type: 'checkbox',
+            //     props: {
+            //         label: 'Show Eliminated by?'
+            //     }
+            // },
             {
-                key: 'showEliminatedBy',
-                type: 'checkbox',
-                props: {
-                    label: 'Show Eliminated by?'
-                }
-            },
-            {
-                ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', false, this.eliminators),
+                ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', true, this.eliminators),
                 expressions: {
-                    hide: () => !this.model.showEliminatedBy,
+                    //        hide: () => !this.model.showEliminatedBy,
                     'props.options': () => this.eliminators,
                     'props.disabled': () => this.model.playerId === undefined
                 }
@@ -257,7 +257,9 @@ export class AddRebuyComponent implements OnInit {
         }
     }
 
-    closeDialog(): void {
+    closeDialog(event: Event): void {
+        event.preventDefault();
+
         if (this.dialogRef) {
             this.dialogRef.close();
         }

@@ -12,6 +12,7 @@
                 <th class="center">Entries</th>
                 <th class="center">Rebuys</th>
                 <th class="center">Addons</th>
+                <th class="center">Eliminations</th>
             </tr>
             <ng-container *ngFor="let e of combination">
                 <tr [class.finished]="e.isFinished">
@@ -51,6 +52,12 @@
                     </td>
                     <td class="center">
                         <app-bullets [number]="e.addons"></app-bullets>
+                    </td>
+                    <td class="center">
+                        <app-bullets
+                            [number]="e.eliminations"
+                            bulletClass="fa-skull"
+                        ></app-bullets>
                     </td>
                 </tr>
             </ng-container>

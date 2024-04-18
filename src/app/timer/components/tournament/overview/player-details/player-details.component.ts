@@ -1,17 +1,12 @@
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Player } from '../../../../../shared/models/player.interface';
 import { Entry } from '../../../../../shared/models/entry.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
-import { FinishApiService } from '../../../../../core/services/api/finish-api.service';
-import { FetchService } from '../../../../../core/services/fetch.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
-import { NotificationService } from '../../../../../core/services/notification.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
-import { EliminationApiService } from '../../../../../core/services/api/elimination-api.service';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
-import { NgFor, NgIf, DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { Elimination } from '../../../../../shared/models/elimination.interface';
 
 @Component({
     selector: 'app-player-details',
@@ -31,6 +26,7 @@ export class PlayerDetailsComponent implements OnChanges {
     @Input() players: Player[];
     @Input() entries: Entry[];
     @Input() finishes: Finish[];
+    @Input() eliminations: Elimination[];
     @Input() clientId: number;
     @Input() trigger: string | null;
     @Input() tId: number;
@@ -40,20 +36,13 @@ export class PlayerDetailsComponent implements OnChanges {
         name: string;
         rebuys: number;
         addons: number;
+        eliminations: number;
         reEntries: number;
         isFinished: boolean;
         isLastFinished: boolean;
         rank: number | undefined;
         pId: number;
     }[];
-
-    private fetchService: FetchService = inject(FetchService);
-    private finishApiService: FinishApiService = inject(FinishApiService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
-    private notificationService: NotificationService = inject(NotificationService);
-    private eliminationApiService: EliminationApiService = inject(EliminationApiService);
-
-    private dialog: MatDialog = inject(MatDialog);
 
     ngOnChanges(changes: SimpleChanges): void {
         const minRank = Math.min(...this.finishes.map(f => f.rank));
@@ -74,6 +63,7 @@ export class PlayerDetailsComponent implements OnChanges {
                         rebuys: this.entries.filter(e => e.playerId === player.id && e.type === EntryType.REBUY).length,
                         addons: this.entries.filter(e => e.playerId === player.id && e.type === EntryType.ADDON).length,
                         reEntries: this.entries.filter(e => e.playerId === player.id && (e.type === EntryType.ENTRY || e.type === EntryType.RE_ENTRY)).length,
+                        eliminations: this.eliminations.filter(e => e.eliminator === player.id).length,
                         isFinished: this.finishes.map(f => f.playerId).includes(player.id),
                         isLastFinished: isLastFinished,
                         rank: rank,

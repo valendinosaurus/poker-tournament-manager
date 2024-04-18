@@ -1,0 +1,43 @@
+<h2>
+    <i class="fa fa-save"></i>
+    Save as blind structure
+</h2>
+
+<form
+    class="flexed"
+    (ngSubmit)="onSubmit()"
+>
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input
+            matInput
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+        />
+    </mat-form-field>
+
+    <h3>Review your structure</h3>
+
+    <div class="structure">
+        <app-blind-structure-view
+            [structure]="structureToSave"
+        ></app-blind-structure-view>
+    </div>
+
+    <button
+        [disabled]="!model.isValid()"
+        mat-raised-button
+        color="primary"
+        type="submit"
+    >
+        CREATE AS STRUCTURE
+    </button>
+
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+</form>

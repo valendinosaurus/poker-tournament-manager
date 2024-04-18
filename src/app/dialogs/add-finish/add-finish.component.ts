@@ -25,7 +25,7 @@ import { EliminationApiService } from '../../core/services/api/elimination-api.s
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -51,8 +51,7 @@ export class AddFinishComponent implements OnInit {
     data: {
         tournament: Tournament,
         metadata: SeriesMetadata | undefined,
-        clientId: number,
-        sub: string
+        clientId: number
     } = inject(MAT_DIALOG_DATA);
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
@@ -83,7 +82,7 @@ export class AddFinishComponent implements OnInit {
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournament.id, this.data.sub)),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournament.id)),
             tap((tournament: Tournament) => {
                 this.tournament = tournament;
                 this.eligibleForSeatOpen = this.tournamentService.getPlayersEligibleForSeatOpen(tournament);
@@ -125,17 +124,17 @@ export class AddFinishComponent implements OnInit {
                     change: () => this.eliminators = [...this.allPlayers.filter(p => p.value !== this.model.playerId)]
                 }
             },
+            // {
+            //     key: 'showEliminatedBy',
+            //     type: 'checkbox',
+            //     props: {
+            //         label: 'Show Eliminated by?'
+            //     }
+            // },
             {
-                key: 'showEliminatedBy',
-                type: 'checkbox',
-                props: {
-                    label: 'Show Eliminated by?'
-                }
-            },
-            {
-                ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', false, this.eliminators),
+                ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', true, this.eliminators),
                 expressions: {
-                    hide: () => !this.model.showEliminatedBy,
+                    //  hide: () => !this.model.showEliminatedBy,
                     'props.options': () => this.eliminators,
                     'props.disabled': () => this.model.playerId === undefined
                 }

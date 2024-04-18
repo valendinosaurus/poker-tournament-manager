@@ -5,10 +5,9 @@ import { FormlyFieldService } from '../../../core/services/util/formly-field.ser
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
 import { BrandingApiService } from '../../../core/services/api/branding-api.service';
 import { Branding } from '../../../shared/models/branding.interface';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../core/services/util/trigger.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService, User } from '@auth0/auth0-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { Series, SeriesModel } from '../../../shared/models/series.interface';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -39,26 +38,20 @@ export class CreateSeriesComponent implements OnInit {
     private brandingApiService: BrandingApiService = inject(BrandingApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private destroyRef: DestroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
 
     allBrandings: { label: string, value: number }[];
 
     ngOnInit(): void {
-        this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            filter((sub: string) => sub.length > 0),
-            tap((sub: string) => this.sub = sub),
-            switchMap((sub: string) => this.brandingApiService.getAll$(sub).pipe(
-                takeUntilDestroyed(this.destroyRef),
-                tap((brandings: Branding[]) => {
-                    this.allBrandings = brandings.map(b => ({
-                        label: b.name,
-                        value: b.id
-                    }));
-                    this.initModel();
-                    this.initFields();
-                })
-            ))
+        this.brandingApiService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap((brandings: Branding[]) => {
+                this.allBrandings = brandings.map(b => ({
+                    label: b.name,
+                    value: b.id
+                }));
+                this.initModel();
+                this.initFields();
+            })
         ).subscribe();
 
     }
@@ -77,7 +70,6 @@ export class CreateSeriesComponent implements OnInit {
             maxAmountPerTournament: this.data?.series?.maxAmountPerTournament ?? 0,
             noOfTournaments: this.data?.series?.noOfTournaments ?? 0,
             finalists: this.data?.series?.finalists ?? 0,
-            sub: this.data?.series?.sub ?? this.sub,
             password: this.data?.series?.password ?? '',
             temp: this.data?.series?.temp ?? false,
             locked: false

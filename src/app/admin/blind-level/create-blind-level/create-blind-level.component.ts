@@ -39,11 +39,11 @@ export class CreateBlindLevelComponent implements OnInit {
     private initModel(): void {
         this.model = {
             id: this.data?.blindLevel?.id ?? undefined,
-            duration: this.data?.blindLevel?.duration ?? 0,
-            sb: this.data?.blindLevel?.sb ?? 0,
-            bb: this.data?.blindLevel?.bb ?? 0,
-            ante: this.data?.blindLevel?.ante ?? 0,
-            btnAnte: this.data?.blindLevel?.btnAnte ?? 0,
+            duration: Math.round(this.data?.blindLevel?.duration ?? 0),
+            sb: Math.round(this.data?.blindLevel?.sb ?? 0),
+            bb: Math.round(this.data?.blindLevel?.bb ?? 0),
+            ante: Math.round(this.data?.blindLevel?.ante ?? 0),
+            btnAnte: Math.round(this.data?.blindLevel?.btnAnte ?? 0),
             isPause: false,
             isChipUp: false,
             endsRebuy: false

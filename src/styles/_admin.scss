@@ -1,3 +1,4 @@
+
 .li-pair {
     display: flex;
     flex-direction: column;
@@ -69,20 +70,34 @@ div.admin-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-top: 12px;
+
+    @media (max-width: 800px) {
+        flex-direction: column;
+    }
 
     h2 {
         margin-top: 0;
         font-size: 32px;
+
+        @media (max-width: 800px) {
+            font-size: 24px;
+        }
     }
 
     h4 {
         color: #999;
         text-transform: uppercase;
     }
+}
 
-    .admin-header-buttons {
-        button {
-            margin-left: 8px;
+.admin-header-buttons {
+    button {
+        margin-left: 8px;
+
+        @media (max-width: 800px) {
+            margin-left: 0;
+            margin-bottom: 8px;
         }
     }
 }

@@ -25,7 +25,9 @@ export class AppHeaderComponent implements OnInit {
     private authService: AuthService = inject(AuthService);
 
     ngOnInit(): void {
-        this.isAuthenticated$ = this.authService.isAuthenticated$.pipe(shareReplay(1));
+        this.isAuthenticated$ = this.authService.isAuthenticated$.pipe(
+            shareReplay(1)
+        );
     }
 
     login(): void {

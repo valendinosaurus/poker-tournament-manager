@@ -1,0 +1,76 @@
+<h2>
+    <i class="fa fa-copy"></i>
+    Copy Tournament
+</h2>
+
+<form
+    class="flexed"
+    (ngSubmit)="onSubmit()"
+>
+    <mat-form-field>
+        <mat-label>New Date</mat-label>
+        <input
+            matInput
+            [matDatepicker]="picker"
+            [ngModel]="model.newDate()"
+            (ngModelChange)="model.newDate.set($event)"
+            [min]="TODAY"
+            name="newDate"
+        >
+
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>New Name</mat-label>
+        <input
+            matInput
+            [ngModel]="model.newName()"
+            (ngModelChange)="model.newName.set($event)"
+            name="newName"
+        />
+    </mat-form-field>
+
+    <mat-checkbox
+        [ngModel]="model.withStructure()"
+        (ngModelChange)="model.withStructure.set($event)"
+        name="withStructure"
+    >
+        Copy structure
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.withPlayers()"
+        (ngModelChange)="model.withPlayers.set($event)"
+        name="withPlayers"
+    >
+        Copy players
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.asTest()"
+        (ngModelChange)="model.asTest.set($event)"
+        name="asTest"
+    >
+        Copy as test tournament
+    </mat-checkbox>
+    <p class="checkbox-hint">
+        (no effect if original tournament is already a test tournament)
+    </p>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!model.isValid()"
+    >
+        COPY
+    </button>
+
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+</form>

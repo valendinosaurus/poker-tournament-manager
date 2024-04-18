@@ -21,7 +21,7 @@ import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-add-re-entry',
@@ -40,7 +40,6 @@ export class AddEntryComponent implements OnInit {
     private dialogRef: MatDialogRef<AddEntryComponent> = inject(MatDialogRef<AddEntryComponent>);
     data: {
         tournamentId: number,
-        sub: string,
         isReentry: boolean,
         clientId: number,
         tournamentName: string,
@@ -65,7 +64,7 @@ export class AddEntryComponent implements OnInit {
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId, this.data.sub)),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId)),
             tap((tournament: Tournament) => {
                 this.eligibleForEntryOrReEntry = this.tournamentService.getPlayersEligibleForEntryOrReEntry(tournament, this.data.isReentry);
                 this.allPlayers = this.eligibleForEntryOrReEntry.map(
@@ -182,7 +181,9 @@ export class AddEntryComponent implements OnInit {
         }
     }
 
-    closeDialog(): void {
+    closeDialog(event: Event): void {
+        event.preventDefault();
+
         if (this.dialogRef) {
             this.dialogRef.close();
         }

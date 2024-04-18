@@ -2,7 +2,6 @@ import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } f
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Player } from '../../shared/models/player.interface';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
-import { AuthService } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
 import { take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,24 +9,26 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-edit-player',
     templateUrl: './create-player.component.html',
     styleUrls: ['./create-player.component.scss'],
     standalone: true,
-    imports: [FormsModule, UserImageRoundComponent, MatFormFieldModule, MatInputModule, MatButtonModule, NgIf]
+    imports: [FormsModule, UserImageRoundComponent, MatFormFieldModule, MatInputModule, MatButtonModule, NgIf, JsonPipe]
 })
 export class CreatePlayerComponent implements OnInit {
 
     private dialogRef: MatDialogRef<CreatePlayerComponent> = inject(MatDialogRef<CreatePlayerComponent>);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
+
+    readonly WINDOW = window;
 
     data: {
         player?: Player;
+        blockName: boolean
     } = inject(MAT_DIALOG_DATA);
 
     model: {
@@ -84,4 +85,5 @@ export class CreatePlayerComponent implements OnInit {
         event.preventDefault();
         this.dialogRef.close(false);
     }
+
 }

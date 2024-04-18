@@ -18,6 +18,10 @@ header {
     padding: 0 64px;
     box-sizing: border-box;
     z-index: 99999;
+
+    @media (max-width: 800px) {
+        padding: 0 12px;
+    }
 }
 
 mat-toolbar {
@@ -29,6 +33,12 @@ header > mat-toolbar > span {
     align-items: center;
 }
 
+header > mat-toolbar > span.username {
+    @media (max-width: 800px) {
+        display: none;
+    }
+}
+
 header > mat-toolbar > span.links {
     justify-content: flex-start;
 }
@@ -37,6 +47,11 @@ header > mat-toolbar > span.links a {
     display: block;
     margin: 0 20px;
     color: white;
+
+    @media (max-width: 800px) {
+        font-size: 16px;
+        margin: 0 8px;
+    }
 }
 
 header > mat-toolbar > span.links a.active {

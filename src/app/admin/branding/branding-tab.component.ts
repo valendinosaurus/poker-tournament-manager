@@ -41,8 +41,7 @@ export class BrandingTabComponent implements OnInit {
 
         this.brandings$ = this.trigger$.pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.authUtilService.getSub$()),
-            switchMap((sub: string) => this.brandingApiService.getAll$(sub)),
+            switchMap(() => this.brandingApiService.getAll$()),
             shareReplay(1)
         );
 
@@ -85,11 +84,9 @@ export class BrandingTabComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.brandingApiService.delete$(branding.id, sub).pipe(
-                        take(1),
-                        tap(() => this.trigger$.next())
-                    ))
+                defer(() => this.brandingApiService.delete$(branding.id).pipe(
+                    take(1),
+                    tap(() => this.trigger$.next())
                 )),
                 of(null)
             ))

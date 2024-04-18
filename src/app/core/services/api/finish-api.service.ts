@@ -13,10 +13,6 @@ export class FinishApiService {
     private readonly ENDPOINT = 'finish';
     private http: HttpClient = inject(HttpClient);
 
-    getAll$(): Observable<Finish[]> {
-        return this.http.get<Finish[]>(`${BACKEND_URL}${this.ENDPOINT}`);
-    }
-
     post$(player: Finish): Observable<ServerResponse> {
         return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,

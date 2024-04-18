@@ -29,8 +29,6 @@ mat-dialog-container:not(#draw) {
     .mdc-dialog__container button {
         font-size: 26px;
     }
-
-
 }
 
 mat-dialog-container#draw {
@@ -52,6 +50,10 @@ mat-dialog-container#draw {
 .mat-mdc-dialog-surface {
     padding: 32px;
 
+    @media (max-width: 800px) {
+        padding: 20px;
+    }
+
     h2 {
         color: #222 !important;
         font-size: 32px;
@@ -59,6 +61,11 @@ mat-dialog-container#draw {
         text-align: center;
         padding-bottom: 10px;
         border-bottom: solid 2px black;
+
+        @media (max-width: 800px) {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
     }
 
     h3 {
@@ -67,11 +74,20 @@ mat-dialog-container#draw {
         margin-top: 20px;
         border-bottom: solid 1px $primaryDark;
         padding-top: 10px;
+
+        @media (max-width: 800px) {
+            font-size: 14px;
+            margin-top: 12px;
+        }
     }
 
     p {
         color: black;
         font-size: 24px;
+
+        @media (max-width: 800px) {
+            font-size: 16px;
+        }
     }
 
     button:not(.mat-ripple) {
@@ -81,14 +97,36 @@ mat-dialog-container#draw {
         display: block !important;
         height: fit-content !important;
         width: 100% !important;
+
+        @media (max-width: 800px) {
+            padding: 6px 16px;
+            font-size: 14px !important;
+        }
     }
 
     mat-form-field {
         font-size: 32px;
+
+        @media (max-width: 800px) {
+            font-size: 16px;
+        }
+    }
+
+    formly-field-mat-checkbox label,
+    mat-checkbox label {
+        font-size: 24px;
+
+        @media (max-width: 800px) {
+            font-size: 14px;
+        }
     }
 
     .actions {
         margin-top: 40px;
+
+        @media (max-width: 800px) {
+            margin-top: 20px;
+        }
     }
 }
 

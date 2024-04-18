@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
-import { combineLatest, Observable, timer } from 'rxjs';
-import { SeriesS, SeriesMetadata } from '../../../shared/models/series.interface';
+import { combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
+import { SeriesMetadata, SeriesS } from '../../../shared/models/series.interface';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SeriesTournament } from '../../models/combined-ranking.interface';
 import { LeaderboardRow } from '../../models/overall-ranking.interface';
@@ -10,8 +10,7 @@ import { MathContent } from '../../../shared/models/math-content.interface';
 import { SeriesService } from '../../../core/services/series.service';
 import { SimpleStat } from '../../../shared/models/simple-stat.interface';
 import { RankingService } from '../../../core/services/util/ranking.service';
-import { AuthService, User } from '@auth0/auth0-angular';
-import { FetchService } from '../../../core/services/fetch.service';
+import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
 import { SeriesStatsComponent } from '../../components/series-stats/series-stats.component';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
@@ -19,6 +18,8 @@ import { LeaderboardComponent } from '../../../shared/components/leaderboard/lea
 import { SeriesHeaderComponent } from '../../components/series-header/series-header.component';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthUtilService } from '../../../core/services/auth-util.service';
 
 export interface SeriesHeader {
     logo: string;
@@ -77,31 +78,31 @@ export class SeriesPageComponent implements OnInit {
     private seriesService: SeriesService = inject(SeriesService);
     private rankingService: RankingService = inject(RankingService);
     private router: Router = inject(Router);
-    private authService: AuthService = inject(AuthService);
-    private fetchService: FetchService = inject(FetchService);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
+
+    private trigger$ = new ReplaySubject<void>();
 
     ngOnInit(): void {
         this.seriesId = this.route.snapshot.params['sId'];
         this.password = this.route.snapshot.params['password'];
-
-        this.user$ = this.authService.user$;
-
-        this.myEmail$ = this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.email),
-        );
+        this.user$ = this.authUtilService.getUser$();
+        this.myEmail$ = this.authUtilService.getEmail$();
 
         this.series$ = combineLatest([
-            timer(0, 10000),
-            this.fetchService.getFetchTrigger$()
+            timer(0, 60000),
+            this.trigger$
         ]).pipe(
+            takeUntilDestroyed(this.destroyRef),
             switchMap(() => this.seriesApiService.getWithDetailsByPw$(this.seriesId, this.password).pipe(
                 tap((e) => {
                     if (Object.keys(e).length < 3) {
                         this.router.navigate(['not-found']);
                     }
-                }),
-                shareReplay(1)
-            )));
+                })
+            )),
+            shareReplay(1)
+        );
 
         this.seriesHeader$ = this.series$.pipe(
             map((series: SeriesS) => ({
@@ -143,7 +144,8 @@ export class SeriesPageComponent implements OnInit {
             map((leaderboard: LeaderboardRow[]) => this.seriesService.calcSeriesStats(leaderboard)),
         );
 
-        this.fetchService.trigger();
+        //this.fetchService.trigger('series on inut');
+        this.trigger$.next();
     }
 
 }

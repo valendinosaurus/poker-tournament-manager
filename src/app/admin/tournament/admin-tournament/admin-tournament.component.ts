@@ -20,12 +20,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPauseComponent } from '../../../dialogs/add-pause/add-pause.component';
 import { AddPlayerComponent } from '../../../dialogs/add-player/add-player.component';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { CopyTournamentComponent } from '../copy-tournament/copy-tournament.component';
+import { BlindLevel } from '../../../shared/models/blind-level.interface';
+import { SaveAsStructureComponent } from '../../blind-structure/save-as-structure/save-as-structure.component';
+import {
+    BlindStructureViewComponent
+} from '../../../shared/components/blind-structure-view/blind-structure-view.component';
+import { AssignBlindStructureComponent } from '../assign-blind-structure/assign-blind-structure.component';
 
 @Component({
     selector: 'app-admin-tournament',
     templateUrl: './admin-tournament.component.html',
     standalone: true,
-    imports: [RouterLink, AsyncPipe, JsonPipe, MatDialogModule, NgIf, AppHeaderComponent, DatePipe, MatTabsModule, UserImageRoundComponent, NgForOf, MatSidenavModule, MatButtonModule, DecimalPipe]
+    imports: [RouterLink, AsyncPipe, JsonPipe, MatDialogModule, NgIf, AppHeaderComponent, DatePipe, MatTabsModule, UserImageRoundComponent, NgForOf, MatSidenavModule, MatButtonModule, DecimalPipe, BlindStructureViewComponent]
 })
 export class AdminTournamentComponent implements OnInit {
 
@@ -45,7 +52,6 @@ export class AdminTournamentComponent implements OnInit {
     blindPositions: number[];
 
     ngOnInit(): void {
-
         this.user$ = this.authUtilService.getUser$();
         this.sub$ = this.authUtilService.getSub$();
 
@@ -57,11 +63,10 @@ export class AdminTournamentComponent implements OnInit {
 
         this.tournament$ = combineLatest([
             this.trigger$,
-            this.tId$,
-            this.sub$
+            this.tId$
         ]).pipe(
-            switchMap(([_, tId, sub]: [void, number, string]) =>
-                this.tournamentApiService.get$(tId, sub)
+            switchMap(([_, tId]: [void, number]) =>
+                this.tournamentApiService.get$(tId)
             ),
             tap((tournament: Tournament) => this.blindPositions = tournament.structure.map(e => e.position))
         );
@@ -70,13 +75,10 @@ export class AdminTournamentComponent implements OnInit {
     }
 
     deletePlayerFromTournament(playerId: number): void {
-        combineLatest([
-            this.sub$,
-            this.tournament$
-        ]).pipe(
+        this.tournament$.pipe(
             take(1),
-            switchMap(([sub, tournament]: [string, Tournament]) =>
-                this.tournamentApiService.removePlayer$(playerId, tournament.id, sub).pipe(
+            switchMap((tournament: Tournament) =>
+                this.tournamentApiService.removePlayer$(playerId, tournament.id).pipe(
                     take(1),
                     tap(() => this.trigger$.next())
                 )
@@ -85,13 +87,10 @@ export class AdminTournamentComponent implements OnInit {
     }
 
     deleteBlindFromTournament(blindId: number): void {
-        combineLatest([
-            this.sub$,
-            this.tournament$
-        ]).pipe(
+        this.tournament$.pipe(
             take(1),
-            switchMap(([sub, tournament]: [string, Tournament]) =>
-                this.tournamentApiService.removeBlind$(blindId, tournament.id, sub).pipe(
+            switchMap((tournament: Tournament) =>
+                this.tournamentApiService.removeBlind$(blindId, tournament.id).pipe(
                     take(1),
                     tap(() => this.trigger$.next())
                 )
@@ -147,12 +146,53 @@ export class AdminTournamentComponent implements OnInit {
         }
     }
 
+    saveAsBlindStructure(structure: BlindLevel[]): void {
+        const dialogRef = this.dialog.open(SaveAsStructureComponent, {
+            ...DEFAULT_DIALOG_POSITION,
+            data: {
+                structure
+            }
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => this.trigger$.next())
+        ).subscribe();
+    }
+
+    assignBlindStructrue(tournament: Tournament): void {
+        const dialogRef = this.dialog.open(AssignBlindStructureComponent, {
+            ...DEFAULT_DIALOG_POSITION,
+            data: {
+                tournament
+            }
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => this.trigger$.next())
+        ).subscribe();
+    }
+
     addPlayers(tournament: Tournament): void {
         const dialogRef = this.dialog.open(AddPlayerComponent, {
             data: {
                 tournament: tournament,
                 multi: true,
                 clientId: -1
+            }
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => this.trigger$.next())
+        ).subscribe();
+    }
+
+    copyTournament(tournament: Tournament): void {
+        const dialogRef = this.dialog.open(CopyTournamentComponent, {
+            data: {
+                tournament: tournament,
             }
         });
 
@@ -177,11 +217,9 @@ export class AdminTournamentComponent implements OnInit {
         dialogRef.afterClosed().pipe(
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.tournamentApiService.delete$(tournament.id, sub).pipe(
-                        take(1),
-                        tap(() => this.router.navigate(['/admin']))
-                    ))
+                defer(() => this.tournamentApiService.delete$(tournament.id).pipe(
+                    take(1),
+                    tap(() => this.router.navigate(['/admin']))
                 )),
                 of(null)
             ))

@@ -60,8 +60,7 @@ export class BlindLevelTabComponent implements OnInit {
 
         this.blindLevels$ = this.trigger$.pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.authUtilService.getSub$()),
-            switchMap((sub: string) => this.blindLevelApiService.getAll$(sub)),
+            switchMap(() => this.blindLevelApiService.getAll$()),
             shareReplay(1)
         );
 

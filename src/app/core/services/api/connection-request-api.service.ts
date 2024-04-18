@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { AuthService, User } from '@auth0/auth0-angular';
 import { ServerResponse } from '../../../shared/models/server-response';
 import { ConnectionRequest } from '../../../shared/models/util/connection-request.interface';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
+import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,24 +14,19 @@ export class ConnectionRequestApiService {
 
     private readonly ENDPOINT = 'connection-request';
 
-    constructor(
-        private http: HttpClient,
-        private authService: AuthService
-    ) {
-    }
+    private http: HttpClient = inject(HttpClient);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
 
     getAllByEmail$(): Observable<ConnectionRequest[]> {
-        return this.authService.user$.pipe(
-            filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
-            map((user: User) => user.email),
+        return this.authUtilService.getEmail$().pipe(
             filter((email: string | undefined): email is string => email !== undefined),
             switchMap((email: string) => this.http.get<ConnectionRequest[]>(`${BACKEND_URL}${this.ENDPOINT}/all/${email}`)
             )
         );
     }
 
-    get$(id: number, sub: string): Observable<ConnectionRequest> {
-        return this.http.get<ConnectionRequest>(`${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`);
+    get$(id: number): Observable<ConnectionRequest> {
+        return this.http.get<ConnectionRequest>(`${BACKEND_URL}${this.ENDPOINT}/${id}}`);
     }
 
     post$(request: ConnectionRequest): Observable<ServerResponse> {

@@ -1,10 +1,9 @@
-import { Component, inject, mergeApplicationConfig, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { ConnectionRequestApiService } from '../../core/services/api/connection-request-api.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ConnectionRequest } from '../../shared/models/util/connection-request.interface';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { Player } from '../../shared/models/player.interface';
-import { AuthService } from '@auth0/auth0-angular';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 import { FetchService } from '../../core/services/fetch.service';
@@ -12,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -32,7 +31,6 @@ export class MapPlayerComponent implements OnInit {
 
     private connectionRequestApiService: ConnectionRequestApiService = inject(ConnectionRequestApiService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
 
     allMappablePlayers: Player[];
@@ -40,10 +38,7 @@ export class MapPlayerComponent implements OnInit {
     model: WritableSignal<Player>;
 
     ngOnInit(): void {
-        this.authService.user$.pipe(
-            take(1),
-            map((user) => user?.sub ?? ''),
-            switchMap((sub: string) => this.playerApiService.getAll$(sub)),
+        this.playerApiService.getAll$().pipe(
             map((players) => players.filter(p => !p.email)),
             tap(p => {
                 this.allMappablePlayers = p;
@@ -77,6 +72,4 @@ export class MapPlayerComponent implements OnInit {
         this.dialogRef.close();
     }
 
-    protected readonly map = map;
-    protected readonly mergeApplicationConfig = mergeApplicationConfig;
 }

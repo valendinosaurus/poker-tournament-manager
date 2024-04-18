@@ -1,0 +1,46 @@
+<h2>
+    <ng-container *ngIf="data?.structure">
+        <i class="fa fa-edit"></i>
+        Edit
+    </ng-container>
+    <ng-container *ngIf="!data?.structure">
+        Create
+    </ng-container>
+
+    Blind Structure
+</h2>
+
+<form
+    (ngSubmit)="onSubmit()"
+>
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input
+            matInput
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+        />
+    </mat-form-field>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!model.isValid()"
+    >
+        <ng-container *ngIf="data?.structure">
+            EDIT
+        </ng-container>
+        <ng-container *ngIf="!data?.structure">
+            CREATE
+        </ng-container>
+    </button>
+
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+</form>
+

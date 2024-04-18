@@ -16,7 +16,11 @@
     ></formly-form>
 
     <h4>Preview</h4>
-    <img [src]="model.logo" style="max-height: 100px;"/>
+    <img
+        class="preview-image"
+        [src]="model.logo"
+        onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
+    />
 
     <button
         mat-raised-button color="primary"

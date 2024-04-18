@@ -1,0 +1,48 @@
+<div class="admin-header">
+    <h2>Blind Structures</h2>
+
+    <div class="admin-header-buttons">
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="createBlindStructure()"
+        >
+            CREATE BLIND STRUCTURE
+        </button>
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <table class="admin-table">
+        <tr>
+            <th>Name</th>
+            <th>No of Blind Levels</th>
+            <th>Actions</th>
+        </tr>
+        <ng-container *ngFor="let blindStructure of blindStructures$ | async">
+            <a style="display: contents" [routerLink]="['/admin/blind-structure', blindStructure.id]">
+                <tr>
+                    <td>
+                        {{ blindStructure.name }}
+                    </td>
+                    <td>
+                        TODO
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <i
+                                class="fa fa-trash"
+                                (click)="deleteStructure(blindStructure, $event)"
+                            ></i>
+
+                            <i
+                                *ngIf="blindStructure.locked"
+                                class="fa fa-lock"
+                            ></i>
+                        </div>
+                    </td>
+                </tr>
+            </a>
+        </ng-container>
+    </table>
+</div>

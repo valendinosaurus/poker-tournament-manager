@@ -35,8 +35,7 @@ export class LocationTabComponent implements OnInit {
 
         this.locations$ = this.trigger$.pipe(
             takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.authUtilService.getSub$()),
-            switchMap((sub: string) => this.locationApiService.getAll$(sub)),
+            switchMap(() => this.locationApiService.getAll$()),
             shareReplay(1)
         );
 
@@ -79,11 +78,9 @@ export class LocationTabComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.locationApiService.delete$(location.id, sub).pipe(
-                        take(1),
-                        tap(() => this.trigger$.next())
-                    ))
+                defer(() => this.locationApiService.delete$(location.id).pipe(
+                    take(1),
+                    tap(() => this.trigger$.next())
                 )),
                 of(null)
             ))

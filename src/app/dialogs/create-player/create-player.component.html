@@ -13,18 +13,29 @@
     <div class="flex justify-center">
         <app-user-image-round
             [imageUrl]="model.userImage()"
-            [size]="128"
+            [size]="WINDOW.innerWidth >= 800 ?  128 : 98"
         ></app-user-image-round>
     </div>
 
     <mat-form-field>
-        <mat-label>Email of tournament owner</mat-label>
-        <input matInput [ngModel]="model.userImage()" (ngModelChange)="model.userImage.set($event)" name="userImage"/>
+        <mat-label>Image URL</mat-label>
+        <input
+            matInput
+            [ngModel]="model.userImage()"
+            (ngModelChange)="model.userImage.set($event)"
+            name="userImage"
+        />
     </mat-form-field>
 
     <mat-form-field>
         <mat-label>Your name</mat-label>
-        <input matInput [ngModel]="model.name()" (ngModelChange)="model.name.set($event)" name="name"/>
+        <input
+            matInput
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+            [disabled]="data.blockName && data?.player !== null && data?.player !== undefined"
+        />
     </mat-form-field>
 
     <button
@@ -39,6 +50,12 @@
             CREATE
         </ng-container>
     </button>
+
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
 </form>
 
-<button mat-raised-button (click)="closeDialog($event)">CLOSE</button>

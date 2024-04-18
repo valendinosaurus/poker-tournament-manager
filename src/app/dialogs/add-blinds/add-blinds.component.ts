@@ -4,19 +4,20 @@ import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
-import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { shareReplay, take, tap } from 'rxjs/operators';
 import { BlindLevelApiService } from '../../core/services/api/blind-level-api.service';
 import { BlindLevel } from '../../shared/models/blind-level.interface';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService, User } from '@auth0/auth0-angular';
+import { AuthService } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
-import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { BlindLevelTextPipe } from '../../shared/pipes/blind-level-text.pipe';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
+import { BlindStructure } from '../../shared/models/blind-structure.interface';
+import { BlindStructureApiService } from '../../core/services/api/blind-structure-api.service';
 
 @Component({
     selector: 'app-add-blinds',
@@ -29,30 +30,35 @@ export class AddBlindsComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: { blindId: number[] | undefined, tournamentId: number };
+    model: {
+        blindIds: number[] | undefined,
+        parentId: number
+    };
     fields: FormlyFieldConfig[];
 
     private dialogRef: MatDialogRef<AddBlindsComponent> = inject(MatDialogRef<AddBlindsComponent>);
-    data: { tournament: Tournament } = inject(MAT_DIALOG_DATA);
+    data: {
+        tournament: Tournament | undefined,
+        structure: BlindStructure | undefined
+    } = inject(MAT_DIALOG_DATA);
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
 
     allBlinds: { label: string, value: number }[];
     filterDuration: number;
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
 
     ngOnInit(): void {
-        const allBlinds$ = this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.blindApiService.getAll$(sub)),
+        const allBlinds$ = this.blindApiService.getAll$().pipe(
             shareReplay(1)
         );
+
+        const base = this.data.tournament?.structure ?? this.data.structure?.structure ?? [];
 
         combineLatest([
             allBlinds$,
@@ -62,10 +68,8 @@ export class AddBlindsComponent implements OnInit {
             tap(([blinds, duration]: [BlindLevel[], number]) => {
                 this.allBlinds = blinds
                     .filter(b => !b.isPause)
-                    .filter(
-                        blind => !this.data.tournament.structure.filter(p => !p.isPause).map(p => p.id).includes(blind.id)
-                    )
-                    .filter(blind => blind.sb > Math.max(...this.data.tournament.structure.map(b => b.sb)))
+                    .filter(blind => !base.filter(p => !p.isPause).map(p => p.id).includes(blind.id))
+                    .filter(blind => blind.sb > Math.max(...base.map(b => b.sb)))
                     .filter(
                         (level) => {
                             if (+duration === 0) {
@@ -99,8 +103,8 @@ export class AddBlindsComponent implements OnInit {
 
     private initModel(): void {
         this.model = {
-            blindId: undefined,
-            tournamentId: this.data.tournament.id
+            blindIds: undefined,
+            parentId: this.data.tournament?.id ?? this.data.structure?.id ?? -1
         };
     }
 
@@ -114,29 +118,45 @@ export class AddBlindsComponent implements OnInit {
         this.filterDurationTrigger$.next(+event);
     }
 
-    onSubmit(model: { blindId: number[] | undefined, tournamentId: number }): void {
-        if (model.blindId && model.tournamentId) {
-
+    onSubmit(model: { blindIds: number[] | undefined, parentId: number }): void {
+        if (model.blindIds && model.parentId && model.parentId >= 0) {
+            const base = this.data.tournament?.structure ?? this.data.structure?.structure ?? [];
             const positions = [];
-            const startIndex = this.data.tournament.structure.length * 2;
-            const numberOfBlindsToAdd = model.blindId.length;
+            const startIndex = base.length * 2;
+            const numberOfBlindsToAdd = model.blindIds.length;
             const endIndex = startIndex + (numberOfBlindsToAdd * 2);
 
             for (let i = startIndex; i < endIndex; i += 2) {
                 positions.push(i);
             }
 
-            this.tournamentApiService.addBlinds$(model.blindId, model.tournamentId, positions).pipe(
-                take(1),
-                tap((a) => this.fetchService.trigger()),
-                tap(() => {
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            blindId: model.blindId
-                        });
-                    }
-                })
-            ).subscribe();
+            if (this.data.tournament) {
+                this.tournamentApiService.addBlinds$(model.blindIds, model.parentId, positions).pipe(
+                    take(1),
+                    tap((a) => this.fetchService.trigger()),
+                    tap(() => {
+                        if (this.dialogRef) {
+                            this.dialogRef.close({
+                                blindId: model.blindIds
+                            });
+                        }
+                    })
+                ).subscribe();
+            }
+
+            if (this.data.structure) {
+                this.blindStructureApiService.addBlinds$(model.blindIds, model.parentId, positions).pipe(
+                    take(1),
+                    tap((a) => this.fetchService.trigger()),
+                    tap(() => {
+                        if (this.dialogRef) {
+                            this.dialogRef.close({
+                                blindId: model.blindIds
+                            });
+                        }
+                    })
+                ).subscribe();
+            }
         }
     }
 

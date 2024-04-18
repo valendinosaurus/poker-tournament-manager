@@ -1,0 +1,39 @@
+<h2>
+    <i class="fa fa-connectdevelop"></i> Assign Blind Structure
+</h2>
+
+<form
+    (ngSubmit)="onSubmit()"
+>
+    <mat-form-field>
+        <mat-label>Structure</mat-label>
+
+        <mat-select
+            [ngModel]="model.selectedStructureToAdd()"
+            (selectionChange)="this.model.selectedStructureToAdd.set($event.value)"
+            name="selectedStructureToAdd"
+        >
+            <ng-container *ngFor="let structure of allStructures$ | async">
+                <mat-option [value]="structure">
+                    {{ structure.name }}
+                </mat-option>
+            </ng-container>
+        </mat-select>
+    </mat-form-field>
+
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!model.isValid()"
+    >
+        ASSIGN
+    </button>
+
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+</form>
+

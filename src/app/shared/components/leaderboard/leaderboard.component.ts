@@ -43,7 +43,8 @@ export class LeaderboardComponent {
         this.dialog.open(CreatePlayerComponent, {
             ...DEFAULT_DIALOG_POSITION,
             data: {
-                player: playerToEdit
+                player: playerToEdit,
+                blockName: true
             }
         });
     }

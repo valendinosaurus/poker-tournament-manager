@@ -183,8 +183,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
             data: {
                 tournamentId: this.tournament.id,
                 tournamentName: this.tournament.name,
-                clientId: this.clientId,
-                sub: this.sub
+                clientId: this.clientId
             }
         });
 
@@ -213,8 +212,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
             data: {
                 tournament: this.tournament,
                 metadata: this.seriesMetadata,
-                clientId: this.clientId,
-                sub: this.sub
+                clientId: this.clientId
             }
         });
 

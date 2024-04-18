@@ -41,7 +41,7 @@ export class CreatePauseComponent implements OnInit {
     private initModel(): void {
         this.model = {
             id: this.data?.blindLevel?.id ?? undefined,
-            duration: this.data?.blindLevel?.duration ?? 0,
+            duration: Math.round(this.data?.blindLevel?.duration ?? 0),
             sb: 0,
             bb: 0,
             ante: 0,

@@ -2,11 +2,15 @@
     [user]="user$ | async"
 ></app-app-header>
 
-<div
-    *ngIf="user$ | async as user"
-    class="page-with-header"
->
-    <div class="flex justify-center">
+<ng-container *ngIf="isAuthenticated$ | async; else pleaseLogin;">
+    <div
+        *ngIf="user$ | async as user"
+        class="page-with-header"
+    >
+
+        AUTH{{ isAuthenticated$ | async }}
+
+        <div class="flex justify-center">
         <span class="desktop-only">
             <app-user-image-round
                 [imageUrl]="userImage$ | async"
@@ -14,151 +18,176 @@
                 border="b-black"
             ></app-user-image-round>
         </span>
-        <span class="mobile-only">
+            <span class="mobile-only">
             <app-user-image-round
                 [imageUrl]="userImage$ | async"
                 [size]="100"
                 border="b-black"
             ></app-user-image-round>
         </span>
-    </div>
+        </div>
 
-    <div class="text-align-center">
-        <h1>
-            {{ user.name }}
-        </h1>
-        <p>
-            {{ user.email}}
-        </p>
-    </div>
+        <div class="text-align-center">
+            <h1>
+                {{ user.name }}
+            </h1>
+            <p *ngIf="user.name !== user.email">
+                {{ user.email}}
+            </p>
+        </div>
 
-    <hr>
+        <hr>
 
-    <ng-container *ngIf="myPlayers$ | async as myPlayers">
-        <ng-container *ngIf="myPlayers.length > 0">
-            <h2>Players connected to yourself</h2>
+        <ng-container *ngIf="myPlayers$ | async as myPlayers">
+            <ng-container *ngIf="myPlayers.length > 0">
+                <h2>Players connected to yourself</h2>
 
-            <div class="flex">
-                <ng-container *ngFor="let p of myPlayers">
-                    <app-player-list-item
-                        [player]="p"
-                        [myEmail]="email$ | async"
-                    ></app-player-list-item>
+                <div class="flex column-mobile">
+                    <ng-container *ngFor="let player of myPlayers">
+                    <span class="flex user-list-item">
+                        <app-user-image-round
+                            [imageUrl]="player.image"
+                            [size]="userImageSize"
+                        ></app-user-image-round>
+
+                        <div class="li-pair">
+                            <span class="name">
+                                {{ player.name }}
+                            </span>
+                            <span *ngIf="player.email">
+                                <small>{{ player.email }}</small>
+                            </span>
+                        </div>
+                    </span>
+                    </ng-container>
+                </div>
+
+                <hr>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="mappedUsers$ | async as mappedUsers">
+            <ng-container *ngIf="mappedUsers.length > 0">
+                <h2>Players connected to other users</h2>
+
+                <div class="flex column-mobile">
+                    <ng-container *ngFor="let player of mappedUsers">
+                    <span class="flex user-list-item">
+                        <app-user-image-round
+                            [imageUrl]="player.image"
+                            [size]="userImageSize"
+                        ></app-user-image-round>
+
+                        <div class="li-pair">
+                            <span class="name">
+                                {{ player.name }}
+                            </span>
+                            <span *ngIf="player.email">
+                                <small>{{ player.email }}</small>
+                            </span>
+                        </div>
+                    </span>
+                    </ng-container>
+                </div>
+
+                <hr>
+            </ng-container>
+        </ng-container>
+
+        <div class="flex align-center column-mobile align-start-mobile">
+            <h2>Are you part of another user's series or tournament? Connect here!</h2>
+
+            <button
+                mat-raised-button
+                (click)="connectToOtherUser()"
+            >
+                CONNECT NOW
+            </button>
+        </div>
+
+        <hr>
+
+
+        <div class="grid grid-2">
+            <div>
+                <h2>My incoming requests</h2>
+
+                <ng-container *ngIf="incomingRequests$ | async as incomingRequests">
+                    <ng-container *ngIf="incomingRequests.length > 0; else noIncoming">
+                        <ng-container *ngFor="let cr of incomingRequests">
+                            <app-connection-request
+                                [connectionRequest]="cr"
+                                [myEmail]="email$ | async"
+                            ></app-connection-request>
+                        </ng-container>
+                    </ng-container>
+
+                    <ng-template #noIncoming>
+                        <h4>No requests</h4>
+                    </ng-template>
                 </ng-container>
             </div>
 
-            <hr>
-        </ng-container>
-    </ng-container>
+            <div>
+                <h2>My outgoing requests</h2>
 
-    <ng-container *ngIf="mappedUsers$ | async as mappedUsers">
-        <ng-container *ngIf="mappedUsers.length > 0">
-            <h2>Players connected to other users</h2>
+                <ng-container *ngIf="outgoingPendingRequests$ | async as outgoingPendingRequests">
+                    <ng-container *ngIf="outgoingPendingRequests.length > 0; else noIncoming">
+                        <ng-container *ngFor="let cr of outgoingPendingRequests">
+                            <app-connection-request
+                                [connectionRequest]="cr"
+                                [myEmail]="email$ | async"
+                            ></app-connection-request>
+                        </ng-container>
+                    </ng-container>
 
-            <div class="flex">
-                <ng-container *ngFor="let p of mappedUsers">
-                    <app-player-list-item
-                        [player]="p"
-                        [myEmail]="email$ | async"
-                    ></app-player-list-item>
+                    <ng-template #noIncoming>
+                        <h4>No requests</h4>
+                    </ng-template>
                 </ng-container>
             </div>
 
-            <hr>
-        </ng-container>
-    </ng-container>
+            <div>
+                <h2>My connections</h2>
 
-    <div class="flex align-center">
-        <h2>Are you part of another user's series or tournament? Connect here!</h2>
-
-        <button
-            style="margin-left: 40px"
-            mat-raised-button
-            color="primary"
-            (click)="connectToOtherUser()"
-        >
-            CONNECT NOW
-        </button>
-    </div>
-
-    <hr>
-
-
-    <div class="grid grid-2">
-        <div>
-            <h2>My incoming requests</h2>
-
-            <ng-container *ngIf="incomingRequests$ | async as incomingRequests">
-                <ng-container *ngIf="incomingRequests.length > 0; else noIncoming">
-                    <ng-container *ngFor="let cr of incomingRequests">
-                        <app-connection-request
-                            [connectionRequest]="cr"
-                            [myEmail]="email$ | async"
-                        ></app-connection-request>
+                <ng-container *ngIf="outgoingAcceptedRequests$ | async as outgoingAcceptedRequests">
+                    <ng-container *ngIf="outgoingAcceptedRequests.length > 0; else noIncoming">
+                        <ng-container *ngFor="let cr of outgoingAcceptedRequests">
+                            <app-connection-request
+                                [connectionRequest]="cr"
+                                [myEmail]="email$ | async"
+                            ></app-connection-request>
+                        </ng-container>
                     </ng-container>
+
+                    <ng-template #noIncoming>
+                        <h4>No requests</h4>
+                    </ng-template>
                 </ng-container>
+            </div>
 
-                <ng-template #noIncoming>
-                    <h4>No requests</h4>
-                </ng-template>
-            </ng-container>
-        </div>
+            <div>
+                <h2>My declined connections</h2>
 
-        <div>
-            <h2>My outgoing requests</h2>
-
-            <ng-container *ngIf="outgoingPendingRequests$ | async as outgoingPendingRequests">
-                <ng-container *ngIf="outgoingPendingRequests.length > 0; else noIncoming">
-                    <ng-container *ngFor="let cr of outgoingPendingRequests">
-                        <app-connection-request
-                            [connectionRequest]="cr"
-                            [myEmail]="email$ | async"
-                        ></app-connection-request>
+                <ng-container *ngIf="outgoingDeclinedRequests$ | async as outgoingDeclinedRequests">
+                    <ng-container *ngIf="outgoingDeclinedRequests.length > 0; else noIncoming">
+                        <ng-container *ngFor="let cr of outgoingDeclinedRequests">
+                            <app-connection-request
+                                [connectionRequest]="cr"
+                                [myEmail]="email$ | async"
+                            ></app-connection-request>
+                        </ng-container>
                     </ng-container>
+
+                    <ng-template #noIncoming>
+                        <h4>No requests</h4>
+                    </ng-template>
                 </ng-container>
-
-                <ng-template #noIncoming>
-                    <h4>No requests</h4>
-                </ng-template>
-            </ng-container>
-        </div>
-
-        <div>
-            <h2>My connections</h2>
-
-            <ng-container *ngIf="outgoingAcceptedRequests$ | async as outgoingAcceptedRequests">
-                <ng-container *ngIf="outgoingAcceptedRequests.length > 0; else noIncoming">
-                    <ng-container *ngFor="let cr of outgoingAcceptedRequests">
-                        <app-connection-request
-                            [connectionRequest]="cr"
-                            [myEmail]="email$ | async"
-                        ></app-connection-request>
-                    </ng-container>
-                </ng-container>
-
-                <ng-template #noIncoming>
-                    <h4>No requests</h4>
-                </ng-template>
-            </ng-container>
-        </div>
-
-        <div>
-            <h2>My declined connections</h2>
-
-            <ng-container *ngIf="outgoingDeclinedRequests$ | async as outgoingDeclinedRequests">
-                <ng-container *ngIf="outgoingDeclinedRequests.length > 0; else noIncoming">
-                    <ng-container *ngFor="let cr of outgoingDeclinedRequests">
-                        <app-connection-request
-                            [connectionRequest]="cr"
-                            [myEmail]="email$ | async"
-                        ></app-connection-request>
-                    </ng-container>
-                </ng-container>
-
-                <ng-template #noIncoming>
-                    <h4>No requests</h4>
-                </ng-template>
-            </ng-container>
+            </div>
         </div>
     </div>
-</div>
+</ng-container>
+
+<ng-template #pleaseLogin>
+    <h1>You are not logged in!</h1>
+</ng-template>

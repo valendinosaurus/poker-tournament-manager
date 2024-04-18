@@ -1,7 +1,7 @@
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ConnectionRequestApiService } from '../../../../core/services/api/connection-request-api.service';
-import { AuthService, User } from '@auth0/auth0-angular';
+import { User } from '@auth0/auth0-angular';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { ConnectionRequestState } from '../../../../shared/enums/connection-request-state.enum';
 import { FetchService } from '../../../../core/services/fetch.service';
@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { AuthUtilService } from '../../../../core/services/auth-util.service';
 
 @Component({
     selector: 'app-connect-to-other-user-dialog',
@@ -32,12 +33,12 @@ export class ConnectToOtherUserDialogComponent {
     };
 
     private connectionRequestApiService: ConnectionRequestApiService = inject(ConnectionRequestApiService);
-    private authService: AuthService = inject(AuthService);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
     private dialogRef: MatDialogRef<ConnectToOtherUserDialogComponent> = inject(MatDialogRef<ConnectToOtherUserDialogComponent>);
     private fetchService: FetchService = inject(FetchService);
 
     onSubmit(): void {
-        this.authService.user$.pipe(
+        this.authUtilService.getUser$().pipe(
             filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
             map((user: User) => user.email),
             filter((email: string | undefined): email is string => email !== undefined),

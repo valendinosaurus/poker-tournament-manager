@@ -51,11 +51,10 @@ export class AdminSeriesComponent implements OnInit {
 
         this.series$ = combineLatest([
             this.trigger$,
-            this.sId$,
-            this.sub$
+            this.sId$
         ]).pipe(
-            switchMap(([_, sId, sub]: [void, number, string]) =>
-                this.seriesApiService.get$(sId, sub)
+            switchMap(([_, sId]: [void, number]) =>
+                this.seriesApiService.get$(sId)
             )
         );
 
@@ -109,11 +108,9 @@ export class AdminSeriesComponent implements OnInit {
         dialogRef.afterClosed().pipe(
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.seriesApiService.delete$(series.id, sub).pipe(
-                        take(1),
-                        tap(() => this.router.navigate(['/admin/series']))
-                    ))
+                defer(() => this.seriesApiService.delete$(series.id).pipe(
+                    take(1),
+                    tap(() => this.router.navigate(['/admin/series']))
                 )),
                 of(null)
             ))
@@ -144,7 +141,6 @@ export class AdminSeriesComponent implements OnInit {
     }
 
     unlock(series: Series): void {
-        console.log('unlock');
         this.seriesApiService.put$({
             ...series,
             locked: false,

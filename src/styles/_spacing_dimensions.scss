@@ -40,6 +40,19 @@
     align-items: center;
 }
 
+.flex.column-mobile {
+    @media (max-width: 800px) {
+        flex-direction: column;
+    }
+}
+
+.align-start-mobile {
+    @media (max-width: 800px) {
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+}
+
 .w-5 {
     width: 5%;
     flex: 0 0 5%;
@@ -118,4 +131,8 @@
 
 .grid-2 {
     grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+    }
 }

@@ -3,14 +3,14 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { Player } from '../../shared/models/player.interface';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService, User } from '@auth0/auth0-angular';
+import { AuthService } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
 import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
@@ -21,7 +21,7 @@ import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { Finish } from '../../shared/models/finish.interface';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-add-player',
@@ -41,8 +41,7 @@ export class AddPlayerComponent implements OnInit {
     data: {
         tournament: Tournament,
         multi: boolean,
-        clientId: number,
-        sub: string
+        clientId: number
     } = inject(MAT_DIALOG_DATA);
 
     private dialogRef: MatDialogRef<AddPlayerComponent> = inject(MatDialogRef<AddPlayerComponent>);
@@ -52,7 +51,6 @@ export class AddPlayerComponent implements OnInit {
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private destroyRef: DestroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
     private fetchService: FetchService = inject(FetchService);
     private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
@@ -62,26 +60,23 @@ export class AddPlayerComponent implements OnInit {
     private dialog: MatDialog = inject(MatDialog);
 
     ngOnInit(): void {
-        this.authService.user$.pipe(
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            switchMap((sub: string) => this.playerApiService.getAll$(sub).pipe(
-                takeUntilDestroyed(this.destroyRef),
-                tap((players: Player[]) => {
-                    this.allPlayers = players
-                        .filter(
-                            player => !this.data.tournament.players.map(p => p.id).includes(player.id)
-                        )
-                        .map(
-                            player => ({
-                                label: player.name,
-                                value: player.id
-                            })
-                        );
+        this.playerApiService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap((players: Player[]) => {
+                this.allPlayers = players
+                    .filter(
+                        player => !this.data.tournament.players.map(p => p.id).includes(player.id)
+                    )
+                    .map(
+                        player => ({
+                            label: player.name,
+                            value: player.id
+                        })
+                    );
 
-                    this.initModel();
-                    this.initFields();
-                })
-            ))
+                this.initModel();
+                this.initFields();
+            })
         ).subscribe();
     }
 
@@ -224,7 +219,7 @@ export class AddPlayerComponent implements OnInit {
         dialogRef.afterClosed().pipe(
             switchMap((result: boolean) => iif(
                     () => result,
-                    defer(() => this.tournamentApiService.removePlayer$(playerId, this.data.tournament.id, this.data.sub).pipe(
+                    defer(() => this.tournamentApiService.removePlayer$(playerId, this.data.tournament.id).pipe(
                         take(1),
                         catchError(() => {
                             this.notificationService.error('Error removing Player');

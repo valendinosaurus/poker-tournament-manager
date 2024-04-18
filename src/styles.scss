@@ -28,6 +28,12 @@ body {
     padding-right: 40px;
     max-width: 1280px;
     margin: auto;
+
+    @media (max-width: 800px) {
+        padding-top: 80px !important;
+        padding-right: 16px;
+        padding-left: 16px;
+    }
 }
 
 .page-with-header.wide {
@@ -37,6 +43,10 @@ body {
 
 .page-with-header .page-header {
     padding: 32px;
+
+    @media (max-width: 800px) {
+        padding: 24px;
+    }
 }
 
 .page-with-header .page-header h1 {
@@ -49,8 +59,17 @@ svg path {
 }
 
 form {
-    max-width: 600px;
-    margin-bottom: 40px;
+    max-width: 100%;
+    margin-bottom: 20px;
+
+    @media (max-width: 800px) {
+        margin-bottom: 12px;
+    }
+}
+
+form.flexed {
+    display: flex;
+    flex-direction: column;
 }
 
 .mobile-only {
@@ -128,4 +147,26 @@ form .mdc-button,
     &:hover {
         opacity: 0.7;
     }
+}
+
+.preview-image {
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
+    max-width: 100%;
+    min-width: 200px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+}
+
+.checkbox-hint {
+    color: #888 !important;
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 16px !important;
+    padding-left: 40px;
 }

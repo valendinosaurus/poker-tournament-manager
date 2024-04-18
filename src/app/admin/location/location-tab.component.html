@@ -10,38 +10,44 @@
     </button>
 </div>
 
-<table class="admin-table">
-    <tr>
-        <th>Image</th>
-        <th>Name</th>
-    </tr>
-    <ng-container *ngFor="let location of locations$ | async">
-        <a style="display: contents" [routerLink]="['/admin/location', location.id]">
-            <tr>
-                <td>
-                    <img [src]="location.image" style="max-height: 40px;"/>
-                </td>
-                <td>
-                    {{ location.name }}
-                </td>
-                <td>
-                    <div class="table-actions">
-                        <i
-                            *ngIf="!location.locked"
-                            class="fa fa-trash"
-                            (click)="deleteLocation(location, $event)"
-                        ></i>
+<div class="table-wrapper">
+    <table class="admin-table">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+        </tr>
+        <ng-container *ngFor="let location of locations$ | async">
+            <a style="display: contents" [routerLink]="['/admin/location', location.id]">
+                <tr>
+                    <td>
+                        <img
+                            [src]="location.image"
+                            onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
+                            style="max-height: 40px;"
+                        />
+                    </td>
+                    <td>
+                        {{ location.name }}
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <i
+                                *ngIf="!location.locked"
+                                class="fa fa-trash"
+                                (click)="deleteLocation(location, $event)"
+                            ></i>
 
-                        <i
-                            *ngIf="location.locked"
-                            class="fa fa-lock"
-                        ></i>
-                    </div>
-                </td>
-            </tr>
-        </a>
-    </ng-container>
-</table>
+                            <i
+                                *ngIf="location.locked"
+                                class="fa fa-lock"
+                            ></i>
+                        </div>
+                    </td>
+                </tr>
+            </a>
+        </ng-container>
+    </table>
+</div>
 
 <ng-template #times>
     <i class="fa fa-times"></i>

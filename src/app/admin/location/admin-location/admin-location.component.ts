@@ -48,11 +48,10 @@ export class AdminLocationComponent implements OnInit {
 
         this.location$ = combineLatest([
             this.trigger$,
-            this.sId$,
-            this.sub$
+            this.sId$
         ]).pipe(
-            switchMap(([_, sId, sub]: [void, number, string]) =>
-                this.locationApiService.get$(sId, sub)
+            switchMap(([_, sId]: [void, number]) =>
+                this.locationApiService.get$(sId)
             )
         );
 
@@ -93,11 +92,9 @@ export class AdminLocationComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.locationApiService.delete$(location.id, sub).pipe(
-                        take(1),
-                        tap(() => this.router.navigate(['/admin/location']))
-                    ))
+                defer(() => this.locationApiService.delete$(location.id).pipe(
+                    take(1),
+                    tap(() => this.router.navigate(['/admin/location']))
                 )),
                 of(null)
             ))

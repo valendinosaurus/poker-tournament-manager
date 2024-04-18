@@ -4,22 +4,31 @@ import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/
 import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
 import { RankingService } from '../../../core/services/util/ranking.service';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { LocationApiService } from '../../../core/services/api/location-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService, User } from '@auth0/auth0-angular';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { Tournament, TournamentModel } from '../../../shared/models/tournament.interface';
 import { TriggerService } from '../../../core/services/util/trigger.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
     selector: 'app-create-tournament',
     templateUrl: './create-tournament.component.html',
     standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, MatDialogModule, FormlyModule, MatButtonModule, MatStepperModule],
+    imports: [
+        NgIf,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        FormlyModule,
+        MatButtonModule,
+        MatStepperModule,
+        MatDatepickerModule
+    ],
 })
 export class CreateTournamentComponent implements OnInit {
 
@@ -41,22 +50,16 @@ export class CreateTournamentComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private locationService: LocationApiService = inject(LocationApiService);
     private destroyRef = inject(DestroyRef);
-    private authService: AuthService = inject(AuthService);
     private triggerService: TriggerService = inject(TriggerService);
 
     ngOnInit(): void {
-        this.authService.user$.pipe(
-            take(1),
-            map((user: User | undefined | null) => user?.sub ?? ''),
-            filter((sub: string) => sub.length > 0),
-            switchMap((sub: string) => this.locationService.getAll$(sub).pipe(
-                takeUntilDestroyed(this.destroyRef),
-                tap((locations) => {
-                    this.allLocations = locations.map(l => ({label: l.name, value: l.id}));
-                    this.initModel();
-                    this.initFields();
-                })
-            ))
+        this.locationService.getAll$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap((locations) => {
+                this.allLocations = locations.map(l => ({label: l.name, value: l.id}));
+                this.initModel();
+                this.initFields();
+            })
         ).subscribe();
 
     }

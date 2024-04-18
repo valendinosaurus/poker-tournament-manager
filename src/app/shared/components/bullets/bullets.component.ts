@@ -11,6 +11,7 @@ import { NgFor } from '@angular/common';
 export class BulletsComponent implements OnChanges {
 
     @Input() number: number;
+    @Input() bulletClass = 'fa-circle';
 
     numberArray: any[] = [];
 

@@ -15,10 +15,10 @@ import { AppHeaderComponent } from '../../../shared/components/app-header/app-he
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-admin-branding',
-  standalone: true,
+    selector: 'app-admin-branding',
+    standalone: true,
     imports: [CommonModule, AppHeaderComponent, MatButtonModule, RouterLink],
-  templateUrl: './admin-branding.component.html',
+    templateUrl: './admin-branding.component.html',
 })
 export class AdminBrandingComponent implements OnInit {
 
@@ -48,11 +48,10 @@ export class AdminBrandingComponent implements OnInit {
 
         this.branding$ = combineLatest([
             this.trigger$,
-            this.sId$,
-            this.sub$
+            this.sId$
         ]).pipe(
-            switchMap(([_, sId, sub]: [void, number, string]) =>
-                this.brandingApiService.get$(sId, sub)
+            switchMap(([_, sId]: [void, number]) =>
+                this.brandingApiService.get$(sId)
             )
         );
 
@@ -83,7 +82,7 @@ export class AdminBrandingComponent implements OnInit {
             {
                 data: {
                     title: 'Delete Branding?',
-                    body: `Do you really want to delete branding <strong>${branding.name} min)</strong>`,
+                    body: `Do you really want to delete branding <strong>${branding.name}</strong>`,
                     confirm: 'Delete Branding',
                     isDelete: true
                 }
@@ -93,11 +92,9 @@ export class AdminBrandingComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.brandingApiService.delete$(branding.id, sub).pipe(
-                        take(1),
-                        tap(() => this.router.navigate(['/admin/branding']))
-                    ))
+                defer(() => this.brandingApiService.delete$(branding.id).pipe(
+                    take(1),
+                    tap(() => this.router.navigate(['/admin/branding']))
                 )),
                 of(null)
             ))

@@ -51,11 +51,10 @@ export class AdminPlayerComponent implements OnInit {
 
         this.player$ = combineLatest([
             this.trigger$,
-            this.sId$,
-            this.sub$
+            this.sId$
         ]).pipe(
-            switchMap(([_, sId, sub]: [void, number, string]) =>
-                this.playerApiService.get$(sId, sub)
+            switchMap(([_, sId]: [void, number]) =>
+                this.playerApiService.get$(sId)
             )
         );
 
@@ -66,7 +65,8 @@ export class AdminPlayerComponent implements OnInit {
         const ref = this.dialog.open(CreatePlayerComponent, {
             ...DEFAULT_DIALOG_POSITION,
             data: {
-                player: player
+                player: player,
+                blockName: false
             }
         });
 
@@ -96,11 +96,9 @@ export class AdminPlayerComponent implements OnInit {
             take(1),
             switchMap((confirmed) => iif(
                 () => confirmed,
-                defer(() => this.authUtilService.getSub$().pipe(
-                    switchMap((sub: string) => this.playerApiService.delete$(player.id, sub).pipe(
-                        take(1),
-                        tap(() => this.router.navigate(['/admin/player']))
-                    ))
+                defer(() => this.playerApiService.delete$(player.id).pipe(
+                    take(1),
+                    tap(() => this.router.navigate(['/admin/player']))
                 )),
                 of(null)
             ))

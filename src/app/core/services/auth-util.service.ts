@@ -10,6 +10,10 @@ export class AuthUtilService {
 
     private authService: AuthService = inject(AuthService);
 
+    getIsAuthenticated$(): Observable<boolean> {
+        return this.authService.isAuthenticated$;
+    }
+
     getUser$(): Observable<User> {
         return this.authService.user$.pipe(
             filter((user: User | undefined | null): user is User => user !== null && user !== undefined),
@@ -29,6 +33,24 @@ export class AuthUtilService {
         return this.getUser$().pipe(
             map((user: User) => user.email),
             shareReplay(1)
+        );
+    }
+
+    getRoles$(): Observable<string[]> {
+        return this.getUser$().pipe(
+            map((user: User) => user['https://poker.rugolo.ch/roles'])
+        );
+    }
+
+    isAdmin$(): Observable<boolean> {
+        return this.getRoles$().pipe(
+            map((roles: string[]) => roles.includes('admin'))
+        );
+    }
+
+    isPro$(): Observable<boolean> {
+        return this.getRoles$().pipe(
+            map((roles: string[]) => roles.includes('pro'))
         );
     }
 }

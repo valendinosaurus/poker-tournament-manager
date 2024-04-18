@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
@@ -12,14 +12,7 @@ export class EliminationApiService {
 
     private readonly ENDPOINT = 'elimination';
 
-    constructor(
-        private http: HttpClient
-    ) {
-    }
-
-    getAll$(): Observable<Elimination[]> {
-        return this.http.get<Elimination[]>(`${BACKEND_URL}${this.ENDPOINT}`);
-    }
+    private http: HttpClient = inject(HttpClient);
 
     get$(id: number): Observable<Elimination> {
         return this.http.get<Elimination>(`${BACKEND_URL}${this.ENDPOINT}/${id}`);

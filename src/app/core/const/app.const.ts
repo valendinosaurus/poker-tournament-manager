@@ -3,7 +3,8 @@ import { SimpleStat } from '../../shared/models/simple-stat.interface';
 export const DEFAULT_DIALOG_POSITION = {
     position: {
         top: '10vh'
-    }
+    },
+    maxHeight: '86vh'
 };
 
 export const mostSpilled: SimpleStat[] = [
