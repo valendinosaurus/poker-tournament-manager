@@ -20,10 +20,7 @@
         </tr>
         <ng-container *ngFor="let tournament of tournaments$ | async">
             <a style="display: contents" [routerLink]="['/admin/tournament', tournament.id]">
-                <tr
-                    [class.temp]="tournament.temp"
-
-                >
+                <tr [class.temp]="tournament.temp">
                     <td>
                         {{ tournament.date | date:'dd.MM.YYYY' }}
                     </td>

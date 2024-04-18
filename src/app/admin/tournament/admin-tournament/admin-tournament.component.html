@@ -41,6 +41,14 @@
             </button>
 
             <button
+                mat-raised-button
+                color="accent"
+                (click)="openTournament(tournament.id)"
+            >
+                <i class="fa fa-share fa-ib"></i> OPEN
+            </button>
+
+            <button
                 *ngIf="tournament.locked"
                 mat-raised-button
                 (click)="unlock(tournament)"

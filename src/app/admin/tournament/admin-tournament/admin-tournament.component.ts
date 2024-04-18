@@ -248,4 +248,9 @@ export class AdminTournamentComponent implements OnInit {
         ).subscribe();
     }
 
+    openTournament(tId: number): void {
+        const link = this.router.serializeUrl(this.router.createUrlTree(['timer', tId]));
+        window.open(link, '_blank');
+    }
+
 }
