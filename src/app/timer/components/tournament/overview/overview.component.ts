@@ -65,7 +65,6 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() clientId: number;
     @Input() tournament: Tournament;
-    @Input() sub: string | undefined;
     @Input() isSimpleTournament: boolean;
     @Input() seriesMetadata: SeriesMetadata | null;
 

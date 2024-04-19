@@ -30,7 +30,6 @@ div.main-buttons {
     right: 0;
     padding: 12px;
     background: white;
-    //display: flex;
     display: none;
     flex-direction: column;
     border-top: solid 2px #00437b;
@@ -56,61 +55,6 @@ div.main-buttons {
 button:not([type="submit"]) {
     margin: 4px;
     font-size: 20px;
-}
-
-.seat-open-animation {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 164px;
-    font-weight: 900;
-    width: 100%;
-    height: 100%;
-    background: rgba(white, 0.5);
-    backdrop-filter: blur(10px);
-    display: none;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    z-index: 99;
-
-    .gray {
-        color: #777;
-        font-size: 100px;
-    }
-
-    .fa-skull {
-        fill: darkred;
-    }
-}
-
-.seat-open-animation.animate {
-    display: flex;
-    animation: fadeInOut 5s linear 1 forwards;
-    flex-direction: column;
-}
-
-@keyframes fadeInOut {
-    0% {
-        display: none;
-        opacity: 0;
-    }
-    1% {
-        display: flex;
-        opacity: 1;
-    }
-    80% {
-        opacity: 1;
-    }
-    99% {
-        display: flex;
-        opacity: 0;
-    }
-    100% {
-        display: none;
-        opacity: 0;
-    }
 }
 
 .menu {

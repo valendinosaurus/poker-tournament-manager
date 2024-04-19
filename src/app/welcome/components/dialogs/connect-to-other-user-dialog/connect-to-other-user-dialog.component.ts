@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { AuthUtilService } from '../../../../core/services/auth-util.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-connect-to-other-user-dialog',
@@ -36,6 +37,7 @@ export class ConnectToOtherUserDialogComponent {
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private dialogRef: MatDialogRef<ConnectToOtherUserDialogComponent> = inject(MatDialogRef<ConnectToOtherUserDialogComponent>);
     private fetchService: FetchService = inject(FetchService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     onSubmit(): void {
         this.authUtilService.getUser$().pipe(
@@ -49,6 +51,7 @@ export class ConnectToOtherUserDialogComponent {
                 externalName: this.model.name(),
                 state: ConnectionRequestState.PENDING
             })),
+            tap(() => this.notificationService.success('Connection request sent')),
             tap(() => {
                 this.fetchService.trigger();
                 this.dialogRef.close();

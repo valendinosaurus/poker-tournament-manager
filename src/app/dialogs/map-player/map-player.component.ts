@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-map-player',
@@ -32,6 +33,7 @@ export class MapPlayerComponent implements OnInit {
     private connectionRequestApiService: ConnectionRequestApiService = inject(ConnectionRequestApiService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private fetchService: FetchService = inject(FetchService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     allMappablePlayers: Player[];
 
@@ -63,6 +65,7 @@ export class MapPlayerComponent implements OnInit {
                 })
             ),
             tap(() => this.dialogRef.close()),
+            tap(() => this.notificationService.success('Connection request accepted')),
             tap(() => this.fetchService.trigger())
         ).subscribe();
     }

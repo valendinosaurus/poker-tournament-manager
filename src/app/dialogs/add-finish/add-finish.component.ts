@@ -124,17 +124,9 @@ export class AddFinishComponent implements OnInit {
                     change: () => this.eliminators = [...this.allPlayers.filter(p => p.value !== this.model.playerId)]
                 }
             },
-            // {
-            //     key: 'showEliminatedBy',
-            //     type: 'checkbox',
-            //     props: {
-            //         label: 'Show Eliminated by?'
-            //     }
-            // },
             {
                 ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', true, this.eliminators),
                 expressions: {
-                    //  hide: () => !this.model.showEliminatedBy,
                     'props.options': () => this.eliminators,
                     'props.disabled': () => this.model.playerId === undefined
                 }
@@ -174,6 +166,9 @@ export class AddFinishComponent implements OnInit {
     }
 
     onSubmit(model: { playerId: number | undefined, tournamentId: number, eliminatedBy: number | undefined }): void {
+        const placesPaid = this.rankingService.getPayoutById(this.tournament.payout).length;
+        const isBubble = this.rank - placesPaid === 1;
+
         if (model.playerId && model.tournamentId) {
             this.finishApiService.post$({
                 playerId: model.playerId,
@@ -256,8 +251,7 @@ export class AddFinishComponent implements OnInit {
                     )),
                     of(null)
                 )),
-                tap(() =>
-                    this.fetchService.trigger()),
+                tap(() => this.fetchService.trigger()),
                 switchMap(() => this.eventApiService.post$({
                     id: null,
                     tId: this.data.tournament.id,
@@ -266,8 +260,9 @@ export class AddFinishComponent implements OnInit {
                 tap((result: any) => {
                     if (this.dialogRef) {
                         this.dialogRef.close({
-                            finishId: result.id,
-                            name: this.data.tournament.players.find(e => e.id === model.playerId)?.name
+                            name: this.data.tournament.players.find(e => e.id === model.playerId)?.name,
+                            price: this.price,
+                            isBubble: isBubble
                         });
                     }
                 })

@@ -5,13 +5,12 @@
         [clientId]="clientId"
         [seriesMetadata]="seriesMetadata$ | async"
         [isSimpleTournament]="isSimpleTournament"
-        [sub]="config.sub"
     ></app-overview>
 </ng-container>
 
 <div *ngIf="isNotAllowed">
     <h1>
-        You are not allowed to see this tournamnet
+        You are not allowed to see this tournament
     </h1>
 </div>
 

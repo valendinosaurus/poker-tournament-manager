@@ -1,0 +1,389 @@
+.seat-open-animation {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 164px;
+    font-weight: 900;
+    width: 100%;
+    height: 100%;
+    background: rgba(white, 0.5);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    z-index: 99;
+
+    .gray {
+        color: #777;
+        font-size: 100px;
+    }
+
+    .double-icon {
+        position: relative;
+        height: 164px;
+
+        .fa {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .fa-burst {
+            font-size: 164px !important;
+            color: lightblue;
+        }
+
+        .fa-circle {
+            font-size: 64px !important;
+            color: mediumblue;
+        }
+    }
+
+    .fa-money-bill-wave {
+        color: green;
+        font-size: 132px !important;
+    }
+
+    .fa-skull {
+        font-size: 164px !important;
+        fill: darkred;
+    }
+}
+
+.seat-open-animation.animate {
+    display: flex;
+    animation: fadeInOut 5s linear 1 forwards;
+    flex-direction: column;
+}
+
+@keyframes fadeInOut {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+    1% {
+        display: flex;
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    99% {
+        display: flex;
+        opacity: 0;
+    }
+    100% {
+        display: none;
+        opacity: 0;
+    }
+}
+
+#itm-animation {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    animation: fadeInOut 5s linear 1 forwards;
+    padding: 0;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+}
+
+#money div {
+    position: absolute;
+    top: -160px;
+    animation-name: drop, bill1;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-timing-function: ease-in;
+}
+
+#money2 div {
+    position: absolute;
+    top: -200px;
+    animation-name: drop, bill2;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-timing-function: ease-in;
+}
+
+.bill {
+    background-image: url('../assets/100dollarok.jpg');
+    background-size: contain;
+    height: 21px;
+    width: 51px;
+    position: absolute;
+}
+
+.bill.b1 {
+    left: 24vw;
+    animation-duration: 12s;
+}
+
+.bill.b2 {
+    font-size: 1.8em;
+    left: 28vw;
+    animation-duration: 7s;
+}
+
+.bill.b3 {
+    left: 32vw;
+    animation-duration: 11s;
+}
+
+.bill.b4 {
+    left: 36vw;
+    animation-duration: 13s;
+}
+
+.bill.b5 {
+    left: 40vw;
+    animation-duration: 8s;
+}
+
+.bill.b6 {
+    left: 44vw;
+    animation-duration: 6s;
+}
+
+.bill.b7 {
+    left: 48vw;
+    animation-duration: 12s;
+}
+
+.bill.b8 {
+    left: 52vw;
+    animation-duration: 5s;
+}
+
+.bill.b9 {
+    left: 58vw;
+    animation-duration: 11s;
+}
+
+.bill.b10 {
+    left: 62vw;
+    animation-duration: 7s;
+}
+
+.bill.b11 {
+    left: 66vw;
+    animation-duration: 15s;
+}
+
+.bill.b12 {
+    left: 70vw;
+    animation-duration: 12s;
+}
+
+.bill.b13 {
+    left: 74vw;
+    animation-duration: 6s;
+}
+
+.bill.b14 {
+    left: 78vw;
+    animation-duration: 12s;
+}
+
+.bill.b15 {
+    left: 82vw;
+    animation-duration: 5s;
+}
+
+.bill.b16 {
+    left: 86vw;
+    animation-duration: 11s;
+}
+
+.bill.b17 {
+    left: 90vw;
+    animation-duration: 7s;
+}
+
+.bill.b18 {
+    left: 94vw;
+    animation-duration: 15s;
+}
+
+.bill.b19 {
+    left: 91vw;
+    animation-duration: 22s;;
+}
+
+.bill.b21 {
+    left: 4vw;
+    animation-duration: 12s;
+}
+
+.bill.b22 {
+    font-size: 1.8em;
+    left: 8vw;
+    animation-duration: 7s;
+}
+
+.bill.b23 {
+    left: 12vw;
+    animation-duration: 11s;
+}
+
+.bill.b24 {
+    left: 16vw;
+    animation-duration: 13s;
+}
+
+.bill.b25 {
+    left: 20vw;
+    animation-duration: 8s;
+}
+
+.bill.b26 {
+    left: 6vw;
+    animation-duration: 6s;
+}
+
+.bill.b27 {
+    left: 10vw;
+    animation-duration: 12s;
+}
+
+.bill.b28 {
+    left: 18vw;
+    animation-duration: 5s;
+}
+
+.bill.b29 {
+    left: 22vw;
+    animation-duration: 11s;
+}
+
+.bill.b30 {
+    left: 28vw;
+    animation-duration: 7s;
+}
+
+.bill.b31 {
+    left: 30vw;
+    animation-duration: 15s;
+}
+
+.bill.b32 {
+    left: 34vw;
+    animation-duration: 12s;
+}
+
+.bill.b33 {
+    left: 41vw;
+    animation-duration: 6s;
+}
+
+.bill.b34 {
+    left: 85vw;
+    animation-duration: 12s;
+}
+
+.bill.b35 {
+    left: 39vw;
+    animation-duration: 5s;
+}
+
+.bill.b36 {
+    left: 11vw;
+    animation-duration: 11s;
+}
+
+.bill.b37 {
+    left: 87vw;
+    animation-duration: 7s;
+}
+
+.bill.b38 {
+    left: 77vw;
+    animation-duration: 15s;
+}
+
+.bill.b39 {
+    left: 65vw;
+    animation-duration: 22s;;
+}
+
+@keyframes drop {
+    from {
+        top: -160px;
+        opacity: 1;
+    }
+    to {
+        top: 80vh;
+        opacity: 0;
+    }
+}
+
+@keyframes bill1 {
+    0% {
+        transform: /*rotate(-180deg)*/
+            translate(0, 0) rotateX(-180deg) rotateY(-90deg);
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+    }
+    10% {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 3px;
+    }
+    15% {
+        border-bottom-right-radius: 35px;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 60px;
+    }
+    80% {
+        transform: /*rotate(180deg)*/
+            translate(10px, 95px) rotateX(180deg) rotateY(180deg);
+        border-bottom-left-radius: 50px;
+    }
+    90% {
+        border-top-left-radius: 60px;
+        border-top-right-radius: 3px;
+    }
+    100% {
+        border-top-left-radius: 10px;
+    }
+}
+
+@keyframes bill2 {
+    0% {
+        transform: translate(0, 0) rotateX(-150deg) rotateY(-70deg);
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+    }
+    10% {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 3px;
+    }
+    15% {
+        border-bottom-right-radius: 35px;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 60px;
+    }
+    70% {
+        transform: translate(20px, 110px) rotateX(150deg) rotateY(190deg);
+        border-bottom-left-radius: 50px;
+    }
+    90% {
+        border-top-left-radius: 60px;
+        border-top-right-radius: 3px;
+    }
+    100% {
+        border-top-left-radius: 10px;
+    }
+}
+
+//@keyframes flip {
+//    0% {
+//        transform: rotateX(-180deg);
+//    }
+//    100% {
+//        transform: rotateX(180deg);
+//    }
+//}

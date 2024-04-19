@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { ServerResponse } from '../../../shared/models/server-response';
 import { ActionEvent } from '../../../shared/models/action-event.interface';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { NotificationService } from '../notification.service';
+import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({
     providedIn: 'root'
@@ -15,12 +16,17 @@ export class ActionEventApiService {
     private readonly ENDPOINT = 'event';
     private notificationService: NotificationService = inject(NotificationService);
     private http: HttpClient = inject(HttpClient);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
 
     private isEnabled = false;
 
-    getAll$(tId: number, clientId: number, sub: string): Observable<ActionEvent[]> {
+    getAll$(tId: number, clientId: number): Observable<ActionEvent[]> {
         return this.isEnabled
-            ? this.http.get<ActionEvent[]>(`${BACKEND_URL}${this.ENDPOINT}/${tId}/${clientId}/${sub}`)
+            ? this.authUtilService.getSub$().pipe(
+                switchMap((sub: string) => this.http.get<ActionEvent[]>(
+                    `${BACKEND_URL}${this.ENDPOINT}/${tId}/${clientId}/${sub}`
+                ))
+            )
             : of([]);
     }
 

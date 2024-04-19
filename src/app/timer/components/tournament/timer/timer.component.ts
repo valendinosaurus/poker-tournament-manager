@@ -67,15 +67,14 @@ export class TimerComponent implements OnInit, OnChanges {
 
                         this.fetchService.trigger();
 
-                        if (this.config?.tournamentId && this.config.sub) {
+                        if (this.config?.tournamentId) {
                             const id = this.config.tournamentId;
-                            const sub = this.config.sub;
 
                             this.eventApiService.deleteAll$(id).pipe(take(1)).subscribe();
 
                             this.pullSubscription = timer(5000, 4000).pipe(
                                 takeUntilDestroyed(this.destroyRef),
-                                switchMap(() => this.eventApiService.getAll$(id, this.clientId, sub)),
+                                switchMap(() => this.eventApiService.getAll$(id, this.clientId)),
                                 tap((events: ActionEvent[]) => {
                                     if (events.length > 0 && +(events[0].tId) === +id) {
                                         //     console.log('*** LIVE *** : event triggered, fetch stuff');
@@ -108,7 +107,7 @@ export class TimerComponent implements OnInit, OnChanges {
 
         this.tournament$ = this.fetchTrigger$.pipe(
             switchMap(() => this.tournamentApiService.get$(+tournamentId)),
-            tap(() => this.notificationService.success('Tournament is up to date')),
+            //  tap(() => this.notificationService.success('Tournament is up to date')),
             shareReplay(1)
         );
     }

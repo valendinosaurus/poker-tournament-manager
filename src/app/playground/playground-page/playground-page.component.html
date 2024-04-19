@@ -1,0 +1,87 @@
+<div class="page-with-header wide">
+    <button
+        mat-raised-button
+        (click)="doConfetti()"
+    >
+        ANIMATE
+    </button>
+
+    <!--    <div id="itm-animation">-->
+    <!--        <div id="money">-->
+    <!--            <div class="bill b1"></div>-->
+    <!--            <div class="bill b2"></div>-->
+    <!--            <div class="bill b3"></div>-->
+    <!--            <div class="bill b4"></div>-->
+    <!--            <div class="bill b5"></div>-->
+    <!--            <div class="bill b6"></div>-->
+    <!--            <div class="bill b7"></div>-->
+    <!--            <div class="bill b8"></div>-->
+    <!--            <div class="bill b9"></div>-->
+    <!--            <div class="bill b10"></div>-->
+    <!--            <div class="bill b11"></div>-->
+    <!--            <div class="bill b12"></div>-->
+    <!--            <div class="bill b13"></div>-->
+    <!--            <div class="bill b14"></div>-->
+    <!--            <div class="bill b15"></div>-->
+    <!--            <div class="bill b16"></div>-->
+    <!--            <div class="bill b17"></div>-->
+    <!--            <div class="bill b18"></div>-->
+    <!--            <div class="bill b19"></div>-->
+    <!--            <div class="bill b21"></div>-->
+    <!--            <div class="bill b22"></div>-->
+    <!--            <div class="bill b23"></div>-->
+    <!--            <div class="bill b24"></div>-->
+    <!--            <div class="bill b25"></div>-->
+    <!--            <div class="bill b26"></div>-->
+    <!--            <div class="bill b27"></div>-->
+    <!--            <div class="bill b28"></div>-->
+    <!--            <div class="bill b29"></div>-->
+    <!--            <div class="bill b30"></div>-->
+    <!--            <div class="bill b31"></div>-->
+    <!--            <div class="bill b32"></div>-->
+    <!--            <div class="bill b33"></div>-->
+    <!--            <div class="bill b34"></div>-->
+    <!--            <div class="bill b35"></div>-->
+    <!--            <div class="bill b36"></div>-->
+    <!--            <div class="bill b37"></div>-->
+    <!--            <div class="bill b38"></div>-->
+    <!--            <div class="bill b39"></div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <div
+        class="seat-open-animation"
+        [class.animate]="isAnimating"
+    >
+    <span class="word">
+        <ng-container *ngIf="lastIsBubble; else notBubble;">
+            <div class="double-icon">
+                <i class="fa fa-burst"></i>
+                <i class="fa fa-circle"></i>
+            </div>
+        </ng-container>
+
+        <ng-template #notBubble>
+            <ng-container *ngIf="lastPrice === 0">
+                <i class="fa fa-skull"></i>
+            </ng-container>
+
+            <ng-container *ngIf="lastPrice > 0">
+                <i class="fa fa-money-bill-wave"></i>
+                <span class="green">
+                    {{ lastPrice | number:'1.0-0' }} $
+                </span>
+            </ng-container>
+        </ng-template>
+    </span>
+        <span class="word gray">
+        SEAT OPEN
+    </span>
+        <br>
+        <span class="word">
+        {{ lastSeatOpenName.toLocaleUpperCase() }}
+    </span>
+    </div>
+    <div id="confetti"></div>
+
+</div>

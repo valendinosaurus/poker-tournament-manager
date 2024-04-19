@@ -60,7 +60,6 @@ export class MenuDialogComponent implements OnInit {
         tournament: Tournament,
         seriesMetadata: SeriesMetadata,
         clientId: number,
-        sub: string,
         running: boolean,
     } = inject(MAT_DIALOG_DATA);
 
@@ -153,8 +152,7 @@ export class MenuDialogComponent implements OnInit {
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
-                clientId: this.data.clientId,
-                sub: this.data.sub,
+                clientId: this.data.clientId
             }
         });
 

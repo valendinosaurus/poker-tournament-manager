@@ -8,6 +8,7 @@
 @import "src/styles/spacing_dimensions";
 @import "src/styles/common-elements";
 @import "src/styles/fonts";
+@import "src/styles/animations";
 
 html,
 body {
@@ -92,6 +93,7 @@ form.flexed {
     width: fit-content !important;
     display: flex;
     flex-direction: column;
+    z-index: 999999 !important;
 
     > div {
         width: fit-content !important;

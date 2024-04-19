@@ -40,6 +40,7 @@ import {
 import {
     AdminBlindStructureComponent
 } from './app/admin/blind-structure/admin-blind-structure/admin-blind-structure.component';
+import { PlaygroundPageComponent } from './app/playground/playground-page/playground-page.component';
 
 if (environment.production) {
     enableProdMode();
@@ -47,7 +48,7 @@ if (environment.production) {
 
 registerLocaleData(localeDeCh, 'de-CH');
 
-export const proOrDomainGuard: CanActivateFn = () => {
+export const proOrAdminGuard: CanActivateFn = () => {
     const router: Router = inject(Router);
     const authUtilService: AuthUtilService = inject(AuthUtilService);
 
@@ -62,7 +63,19 @@ export const proOrDomainGuard: CanActivateFn = () => {
             }
         })
     );
+};
 
+export const adminGuard: CanActivateFn = () => {
+    const router: Router = inject(Router);
+    const authUtilService: AuthUtilService = inject(AuthUtilService);
+
+    return authUtilService.isAdmin$().pipe(
+        tap((isAdmin: boolean) => {
+            if (!isAdmin) {
+                router.navigate(['/home']);
+            }
+        })
+    );
 };
 
 const routes: Routes = [
@@ -78,7 +91,13 @@ const routes: Routes = [
     },
     {
         path: 'test',
-        loadComponent: () => TimerPageComponent
+        loadComponent: () => TimerPageComponent,
+        canActivate: [adminGuard]
+    },
+    {
+        path: 'playground',
+        loadComponent: () => PlaygroundPageComponent,
+        canActivate: [adminGuard]
     },
     {
         path: 'series/:sId/:password',
@@ -103,22 +122,22 @@ const routes: Routes = [
             {
                 path: `series`,
                 loadComponent: () => SeriesTabComponent,
-                canActivate: [proOrDomainGuard]
+                canActivate: [proOrAdminGuard]
             },
             {
                 path: `series/:id`,
                 loadComponent: () => AdminSeriesComponent,
-                canActivate: [proOrDomainGuard]
+                canActivate: [proOrAdminGuard]
             },
             {
                 path: `player`,
                 loadComponent: () => PlayersTabComponent,
-                canActivate: [proOrDomainGuard]
+                canActivate: [proOrAdminGuard]
             },
             {
                 path: `player/:id`,
                 loadComponent: () => AdminPlayerComponent,
-                canActivate: [proOrDomainGuard]
+                canActivate: [proOrAdminGuard]
             },
             {
                 path: `blind-level`,
@@ -147,12 +166,12 @@ const routes: Routes = [
             {
                 path: `branding`,
                 loadComponent: () => BrandingTabComponent,
-                canActivate: [proOrDomainGuard]
+                canActivate: [proOrAdminGuard]
             },
             {
                 path: `branding/:id`,
                 loadComponent: () => AdminBrandingComponent,
-                canActivate: [proOrDomainGuard]
+                canActivate: [proOrAdminGuard]
             },
             {
                 path: '',

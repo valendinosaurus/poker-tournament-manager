@@ -148,7 +148,7 @@
                                 [disabled]="!!tournament.locked"
                                 (click)="addPlayers(tournament)"
                             >
-                                ADD PAYERS
+                                <i class="fa fa-user-plus fa-ib"></i> ADD PAYERS
                             </button>
                         </span>
                     </div>
@@ -190,7 +190,7 @@
                                 [disabled]="!!tournament.locked"
                                 (click)="addBlinds(tournament)"
                             >
-                                ADD BLINDS
+                                <i class="fa fa-tasks fa-ib"></i> ADD BLINDS
                             </button>
 
                             <button
@@ -199,7 +199,7 @@
                                 color="accent"
                                 (click)="saveAsBlindStructure(tournament.structure)"
                             >
-                                SAVE AS BLIND STRUCTURE
+                                <i class="fa fa-save fa-ib"></i> SAVE AS BLIND STRUCTURE
                             </button>
 
                             <button
@@ -208,7 +208,7 @@
                                 color="accent"
                                 (click)="assignBlindStructrue(tournament)"
                             >
-                                ASSIGN EXISTING BLIND STRUCTURE
+                                <i class="fa fa-cloud-arrow-up fa-ib"></i> ASSIGN EXISTING BLIND STRUCTURE
                             </button>
                         </span>
                     </div>
@@ -220,64 +220,10 @@
                         (addPause)="addPause(tournament, $event)"
                         (deleteBlind)="deleteBlindFromTournament($event)"
                     ></app-blind-structure-view>
-
-                    <!--                    <ng-container *ngFor="let b of tournament.structure; let i = index;">-->
-                    <!--                        <div-->
-                    <!--                            class="blind"-->
-                    <!--                            [class.pause]="b.isPause"-->
-                    <!--                        >-->
-                    <!--                            <span>-->
-                    <!--                                <ng-container *ngIf="!b.isPause">-->
-                    <!--                                    <span>-->
-                    <!--                                         <strong>{{ b.sb | number:'1.0-0' }}</strong>-->
-                    <!--                                    </span>-->
-                    <!--                                    <span>-->
-                    <!--                                        <strong>{{ b.bb | number:'1.0-0' }}</strong>-->
-                    <!--                                    </span>-->
-                    <!--                                </ng-container>-->
-
-                    <!--                                <span>-->
-                    <!--                                    {{ b.duration}}min-->
-                    <!--                                </span>-->
-
-                    <!--                                <ng-container *ngIf="b.isPause">-->
-                    <!--                                    <span>-->
-                    <!--                                         PAUSE-->
-                    <!--                                    </span>-->
-                    <!--                                    <span *ngIf="b.isChipUp">-->
-                    <!--                                        (CHIP UP)-->
-                    <!--                                    </span>-->
-                    <!--                                    <span *ngIf="b.endsRebuy">-->
-                    <!--                                        ENDS REBUY-->
-                    <!--                                    </span>-->
-                    <!--                                </ng-container>-->
-                    <!--                            </span>-->
-
-                    <!--                            <i-->
-                    <!--                                *ngIf="!tournament.locked"-->
-                    <!--                                class="fa fa-trash"-->
-                    <!--                                (click)="deleteBlindFromTournament(b.id)"-->
-                    <!--                            ></i>-->
-                    <!--                        </div>-->
-
-                    <!--                        <div-->
-                    <!--                            *ngIf="blindPositions.indexOf(b.position + 1) === -1 && !tournament.locked"-->
-                    <!--                            class="insert-pause"-->
-                    <!--                            (click)="addPause(tournament, b.position)"-->
-                    <!--                        >-->
-                    <!--                            <i-->
-                    <!--                                class="fa fa-plus-circle"-->
-                    <!--                            ></i>-->
-                    <!--                            <span>-->
-                    <!--                                INSERT PAUSE-->
-                    <!--                            </span>-->
-                    <!--                        </div>-->
-                    <!--                    </ng-container>-->
                 </div>
             </div>
 
         </mat-tab>
     </mat-tab-group>
-
 </ng-container>
 

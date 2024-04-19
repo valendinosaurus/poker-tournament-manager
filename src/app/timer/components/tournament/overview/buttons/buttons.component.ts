@@ -26,7 +26,7 @@ import { LocalStorageService } from '../../../../../core/services/util/local-sto
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { DOCUMENT, NgIf } from '@angular/common';
+import { DecimalPipe, DOCUMENT, NgIf } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../shared/models/series.interface';
@@ -38,13 +38,12 @@ declare var anime: any;
     templateUrl: './buttons.component.html',
     styleUrls: ['./buttons.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, MatTooltipModule]
+    imports: [NgIf, MatButtonModule, MatTooltipModule, DecimalPipe]
 })
 export class ButtonsComponent implements OnInit, OnChanges {
 
     @Input() clientId: number;
     @Input() running: boolean;
-    @Input() sub: string | undefined;
     @Input() tournament: Tournament;
     @Input() seriesMetadata: SeriesMetadata | null;
     @Input() isSimpleTournament: boolean;
@@ -53,7 +52,10 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
     isAddPlayerBlocked = false;
     isAnimating = false;
+    isAnimatingMoney = false;
     lastSeatOpenName = 'TEST NAME';
+    lastPrice: number = 0;
+    lastIsBubble = false;
     canStartTournament = false;
     playerHasToBeMoved = false;
     tableHasToBeEliminated = false;
@@ -167,8 +169,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
             data: {
                 tournamentId: this.tournament.id,
                 tournamentName: this.tournament.name,
-                clientId: this.clientId,
-                sub: this.sub
+                clientId: this.clientId
             }
         });
 
@@ -221,9 +222,11 @@ export class ButtonsComponent implements OnInit, OnChanges {
             tap((e) => {
                 if (e) {
                     this.lastSeatOpenName = e.name;
+                    this.lastPrice = e.price;
+                    this.lastIsBubble = e.isBubble;
+
                     this.doConfetti();
                 }
-                ;
             })
         ).subscribe();
     }
@@ -277,7 +280,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
                     tournament: this.tournament,
                     seriesMetadata: this.seriesMetadata,
                     clientId: this.clientId,
-                    sub: this.sub,
                     running: this.running,
                     isAddPlayerBlocked: this.isAddPlayerBlocked
                 },
@@ -296,12 +298,14 @@ export class ButtonsComponent implements OnInit, OnChanges {
         dialogRef.componentInstance.localRefresh = this.localRefresh;
     }
 
-    hidden = false;
-
     doConfetti(): void {
         this.isAnimating = true;
+        this.isAnimatingMoney = true;
 
-        setTimeout(() => this.isAnimating = false, 6000);
+        setTimeout(() => {
+            this.isAnimating = false;
+            this.isAnimatingMoney = false;
+        }, 6000);
 
         anime.timeline({loop: false})
             .add({

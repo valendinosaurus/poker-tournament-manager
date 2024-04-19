@@ -49,8 +49,7 @@ export class AddRebuyComponent implements OnInit {
     data: {
         tournamentId: number,
         tournamentName: string,
-        clientId: number,
-        sub: string
+        clientId: number
     } = inject(MAT_DIALOG_DATA);
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
