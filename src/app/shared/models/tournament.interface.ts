@@ -1,9 +1,8 @@
 import { BlindLevel } from './blind-level.interface';
-import { Player } from './player.interface';
+import { Player, PlayerInSeries } from './player.interface';
 import { Finish } from './finish.interface';
 import { Entry } from './entry.interface';
 import { Elimination } from './elimination.interface';
-import { PlayerInSeries } from './player.interface';
 import { TEvent } from './t-event.interface';
 
 export interface TournamentBase {
@@ -44,6 +43,8 @@ export interface AdminTournament {
     location: string;
     temp: boolean;
     locked: boolean;
+    levels: number;
+    players: number;
 }
 
 export interface Tournament extends TournamentBase {

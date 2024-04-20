@@ -61,13 +61,16 @@
     </div>
 
     <div class="admin-body">
-        <app-blind-structure-view
-            *ngIf="blindStructure.structure"
-            [structure]="blindStructure.structure"
-            [locked]="blindStructure.locked"
-            (deleteBlind)="deleteBlindFromStructure(blindStructure, $event)"
-            (addPause)="addPauseToStructure(blindStructure, $event)"
-        ></app-blind-structure-view>
+
+        <div class="m-800">
+            <app-blind-structure-view
+                *ngIf="blindStructure.structure"
+                [structure]="blindStructure.structure"
+                [locked]="blindStructure.locked"
+                (deleteBlind)="deleteBlindFromStructure(blindStructure, $event)"
+                (addPause)="addPauseToStructure(blindStructure, $event)"
+            ></app-blind-structure-view>
+        </div>
     </div>
 </ng-container>
 

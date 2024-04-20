@@ -10,7 +10,6 @@ import { BlindLevel } from '../../shared/models/blind-level.interface';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
 import { BlindLevelTextPipe } from '../../shared/pipes/blind-level-text.pipe';
 import { NgFor, NgIf } from '@angular/common';
@@ -68,6 +67,7 @@ export class AddBlindsComponent implements OnInit {
             tap(([blinds, duration]: [BlindLevel[], number]) => {
                 this.allBlinds = blinds
                     .filter(b => !b.isPause)
+                    .sort((a, b) => a.bb - b.bb)
                     .filter(blind => !base.filter(p => !p.isPause).map(p => p.id).includes(blind.id))
                     .filter(blind => blind.sb > Math.max(...base.map(b => b.sb)))
                     .filter(
@@ -110,7 +110,7 @@ export class AddBlindsComponent implements OnInit {
 
     private initFields(): void {
         this.fields = [
-            this.formlyFieldService.getDefaultMultiSelectField('blindId', 'Blind Level', true, this.allBlinds)
+            this.formlyFieldService.getDefaultMultiSelectField('blindIds', 'Blind Level', true, this.allBlinds)
         ];
     }
 
@@ -119,7 +119,9 @@ export class AddBlindsComponent implements OnInit {
     }
 
     onSubmit(model: { blindIds: number[] | undefined, parentId: number }): void {
+        console.log('submit');
         if (model.blindIds && model.parentId && model.parentId >= 0) {
+            console.log('in if');
             const base = this.data.tournament?.structure ?? this.data.structure?.structure ?? [];
             const positions = [];
             const startIndex = base.length * 2;

@@ -39,21 +39,23 @@ export class AddFinishComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
+
     model: {
         playerId: number | undefined,
         tournamentId: number,
         eliminatedBy: number | undefined,
         showEliminatedBy: boolean
     };
-    fields: FormlyFieldConfig[];
 
-    private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
     data: {
         tournament: Tournament,
         metadata: SeriesMetadata | undefined,
         clientId: number
     } = inject(MAT_DIALOG_DATA);
 
+    fields: FormlyFieldConfig[];
+
+    private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private tournamentService: TournamentService = inject(TournamentService);
     private finishApiService: FinishApiService = inject(FinishApiService);
@@ -66,7 +68,6 @@ export class AddFinishComponent implements OnInit {
     private tEventApiService: TEventApiService = inject(TEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
     private destroyRef: DestroyRef = inject(DestroyRef);
-
     private dialog: MatDialog = inject(MatDialog);
 
     allPlayers: { label: string, value: number }[];
@@ -75,6 +76,9 @@ export class AddFinishComponent implements OnInit {
     conductedSeatOpens: ConductedFinish[];
     conductedEliminations: ConductedElimination[];
     tournament: Tournament;
+
+    isLoadingAdd = false;
+    isLoadingRemove = false;
 
     rank = 0;
     price = 0;
@@ -168,6 +172,7 @@ export class AddFinishComponent implements OnInit {
     onSubmit(model: { playerId: number | undefined, tournamentId: number, eliminatedBy: number | undefined }): void {
         const placesPaid = this.rankingService.getPayoutById(this.tournament.payout).length;
         const isBubble = this.rank - placesPaid === 1;
+        this.isLoadingAdd = true;
 
         if (model.playerId && model.tournamentId) {
             this.finishApiService.post$({
@@ -180,6 +185,7 @@ export class AddFinishComponent implements OnInit {
                 take(1),
                 catchError(() => {
                     this.notificationService.error('Error Seat Open');
+                    this.isLoadingAdd = false;
                     return of(null);
                 }),
                 tap(() => {
@@ -228,6 +234,7 @@ export class AddFinishComponent implements OnInit {
                                 }),
                                 catchError(() => {
                                     this.notificationService.error('Error Elimination');
+                                    this.isLoadingAdd = false;
                                     return of(null);
                                 }),
                             )
@@ -265,6 +272,7 @@ export class AddFinishComponent implements OnInit {
                             isBubble: isBubble
                         });
                     }
+                    this.isLoadingAdd = false;
                 })
             ).subscribe();
         }
@@ -311,6 +319,8 @@ export class AddFinishComponent implements OnInit {
     }
 
     removeSeatOpen(pId: number, playerName: string): void {
+        this.isLoadingRemove = true;
+
         const dialogRef = this.dialog.open(
             ConfirmationDialogComponent,
             {
@@ -329,6 +339,7 @@ export class AddFinishComponent implements OnInit {
                             take(1),
                             catchError(() => {
                                 this.notificationService.error('Error removing Seat Open');
+                                this.isLoadingRemove = false;
                                 return of(null);
                             }),
                             tap(() => {
@@ -354,11 +365,13 @@ export class AddFinishComponent implements OnInit {
                                 }),
                                 catchError(() => {
                                     this.notificationService.error('Error removing Elimination');
+                                    this.isLoadingRemove = false;
                                     return of(null);
                                 })
                             )),
                             tap(() => {
                                 this.fetchService.trigger();
+                                this.isLoadingRemove = false;
                             }),
                             switchMap(() => this.eventApiService.post$({
                                 id: null,

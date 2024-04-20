@@ -34,7 +34,7 @@
             [ngModel]="model.name()"
             (ngModelChange)="model.name.set($event)"
             name="name"
-            [disabled]="data.blockName && data?.player !== null && data?.player !== undefined"
+            [disabled]="data.blockName && data.player !== null && data.player !== undefined"
         />
     </mat-form-field>
 

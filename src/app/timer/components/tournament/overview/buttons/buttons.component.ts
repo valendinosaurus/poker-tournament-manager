@@ -30,6 +30,7 @@ import { DecimalPipe, DOCUMENT, NgIf } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../shared/models/series.interface';
+import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../core/const/app.const';
 
 declare var anime: any;
 
@@ -67,13 +68,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
     isRebuyPhaseFinished$ = new ReplaySubject<boolean>();
 
     isAdaptedPayoutSumCorrect = true;
-
-    dialogPosition = {
-        position: {
-            top: '40px'
-        },
-        maxHeight: '90vh'
-    };
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -165,7 +159,8 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
     addRebuy(): void {
         const dialogRef = this.dialog.open(AddRebuyComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournamentId: this.tournament.id,
                 tournamentName: this.tournament.name,
@@ -180,7 +175,8 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
     addAddon(): void {
         const dialogRef = this.dialog.open(AddAddonComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournamentId: this.tournament.id,
                 tournamentName: this.tournament.name,
@@ -195,7 +191,8 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
     openDrawDialog(): void {
         const dialogRef = this.dialog.open(TableDrawDialogComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournament: this.tournament,
             },
@@ -209,7 +206,8 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
     seatOpen(): void {
         const dialogRef = this.dialog.open(AddFinishComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournament: this.tournament,
                 metadata: this.seriesMetadata,
@@ -283,7 +281,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
                     running: this.running,
                     isAddPlayerBlocked: this.isAddPlayerBlocked
                 },
-                ...this.dialogPosition
+                ...DEFAULT_DIALOG_POSITION
             }
         );
 

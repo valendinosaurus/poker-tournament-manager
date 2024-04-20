@@ -21,7 +21,7 @@ import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
 import { ActionEventApiService } from '../../../../../../core/services/api/action-event-api.service';
 import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../core/const/app.const';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
@@ -149,6 +149,7 @@ export class MenuDialogComponent implements OnInit {
     addRebuy(): void {
         const dialogRef = this.dialog.open(AddRebuyComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
@@ -164,6 +165,7 @@ export class MenuDialogComponent implements OnInit {
     addAddon(): void {
         const dialogRef = this.dialog.open(AddAddonComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
@@ -179,6 +181,7 @@ export class MenuDialogComponent implements OnInit {
     seatOpen(): void {
         const dialogRef = this.dialog.open(AddFinishComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournament: this.data.tournament,
                 metadata: this.data.seriesMetadata,
@@ -194,6 +197,7 @@ export class MenuDialogComponent implements OnInit {
     addPlayer(): void {
         const dialogRef = this.dialog.open(AddPlayerComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournament: this.data.tournament,
                 clientId: this.data.clientId,
@@ -209,6 +213,7 @@ export class MenuDialogComponent implements OnInit {
     addEntry(isReEntry: boolean): void {
         const dialogRef = this.dialog.open(AddEntryComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournamentId: this.data.tournament.id,
                 tournamentName: this.data.tournament.name,
@@ -225,6 +230,7 @@ export class MenuDialogComponent implements OnInit {
     makeDeal(): void {
         const dialogRef = this.dialog.open(MakeDealComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournament: this.data.tournament,
                 metadata: this.data.seriesMetadata,
@@ -240,6 +246,7 @@ export class MenuDialogComponent implements OnInit {
     drawTables(): void {
         const dialogRef = this.dialog.open(TableDrawDialogComponent, {
             ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
             data: {
                 tournament: this.data.tournament,
             },
@@ -252,11 +259,7 @@ export class MenuDialogComponent implements OnInit {
     }
 
     chkScreenMode() {
-        if (this.document.fullscreenElement) {
-            this.isFullscreen = true;
-        } else {
-            this.isFullscreen = false;
-        }
+        this.isFullscreen = !!this.document.fullscreenElement;
     }
 
     fullScreen(): void {

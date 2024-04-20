@@ -37,6 +37,7 @@ import { TimePipe } from '../../../../shared/pipes/time.pipe';
 import { LeaderboardInfoComponent } from './leaderboard/leaderboard-info.component';
 import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
 import { SeriesMetadata } from '../../../../shared/models/series.interface';
+import { DEFAULT_DIALOG_POSITION } from '../../../../core/const/app.const';
 
 @Component({
     selector: 'app-overview',
@@ -110,12 +111,6 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     slider: KeenSliderInstance;
     currentSlide: number = 0;
     changes = 0;
-
-    dialogPosition = {
-        position: {
-            top: '40px'
-        }
-    };
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
@@ -350,7 +345,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
     addBlind(): void {
         const dialogRef = this.dialog.open(AddBlindsComponent, {
-            ...this.dialogPosition,
+            ...DEFAULT_DIALOG_POSITION,
             data: {
                 tournament: this.tournament
             }

@@ -22,13 +22,6 @@ export class LeaderboardComponent {
     @Input() myEmail: string | undefined | null;
     @Input() full = true;
 
-    dialogPosition = {
-        position: {
-            top: '40px'
-        },
-        maxHeight: '90vh'
-    };
-
     private dialog: MatDialog = inject(MatDialog);
 
     openEditPlayerDialog(row: LeaderboardRow): void {

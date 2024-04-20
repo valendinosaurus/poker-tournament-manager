@@ -27,7 +27,7 @@ export class CreatePlayerComponent implements OnInit {
     readonly WINDOW = window;
 
     data: {
-        player?: Player;
+        player?: Player | null;
         blockName: boolean
     } = inject(MAT_DIALOG_DATA);
 

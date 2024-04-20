@@ -56,37 +56,24 @@ mat-dialog-container#draw {
 
     h2 {
         color: #222 !important;
-        font-size: 32px;
         margin-bottom: 20px;
         text-align: center;
         padding-bottom: 10px;
         border-bottom: solid 2px black;
 
         @media (max-width: 800px) {
-            font-size: 20px;
             margin-bottom: 12px;
         }
     }
 
     h3 {
         color: #222;
-        font-size: 20px;
         margin-top: 20px;
         border-bottom: solid 1px $primaryDark;
         padding-top: 10px;
 
         @media (max-width: 800px) {
-            font-size: 14px;
             margin-top: 12px;
-        }
-    }
-
-    p {
-        color: black;
-        font-size: 24px;
-
-        @media (max-width: 800px) {
-            font-size: 16px;
         }
     }
 
@@ -104,6 +91,41 @@ mat-dialog-container#draw {
         }
     }
 
+    .actions {
+        margin-top: 40px;
+
+        @media (max-width: 800px) {
+            margin-top: 20px;
+        }
+    }
+}
+
+.timer-dialog {
+    h2 {
+        font-size: 32px;
+
+        @media (max-width: 800px) {
+            font-size: 20px;
+        }
+    }
+
+    h3 {
+        font-size: 20px;
+
+        @media (max-width: 800px) {
+            font-size: 14px;
+        }
+    }
+
+    p {
+        color: black;
+        font-size: 24px;
+
+        @media (max-width: 800px) {
+            font-size: 16px;
+        }
+    }
+
     mat-form-field {
         font-size: 32px;
 
@@ -118,14 +140,6 @@ mat-dialog-container#draw {
 
         @media (max-width: 800px) {
             font-size: 14px;
-        }
-    }
-
-    .actions {
-        margin-top: 40px;
-
-        @media (max-width: 800px) {
-            margin-top: 20px;
         }
     }
 }

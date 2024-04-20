@@ -14,9 +14,14 @@
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!form.valid || isLoadingAdd"
     >
-        LEAVE TOURNAMENT
+        <ng-container *ngIf="!isLoadingAdd">
+            LEAVE TOURNAMENT
+        </ng-container>
+        <ng-container *ngIf="isLoadingAdd">
+            <i class="fa fa-spinner fa-spin"></i>
+        </ng-container>
     </button>
 </form>
 
@@ -46,9 +51,14 @@
                     </td>
                     <td>
                         <i
-                            *ngIf="i === 0"
+                            *ngIf="i === 0 && !isLoadingRemove"
                             class="fa fa-trash"
                             (click)="removeSeatOpen(e.playerId, e.name)"
+                        ></i>
+
+                        <i
+                            *ngIf="i === 0 && isLoadingRemove"
+                            class="fa fa-spinner fa-spin"
                         ></i>
                     </td>
                 </tr>

@@ -1,3 +1,79 @@
+.duration {
+    background: aliceblue;
+    padding: 12px;
+    margin-bottom: 48px;
+    width: fit-content;
+
+    .expandable-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .fa-chevron-circle-down {
+        margin-right: 20px;
+    }
+
+    h3 {
+        margin: 0;
+        text-align: left;
+    }
+
+    & > .expandable > div:not(.expandable-header) {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+
+        input {
+            margin-right: 32px;
+            width: 140px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #00437b;
+            text-align: right;
+            padding-right: 8px;
+            box-sizing: border-box;
+        }
+
+        p {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        h4 {
+            font-weight: normal;
+            margin-right: 12px;
+            width: 120px;
+        }
+    }
+
+    h4, p {
+        margin: 0;
+    }
+
+    p.estimation {
+        font-size: 54px;
+        margin-top: 20px;
+        text-align: left;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        color: green;
+
+        small {
+            font-size: 24px;
+            margin-left: 16px;
+            font-weight: normal;
+        }
+    }
+}
+
+.blind-structure {
+    padding-left: 32px;
+    padding-bottom: 32px;
+}
+
 .header {
     display: flex;
     padding: 8px;
@@ -13,6 +89,7 @@
     background: aliceblue;
     margin-right: 40px;
     font-size: 18px !important;
+    position: relative;
 }
 
 .pause-element {
@@ -70,4 +147,20 @@
 
 .fa-trash {
     font-size: 16px !important;
+}
+
+.blind-element .index {
+    position: absolute;
+    left: 0;
+    transform: translateX(-110%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #00437b;
+    color: aliceblue;
+    font-weight: bold;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
 }

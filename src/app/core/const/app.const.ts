@@ -7,6 +7,10 @@ export const DEFAULT_DIALOG_POSITION = {
     maxHeight: '86vh'
 };
 
+export const TIMER_DIALOG_PANEL_CLASS = {
+    panelClass: 'timer-dialog'
+}
+
 export const mostSpilled: SimpleStat[] = [
     {
         image: 'https://c8.alamy.com/compde/gc2ebk/ufo-verteiler-lkw-weissbier-in-boston-street-gc2ebk.jpg',

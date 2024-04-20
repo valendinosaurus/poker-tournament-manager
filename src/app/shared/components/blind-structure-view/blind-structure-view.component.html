@@ -1,3 +1,81 @@
+<div
+    *ngIf="estimationVisible && structure.length > 0"
+    class="duration"
+>
+    <div
+        class="expandable-header flex justify-center clickable"
+        (click)="isExpanded = !isExpanded"
+    >
+        <i
+            class="fa fa-chevron-circle-down"
+            [class.rotate-180]="isExpanded"
+        ></i>
+        <h3>Estimated duration</h3>
+    </div>
+
+    <div
+        class="expandable"
+        [class.expanded]="isExpanded"
+    >
+        <div>
+            <h4>players</h4>
+            <input
+                type="number"
+                name="noOfPlayers"
+                [(ngModel)]="noOfPlayers"
+                (ngModelChange)="calculateDuration()"
+            >
+            <h4>start stack</h4>
+            <input
+                type="number"
+                name="startStack"
+                [(ngModel)]="startStack"
+                (ngModelChange)="calculateDuration()"
+            >
+        </div>
+
+        <div>
+            <h4>rebuys</h4>
+            <input
+                type="number"
+                name="noOfRebuys"
+                [(ngModel)]="noOfRebuys"
+                (ngModelChange)="calculateDuration()"
+            >
+            <h4>rebuy stack</h4>
+            <input
+                type="number"
+                name="rebuyStack"
+                [(ngModel)]="rebuyStack"
+                (ngModelChange)="calculateDuration()"
+            >
+        </div>
+
+        <div>
+            <h4>addons</h4>
+            <input
+                type="number"
+                name="noOfAddons"
+                [(ngModel)]="noOfAddons"
+                (ngModelChange)="calculateDuration()"
+            >
+            <h4>addon stack</h4>
+            <input
+                type="number"
+                name="addonStack"
+                [(ngModel)]="addonStack"
+                (ngModelChange)="calculateDuration()"
+            >
+        </div>
+        <p class="estimation">
+            {{ estimatedDurationInMinutes | time }}
+            <small>
+                (+/- 1 Level)
+            </small>
+        </p>
+    </div>
+</div>
+
 <div class="blind-structure">
     <div class="header">
         <div class="b-name">
@@ -20,6 +98,10 @@
     <ng-container *ngFor="let blind of structure; let i = index;">
         <ng-container *ngIf="!blind.isPause; else pause;">
             <div class="blind-element">
+                <div class="index">
+                    {{ blind.position / 2 }}
+                </div>
+
                 <div class="b-duration">
                     {{ blind.duration}}min
                 </div>
@@ -49,14 +131,15 @@
         <ng-template #pause>
             <div class="pause-element">
                 <div class="b-name">
-                    PAUSE
+                    {{ blind.duration}}min
                 </div>
                 <div class="b-long-name">
+                    PAUSE
                     <ng-container *ngIf="blind.isChipUp">
-                        (CHIP UP)
+                        - (CHIP UP)
                     </ng-container>
                     <ng-container *ngIf="blind.endsRebuy">
-                        ENDS REBUY
+                        - ENDS REBUY
                     </ng-container>
                 </div>
                 <div class="b-action">

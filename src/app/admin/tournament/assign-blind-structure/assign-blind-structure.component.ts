@@ -53,7 +53,6 @@ export class AssignBlindStructureComponent {
     }
 
     onSubmit(): void {
-        console.log(this.model.selectedStructureToAdd());
         const levels = this.model.selectedStructureToAdd()?.structure;
 
         if (levels) {
@@ -68,9 +67,7 @@ export class AssignBlindStructureComponent {
                     }
                 })
             ).subscribe();
-
         }
-
     }
 
     closeDialog(event: Event): void {

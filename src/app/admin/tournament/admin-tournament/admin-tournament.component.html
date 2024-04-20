@@ -177,13 +177,10 @@
         </mat-tab>
 
         <mat-tab label="Blinds">
-            <!-- extract -->
-            <div class="flex">
-                <div class="flex-50">
-                    <div class="admin-header">
-                        <h2>Blinds</h2>
+            <div class="admin-header">
+                <h2>Blinds</h2>
 
-                        <span class="admin-header-buttons">
+                <span class="admin-header-buttons">
                             <button
                                 mat-raised-button
                                 color="primary"
@@ -211,18 +208,17 @@
                                 <i class="fa fa-cloud-arrow-up fa-ib"></i> ASSIGN EXISTING BLIND STRUCTURE
                             </button>
                         </span>
-                    </div>
-
-
-                    <app-blind-structure-view
-                        [structure]="tournament.structure"
-                        [locked]="tournament.locked"
-                        (addPause)="addPause(tournament, $event)"
-                        (deleteBlind)="deleteBlindFromTournament($event)"
-                    ></app-blind-structure-view>
-                </div>
             </div>
 
+            <div class="m-800">
+                <app-blind-structure-view
+                    [structure]="tournament.structure"
+                    [locked]="tournament.locked"
+                    (addPause)="addPause(tournament, $event)"
+                    (deleteBlind)="deleteBlindFromTournament($event)"
+                ></app-blind-structure-view>
+
+            </div>
         </mat-tab>
     </mat-tab-group>
 </ng-container>
