@@ -26,7 +26,7 @@ import { LocalStorageService } from '../../../../../core/services/util/local-sto
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { DecimalPipe, DOCUMENT, NgIf } from '@angular/common';
+import { DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../shared/models/series.interface';
@@ -39,7 +39,7 @@ declare var anime: any;
     templateUrl: './buttons.component.html',
     styleUrls: ['./buttons.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, MatTooltipModule, DecimalPipe]
+    imports: [NgIf, MatButtonModule, MatTooltipModule, DecimalPipe, NgForOf, NgStyle, NgTemplateOutlet]
 })
 export class ButtonsComponent implements OnInit, OnChanges {
 
@@ -54,8 +54,11 @@ export class ButtonsComponent implements OnInit, OnChanges {
     isAddPlayerBlocked = false;
     isAnimating = false;
     isAnimatingMoney = false;
+    isAnimatingWinner = false;
     lastSeatOpenName = 'TEST NAME';
-    lastPrice: number = 0;
+    winnerName = 'WINNER';
+    winnerPrice = 0;
+    lastPrice = 0;
     lastIsBubble = false;
     canStartTournament = false;
     playerHasToBeMoved = false;
@@ -63,11 +66,27 @@ export class ButtonsComponent implements OnInit, OnChanges {
     isFullscreen = false;
     elem: HTMLElement;
 
+    confettiInterval: any;
+
     menuVisible = false;
 
     isRebuyPhaseFinished$ = new ReplaySubject<boolean>();
 
     isAdaptedPayoutSumCorrect = true;
+
+    config = Array.from({length: 100}).map(
+        _ => ({
+            duration: Math.floor(Math.random() * (20 - 6 + 1) + 6),
+            left: Math.floor(Math.random() * (90 - 10 + 1) + 10)
+        })
+    );
+
+    config2 = Array.from({length: 100}).map(
+        _ => ({
+            duration: Math.floor(Math.random() * (20 - 6 + 1) + 6),
+            left: Math.floor(Math.random() * (90 - 10 + 1) + 10)
+        })
+    );
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -222,19 +241,36 @@ export class ButtonsComponent implements OnInit, OnChanges {
                     this.lastSeatOpenName = e.name;
                     this.lastPrice = e.price;
                     this.lastIsBubble = e.isBubble;
+                    this.winnerPrice = e.winnerPrice;
+                    this.winnerName = e.winnerName;
 
+                    this.isAnimating = true;
                     this.doConfetti();
+
+                    if (e.rank === 2) {
+
+                        this.confettiInterval = setInterval(() =>
+                                this.doConfetti(true),
+                            5000
+                        );
+
+                        setTimeout(() => {
+                            this.isAnimatingWinner = true;
+                            this.isAnimating = false;
+
+                            setTimeout(() =>
+                                    this.isAnimatingWinner = false,
+                                60000
+                            );
+                        }, 5000);
+                    }
                 }
             })
         ).subscribe();
     }
 
     chkScreenMode() {
-        if (this.document.fullscreenElement) {
-            this.isFullscreen = true;
-        } else {
-            this.isFullscreen = false;
-        }
+        this.isFullscreen = !!this.document.fullscreenElement;
     }
 
     fullScreen(): void {
@@ -296,8 +332,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
         dialogRef.componentInstance.localRefresh = this.localRefresh;
     }
 
-    doConfetti(): void {
-        this.isAnimating = true;
+    doConfetti(withRandom = false): void {
         this.isAnimatingMoney = true;
 
         setTimeout(() => {
@@ -323,20 +358,21 @@ export class ButtonsComponent implements OnInit, OnChanges {
 
         setTimeout(
             () => {
-                this.shoot();
+                this.shoot(withRandom);
             },
             2000
         );
     }
 
-    shoot() {
+    shoot(withRandom = false) {
         try {
             this.confetti({
                 angle: 90,
                 spread: 360,
                 particleCount: this.random(4000, 5000),
                 origin: {
-                    y: 0.4
+                    y: withRandom ? Math.random() : 0.4,
+                    x: withRandom ? Math.random() : 0.5,
                 }
             });
         } catch (e) {
@@ -359,6 +395,11 @@ export class ButtonsComponent implements OnInit, OnChanges {
         } else {
             this.start.emit();
         }
+    }
+
+    endWinnerAnimation(): void {
+        this.isAnimatingWinner = false;
+        clearInterval(this.confettiInterval);
     }
 
 }

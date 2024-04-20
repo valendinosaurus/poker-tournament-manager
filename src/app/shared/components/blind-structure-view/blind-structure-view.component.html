@@ -1,5 +1,5 @@
 <div
-    *ngIf="estimationVisible && structure.length > 0"
+    *ngIf="estimationVisible && structure().length > 0"
     class="duration"
 >
     <div
@@ -22,15 +22,15 @@
             <input
                 type="number"
                 name="noOfPlayers"
-                [(ngModel)]="noOfPlayers"
-                (ngModelChange)="calculateDuration()"
+                [ngModel]="noOfPlayers()"
+                (ngModelChange)="noOfPlayers.set($event)"
             >
             <h4>start stack</h4>
             <input
                 type="number"
                 name="startStack"
-                [(ngModel)]="startStack"
-                (ngModelChange)="calculateDuration()"
+                [ngModel]="startStack()"
+                (ngModelChange)="startStack.set($event)"
             >
         </div>
 
@@ -39,15 +39,15 @@
             <input
                 type="number"
                 name="noOfRebuys"
-                [(ngModel)]="noOfRebuys"
-                (ngModelChange)="calculateDuration()"
+                [ngModel]="noOfRebuys()"
+                (ngModelChange)="noOfRebuys.set($event)"
             >
             <h4>rebuy stack</h4>
             <input
                 type="number"
                 name="rebuyStack"
-                [(ngModel)]="rebuyStack"
-                (ngModelChange)="calculateDuration()"
+                [ngModel]="rebuyStack()"
+                (ngModelChange)="rebuyStack.set($event)"
             >
         </div>
 
@@ -56,19 +56,19 @@
             <input
                 type="number"
                 name="noOfAddons"
-                [(ngModel)]="noOfAddons"
-                (ngModelChange)="calculateDuration()"
+                [ngModel]="noOfAddons()"
+                (ngModelChange)="noOfAddons.set($event)"
             >
             <h4>addon stack</h4>
             <input
                 type="number"
                 name="addonStack"
-                [(ngModel)]="addonStack"
-                (ngModelChange)="calculateDuration()"
+                [ngModel]="addonStack()"
+                (ngModelChange)="addonStack.set($event)"
             >
         </div>
         <p class="estimation">
-            {{ estimatedDurationInMinutes | time }}
+            {{ estimatedDurationInMinutes() | time }}
             <small>
                 (+/- 1 Level)
             </small>
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <ng-container *ngFor="let blind of structure; let i = index;">
+    <ng-container *ngFor="let blind of structure(); let i = index;">
         <ng-container *ngIf="!blind.isPause; else pause;">
             <div class="blind-element">
                 <div class="index">
@@ -154,7 +154,7 @@
 
 
         <div
-            *ngIf="blindPositions.indexOf(blind.position + 1) === -1 && i < structure.length - 1 && !locked"
+            *ngIf="blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked"
             class="b-insert-pause"
             (click)="addPause.emit(blind.position)"
         >

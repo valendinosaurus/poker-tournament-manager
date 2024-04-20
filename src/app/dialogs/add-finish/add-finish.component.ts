@@ -77,14 +77,17 @@ export class AddFinishComponent implements OnInit {
     conductedEliminations: ConductedElimination[];
     tournament: Tournament;
 
+    isLoading = false;
     isLoadingAdd = false;
     isLoadingRemove = false;
 
     rank = 0;
     price = 0;
+    winnerPrice = 0;
 
     ngOnInit(): void {
         this.fetchService.getFetchTrigger$().pipe(
+            tap(() => this.isLoading = true),
             takeUntilDestroyed(this.destroyRef),
             switchMap(() => this.tournamentApiService.get$(this.data.tournament.id)),
             tap((tournament: Tournament) => {
@@ -103,6 +106,7 @@ export class AddFinishComponent implements OnInit {
                 this.initModel();
                 this.initFields();
                 this.calcRanksAndPrices(tournament);
+                this.isLoading = false;
             })
         ).subscribe();
 
@@ -151,6 +155,7 @@ export class AddFinishComponent implements OnInit {
         } else {
             if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
                 this.price = adaptedPayouts[this.rank - 1];
+                this.winnerPrice = adaptedPayouts[0];
             } else {
                 const {totalPricePool} = this.rankingService.getTotalPricePool(
                     tournament.entries,
@@ -163,6 +168,7 @@ export class AddFinishComponent implements OnInit {
                 );
 
                 this.price = totalPricePool / 100 * payoutPercentage;
+                this.winnerPrice = totalPricePool / 100 * payoutRaw[0];
             }
         }
 
@@ -269,7 +275,10 @@ export class AddFinishComponent implements OnInit {
                         this.dialogRef.close({
                             name: this.data.tournament.players.find(e => e.id === model.playerId)?.name,
                             price: this.price,
-                            isBubble: isBubble
+                            isBubble: isBubble,
+                            rank: this.rank,
+                            winnerName: this.rank === 2 ? this.data.tournament.players.find(e => e.id !== model.playerId)?.name : '',
+                            winnerPrice: this.winnerPrice
                         });
                     }
                     this.isLoadingAdd = false;

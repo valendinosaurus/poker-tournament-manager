@@ -15,8 +15,22 @@ export class PlaygroundPageComponent {
 
     isAnimating = false;
     lastIsBubble = true;
-    lastPrice = 0;
+    lastPrice = 20;
     lastSeatOpenName = 'NAME';
+
+    config = Array.from({length: 100}).map(
+        _ => ({
+            duration: Math.floor(Math.random() * (20 - 6 + 1) + 6),
+            left: Math.floor(Math.random() * (90 - 10 + 1) + 10)
+        })
+    );
+
+    config2 = Array.from({length: 100}).map(
+        _ => ({
+            duration: Math.floor(Math.random() * (20 - 6 + 1) + 6),
+            left: Math.floor(Math.random() * (90 - 10 + 1) + 10)
+        })
+    );
 
     doConfetti(): void {
         this.isAnimating = true;

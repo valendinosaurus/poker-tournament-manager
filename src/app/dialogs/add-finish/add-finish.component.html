@@ -4,25 +4,33 @@
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <ng-container *ngIf="!isLoading; else loading;">
+        <formly-form
+            [form]="form"
+            [fields]="fields"
+            [options]="options"
+            [model]="model"
+        ></formly-form>
 
-    <button
-        mat-raised-button color="primary"
-        type="submit"
-        [disabled]="!form.valid || isLoadingAdd"
-    >
-        <ng-container *ngIf="!isLoadingAdd">
-            LEAVE TOURNAMENT
-        </ng-container>
-        <ng-container *ngIf="isLoadingAdd">
-            <i class="fa fa-spinner fa-spin"></i>
-        </ng-container>
-    </button>
+        <button
+            mat-raised-button color="primary"
+            type="submit"
+            [disabled]="!form.valid || isLoadingAdd"
+        >
+            <ng-container *ngIf="!isLoadingAdd">
+                LEAVE TOURNAMENT
+            </ng-container>
+            <ng-container *ngIf="isLoadingAdd">
+                <i class="fa fa-spinner fa-spin"></i>
+            </ng-container>
+        </button>
+    </ng-container>
+
+    <ng-template #loading>
+        <div class="flex justify-center align-center">
+            <i class="fa fa-spinner fa-spin" style="font-size: 64px"></i>
+        </div>
+    </ng-template>
 </form>
 
 
