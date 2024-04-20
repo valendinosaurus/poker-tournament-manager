@@ -75,10 +75,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "PokerTournamentManager:build:production"
+                          "buildTarget": "PokerTournamentManager:build:production"
                         },
                         "development": {
-                            "browserTarget": "PokerTournamentManager:build:development"
+                          "buildTarget": "PokerTournamentManager:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -86,7 +86,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "PokerTournamentManager:build"
+                      "buildTarget": "PokerTournamentManager:build"
                     }
                 },
                 "test": {
