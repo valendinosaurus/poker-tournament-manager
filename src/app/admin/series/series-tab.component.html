@@ -14,6 +14,7 @@
     <table class="admin-table">
         <tr>
             <th>Name</th>
+            <th>Owner's Email</th>
             <th>Actions</th>
         </tr>
         <ng-container *ngFor="let series of series$ | async">
@@ -24,6 +25,9 @@
                 >
                     <td>
                         <i *ngIf="series.temp" class="fa fa-exclamation-triangle"></i> {{ series.name }}
+                    </td>
+                    <td>
+                        {{ series.ownerEmail }}
                     </td>
                     <td>
                         <div class="table-actions">

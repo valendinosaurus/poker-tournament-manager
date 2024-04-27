@@ -1,67 +1,41 @@
 <div class="page-with-header wide">
     <button
         mat-raised-button
-        (click)="doConfetti()"
+        (click)="seatOpen()"
     >
-        ANIMATE
+        SEAT OPEN
     </button>
 
-    <div *ngIf="lastPrice > 0"
-         id="itm-animation"
+    <button
+        mat-raised-button
+        (click)="seatBubbleBoy()"
     >
-        <div id="money">
-            @for (c of config; track c) {
-                <div
-                    class="bill"
-                    [style.left.vw]="c.left"
-                    [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
-                ></div>
-            }
-        </div>
-        <div id="money2">
-            @for (c of config; track c) {
-                <div
-                    class="bill"
-                    [style.left.vw]="c.left"
-                    [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
-                ></div>
-            }
-        </div>
-    </div>
+        BUBBLE BOY
+    </button>
 
-    <div
-        class="seat-open-animation"
-        [class.animate]="isAnimating"
+    <button
+        mat-raised-button
+        (click)="winner()"
     >
-    <span class="word">
-        <ng-container *ngIf="lastIsBubble; else notBubble;">
-            <div class="double-icon">
-                <i class="fa fa-burst"></i>
-                <i class="fa fa-circle"></i>
-            </div>
-        </ng-container>
+        winner
+    </button>
 
-        <ng-template #notBubble>
-            <ng-container *ngIf="lastPrice === 0">
-                <i class="fa fa-skull"></i>
-            </ng-container>
+    <app-animation-bubble-boy
+        *ngIf="isAnimatingBubbleBoy$ | async as a"
+        [isAnimating]="a"
+        name="TEST NAME"
+    ></app-animation-bubble-boy>
 
-            <ng-container *ngIf="lastPrice > 0">
-                <i class="fa fa-money-bill-wave"></i>
-                <span class="green">
-                    {{ lastPrice | number:'1.0-0' }} $
-                </span>
-            </ng-container>
-        </ng-template>
-    </span>
-        <span class="word gray">
-        SEAT OPEN
-    </span>
-        <br>
-        <span class="word">
-        {{ lastSeatOpenName.toLocaleUpperCase() }}
-    </span>
-    </div>
-    <div id="confetti"></div>
+    <app-animation-seat-open
+        *ngIf="isAnimatingSeatOpen$ | async as a"
+        [isAnimating]="a"
+        [price]="105"
+        name="TEST NAME"
+    ></app-animation-seat-open>
 
+    <app-animation-winner
+        [trigger]="winnerTrigger$ | async"
+        name="Vale"
+        [price]="1000"
+    ></app-animation-winner>
 </div>

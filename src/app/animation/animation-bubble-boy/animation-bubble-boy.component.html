@@ -1,0 +1,19 @@
+<div
+    class="seat-open-animation"
+    [class.animate]="isAnimating()"
+>
+    <span class="word back">
+        <div class="double-icon">
+            <i class="fa fa-burst"></i>
+            <i class="fa fa-circle"></i>
+        </div>
+    </span>
+
+    <span class="word gray">
+        BUBBLE BOY
+   </span>
+
+    <span class="word">
+        {{ name().toLocaleUpperCase() }}
+    </span>
+</div>

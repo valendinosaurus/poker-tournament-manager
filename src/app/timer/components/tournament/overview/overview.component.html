@@ -1,7 +1,7 @@
 <div class="overview">
     <div class="overview-header">
-        <span>{{ tournament.date | date:'dd.MM.YYYY' }}</span>
-        <span>{{ tournament.name }}</span>
+        <span style="font-weight: bold">{{ today | date:'dd.MM.YYYY' }}</span>
+        <span style="font-weight: bold">{{ tournament.name }}</span>
     </div>
 
     <div class="overview-wrapper">
@@ -83,10 +83,6 @@
                             {{ today | date:'HH:mm' }}
                         </h2>
                     </div>
-
-                    <h2 class="tourney">
-                        {{ tournament.name }}
-                    </h2>
                 </span>
 
                 <h1>

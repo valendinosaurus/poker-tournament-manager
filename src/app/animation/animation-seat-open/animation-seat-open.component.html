@@ -1,0 +1,45 @@
+<div
+    class="seat-open-animation"
+    [class.animate]="isAnimating()"
+>
+    <span class="word back">
+        @if (price() > 0) {
+            <i class="fa fa-money-bill-1-wave"></i>
+        } @else {
+            <i class="fa fa-skull"></i>
+        }
+    </span>
+
+    <span class="word gray">
+            SEAT OPEN
+    </span>
+
+    <span class="word">
+        {{ name().toLocaleUpperCase() }}
+    </span>
+
+    @if (price() > 0) {
+        <span class="word green">
+            $ {{ price() }}
+        </span>
+    }
+</div>
+
+
+<div
+    *ngIf="price() > 0"
+    id="itm-animation">
+    <ng-container *ngTemplateOutlet="money"></ng-container>
+</div>
+
+<ng-template #money>
+    <div id="money">
+        @for (c of config; track c) {
+            <div
+                class="bill"
+                [style.left.vw]="c.left"
+                [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
+            ></div>
+        }
+    </div>
+</ng-template>

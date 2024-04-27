@@ -277,7 +277,7 @@ export class AddFinishComponent implements OnInit {
                             price: this.price,
                             isBubble: isBubble,
                             rank: this.rank,
-                            winnerName: this.rank === 2 ? this.data.tournament.players.find(e => e.id !== model.playerId)?.name : '',
+                            winnerName: this.rank === 2 ? this.eligibleForSeatOpen.find(e => e.id !== model.playerId)?.name : '',
                             winnerPrice: this.winnerPrice
                         });
                     }

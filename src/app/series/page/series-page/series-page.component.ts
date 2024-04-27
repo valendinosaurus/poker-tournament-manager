@@ -17,9 +17,14 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { LeaderboardComponent } from '../../../shared/components/leaderboard/leaderboard.component';
 import { SeriesHeaderComponent } from '../../components/series-header/series-header.component';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { MatButtonModule } from '@angular/material/button';
+import {
+    ConnectToOtherUserDialogComponent
+} from '../../../welcome/components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
+import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
 
 export interface SeriesHeader {
     logo: string;
@@ -57,7 +62,8 @@ export interface SeriesStats {
         NgFor,
         SeriesTournamentComponent,
         AsyncPipe,
-        MatDialogModule
+        MatDialogModule,
+        MatButtonModule
     ]
 })
 export class SeriesPageComponent implements OnInit {
@@ -69,6 +75,8 @@ export class SeriesPageComponent implements OnInit {
     leaderboard$: Observable<any>;
     seriesStats$: Observable<SeriesStats>;
     tournaments$: Observable<SeriesTournament[]>;
+    isAuthenticated$: Observable<boolean>;
+    ownerEmail$: Observable<string | null>;
 
     seriesId: number;
     password: string;
@@ -80,6 +88,7 @@ export class SeriesPageComponent implements OnInit {
     private router: Router = inject(Router);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private dialog: MatDialog = inject(MatDialog);
 
     private trigger$ = new ReplaySubject<void>();
 
@@ -88,6 +97,7 @@ export class SeriesPageComponent implements OnInit {
         this.password = this.route.snapshot.params['password'];
         this.user$ = this.authUtilService.getUser$();
         this.myEmail$ = this.authUtilService.getEmail$();
+        this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
 
         this.series$ = combineLatest([
             timer(0, 60000),
@@ -102,6 +112,10 @@ export class SeriesPageComponent implements OnInit {
                 })
             )),
             shareReplay(1)
+        );
+
+        this.ownerEmail$ = this.series$.pipe(
+            map((series) => series.ownerEmail)
         );
 
         this.seriesHeader$ = this.series$.pipe(
@@ -146,6 +160,15 @@ export class SeriesPageComponent implements OnInit {
 
         //this.fetchService.trigger('series on inut');
         this.trigger$.next();
+    }
+
+    connectToOtherUser(ownerEmail: string): void {
+        this.dialog.open(ConnectToOtherUserDialogComponent, {
+            ...DEFAULT_DIALOG_POSITION,
+            data: {
+                ownerEmail
+            }
+        });
     }
 
 }

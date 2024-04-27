@@ -1,8 +1,7 @@
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ConnectionRequestApiService } from '../../../../core/services/api/connection-request-api.service';
-import { User } from '@auth0/auth0-angular';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { ConnectionRequestState } from '../../../../shared/enums/connection-request-state.enum';
 import { FetchService } from '../../../../core/services/fetch.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,13 +20,17 @@ import { NotificationService } from '../../../../core/services/notification.serv
 })
 export class ConnectToOtherUserDialogComponent {
 
+    data: {
+        ownerEmail?: string;
+    } = inject(MAT_DIALOG_DATA);
+
     model: {
         mailOwner: WritableSignal<string>;
         name: WritableSignal<string>;
         isValid: Signal<boolean>
     } = {
         name: signal(''),
-        mailOwner: signal(''),
+        mailOwner: signal(this.data?.ownerEmail ?? ''),
         isValid: computed(() => {
             return this.model.name().length > 0 && this.model.mailOwner().length > 0;
         })
@@ -40,9 +43,7 @@ export class ConnectToOtherUserDialogComponent {
     private notificationService: NotificationService = inject(NotificationService);
 
     onSubmit(): void {
-        this.authUtilService.getUser$().pipe(
-            filter((user: User | undefined | null): user is User => user !== undefined && user !== null),
-            map((user: User) => user.email),
+        this.authUtilService.getEmail$().pipe(
             filter((email: string | undefined): email is string => email !== undefined),
             switchMap((email: string) => this.connectionRequestApiService.post$({
                 id: -1,

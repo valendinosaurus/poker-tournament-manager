@@ -107,106 +107,26 @@
     </button>
 </div>
 
-<div
-    class="seat-open-animation"
-    [class.animate]="isAnimating"
->
-    <span
-        *ngIf="lastPrice === 0"
-        class="word"
-    >
-        <ng-container *ngIf="lastIsBubble; else notBubble;">
-            <div class="double-icon">
-                <i class="fa fa-burst"></i>
-                <i class="fa fa-circle"></i>
-            </div>
-        </ng-container>
+<app-animation-bubble-boy
+    *ngIf="isAnimatingBubbleBoy$ | async as a"
+    [isAnimating]="a"
+    [name]="lastSeatOpenName"
+></app-animation-bubble-boy>
 
-        <ng-template #notBubble>
-            <ng-container>
-                <i class="fa fa-skull"></i>
-            </ng-container>
-        </ng-template>
-    </span>
-    <span class="word gray">
-        <ng-container *ngIf="lastIsBubble; else seatOpenT;">
-            BUBBLE BOY
-        </ng-container>
+<app-animation-seat-open
+    *ngIf="isAnimatingSeatOpen$ | async as a"
+    [isAnimating]="a"
+    [price]="lastPrice"
+    [name]="lastSeatOpenName"
+></app-animation-seat-open>
 
-        <ng-template #seatOpenT>
-            SEAT OPEN
-        </ng-template>
-    </span>
-    <br>
-    <span class="word">
-        {{ lastSeatOpenName.toLocaleUpperCase() }}
-    </span>
-
-    <span class="word">
-        <ng-container *ngIf="lastPrice > 0">
-            <i class="fa fa-money-bill-wave"></i>
-            <span class="green">
-                {{ lastPrice | number:'1.0-0' }} $
-            </span>
-        </ng-container>
-    </span>
-</div>
-<div id="confetti"></div>
-
-<div
-    *ngIf="isAnimatingWinner"
-    class="winner-animation"
-    [class.animate]="isAnimatingWinner"
->
-    <i class="fa fa-window-close clickable" (click)="endWinnerAnimation()"></i>
-
-    <span class="word gray">
-        <i class="fa fa-party-horn"></i>
-        WINNER
-        <i class="fa fa-party-horn"></i>
-    </span>
-    <br>
-    <span class="word">
-        {{ winnerName.toLocaleUpperCase() }}
-    </span>
-    <div class="word">
-        <i class="fa fa-money-bill-wave"></i>
-        <span class="green">
-            {{ winnerPrice | number:'1.0-0' }} $
-        </span>
-    </div>
-
-    <ng-container *ngTemplateOutlet="money"></ng-container>
-</div>
-
-<div *ngIf="lastPrice > 0 && isAnimatingMoney"
-     id="itm-animation"
->
-    <ng-container *ngTemplateOutlet="money"></ng-container>
-</div>
+<app-animation-winner
+    [trigger]="winnerTrigger$ | async"
+    [name]="winnerName"
+    [price]="winnerPrice"
+></app-animation-winner>
 
 <div
     class="menu"
     [class.visible]="menuVisible"
 ></div>
-
-<ng-template #money>
-    <div id="money">
-        @for (c of config; track c) {
-            <div
-                class="bill"
-                [style.left.vw]="c.left"
-                [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
-            ></div>
-        }
-    </div>
-    <div id="money2">
-        @for (c of config; track c) {
-            <div
-                class="bill"
-                [style.left.vw]="c.left"
-                [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
-            ></div>
-        }
-    </div>
-</ng-template>

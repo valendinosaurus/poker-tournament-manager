@@ -11,7 +11,7 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
-import { Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
 import { ServerResponse } from '../../../../../shared/models/server-response';
 import { tap } from 'rxjs/operators';
@@ -26,11 +26,16 @@ import { LocalStorageService } from '../../../../../core/services/util/local-sto
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../shared/models/series.interface';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../core/const/app.const';
+import {
+    AnimationBubbleBoyComponent
+} from '../../../../../animation/animation-bubble-boy/animation-bubble-boy.component';
+import { AnimationSeatOpenComponent } from '../../../../../animation/animation-seat-open/animation-seat-open.component';
+import { AnimationWinnerComponent } from '../../../../../animation/animation-winner/animation-winner.component';
 
 declare var anime: any;
 
@@ -39,7 +44,19 @@ declare var anime: any;
     templateUrl: './buttons.component.html',
     styleUrls: ['./buttons.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, MatTooltipModule, DecimalPipe, NgForOf, NgStyle, NgTemplateOutlet]
+    imports: [
+        NgIf,
+        MatButtonModule,
+        MatTooltipModule,
+        DecimalPipe,
+        NgForOf,
+        NgStyle,
+        NgTemplateOutlet,
+        AnimationBubbleBoyComponent,
+        AnimationSeatOpenComponent,
+        AnimationWinnerComponent,
+        AsyncPipe
+    ]
 })
 export class ButtonsComponent implements OnInit, OnChanges {
 
@@ -51,10 +68,11 @@ export class ButtonsComponent implements OnInit, OnChanges {
     @Input() isRebuyPhaseFinished: boolean;
     @Input() isTournamentFinished: boolean;
 
+    isAnimatingSeatOpen$ = new BehaviorSubject(false);
+    isAnimatingBubbleBoy$ = new BehaviorSubject(false);
+    winnerTrigger$ = new ReplaySubject<number>();
+
     isAddPlayerBlocked = false;
-    isAnimating = false;
-    isAnimatingMoney = false;
-    isAnimatingWinner = false;
     lastSeatOpenName = 'TEST NAME';
     winnerName = 'WINNER';
     winnerPrice = 0;
@@ -65,28 +83,9 @@ export class ButtonsComponent implements OnInit, OnChanges {
     tableHasToBeEliminated = false;
     isFullscreen = false;
     elem: HTMLElement;
-
-    confettiInterval: any;
-
     menuVisible = false;
-
     isRebuyPhaseFinished$ = new ReplaySubject<boolean>();
-
     isAdaptedPayoutSumCorrect = true;
-
-    config = Array.from({length: 100}).map(
-        _ => ({
-            duration: Math.floor(Math.random() * (20 - 6 + 1) + 6),
-            left: Math.floor(Math.random() * (90 - 10 + 1) + 10)
-        })
-    );
-
-    config2 = Array.from({length: 100}).map(
-        _ => ({
-            duration: Math.floor(Math.random() * (20 - 6 + 1) + 6),
-            left: Math.floor(Math.random() * (90 - 10 + 1) + 10)
-        })
-    );
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -244,25 +243,25 @@ export class ButtonsComponent implements OnInit, OnChanges {
                     this.winnerPrice = e.winnerPrice;
                     this.winnerName = e.winnerName;
 
-                    this.isAnimating = true;
-                    this.doConfetti();
-
-                    if (e.rank === 2) {
-
-                        this.confettiInterval = setInterval(() =>
-                                this.doConfetti(true),
-                            5000
-                        );
+                    if (this.lastIsBubble) {
+                        this.isAnimatingBubbleBoy$.next(true);
 
                         setTimeout(() => {
-                            this.isAnimatingWinner = true;
-                            this.isAnimating = false;
+                            this.isAnimatingBubbleBoy$.next(false);
+                        }, 6000);
+                    } else {
+                        this.isAnimatingSeatOpen$.next(true);
 
-                            setTimeout(() =>
-                                    this.isAnimatingWinner = false,
-                                60000
-                            );
-                        }, 5000);
+                        setTimeout(() => {
+                            this.isAnimatingSeatOpen$.next(false);
+                        }, 6000);
+                    }
+
+                    if (e.rank === 2) {
+                        setTimeout(
+                            () => this.winnerTrigger$.next(Math.random()),
+                            6000
+                        );
                     }
                 }
             })
@@ -332,74 +331,12 @@ export class ButtonsComponent implements OnInit, OnChanges {
         dialogRef.componentInstance.localRefresh = this.localRefresh;
     }
 
-    doConfetti(withRandom = false): void {
-        this.isAnimatingMoney = true;
-
-        setTimeout(() => {
-            this.isAnimating = false;
-            this.isAnimatingMoney = false;
-        }, 6000);
-
-        anime.timeline({loop: false})
-            .add({
-                targets: '.seat-open-animation .word',
-                scale: [14, 1],
-                opacity: [0, 1],
-                easing: 'easeInOutQuad',
-                duration: 400,
-                delay: (el: any, i: number) => 500 * i
-            }).add({
-            targets: '.seat-open-animation',
-            opacity: 0,
-            duration: 1000,
-            easing: 'easeInOutQuad',
-            delay: 1000
-        });
-
-        setTimeout(
-            () => {
-                this.shoot(withRandom);
-            },
-            2000
-        );
-    }
-
-    shoot(withRandom = false) {
-        try {
-            this.confetti({
-                angle: 90,
-                spread: 360,
-                particleCount: this.random(4000, 5000),
-                origin: {
-                    y: withRandom ? Math.random() : 0.4,
-                    x: withRandom ? Math.random() : 0.5,
-                }
-            });
-        } catch (e) {
-            // noop, confettijs may not be loaded yet
-        }
-    }
-
-    random(min: number, max: number) {
-        return Math.random() * (max - min) + min;
-    }
-
-    confetti(args: any) {
-        // @ts-ignore
-        return window['confetti'].apply(this, arguments);
-    }
-
     toggleRunning(): void {
         if (this.running) {
             this.pause.emit();
         } else {
             this.start.emit();
         }
-    }
-
-    endWinnerAnimation(): void {
-        this.isAnimatingWinner = false;
-        clearInterval(this.confettiInterval);
     }
 
 }

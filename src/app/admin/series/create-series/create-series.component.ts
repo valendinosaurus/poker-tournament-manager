@@ -72,7 +72,8 @@ export class CreateSeriesComponent implements OnInit {
             finalists: this.data?.series?.finalists ?? 0,
             password: this.data?.series?.password ?? '',
             temp: this.data?.series?.temp ?? false,
-            locked: false
+            locked: false,
+            ownerEmail: this.data?.series?.ownerEmail ?? ''
         };
     }
 
@@ -90,6 +91,7 @@ export class CreateSeriesComponent implements OnInit {
             this.formlyFieldService.getDefaultNumberField('finalists', 'Number of finalists', true),
             this.formlyFieldService.getDefaultTextField('password', 'password', false, 1000),
             this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Series?'),
+            this.formlyFieldService.getDefaultTextField('ownerEmail', 'Owner\'s Email', false, 200),
         ];
     }
 

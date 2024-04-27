@@ -18,6 +18,7 @@ export interface SeriesBase {
     temp: boolean;
     sub: string;
     locked: boolean;
+    ownerEmail: string | null;
 }
 
 export interface Series extends SeriesBase {

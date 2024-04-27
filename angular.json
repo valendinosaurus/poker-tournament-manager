@@ -7,7 +7,8 @@
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
-                    "style": "scss"
+                    "style": "scss",
+                    "standalone": true
                 },
                 "@schematics/angular:application": {
                     "strict": true
@@ -75,10 +76,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                          "buildTarget": "PokerTournamentManager:build:production"
+                            "buildTarget": "PokerTournamentManager:build:production"
                         },
                         "development": {
-                          "buildTarget": "PokerTournamentManager:build:development"
+                            "buildTarget": "PokerTournamentManager:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -86,7 +87,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                      "buildTarget": "PokerTournamentManager:build"
+                        "buildTarget": "PokerTournamentManager:build"
                     }
                 },
                 "test": {

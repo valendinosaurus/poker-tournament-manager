@@ -5,6 +5,21 @@
         [seriesHeader]="seriesHeader$ | async"
     ></app-series-header>
 
+    <ng-container *ngIf="isAuthenticated$ | async">
+        <div class="flex align-center" style="margin-top: 32px;">
+            <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">Are you part of this series?</h4>
+
+            <button
+                *ngIf="ownerEmail$ | async as ownerEmail"
+                mat-raised-button
+                color="accent"
+                (click)="connectToOtherUser(ownerEmail)"
+            >
+                CONNECT NOW
+            </button>
+        </div>
+    </ng-container>
+
     <h2>
         Current leaderboard
     </h2>

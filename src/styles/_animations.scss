@@ -8,13 +8,48 @@
     font-weight: 900;
     width: 100%;
     height: 100%;
-    background: rgba(white, 0.5);
+    background: rgba(white, 0.8);
     backdrop-filter: blur(10px);
     display: none;
     justify-content: center;
     text-align: center;
     align-items: center;
     z-index: 99;
+
+    .word.back {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+
+        .fa-money-bill-1-wave {
+            color: #85BB65;
+            font-size: 50vh !important;
+            opacity: 0.4;
+        }
+
+        .fa-skull {
+            font-size: 50vh !important;
+            opacity: 0.35;
+        }
+
+        .fa-burst {
+            font-size: 60vh !important;
+            opacity: 0.6;
+        }
+
+        .fa-circle {
+            font-size: 32vh !important;
+            opacity: 0.35;
+        }
+    }
+
+    .word.green {
+        background: #85BB65;
+        color: white;
+        padding: 20px 60px;
+        border-radius: 24px;
+    }
 
     .gray {
         color: #777;
@@ -35,11 +70,13 @@
         .fa-burst {
             font-size: 164px !important;
             color: lightblue;
+            z-index: 55;
         }
 
         .fa-circle {
             font-size: 64px !important;
             color: mediumblue;
+            z-index: 44;
         }
     }
 
@@ -56,7 +93,7 @@
 
 .seat-open-animation.animate {
     display: flex;
-    animation: fadeInOut 5s linear 1 forwards;
+    //  animation: fadeInOut 5s linear 1 forwards;
     flex-direction: column;
 }
 

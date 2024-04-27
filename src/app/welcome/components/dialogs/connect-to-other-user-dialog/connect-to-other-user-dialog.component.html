@@ -12,12 +12,23 @@
 
     <mat-form-field>
         <mat-label>Email of tournament owner</mat-label>
-        <input matInput [ngModel]="model.mailOwner()" (ngModelChange)="model.mailOwner.set($event)" name="mailOwner"/>
+        <input
+            matInput
+            [ngModel]="model.mailOwner()"
+            [disabled]="!!this.data.ownerEmail"
+            (ngModelChange)="model.mailOwner.set($event)"
+            name="mailOwner"
+        />
     </mat-form-field>
 
     <mat-form-field>
-        <mat-label>Your name</mat-label>
-        <input matInput [ngModel]="model.name()" (ngModelChange)="model.name.set($event)" name="name"/>
+        <mat-label>Your name in the series</mat-label>
+        <input
+            matInput
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+        />
     </mat-form-field>
 
 

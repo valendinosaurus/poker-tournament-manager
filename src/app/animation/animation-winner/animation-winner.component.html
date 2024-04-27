@@ -1,0 +1,33 @@
+<div
+    class="winner-animation"
+    [class.animate]="isAnimating()"
+>
+    <i class="fa fa-window-close clickable" (click)="endWinnerAnimation()"></i>
+
+    <span class="word gray">
+        <i class="fa fa-party-horn"></i>
+        WINNER
+        <i class="fa fa-party-horn"></i>
+    </span>
+    <br>
+    <span class="word">
+        {{ name().toLocaleUpperCase() }}
+    </span>
+    <div class="word green">
+        {{ price() | number:'1.0-0' }} $
+    </div>
+
+    <ng-container *ngTemplateOutlet="money"></ng-container>
+</div>
+
+<ng-template #money>
+    <div id="money">
+        @for (c of config; track c) {
+            <div
+                class="bill"
+                [style.left.vw]="c.left"
+                [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
+            ></div>
+        }
+    </div>
+</ng-template>
