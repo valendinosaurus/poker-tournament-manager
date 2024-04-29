@@ -179,7 +179,7 @@
     <div
         class="action"
     >
-        <h5>Table Draw</h5>
+        <h5>Draw</h5>
         <button
             mat-raised-button
             class="main"
@@ -208,7 +208,7 @@
     <div
         class="action"
     >
-        <h5>Short Blinds</h5>
+        <h5>Condense</h5>
         <button
             mat-raised-button
             class="main"
@@ -242,7 +242,20 @@
             class="main"
             (click)="cancelFullscreen()"
         >
-            <i class="fa fa fa-times-rectangle"></i>
+            <i class="fa fa-times-rectangle"></i>
+        </button>
+    </div>
+
+    <div
+        class="action"
+    >
+        <h5>Cursor</h5>
+        <button
+            mat-raised-button
+            class="main"
+            (click)="onToggleIsBigCursor()"
+        >
+            <i class="fa fa-mouse-pointer"></i>
         </button>
     </div>
 

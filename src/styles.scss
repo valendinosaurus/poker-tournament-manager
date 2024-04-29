@@ -23,6 +23,22 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+body.big-cursor {
+    cursor: url('./assets/icon100.png'), auto !important;
+
+    button,
+    .mdc-button,
+    .clickable {
+        cursor: url('./assets/icon100.png'), auto !important;
+    }
+
+    button:hover,
+    .mdc-button:hover,
+    .clickable:hover {
+        cursor: url('./assets/icon100-006dc7.png'), auto !important;
+    }
+}
+
 .page-with-header {
     padding-top: 100px !important;
     padding-left: 40px;

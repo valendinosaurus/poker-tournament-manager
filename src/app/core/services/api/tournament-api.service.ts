@@ -56,7 +56,7 @@ export class TournamentApiService {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.get<SeriesMetadata>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}/meta`
-            ))
+            )),
         );
     }
 

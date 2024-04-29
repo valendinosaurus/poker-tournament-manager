@@ -161,12 +161,12 @@ span.running.small {
 
 @keyframes live {
     0% {
-        background-color: green;
+        background-color: #85BB65;
     }
     50% {
-        background-color: rgba(green, 0.2);
+        background-color: rgba(#85BB65, 0.2);
     }
     100% {
-        background-color: green;
+        background-color: #85BB65;
     }
 }

@@ -5,19 +5,20 @@
         [seriesHeader]="seriesHeader$ | async"
     ></app-series-header>
 
-    <ng-container *ngIf="isAuthenticated$ | async">
-        <div class="flex align-center" style="margin-top: 32px;">
-            <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">Are you part of this series?</h4>
+    <ng-container *ngIf="(userEmail$ | async) && (isUserConnectedHere$ | async) === false">
+        <ng-container *ngIf="ownerEmail$ | async as ownerEmail">
+            <div class="flex align-center" style="margin-top: 32px;">
+                <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">Are you part of this series?</h4>
 
-            <button
-                *ngIf="ownerEmail$ | async as ownerEmail"
-                mat-raised-button
-                color="accent"
-                (click)="connectToOtherUser(ownerEmail)"
-            >
-                CONNECT NOW
-            </button>
-        </div>
+                <button
+                    mat-raised-button
+                    color="accent"
+                    (click)="connectToOtherUser(ownerEmail)"
+                >
+                    CONNECT NOW
+                </button>
+            </div>
+        </ng-container>
     </ng-container>
 
     <h2>
@@ -28,7 +29,7 @@
         <app-leaderboard
             [leaderboard]="leaderboard$ | async"
             [series]="series$ | async"
-            [myEmail]="myEmail$ | async"
+            [userEmail]="userEmail$ | async"
         ></app-leaderboard>
 
         <div class="legend-wrapper">
@@ -54,7 +55,7 @@
     <ng-container *ngFor="let tournament of tournaments$ | async">
         <app-series-tournament
             [test]="tournament"
-            [myEmail]="myEmail$ | async"
+            [myEmail]="userEmail$ | async"
         ></app-series-tournament>
     </ng-container>
 

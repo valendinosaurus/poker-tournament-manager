@@ -34,7 +34,6 @@
 }
 
 
-
 .overview .right,
 .overview .left {
     width: 30%;
@@ -101,8 +100,8 @@ div.flex {
     justify-content: center;
 }
 
-div.flex .fa-clock-o {
-    color: rgba($primary, 0.3);
+div.flex .fa-clock {
+    color: rgba($primary, 0.2);
     font-size: 48px;
     margin-right: 20px;
 }
@@ -110,7 +109,7 @@ div.flex .fa-clock-o {
 h2.now {
     font-weight: bold;
     text-transform: uppercase;
-    color: rgba($primary, 0.5);
+    color: rgba($primary, 0.4) !important;
     font-size: 64px;
 }
 
@@ -195,7 +194,6 @@ p {
     height: 100%;
 }
 
-
 .popup {
     position: absolute;
     top: 48.8%;
@@ -203,8 +201,15 @@ p {
     transform: translate(-50%, -50%);
     font-size: 140px;
     padding: 16px 32px;
-    background-color: red;
     color: white;
+}
+
+.popup.paused {
+    background-color: red;
+}
+
+.popup.finished {
+    background: #85BB65;
 }
 
 .time p {

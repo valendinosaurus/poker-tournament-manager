@@ -69,14 +69,15 @@ export interface SeriesStats {
 export class SeriesPageComponent implements OnInit {
 
     user$: Observable<User | undefined | null>;
-    myEmail$: Observable<string | undefined | null>;
+    userEmail$: Observable<string | undefined>;
     series$: Observable<SeriesS>;
     seriesHeader$: Observable<SeriesHeader>;
-    leaderboard$: Observable<any>;
+    leaderboard$: Observable<LeaderboardRow[]>;
     seriesStats$: Observable<SeriesStats>;
     tournaments$: Observable<SeriesTournament[]>;
     isAuthenticated$: Observable<boolean>;
     ownerEmail$: Observable<string | null>;
+    isUserConnectedHere$: Observable<boolean>;
 
     seriesId: number;
     password: string;
@@ -96,7 +97,7 @@ export class SeriesPageComponent implements OnInit {
         this.seriesId = this.route.snapshot.params['sId'];
         this.password = this.route.snapshot.params['password'];
         this.user$ = this.authUtilService.getUser$();
-        this.myEmail$ = this.authUtilService.getEmail$();
+        this.userEmail$ = this.authUtilService.getEmail$();
         this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
 
         this.series$ = combineLatest([
@@ -158,7 +159,19 @@ export class SeriesPageComponent implements OnInit {
             map((leaderboard: LeaderboardRow[]) => this.seriesService.calcSeriesStats(leaderboard)),
         );
 
-        //this.fetchService.trigger('series on inut');
+        this.isUserConnectedHere$ = combineLatest([
+            this.userEmail$,
+            this.leaderboard$
+        ]).pipe(
+            map(([userEmail, leaderboard]: [string | undefined, LeaderboardRow[]]) =>
+                userEmail === undefined
+                    ? false
+                    : leaderboard.some(
+                        (leaderboardRow: LeaderboardRow) => leaderboardRow.email === userEmail
+                    )
+            )
+        );
+
         this.trigger$.next();
     }
 

@@ -1,9 +1,9 @@
 import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LeaderboardRow } from '../../../../../series/models/overall-ranking.interface';
-import { SeriesS, SeriesMetadata } from '../../../../../shared/models/series.interface';
+import { SeriesMetadata, SeriesS } from '../../../../../shared/models/series.interface';
 import { SeriesService } from '../../../../../core/services/series.service';
 import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SeriesTournament } from '../../../../../series/models/combined-ranking.interface';
 import { SeriesApiService } from '../../../../../core/services/api/series-api.service';
 import { FetchService } from '../../../../../core/services/fetch.service';
@@ -39,6 +39,7 @@ export class LeaderboardInfoComponent implements OnChanges {
             const pw = this.seriesMetadata.password;
 
             this.series$ = this.fetchService.getFetchTrigger$().pipe(
+                tap(() => console.log('get', id, pw)),
                 switchMap(() => this.seriesApiService.getWithDetailsByPw$(id, pw)),
                 shareReplay(1)
             );

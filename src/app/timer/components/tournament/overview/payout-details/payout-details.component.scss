@@ -13,7 +13,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: green;
+    color: #85BB65;
 
     span {
         color: $primary;
@@ -70,9 +70,14 @@ th, td {
 .fa-handshake {
     color: #555;
     font-size: 18px;
-    margin-left: 12px;
+    margin-left: 20px;
+    margin-right: 12px;
 }
 
 .fa-magic {
     font-size: 12px;
+}
+
+.fe-edit {
+    font-size: 14px !important;
 }

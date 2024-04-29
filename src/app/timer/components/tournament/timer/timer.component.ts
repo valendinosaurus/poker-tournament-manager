@@ -99,6 +99,8 @@ export class TimerComponent implements OnInit, OnChanges {
                     }
                 }
             }
+        } else {
+            console.log('CONFIG IS UNDEFINED');
         }
     }
 

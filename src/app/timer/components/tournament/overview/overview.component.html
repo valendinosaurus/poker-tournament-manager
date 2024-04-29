@@ -1,6 +1,6 @@
 <div class="overview">
     <div class="overview-header">
-        <span style="font-weight: bold">{{ today | date:'dd.MM.YYYY' }}</span>
+        <span style="font-weight: bold">{{ today | date:'dd.MM.YYYY HH:mm' }}</span>
         <span style="font-weight: bold">{{ tournament.name }}</span>
     </div>
 
@@ -52,10 +52,24 @@
                             </ng-template>
                         </div>
 
-                        <div class="keen-slider__slide number-slide4 slide-stats">
-                            <app-leaderboard-info
-                                [seriesMetadata]="seriesMetadata"
-                            ></app-leaderboard-info>
+                        <div
+                            class="keen-slider__slide number-slide4 slide-stats"
+                        >
+                            @if (isTournamentPartOfSeries()) {
+                                <app-leaderboard-info
+                                    [seriesMetadata]="seriesMetadata"
+                                ></app-leaderboard-info>
+                            } @else {
+                                <app-player-details
+                                    [players]="tournament.players"
+                                    [entries]="tournament.entries"
+                                    [finishes]="tournament.finishes"
+                                    [eliminations]="tournament.eliminations"
+                                    [trigger]="scrollTrigger$ | async"
+                                    [tId]="tournament.id"
+                                    [clientId]="clientId"
+                                ></app-player-details>
+                            }
                         </div>
                     </div>
 
@@ -78,7 +92,7 @@
             <div class="clock">
                 <span class="titles">
                     <div class="flex">
-                        <i class="fa fa-clock-o"></i>
+                        <i class="fa fa-clock"></i>
                         <h2 class="now">
                             {{ today | date:'HH:mm' }}
                         </h2>
@@ -89,11 +103,11 @@
                     {{ currentLevelTimeLeft | time }}
                 </h1>
 
-                <div *ngIf="!running && !finished" class="popup">
+                <div *ngIf="!running && !finished" class="popup paused">
                     PAUSED
                 </div>
 
-                <div *ngIf="finished" class="popup">
+                <div *ngIf="finished" class="popup finished">
                     FINISHED
                 </div>
 

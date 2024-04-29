@@ -51,6 +51,7 @@ export class MenuDialogComponent implements OnInit {
 
     autoSlide = true;
     isFullscreen = false;
+    isBigCursor = false;
     elem: HTMLElement;
 
     data: {
@@ -295,6 +296,16 @@ export class MenuDialogComponent implements OnInit {
         this.showCondensedBlinds = !this.showCondensedBlinds;
         this.toggleShowCondensedBlinds.emit(this.showCondensedBlinds);
         this.localStorageService.saveShowCondensedBlinds(this.showCondensedBlinds);
+    }
+
+    onToggleIsBigCursor(): void {
+        this.isBigCursor = !this.isBigCursor;
+
+        if (this.isBigCursor) {
+            document.querySelector('body')?.classList.add('big-cursor');
+        } else {
+            document.querySelector('body')?.classList.remove('big-cursor');
+        }
     }
 
     applySettings(model: TournamentSettings): void {

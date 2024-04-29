@@ -59,7 +59,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        color: green;
+        color: #85BB65;
 
         small {
             font-size: 24px;
@@ -141,7 +141,7 @@
 
     &:hover {
         opacity: 1;
-        border-color: rgba(green, 0.6);
+        border-color: rgba(#85BB65, 0.6);
     }
 }
 

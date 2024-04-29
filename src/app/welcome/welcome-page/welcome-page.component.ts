@@ -19,6 +19,7 @@ import { UserImageRoundComponent } from '../../shared/components/user-image-roun
 import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { AuthUtilService } from '../../core/services/auth-util.service';
+import { IPayPalConfig, NgxPayPalModule } from 'ngx-paypal';
 
 @Component({
     selector: 'app-welcome-page',
@@ -34,7 +35,8 @@ import { AuthUtilService } from '../../core/services/auth-util.service';
         MatButtonModule,
         ConnectionRequestComponent,
         AsyncPipe,
-        JsonPipe
+        JsonPipe,
+        NgxPayPalModule
     ]
 })
 export class WelcomePageComponent implements OnInit {
@@ -56,6 +58,8 @@ export class WelcomePageComponent implements OnInit {
     mappedUsers$: Observable<Player[]>;
 
     userImageSize = window.innerWidth >= 800 ? 64 : 42;
+
+    payPalConfig?: IPayPalConfig;
 
     private fetchService: FetchService = inject(FetchService);
     private dialog: MatDialog = inject(MatDialog);
@@ -156,6 +160,32 @@ export class WelcomePageComponent implements OnInit {
 
         this.fetchService.trigger();
 
+        this.initPayPalConfig();
+    }
+
+    initPayPalConfig(): void {
+        // this.payPalConfig = {
+        //     clientId: 'AUKYyACZ9tC771fEzBPP6qCVS0PiBRsSTzb4g0hpj2xlGfKif7r9jQwh3GFvd04BLBGS0SWT36Y5qVUT',
+        //     style: {
+        //         shape: 'pill',
+        //         color: 'blue',
+        //         layout: 'vertical',
+        //         label: 'subscribe'
+        //     },
+        //     createSubscription: (actions: any): ICreateSubscriptionRequest => actions.subscription.create({
+        //         /* Creates the subscription */
+        //         plan_id: 'P-3PC84867AD859235UMYWW3PI'
+        //     }),
+        //     onApprove: (data: any, actions: any) => {
+        //         console.log('onApprove - transaction was approved, but not authorized', data, actions);
+        //         actions.order.get().then((details: any) => {
+        //             console.log('onApprove - you can get full order details inside onApprove: ', details);
+        //         });
+        //     },
+        //     onCancel: (data: any): void => {
+        //         console.log('onCancel - ', data);
+        //     }
+        // };
     }
 
     connectToOtherUser(): void {

@@ -49,13 +49,9 @@
     }
 }
 
-.fa-plus-circle:not(.fa-ib) {
+.fa-plus-circle:not(.fa-ib, .small) {
     color: $primaryDark;
     cursor: pointer;
-
-    &:hover {
-        opacity: 0.7;
-    }
 }
 
 span.relative-icon {

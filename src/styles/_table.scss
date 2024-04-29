@@ -84,3 +84,9 @@ mat-tab-body table td {
     max-height: 40vh;
     overflow-y: auto;
 }
+
+@media (max-width: 800px) {
+    table tr td, table tr th {
+        padding: 0 8px;
+    }
+}

@@ -8,12 +8,13 @@
 
         <button
             *ngIf="!isSimpleTournament"
-            class="round"
+            mat-flat-button
+            class="ml-0-5 round"
             matTooltip="Add Blind Level"
             (click)="addBlind.emit()"
         >
             <i
-                class="fa fa-plus-circle"
+                class="fa fa-plus-circle small"
             ></i>
         </button>
 
@@ -78,7 +79,7 @@
 
                                 <ng-template #pause>
                                     <div class="talign-center pause">
-                                        PAUSE - {{ level.isChipUp ? 'CHIP UP' : ''}}
+                                        PAUSE - {{ level.isChipUp ? 'CHIP UP' : '' }}
                                         <ng-container *ngIf="level.endsRebuy">
                                             (ENDS REBUY)
                                         </ng-container>

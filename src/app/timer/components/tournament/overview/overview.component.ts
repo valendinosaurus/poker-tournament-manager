@@ -9,6 +9,7 @@ import {
     OnChanges,
     OnInit,
     QueryList,
+    signal,
     SimpleChanges,
     ViewChild,
     ViewChildren
@@ -68,6 +69,8 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     @Input() tournament: Tournament;
     @Input() isSimpleTournament: boolean;
     @Input() seriesMetadata: SeriesMetadata | null;
+
+    isTournamentPartOfSeries = signal(false);
 
     levels: BlindLevel[];
 
@@ -136,6 +139,8 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        this.isTournamentPartOfSeries.set(this.seriesMetadata !== null);
+
         if (this.tournament && this.tournament.structure.length > 0) {
             this.levels = this.tournament.structure;
 

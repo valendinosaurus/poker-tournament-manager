@@ -65,3 +65,23 @@ th, td {
     font-size: 18px;
     margin-left: 10px;
 }
+
+@media (max-width: 800px) {
+    table * {
+        font-size: 14px;
+    }
+
+    table app-user-image-round {
+        display: none;
+    }
+
+    .series-page {
+        padding: 10px;
+    }
+
+    *:not(.leaderboard) {
+        table tr td:first-child {
+            width: 84px;
+        }
+    }
+}

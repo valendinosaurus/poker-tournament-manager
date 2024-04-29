@@ -216,26 +216,6 @@ th, td {
     border: solid 1px #555;
 }
 
-@media (max-width: 800px) {
-    table * {
-        font-size: 14px;
-    }
-
-    table app-user-image-round {
-        display: none;
-    }
-
-    .series-page {
-        padding: 10px;
-    }
-
-    *:not(.leaderboard) {
-        table tr td:first-child {
-            width: 84px;
-        }
-    }
-}
-
 .tournament .header div span {
     box-sizing: border-box;
     border: solid 1px darkslategray;
@@ -296,7 +276,7 @@ th, td {
 }
 
 .green {
-    color: green !important;
+    color: #85BB65 !important;
 }
 
 .li-wide {

@@ -91,10 +91,6 @@ span.small {
     color: rgba($primary, 0.5);
 }
 
-.stats-container h4 {
-    margin-bottom: 0;
-}
-
 .text-align-right {
     text-align: right;
 }
@@ -104,7 +100,7 @@ span.small {
 }
 
 .green {
-    color: green;
+    color: #85BB65;
 }
 
 .gray {
@@ -117,6 +113,10 @@ h4 .fa {
 
 h4 .fa.adjusted {
     font-size: 18px !important;
+}
+
+h4 .fa.small {
+    font-size: 14px !important;
 }
 
 h4 .fa-exclamation-triangle {

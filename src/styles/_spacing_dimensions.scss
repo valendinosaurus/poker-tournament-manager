@@ -10,6 +10,24 @@
     width: 100%;
     padding: 24px;
     box-sizing: border-box;
+    border-radius: 24px;
+}
+
+.stats-container > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    background: rgba(#006dc7, 0.05);
+    padding: 8px 36px;
+    box-sizing: border-box;
+    border-radius: 24px;
+}
+
+.stats-container h4 {
+    margin: 0;
 }
 
 .overflow-y-auto {
@@ -34,6 +52,10 @@
 
 .justify-between {
     justify-content: space-between;
+}
+
+.justify-end {
+    justify-content: flex-end;
 }
 
 .align-center {

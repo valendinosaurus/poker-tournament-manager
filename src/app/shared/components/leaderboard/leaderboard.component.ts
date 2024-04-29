@@ -19,7 +19,7 @@ export class LeaderboardComponent {
 
     @Input() leaderboard: LeaderboardRow[] | null;
     @Input() series: Series | SeriesS | null;
-    @Input() myEmail: string | undefined | null;
+    @Input() userEmail: string | undefined | null;
     @Input() full = true;
 
     private dialog: MatDialog = inject(MatDialog);

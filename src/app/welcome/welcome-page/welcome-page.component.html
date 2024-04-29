@@ -40,7 +40,7 @@
 
         <ng-container *ngIf="myPlayers$ | async as myPlayers">
             <ng-container *ngIf="myPlayers.length > 0">
-                <h2>Players connected to yourself</h2>
+                <h2>You in other user's tournaments</h2>
 
                 <div class="flex column-mobile">
                     <ng-container *ngFor="let player of myPlayers">
@@ -68,7 +68,7 @@
 
         <ng-container *ngIf="mappedUsers$ | async as mappedUsers">
             <ng-container *ngIf="mappedUsers.length > 0">
-                <h2>Players connected to other users</h2>
+                <h2>Other users in your tournaments</h2>
 
                 <div class="flex column-mobile">
                     <ng-container *ngFor="let player of mappedUsers">
@@ -99,6 +99,7 @@
 
             <button
                 mat-raised-button
+                color="accent"
                 (click)="connectToOtherUser()"
             >
                 CONNECT NOW
@@ -106,7 +107,6 @@
         </div>
 
         <hr>
-
 
         <div class="grid grid-2">
             <div>
@@ -185,6 +185,17 @@
                 </ng-container>
             </div>
         </div>
+
+        <!--        <div class="grid grid-2">-->
+        <!--            <div>-->
+        <!--                <h1>Do you want to unlock all features? Go PRO</h1>-->
+        <!--            </div>-->
+
+        <!--            <div>-->
+
+        <!--                <ngx-paypal [config]="payPalConfig"></ngx-paypal>-->
+        <!--            </div>-->
+        <!--        </div>-->
     </div>
 </ng-container>
 

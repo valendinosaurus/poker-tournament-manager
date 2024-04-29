@@ -3,6 +3,7 @@ import { BlindLevel } from '../../../../../shared/models/blind-level.interface';
 import { BlindLevelTextPipe } from '../../../../../shared/pipes/blind-level-text.pipe';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-blind-level-overview',
@@ -15,6 +16,7 @@ import { NgIf, NgFor, DecimalPipe } from '@angular/common';
         NgFor,
         DecimalPipe,
         BlindLevelTextPipe,
+        MatButtonModule,
     ],
 })
 export class BlindLevelOverviewComponent implements OnChanges {
