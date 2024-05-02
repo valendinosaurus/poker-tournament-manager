@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { Finish } from '../../../shared/models/finish.interface';
 import { ServerResponse } from '../../../shared/models/server-response';
+import { delay } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,7 @@ export class FinishApiService {
         return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(player)
-        );
+        ).pipe(delay(2000));
     }
 
     delete$(tId: number, pId: number): Observable<any> {

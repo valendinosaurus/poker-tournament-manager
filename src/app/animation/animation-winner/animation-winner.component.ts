@@ -36,7 +36,6 @@ export class AnimationWinnerComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (!!changes['trigger']?.currentValue) {
-            console.log('trgiger');
             this.isAnimating.set(true);
             anime.timeline({loop: false})
                 .add({

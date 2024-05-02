@@ -4,37 +4,38 @@
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
 >
-    <ng-container *ngIf="!isLoading; else loading;">
-        <formly-form
-            [form]="form"
-            [fields]="fields"
-            [options]="options"
-            [model]="model"
-        ></formly-form>
+    <formly-form
+        [form]="form"
+        [fields]="fields"
+        [options]="options"
+        [model]="model"
+    ></formly-form>
 
-        <button
-            mat-raised-button color="primary"
-            type="submit"
-            [disabled]="!form.valid || isLoadingAdd"
-        >
-            <ng-container *ngIf="!isLoadingAdd">
-                LEAVE TOURNAMENT
-            </ng-container>
-            <ng-container *ngIf="isLoadingAdd">
-                <i class="fa fa-spinner fa-spin"></i>
-            </ng-container>
-        </button>
-    </ng-container>
+    <h1>is {{ isLoading }}</h1>
 
-    <ng-template #loading>
-        <div class="flex justify-center align-center">
-            <i class="fa fa-spinner fa-spin" style="font-size: 64px"></i>
+    <button
+        mat-raised-button color="primary"
+        type="submit"
+        [disabled]="!form.valid || isLoadingAdd"
+    >
+        <ng-container *ngIf="!isLoadingAdd">
+            LEAVE TOURNAMENT
+        </ng-container>
+        <ng-container *ngIf="isLoadingAdd">
+            <i class="fa fa-spinner fa-spin"></i>
+        </ng-container>
+    </button>
+
+    @if (isLoading) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
         </div>
-    </ng-template>
+    }
+
 </form>
 
 
-<h3>Seat Opens</h3>
+<h3>Eliminated players</h3>
 
 <ng-container *ngIf="conductedSeatOpens && conductedSeatOpens.length > 0; else noSeatOpens;">
     <div class="scrollable-dialog-table-wrapper">

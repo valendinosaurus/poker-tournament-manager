@@ -7,24 +7,21 @@
         *ngIf="user$ | async as user"
         class="page-with-header"
     >
-
-        AUTH{{ isAuthenticated$ | async }}
-
         <div class="flex justify-center">
-        <span class="desktop-only">
-            <app-user-image-round
-                [imageUrl]="userImage$ | async"
-                [size]="200"
-                border="b-black"
-            ></app-user-image-round>
-        </span>
+            <span class="desktop-only">
+                <app-user-image-round
+                        [imageUrl]="userImage$ | async"
+                        [size]="200"
+                        border="b-black"
+                ></app-user-image-round>
+            </span>
             <span class="mobile-only">
-            <app-user-image-round
-                [imageUrl]="userImage$ | async"
-                [size]="100"
-                border="b-black"
-            ></app-user-image-round>
-        </span>
+                <app-user-image-round
+                        [imageUrl]="userImage$ | async"
+                        [size]="100"
+                        border="b-black"
+                ></app-user-image-round>
+            </span>
         </div>
 
         <div class="text-align-center">

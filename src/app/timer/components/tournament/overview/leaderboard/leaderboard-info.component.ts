@@ -39,7 +39,6 @@ export class LeaderboardInfoComponent implements OnChanges {
             const pw = this.seriesMetadata.password;
 
             this.series$ = this.fetchService.getFetchTrigger$().pipe(
-                tap(() => console.log('get', id, pw)),
                 switchMap(() => this.seriesApiService.getWithDetailsByPw$(id, pw)),
                 shareReplay(1)
             );

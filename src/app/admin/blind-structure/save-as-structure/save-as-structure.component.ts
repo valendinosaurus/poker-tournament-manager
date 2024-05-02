@@ -51,10 +51,6 @@ export class SaveAsStructureComponent implements OnInit {
     }
 
     onSubmit(): void {
-        console.log('saving');
-        console.log('name', this.model.name());
-        console.log(this.data.structure);
-
         this.blindStructureApiService.post$({
             id: undefined,
             name: this.model.name(),

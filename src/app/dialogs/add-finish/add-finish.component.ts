@@ -10,7 +10,7 @@ import { RankingService } from '../../core/services/util/ranking.service';
 import { SeriesMetadata } from '../../shared/models/series.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { Finish } from '../../shared/models/finish.interface';
-import { defer, iif, of } from 'rxjs';
+import { defer, iif, Observable, of } from 'rxjs';
 import { FetchService } from '../../core/services/fetch.service';
 import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
@@ -25,27 +25,19 @@ import { EliminationApiService } from '../../core/services/api/elimination-api.s
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { AddFinishModel } from './add-finish-model.interface';
+import { ServerResponse } from '../../shared/models/server-response';
 
 @Component({
     selector: 'app-add-finish',
     templateUrl: './add-finish.component.html',
     styleUrls: ['./add-finish.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, AsyncPipe]
 })
 export class AddFinishComponent implements OnInit {
-
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-
-    model: {
-        playerId: number | undefined,
-        tournamentId: number,
-        eliminatedBy: number | undefined,
-        showEliminatedBy: boolean
-    };
 
     data: {
         tournament: Tournament,
@@ -53,7 +45,25 @@ export class AddFinishComponent implements OnInit {
         clientId: number
     } = inject(MAT_DIALOG_DATA);
 
+    form = new FormGroup({});
     fields: FormlyFieldConfig[];
+    options: FormlyFormOptions = {};
+    model: AddFinishModel;
+
+    allPlayers: { label: string, value: number }[] = [];
+    eliminators: { label: string, value: number }[] = [];
+    eligibleForSeatOpen: Player[] = [];
+    conductedSeatOpens: ConductedFinish[];
+    conductedEliminations: ConductedElimination[];
+    tournament: Tournament;
+
+    isLoading: boolean;
+    isLoadingAdd = false;
+    isLoadingRemove = false;
+
+    rank = 0;
+    price = 0;
+    winnerPrice = 0;
 
     private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
@@ -70,46 +80,10 @@ export class AddFinishComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
 
-    allPlayers: { label: string, value: number }[];
-    eliminators: { label: string, value: number }[];
-    eligibleForSeatOpen: Player[];
-    conductedSeatOpens: ConductedFinish[];
-    conductedEliminations: ConductedElimination[];
-    tournament: Tournament;
-
-    isLoading = false;
-    isLoadingAdd = false;
-    isLoadingRemove = false;
-
-    rank = 0;
-    price = 0;
-    winnerPrice = 0;
-
     ngOnInit(): void {
-        this.fetchService.getFetchTrigger$().pipe(
-            tap(() => this.isLoading = true),
-            takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournament.id)),
-            tap((tournament: Tournament) => {
-                this.tournament = tournament;
-                this.eligibleForSeatOpen = this.tournamentService.getPlayersEligibleForSeatOpen(tournament);
-                this.allPlayers = this.eligibleForSeatOpen.map(
-                    player => ({
-                        label: player.name,
-                        value: player.id
-                    })
-                );
-
-                this.conductedSeatOpens = this.tournamentService.getConductedSeatOpens(tournament);
-                this.conductedEliminations = this.tournamentService.getConductedEliminations(tournament);
-
-                this.initModel();
-                this.initFields();
-                this.calcRanksAndPrices(tournament);
-                this.isLoading = false;
-            })
-        ).subscribe();
-
+        this.initModel();
+        this.initFields();
+        this.initPlayerFetchSubscription();
         this.fetchService.trigger();
     }
 
@@ -127,19 +101,59 @@ export class AddFinishComponent implements OnInit {
 
         this.fields = [
             {
-                ...this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers),
+                ...this.formlyFieldService.getDefaultSelectField(
+                    'playerId',
+                    'Player',
+                    true,
+                    this.allPlayers,
+                    this.allPlayers.length === 0
+                ),
                 expressions: {
                     change: () => this.eliminators = [...this.allPlayers.filter(p => p.value !== this.model.playerId)]
                 }
             },
             {
-                ...this.formlyFieldService.getDefaultSelectField('eliminatedBy', 'Eliminator', true, this.eliminators),
+                ...this.formlyFieldService.getDefaultSelectField(
+                    'eliminatedBy',
+                    'Eliminator',
+                    true,
+                    this.eliminators,
+                    this.allPlayers.length === 0
+                ),
                 expressions: {
                     'props.options': () => this.eliminators,
                     'props.disabled': () => this.model.playerId === undefined
                 }
             }
         ];
+    }
+
+    private initPlayerFetchSubscription(): void {
+        this.fetchService.getFetchTrigger$().pipe(
+            tap(() => this.isLoading = true),
+            takeUntilDestroyed(this.destroyRef),
+            switchMap(() => this.tournamentApiService.get$(this.data.tournament.id)),
+            tap((tournament: Tournament | null) => {
+                if (tournament) {
+                    this.tournament = tournament;
+                    this.eligibleForSeatOpen = this.tournamentService.getPlayersEligibleForSeatOpen(tournament);
+                    this.allPlayers = this.eligibleForSeatOpen.map(
+                        player => ({
+                            label: player.name,
+                            value: player.id
+                        })
+                    );
+
+                    this.conductedSeatOpens = this.tournamentService.getConductedSeatOpens(tournament);
+                    this.conductedEliminations = this.tournamentService.getConductedEliminations(tournament);
+
+                    this.initModel();
+                    this.initFields();
+                    this.calcRanksAndPrices(tournament);
+                }
+            }),
+            tap(() => this.isLoading = false),
+        ).subscribe();
     }
 
     private calcRanksAndPrices(tournament: Tournament): void {
@@ -175,7 +189,7 @@ export class AddFinishComponent implements OnInit {
         this.conductedSeatOpens = this.tournamentService.getConductedSeatOpens(tournament);
     }
 
-    onSubmit(model: { playerId: number | undefined, tournamentId: number, eliminatedBy: number | undefined }): void {
+    onSubmit(model: AddFinishModel): void {
         const placesPaid = this.rankingService.getPayoutById(this.tournament.payout).length;
         const isBubble = this.rank - placesPaid === 1;
         this.isLoadingAdd = true;
@@ -191,77 +205,23 @@ export class AddFinishComponent implements OnInit {
                 take(1),
                 catchError(() => {
                     this.notificationService.error('Error Seat Open');
-                    this.isLoadingAdd = false;
+                    this.isLoadingAdd = true;
                     return of(null);
                 }),
-                tap(() => {
-                    this.tournament.finishes.push({
-                        playerId: model.playerId ?? -1,
-                        tournamentId: model.tournamentId,
-                        price: this.price,
-                        rank: this.rank,
-                        timestamp: -1,
-                    });
-                    const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
-                    this.notificationService.success(`Seat Open - ${playerName}`);
-                }),
-                switchMap(() => {
-                    const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
-                    return this.tEventApiService.post$(
-                        this.tournament.id,
-                        `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament!`,
-                        TEventType.SEAT_OPEN
-                    );
-                }),
+                tap(() => this.pushToLocalTournament(model)),
+                switchMap(() => this.postSeatOpenTEvent$(model)),
                 switchMap(() => iif(
                     () => !!model.eliminatedBy,
                     defer(() =>
                         model.playerId && model.eliminatedBy
-                            ? this.eliminationApiService.post$({
-                                eliminator: model.eliminatedBy,
-                                eliminated: model.playerId,
-                                tournamentId: model.tournamentId,
-                                timestamp: -1,
-                                eId: `F-${model.tournamentId}-${model.playerId}`
-                            }).pipe(
-                                tap(() => {
-                                    const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
-                                    const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
-                                    this.notificationService.success(`${eliminator} kicked out ${eliminated}`);
-                                }),
-                                switchMap(() => {
-                                    const eliminated = this.allPlayers.filter(e => e.value === model.playerId)[0].label;
-                                    const eliminator = this.allPlayers.filter(e => e.value === model.eliminatedBy)[0].label;
-                                    return this.tEventApiService.post$(
-                                        this.tournament.id,
-                                        `<strong>${eliminated}</strong> was kicked out by <strong>${eliminator}</strong>!`,
-                                        TEventType.ELIMINATION
-                                    );
-                                }),
-                                catchError(() => {
-                                    this.notificationService.error('Error Elimination');
-                                    this.isLoadingAdd = false;
-                                    return of(null);
-                                }),
-                            )
+                            ? this.postElimination$(model.eliminatedBy, model.playerId, model.tournamentId)
                             : of(null)
                     ),
                     of(null)
                 )),
                 switchMap(() => iif(
                     () => this.rank === 2,
-                    defer(() => this.finishApiService.post$(this.getRemainingFinish()).pipe(
-                        switchMap(() => {
-                            const winner: Finish = this.getRemainingFinish();
-                            const name = this.allPlayers.filter(e => e.value === winner.playerId)[0].label;
-
-                            return this.tEventApiService.post$(
-                                this.tournament.id,
-                                `<strong>FINISHED! ${name}</strong> wins the tournament and takes home ${winner.price}.-! Congratulations!`,
-                                TEventType.FINISH
-                            );
-                        }),
-                    )),
+                    defer(() => this.postRemainingFinish$()),
                     of(null)
                 )),
                 tap(() => this.fetchService.trigger()),
@@ -282,9 +242,84 @@ export class AddFinishComponent implements OnInit {
                         });
                     }
                     this.isLoadingAdd = false;
-                })
+                }),
             ).subscribe();
         }
+    }
+
+    private pushToLocalTournament(model: AddFinishModel): void {
+        this.tournament.finishes.push({
+            playerId: model.playerId ?? -1,
+            tournamentId: model.tournamentId,
+            price: this.price,
+            rank: this.rank,
+            timestamp: -1,
+        });
+
+        const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
+        this.notificationService.success(`Seat Open - ${playerName}`);
+    }
+
+    private postSeatOpenTEvent$(model: AddFinishModel): Observable<ServerResponse | null> {
+        const playerName = this.data.tournament.players.filter(e => e.id === model.playerId)[0].name;
+
+        return this.tEventApiService.post$(
+            this.tournament.id,
+            `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament!`,
+            TEventType.SEAT_OPEN
+        );
+    }
+
+    private postElimination$(eById: number, pId: number, tId: number): Observable<ServerResponse | null> {
+        return this.eliminationApiService.post$({
+            eliminator: eById,
+            eliminated: pId,
+            tournamentId: tId,
+            timestamp: -1,
+            eId: `F-${tId}-${pId}`
+        }).pipe(
+            tap(() => {
+                const {eliminated, eliminator} = this.getInvolvedPlayerNames(pId, eById);
+
+                this.notificationService.success(`${eliminator} kicked out ${eliminated}`);
+            }),
+            switchMap(() => {
+                const {eliminated, eliminator} = this.getInvolvedPlayerNames(pId, eById);
+
+                return this.tEventApiService.post$(
+                    this.tournament.id,
+                    `<strong>${eliminated}</strong> was kicked out by <strong>${eliminator}</strong>!`,
+                    TEventType.ELIMINATION
+                );
+            }),
+            catchError(() => {
+                this.notificationService.error('Error Elimination');
+                this.isLoadingAdd = false;
+                return of(null);
+            })
+        );
+    }
+
+    private getInvolvedPlayerNames(pId: number, eById: number): { eliminated: string, eliminator: string } {
+        return {
+            eliminated: this.allPlayers.filter(e => e.value === pId)[0].label,
+            eliminator: this.allPlayers.filter(e => e.value === eById)[0].label
+        };
+    }
+
+    private postRemainingFinish$(): Observable<any> {
+        return this.finishApiService.post$(this.getRemainingFinish()).pipe(
+            switchMap(() => {
+                const winner: Finish = this.getRemainingFinish();
+                const name = this.allPlayers.filter(e => e.value === winner.playerId)[0].label;
+
+                return this.tEventApiService.post$(
+                    this.tournament.id,
+                    `<strong>FINISHED! ${name}</strong> wins the tournament and takes home ${winner.price}.-! Congratulations!`,
+                    TEventType.FINISH
+                );
+            }),
+        );
     }
 
     private getRemainingFinish(): Finish {

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { AdminTournament, Tournament, TournamentModel } from '../../../shared/models/tournament.interface';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { delay, filter, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../shared/models/series.interface';
 import { TournamentSettings } from '../../../shared/models/tournament-settings.interface';
 import { Router } from '@angular/router';
@@ -39,6 +39,7 @@ export class TournamentApiService {
 
     get$(id: number): Observable<Tournament> {
         return this.authUtilService.getSub$().pipe(
+            delay(800),
             switchMap((sub: string) => this.http.get<Tournament | null>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ).pipe(

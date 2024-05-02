@@ -119,9 +119,7 @@ export class AddBlindsComponent implements OnInit {
     }
 
     onSubmit(model: { blindIds: number[] | undefined, parentId: number }): void {
-        console.log('submit');
         if (model.blindIds && model.parentId && model.parentId >= 0) {
-            console.log('in if');
             const base = this.data.tournament?.structure ?? this.data.structure?.structure ?? [];
             const positions = [];
             const startIndex = base.length * 2;

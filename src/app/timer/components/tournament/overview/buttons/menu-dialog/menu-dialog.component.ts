@@ -326,6 +326,7 @@ export class MenuDialogComponent implements OnInit {
                 tId: this.data.tournament.id,
                 clientId: this.data.clientId
             })),
+            tap(() => this.closeMenu())
         ).subscribe();
     }
 
