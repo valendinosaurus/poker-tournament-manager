@@ -7,7 +7,7 @@ import { Observable, ReplaySubject } from 'rxjs';
 export class FetchService {
 
     private readonly fetchTrigger$ = new ReplaySubject<void>();
-
+    
     getFetchTrigger$(): Observable<void> {
         return this.fetchTrigger$.asObservable();
     }

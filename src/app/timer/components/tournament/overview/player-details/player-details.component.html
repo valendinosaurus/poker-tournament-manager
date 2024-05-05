@@ -3,16 +3,16 @@
         Player Details
     </h3>
 
-    <div class="overflow-y-auto">
+    <div class="overflow-y-auto background-panel">
         <div id="topp"></div>
 
         <table>
             <tr>
-                <th>Name</th>
-                <th class="center">Entries</th>
-                <th class="center">Rebuys</th>
-                <th class="center">Addons</th>
-                <th class="center">Eliminations</th>
+                <th><small>Name</small></th>
+                <th class="center"><small>Entries</small></th>
+                <th class="center"><small>Rebuys</small></th>
+                <th class="center"><small>Addons</small></th>
+                <th class="center"><small>Eliminations</small></th>
             </tr>
             <ng-container *ngFor="let e of combination">
                 <tr [class.finished]="e.isFinished">

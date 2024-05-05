@@ -3,16 +3,16 @@
         Ranking
     </h3>
 
-    <div class="overflow-y-auto">
+    <div class="overflow-y-auto background-panel">
         <div id="topr"></div>
         <table>
             <tr>
-                <th>Name</th>
-                <th class="center">Rank</th>
-                <th class="center">Re-Entries</th>
-                <th class="center">Rebuys</th>
-                <th class="center">Addons</th>
-                <th class="center">Price</th>
+                <th><small>Name</small></th>
+                <th class="center"><small>Rank</small></th>
+                <!--                <th class="center"><small>Re-Entries</small></th>-->
+                <th class="center"><small>Rebuys</small></th>
+                <th class="center"><small>Addons</small></th>
+                <th class="center"><small>Price</small></th>
                 <th
                     *ngIf="formula"
                     class="center"
@@ -33,9 +33,9 @@
                     <td class="center">
                         {{ e.rank | number }}
                     </td>
-                    <td class="center">
-                        -
-                    </td>
+                    <!--                    <td class="center">-->
+                    <!--                        - -->
+                    <!--                    </td>-->
                     <td class="center">
                         -
                     </td>
@@ -66,9 +66,10 @@
                     <td class="center">
                         {{ e.rank | number }}
                     </td>
-                    <td class="center">
-                        <app-bullets [number]="e.reEntries"></app-bullets>
-                    </td>
+                    <!-- TODO condiiton -->
+                    <!--                    <td class="center">-->
+                    <!--                        <app-bullets [number]="e.reEntries"></app-bullets>-->
+                    <!--                    </td>-->
                     <td class="center">
                         <app-bullets [number]="e.rebuys"></app-bullets>
                     </td>

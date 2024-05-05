@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ import { LocalStorageService } from '../../core/services/util/local-storage.serv
 import { Finish } from '../../shared/models/finish.interface';
 import { defer, iif, Observable, of } from 'rxjs';
 import { FetchService } from '../../core/services/fetch.service';
-import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { NotificationService } from '../../core/services/notification.service';
 import { ConductedFinish } from '../../shared/models/util/conducted-finish.interface';
@@ -27,7 +26,7 @@ import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { AddFinishModel } from './add-finish-model.interface';
+import { AddFinishModel, AddFinishModelS } from './add-finish-model.interface';
 import { ServerResponse } from '../../shared/models/server-response';
 
 @Component({
@@ -49,6 +48,8 @@ export class AddFinishComponent implements OnInit {
     fields: FormlyFieldConfig[];
     options: FormlyFormOptions = {};
     model: AddFinishModel;
+
+    modelS: AddFinishModelS;
 
     allPlayers: { label: string, value: number }[] = [];
     eliminators: { label: string, value: number }[] = [];
@@ -74,7 +75,6 @@ export class AddFinishComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
     private destroyRef: DestroyRef = inject(DestroyRef);
@@ -91,8 +91,13 @@ export class AddFinishComponent implements OnInit {
         this.model = {
             playerId: undefined,
             tournamentId: this.data.tournament.id,
-            eliminatedBy: -1,
-            showEliminatedBy: false
+            eliminatedBy: -1
+        };
+
+        this.modelS = {
+            playerId: signal(undefined),
+            eliminatedBy: signal(undefined),
+            tournamentId: signal(this.data.tournament.id)
         };
     }
 
@@ -129,6 +134,10 @@ export class AddFinishComponent implements OnInit {
     }
 
     private initPlayerFetchSubscription(): void {
+        const playersInTournament$ = this.tournamentApiService.get$(this.data.tournament.id).pipe(
+
+        );
+
         this.fetchService.getFetchTrigger$().pipe(
             tap(() => this.isLoading = true),
             takeUntilDestroyed(this.destroyRef),
@@ -225,24 +234,8 @@ export class AddFinishComponent implements OnInit {
                     of(null)
                 )),
                 tap(() => this.fetchService.trigger()),
-                switchMap(() => this.eventApiService.post$({
-                    id: null,
-                    tId: this.data.tournament.id,
-                    clientId: this.data.clientId
-                })),
-                tap((result: any) => {
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            name: this.data.tournament.players.find(e => e.id === model.playerId)?.name,
-                            price: this.price,
-                            isBubble: isBubble,
-                            rank: this.rank,
-                            winnerName: this.rank === 2 ? this.eligibleForSeatOpen.find(e => e.id !== model.playerId)?.name : '',
-                            winnerPrice: this.winnerPrice
-                        });
-                    }
-                    this.isLoadingAdd = false;
-                }),
+                this.tournamentService.postActionEvent$,
+                tap(() => this.closeDialogAfterSeatOpen(model, isBubble)),
             ).subscribe();
         }
     }
@@ -362,6 +355,20 @@ export class AddFinishComponent implements OnInit {
         };
     }
 
+    private closeDialogAfterSeatOpen(model: AddFinishModel, isBubble: boolean): void {
+        if (this.dialogRef) {
+            this.dialogRef.close({
+                name: this.data.tournament.players.find(e => e.id === model.playerId)?.name,
+                price: this.price,
+                isBubble: isBubble,
+                rank: this.rank,
+                winnerName: this.rank === 2 ? this.eligibleForSeatOpen.find(e => e.id !== model.playerId)?.name : '',
+                winnerPrice: this.winnerPrice
+            });
+        }
+        this.isLoadingAdd = false;
+    }
+
     removeSeatOpen(pId: number, playerName: string): void {
         this.isLoadingRemove = true;
 
@@ -417,11 +424,7 @@ export class AddFinishComponent implements OnInit {
                                 this.fetchService.trigger();
                                 this.isLoadingRemove = false;
                             }),
-                            switchMap(() => this.eventApiService.post$({
-                                id: null,
-                                tId: this.data.tournament.id,
-                                clientId: this.data.clientId
-                            })),
+                            this.tournamentService.postActionEvent$
                         )
                     ),
                     defer(() => of(null))

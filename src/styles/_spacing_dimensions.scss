@@ -26,8 +26,19 @@
     border-radius: 24px;
 }
 
+.stats-container.w-100 > div {
+    width: 100% !important;
+}
+
 .stats-container h4 {
     margin: 0;
+}
+
+.background-panel {
+    background: rgba(#006dc7, 0.05);
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border-radius: 24px;
 }
 
 .overflow-y-auto {
@@ -78,6 +89,10 @@
 .w-5 {
     width: 5%;
     flex: 0 0 5%;
+}
+
+w-100 {
+    width: 100%;
 }
 
 .w-120px {

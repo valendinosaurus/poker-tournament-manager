@@ -125,11 +125,7 @@ export class AddEntryComponent implements OnInit {
                     );
                 }),
                 tap((a) => this.fetchService.trigger()),
-                switchMap(() => this.eventApiService.post$({
-                    id: null,
-                    tId: this.data.tournamentId,
-                    clientId: this.data.clientId
-                }))
+                this.tournamentService.postActionEvent$
             ).subscribe();
         }
     }
@@ -167,11 +163,7 @@ export class AddEntryComponent implements OnInit {
                                     );
                                 }),
                                 tap((a) => this.fetchService.trigger()),
-                                switchMap(() => this.eventApiService.post$({
-                                    id: null,
-                                    tId: this.data.tournamentId,
-                                    clientId: this.data.clientId
-                                })),
+                                this.tournamentService.postActionEvent$,
                             )
                         ),
                         defer(() => of(null))

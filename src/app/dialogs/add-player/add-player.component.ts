@@ -10,9 +10,7 @@ import { TournamentApiService } from '../../core/services/api/tournament-api.ser
 import { Tournament } from '../../shared/models/tournament.interface';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '@auth0/auth0-angular';
 import { FetchService } from '../../core/services/fetch.service';
-import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
@@ -22,6 +20,7 @@ import { Finish } from '../../shared/models/finish.interface';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor, NgIf } from '@angular/common';
+import { TournamentService } from '../../core/services/util/tournament.service';
 
 @Component({
     selector: 'app-add-player',
@@ -52,7 +51,7 @@ export class AddPlayerComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private notificationService: NotificationService = inject(NotificationService);
 
     allPlayers: { label: string, value: number }[];
@@ -140,11 +139,7 @@ export class AddPlayerComponent implements OnInit {
                                 this.notificationService.success('Player added');
                             }),
                             tap((a) => this.fetchService.trigger()),
-                            switchMap(() => this.eventApiService.post$({
-                                id: null,
-                                tId: this.data.tournament.id,
-                                clientId: this.data.clientId
-                            })),
+                            this.tournamentService.postActionEvent$,
                             tap((result: any) => {
                                 if (this.dialogRef) {
                                     this.dialogRef.close({
@@ -171,11 +166,7 @@ export class AddPlayerComponent implements OnInit {
                         this.data.tournament.finishes.map((finish: Finish) => finish.playerId)
                     )),
                     tap(() => this.fetchService.trigger()),
-                    switchMap(() => this.eventApiService.post$({
-                        id: null,
-                        tId: this.data.tournament.id,
-                        clientId: this.data.clientId
-                    })),
+                    this.tournamentService.postActionEvent$,
                     tap(() => {
                         if (this.dialogRef) {
                             this.dialogRef.close({
@@ -233,11 +224,7 @@ export class AddPlayerComponent implements OnInit {
                             this.data.tournament.finishes.map((finish: Finish) => finish.playerId)
                         )),
                         tap(() => this.fetchService.trigger()),
-                        switchMap(() => this.eventApiService.post$({
-                            id: null,
-                            tId: this.data.tournament.id,
-                            clientId: this.data.clientId
-                        })),
+                        this.tournamentService.postActionEvent$,
                         tap(() => this.data.tournament.players = this.data.tournament.players.filter(
                             p => p.id !== playerId
                         )))

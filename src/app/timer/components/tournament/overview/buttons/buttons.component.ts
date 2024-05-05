@@ -11,9 +11,8 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
-import { ServerResponse } from '../../../../../shared/models/server-response';
 import { tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddRebuyComponent } from '../../../../../dialogs/add-rebuy/add-rebuy.component';
@@ -294,14 +293,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
         } else if ((this.document as any).msExitFullscreen) {
             (this.document as any).msExitFullscreen();
         }
-    }
-
-    getReFetchEvent$(): Observable<ServerResponse | null> {
-        return this.eventApiService.post$({
-            id: null,
-            tId: this.tournament.id,
-            clientId: this.clientId
-        });
     }
 
     openMenu(): void {

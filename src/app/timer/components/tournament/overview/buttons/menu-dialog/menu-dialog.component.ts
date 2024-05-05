@@ -27,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
 import { CreatePlayerComponent } from '../../../../../../dialogs/create-player/create-player.component';
 import { AuthUtilService } from '../../../../../../core/services/auth-util.service';
+import { TournamentService } from '../../../../../../core/services/util/tournament.service';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -80,7 +81,7 @@ export class MenuDialogComponent implements OnInit {
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
     private document: Document = inject(DOCUMENT);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     isAuthenticated$: Observable<boolean> = this.authUtilService.getIsAuthenticated$();
@@ -318,14 +319,8 @@ export class MenuDialogComponent implements OnInit {
 
                 this.localRefresh.emit();
             }),
-            tap(() => {
-                this.fetchService.trigger();
-            }),
-            switchMap(() => this.eventApiService.post$({
-                id: null,
-                tId: this.data.tournament.id,
-                clientId: this.data.clientId
-            })),
+            tap(() => this.fetchService.trigger()),
+            this.tournamentService.postActionEvent$,
             tap(() => this.closeMenu())
         ).subscribe();
     }

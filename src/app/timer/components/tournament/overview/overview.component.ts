@@ -170,6 +170,11 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
             this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
         }
+
+        if (this.clientId && this.tournament) {
+            this.tournamentService.tournamentId$.next(this.tournament.id);
+            this.tournamentService.clientId$.next(this.clientId);
+        }
     }
 
     ngAfterViewInit(): void {

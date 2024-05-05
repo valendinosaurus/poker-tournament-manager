@@ -11,12 +11,12 @@ import { ServerResponse } from '../../shared/models/server-response';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
-import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { RankingService } from '../../core/services/util/ranking.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { MatButtonModule } from '@angular/material/button';
+import { TournamentService } from '../../core/services/util/tournament.service';
 
 @Component({
     selector: 'app-make-deal',
@@ -47,7 +47,7 @@ export class MakeDealComponent implements OnInit {
     private finishApiService: FinishApiService = inject(FinishApiService);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
+    private tournamentService: TournamentService = inject(TournamentService);
     private rankingService: RankingService = inject(RankingService);
     private notificationService: NotificationService = inject(NotificationService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
@@ -162,11 +162,7 @@ export class MakeDealComponent implements OnInit {
                 return this.tEventApiService.post$(this.data.tournament.id, message, TEventType.DEAL);
             }),
             tap(() => this.fetchService.trigger()),
-            switchMap(() => this.eventApiService.post$({
-                id: null,
-                tId: this.data.tournament.id,
-                clientId: this.data.clientId
-            })),
+            this.tournamentService.postActionEvent$,
             tap(() => {
                 if (this.dialogRef) {
                     this.dialogRef.close();

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Player } from '../../../shared/models/player.interface';
 import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
@@ -8,11 +8,35 @@ import { ConductedFinish } from '../../../shared/models/util/conducted-finish.in
 import { Finish } from '../../../shared/models/finish.interface';
 import { ConductedElimination } from '../../../shared/models/util/conducted-elimination.interface';
 import { Elimination } from '../../../shared/models/elimination.interface';
+import { distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { ReplaySubject, zip } from 'rxjs';
+import { ActionEventApiService } from '../api/action-event-api.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TournamentService {
+
+    tournamentId$ = new ReplaySubject<number>();
+    clientId$ = new ReplaySubject<number>();
+
+    private actionEventApiService: ActionEventApiService = inject(ActionEventApiService);
+
+    postActionEvent$ = switchMap(
+        () => zip(
+            this.tournamentId$,
+            this.clientId$
+        ).pipe(
+            distinctUntilChanged(
+                (a: [number, number], b: [number, number]) => a[0] === b[0] && a[1] === b[1]
+            ),
+            switchMap(([tId, cId]: [number, number]) => this.actionEventApiService.post$({
+                id: null,
+                tId: tId,
+                clientId: cId
+            }))
+        )
+    );
 
     getPlayersEligibleForEntryOrReEntry(tournament: Tournament, isReEntry: boolean): Player[] {
         return tournament.players

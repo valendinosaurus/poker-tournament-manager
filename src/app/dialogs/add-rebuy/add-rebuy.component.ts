@@ -189,11 +189,7 @@ export class AddRebuyComponent implements OnInit {
                     return this.tEventApiService.post$(this.data.tournamentId, message, TEventType.REBUY);
                 }),
                 tap((a) => this.fetchService.trigger()),
-                switchMap(() => this.eventApiService.post$({
-                    id: null,
-                    tId: this.data.tournamentId,
-                    clientId: this.data.clientId
-                })),
+                this.tournamentService.postActionEvent$,
             ).subscribe();
 
         }
@@ -243,11 +239,7 @@ export class AddRebuyComponent implements OnInit {
                                 );
                             }),
                             tap((a) => this.fetchService.trigger()),
-                            switchMap(() => this.eventApiService.post$({
-                                id: null,
-                                tId: this.data.tournamentId,
-                                clientId: this.data.clientId
-                            })),
+                            this.tournamentService.postActionEvent$,
                         )),
                         defer(() => of(null))
                     )
