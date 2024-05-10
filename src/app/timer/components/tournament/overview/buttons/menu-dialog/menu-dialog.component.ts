@@ -1,12 +1,21 @@
-import { Component, DestroyRef, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    DestroyRef,
+    EventEmitter,
+    HostListener,
+    inject,
+    OnInit,
+    Output,
+    Signal,
+    WritableSignal
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Tournament } from '../../../../../../shared/models/tournament.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { TournamentSettings } from '../../../../../../shared/models/tournament-settings.interface';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal.component';
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
 import { AddAddonComponent } from '../../../../../../dialogs/add-addon/add-addon.component';
@@ -14,20 +23,21 @@ import { AddFinishComponent } from '../../../../../../dialogs/add-finish/add-fin
 import { FormlyFieldService } from '../../../../../../core/services/util/formly-field.service';
 import { RankingService } from '../../../../../../core/services/util/ranking.service';
 import { AddPlayerComponent } from '../../../../../../dialogs/add-player/add-player.component';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../../../core/services/api/tournament-api.service';
 import { FetchService } from '../../../../../../core/services/fetch.service';
 import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
-import { ActionEventApiService } from '../../../../../../core/services/api/action-event-api.service';
 import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../core/const/app.const';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
 import { CreatePlayerComponent } from '../../../../../../dialogs/create-player/create-player.component';
 import { AuthUtilService } from '../../../../../../core/services/auth-util.service';
 import { TournamentService } from '../../../../../../core/services/util/tournament.service';
+import { TimerStateService } from '../../../../../services/timer-state.service';
+import { Tournament } from '../../../../../../shared/models/tournament.interface';
+import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -37,6 +47,14 @@ import { TournamentService } from '../../../../../../core/services/util/tourname
     imports: [NgIf, MatButtonModule, RouterLink, FormsModule, ReactiveFormsModule, FormlyModule, AsyncPipe]
 })
 export class MenuDialogComponent implements OnInit {
+
+    tournament: WritableSignal<Tournament>;
+    metadata: WritableSignal<SeriesMetadata | undefined>;
+    isSimpleTournament: WritableSignal<boolean>;
+    isRebuyPhaseFinished: WritableSignal<boolean>;
+    withRebuy: Signal<boolean>;
+    withAddon: Signal<boolean>;
+    withReEntry: Signal<boolean>;
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -56,12 +74,7 @@ export class MenuDialogComponent implements OnInit {
     elem: HTMLElement;
 
     data: {
-        isSimpleTournament: boolean,
-        isRebuyPhaseFinished$: ReplaySubject<boolean>,
         isAddPlayerBlocked: boolean,
-        tournament: Tournament,
-        seriesMetadata: SeriesMetadata,
-        clientId: number,
         running: boolean,
     } = inject(MAT_DIALOG_DATA);
 
@@ -83,6 +96,7 @@ export class MenuDialogComponent implements OnInit {
     private document: Document = inject(DOCUMENT);
     private tournamentService: TournamentService = inject(TournamentService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     isAuthenticated$: Observable<boolean> = this.authUtilService.getIsAuthenticated$();
 
@@ -97,6 +111,13 @@ export class MenuDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.tournament = this.timerStateService.tournament;
+        this.isSimpleTournament = this.timerStateService.isSimpleTournament;
+        this.isRebuyPhaseFinished = this.timerStateService.isRebuyPhaseFinished;
+        this.withRebuy = this.timerStateService.withRebuy;
+        this.withAddon = this.timerStateService.withAddon;
+        this.withReEntry = this.timerStateService.withReEntry;
+
         this.elem = this.document.documentElement;
         this.initModel();
         this.initFields();
@@ -104,12 +125,12 @@ export class MenuDialogComponent implements OnInit {
 
     private initModel(): void {
         this.model = {
-            id: this.data.tournament.id,
-            payout: this.data.tournament.payout,
-            name: this.data.tournament.name
+            id: this.tournament().id,
+            payout: this.tournament().payout,
+            name: this.tournament().name
         };
 
-        this.payoutCache = this.data.tournament.payout;
+        this.payoutCache = this.tournament().payout;
     }
 
     private initFields(): void {
@@ -117,8 +138,8 @@ export class MenuDialogComponent implements OnInit {
             (a, b) => a.prices.length - b.prices.length
         );
 
-        const placesLeft = this.data.tournament.players.length - this.data.tournament.finishes.length;
-        const payoutDone = this.data.tournament.finishes.filter(f => +f.price > 0).length > 0;
+        const placesLeft = this.tournament().players.length - this.tournament().finishes.length;
+        const payoutDone = this.tournament().finishes.filter(f => +f.price > 0).length > 0;
 
         const payoutsForSelect = payouts.map(p => ({
             label: p.prices.reduce((acc, curr) => `${acc} | ${curr}%`, ''),
@@ -152,11 +173,6 @@ export class MenuDialogComponent implements OnInit {
         const dialogRef = this.dialog.open(AddRebuyComponent, {
             ...DEFAULT_DIALOG_POSITION,
             ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournamentId: this.data.tournament.id,
-                tournamentName: this.data.tournament.name,
-                clientId: this.data.clientId
-            }
         });
 
         dialogRef.afterClosed().pipe(
@@ -167,12 +183,7 @@ export class MenuDialogComponent implements OnInit {
     addAddon(): void {
         const dialogRef = this.dialog.open(AddAddonComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournamentId: this.data.tournament.id,
-                tournamentName: this.data.tournament.name,
-                clientId: this.data.clientId
-            }
+            ...TIMER_DIALOG_PANEL_CLASS
         });
 
         dialogRef.afterClosed().pipe(
@@ -183,12 +194,7 @@ export class MenuDialogComponent implements OnInit {
     seatOpen(): void {
         const dialogRef = this.dialog.open(AddFinishComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournament: this.data.tournament,
-                metadata: this.data.seriesMetadata,
-                clientId: this.data.clientId
-            }
+            ...TIMER_DIALOG_PANEL_CLASS
         });
 
         dialogRef.afterClosed().pipe(
@@ -201,8 +207,6 @@ export class MenuDialogComponent implements OnInit {
             ...DEFAULT_DIALOG_POSITION,
             ...TIMER_DIALOG_PANEL_CLASS,
             data: {
-                tournament: this.data.tournament,
-                clientId: this.data.clientId,
                 multi: false
             }
         });
@@ -217,10 +221,7 @@ export class MenuDialogComponent implements OnInit {
             ...DEFAULT_DIALOG_POSITION,
             ...TIMER_DIALOG_PANEL_CLASS,
             data: {
-                tournamentId: this.data.tournament.id,
-                tournamentName: this.data.tournament.name,
                 isReentry: isReEntry,
-                clientId: this.data.clientId,
             }
         });
 
@@ -233,11 +234,6 @@ export class MenuDialogComponent implements OnInit {
         const dialogRef = this.dialog.open(MakeDealComponent, {
             ...DEFAULT_DIALOG_POSITION,
             ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournament: this.data.tournament,
-                metadata: this.data.seriesMetadata,
-                clientId: this.data.clientId
-            }
         });
 
         dialogRef.afterClosed().pipe(
@@ -249,9 +245,6 @@ export class MenuDialogComponent implements OnInit {
         const dialogRef = this.dialog.open(TableDrawDialogComponent, {
             ...DEFAULT_DIALOG_POSITION,
             ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournament: this.data.tournament,
-            },
             id: 'draw'
         });
 
@@ -314,7 +307,7 @@ export class MenuDialogComponent implements OnInit {
             take(1),
             tap(() => {
                 if (model.payout !== this.payoutCache) {
-                    this.localStorageService.deleteAdaptedPayout(this.data.tournament.id);
+                    this.localStorageService.deleteAdaptedPayout(this.tournament().id);
                 }
 
                 this.localRefresh.emit();

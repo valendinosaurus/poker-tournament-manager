@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
+import { TimerStateService } from '../../../timer/services/timer-state.service';
 
 export type FormulaInput = {
     players: number,
@@ -20,6 +21,8 @@ export type Formula = (input: FormulaInput) => number;
     providedIn: 'root'
 })
 export class RankingService {
+
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     defaultFormula: Formula = (input: FormulaInput) => 0;
 
@@ -136,37 +139,6 @@ export class RankingService {
             label: p.prices.join(' / '),
             value: p.id
         }));
-    }
-
-    getTotalPricePool(
-        entries: Entry[],
-        buyInAmount: number,
-        rebuyAmount: number,
-        addonAmount: number,
-        initialPricePool: number,
-        percentage: number | undefined | null,
-        maxCap: number | undefined | null
-    ): {
-        totalPricePool: number,
-        deduction: number
-    } {
-        const temp = entries.filter(
-                    (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
-                ).length * +buyInAmount
-                + entries.filter(e => e.type === EntryType.REBUY).length * +rebuyAmount
-                + entries.filter(e => e.type === EntryType.ADDON).length * +addonAmount
-                + +initialPricePool
-        ;
-
-        const reductionFull = temp * (percentage ? (percentage / 100) : 0);
-        const deduction = ((reductionFull > (maxCap ?? reductionFull) ? maxCap : reductionFull)) ?? 0;
-
-        const totalPricePool = temp - deduction;
-
-        return {
-            totalPricePool,
-            deduction
-        };
     }
 
     getSimplePricePool(tournament: Tournament): number {

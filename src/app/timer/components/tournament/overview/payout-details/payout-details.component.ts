@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal, Signal } from '@angular/core';
 import { Entry } from '../../../../../shared/models/entry.interface';
 import { Finish } from '../../../../../shared/models/finish.interface';
 import { Player } from '../../../../../shared/models/player.interface';
@@ -13,7 +13,20 @@ import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { FetchService } from '../../../../../core/services/fetch.service';
+import { TimerStateService } from '../../../../services/timer-state.service';
+import { Tournament } from '../../../../../shared/models/tournament.interface';
+import { SeriesMetadata } from '../../../../../shared/models/series.interface';
+
+interface Payout {
+    rank: number,
+    percentage: string;
+    price: number;
+    image: string | undefined,
+    name: string | undefined,
+    dealMade: boolean
+}
 
 @Component({
     selector: 'app-payout-details',
@@ -22,128 +35,106 @@ import { NgIf, NgFor, DecimalPipe } from '@angular/common';
     standalone: true,
     imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe]
 })
-export class PayoutDetailsComponent implements OnChanges {
+export class PayoutDetailsComponent implements OnInit {
 
-    @Input() tournamentId: number;
-    @Input() entries: Entry[];
-    @Input() buyInAmount: number;
-    @Input() rebuyAmount: number;
-    @Input() addonAmount: number;
-    @Input() initialPricePool: number;
-    @Input() percentage: number | null | undefined;
-    @Input() maxCap: number | null | undefined;
-    @Input() payout: number;
-    @Input() finishes: Finish[];
-    @Input() players: Player[];
-    @Input() trigger: string | null;
+//    @Input() tournamentId: number;
 
-    deduction: number = 0;
+    tournament: Signal<Tournament>;
+    metadata: Signal<SeriesMetadata | undefined>;
+    entries: Signal<Entry[]>;
+    finishes: Signal<Finish[]>;
+    players: Signal<Player[]>;
+    buyInAmount: Signal<number>;
+    rebuyAmount: Signal<number>;
+    addonAmount: Signal<number>;
+    initialPricePool: Signal<number>;
+    percentage: Signal<number | null | undefined>;
+    maxCap: Signal<number | null | undefined>;
+    payout: Signal<number>;
+    totalPricePool: Signal<number>;
+    deduction: Signal<number>;
 
-    isPayoutAdapted = false;
-    isAdaptedPayoutSumCorrect = true;
+    isPayoutAdapted = signal(false);
+    isAdaptedPayoutSumCorrect = signal(true);
 
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private fetchService: FetchService = inject(FetchService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
-    payouts: {
-        rank: number,
-        percentage: string;
-        price: number;
-        image: string | undefined,
-        name: string | undefined,
-        dealMade: boolean
-    }[];
+    payouts: Signal<Payout[]>;
+    wasDealMade: Signal<boolean>;
+    playersLeft: Signal<number>;
+    placesPaid: Signal<number>;
 
-    totalPricePool: number;
-    scrollDown = true;
-    wasDealMade = false;
-    playersLeft: number;
-    placesPaid: number;
+    ngOnInit(): void {
+        this.totalPricePool = this.timerStateService.totalPricePool;
+        this.deduction = this.timerStateService.pricePoolDeduction;
+        this.tournament = this.timerStateService.tournament;
+        this.metadata = this.timerStateService.metadata;
+        this.entries = this.timerStateService.entries;
+        this.finishes = this.timerStateService.finishes;
+        this.players = this.timerStateService.players;
+        this.buyInAmount = computed(() => this.tournament().buyInAmount);
+        this.rebuyAmount = computed(() => this.tournament().rebuyAmount);
+        this.addonAmount = computed(() => this.tournament().addonAmount);
+        this.initialPricePool = computed(() => this.tournament().initialPricePool);
+        this.percentage = computed(() => this.metadata()?.percentage);
+        this.maxCap = computed(() => this.metadata()?.maxAmountPerTournament);
+        this.payout = computed(() => this.tournament().payout);
+        const ranks = computed(() => this.finishes().map(f => f.rank));
+        this.wasDealMade = computed(() => ranks().length !== new Set(ranks()).size);
+        this.playersLeft = computed(() => this.entries().filter(e => e.type === EntryType.ENTRY).length - this.finishes().length);
+        this.placesPaid = computed(() => this.rankingService.getPayoutById(this.payout()).length);
 
-    @Output() localRefresh = new EventEmitter<void>();
-
-    ngOnChanges(changes: SimpleChanges): void {
-        const ranks = this.finishes.map(f => f.rank);
-        this.wasDealMade = ranks.length !== new Set(ranks).size;
-        this.playersLeft = this.entries.filter(e => e.type === EntryType.ENTRY).length - this.finishes.length;
-        this.placesPaid = this.rankingService.getPayoutById(this.payout).length;
-
-        if (this.wasDealMade) {
-            this.calculateAfterDeal();
-        } else {
-            this.calculateRegularList();
-        }
-
-        if (changes['trigger']?.currentValue === 'SCROLL') {
-            if (this.scrollDown) {
-                document.getElementById('bottomd')?.scrollIntoView({behavior: 'smooth'});
-            } else {
-                document.getElementById('topd')?.scrollIntoView({behavior: 'smooth'});
-            }
-
-            this.scrollDown = !this.scrollDown;
-        }
-
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
-
-        if (adaptedPayouts) {
-            const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
-                this.entries,
-                this.buyInAmount,
-                this.rebuyAmount,
-                this.addonAmount,
-                this.initialPricePool,
-                this.percentage,
-                this.maxCap
-            );
-
-            const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
-            this.isAdaptedPayoutSumCorrect = totalPricePool === adaptedSum;
-            this.isPayoutAdapted = true;
-        } else {
-            this.isAdaptedPayoutSumCorrect = true;
-            this.isPayoutAdapted = false;
-        }
-
+        this.startCalculation();
     }
 
-    private calculateRegularList(): void {
-        this.payouts = [];
+    private startCalculation(): void {
+        this.payouts = computed(() => {
+            if (this.wasDealMade()) {
+                return this.calculateAfterDeal();
+            } else {
+                return this.calculateRegularList();
+            }
+        });
 
-        const payoutRaw = this.rankingService.getPayoutById(this.payout);
-
-        const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
-            this.entries,
-            this.buyInAmount,
-            this.rebuyAmount,
-            this.addonAmount,
-            this.initialPricePool,
-            this.percentage,
-            this.maxCap
+        const adaptedPayouts: Signal<number[] | undefined> = computed(
+            () => this.localStorageService.getAdaptedPayoutById(this.tournament().id)
         );
 
-        this.totalPricePool = totalPricePool;
-        this.deduction = deduction;
+        if (adaptedPayouts()) {
+            const adaptedSum = adaptedPayouts()?.reduce((p, c) => p + c, 0);
+            this.isAdaptedPayoutSumCorrect.set(this.totalPricePool() === adaptedSum);
+            this.isPayoutAdapted.set(true);
+        } else {
+            this.isAdaptedPayoutSumCorrect.set(true);
+            this.isPayoutAdapted.set(false);
+        }
+    }
 
+    private calculateRegularList(): Payout[] {
+        const payouts: Payout[] = [];
+        const payoutRaw = this.rankingService.getPayoutById(this.payout());
         let index = 1;
 
-        const mappedFinishes: { n: string, i: string, rank: number }[] = this.finishes.map(
+        const mappedFinishes: { n: string, i: string, rank: number }[] = this.finishes().map(
             f => ({
                 rank: f.rank,
-                i: this.players.find(p => p.id === f.playerId)?.image ?? '',
-                n: this.players.find(p => p.id === f.playerId)?.name ?? ''
+                i: this.players().find(p => p.id === f.playerId)?.image ?? '',
+                n: this.players().find(p => p.id === f.playerId)?.name ?? ''
             })
         );
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournamentId);
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament().id);
 
         if (adaptedPayouts) {
             adaptedPayouts.forEach((payout: number) => {
-                this.payouts.push({
+                payouts.push({
                     rank: index,
-                    percentage: `${Math.floor(payout / this.totalPricePool * 100)}%`,
+                    percentage: `${Math.floor(payout / this.totalPricePool() * 100)}%`,
                     price: payout,
                     name: mappedFinishes.find(f => +f.rank === index)?.n,
                     image: mappedFinishes.find(f => +f.rank === index)?.i,
@@ -154,10 +145,10 @@ export class PayoutDetailsComponent implements OnChanges {
             });
         } else {
             payoutRaw.forEach((percentage: number) => {
-                this.payouts.push({
+                payouts.push({
                     rank: index,
                     percentage: `${percentage}%`,
-                    price: this.totalPricePool / 100 * percentage,
+                    price: this.totalPricePool() / 100 * percentage,
                     name: mappedFinishes.find(f => +f.rank === index)?.n,
                     image: mappedFinishes.find(f => +f.rank === index)?.i,
                     dealMade: false
@@ -166,40 +157,29 @@ export class PayoutDetailsComponent implements OnChanges {
                 index++;
             });
         }
+
+        return payouts;
     }
 
-    private calculateAfterDeal(): void {
-        this.payouts = [];
-
-        const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
-            this.entries,
-            this.buyInAmount,
-            this.rebuyAmount,
-            this.addonAmount,
-            this.initialPricePool,
-            this.percentage,
-            this.maxCap
-        );
-
-        this.totalPricePool = totalPricePool;
-        this.deduction = deduction;
+    private calculateAfterDeal(): Payout[] {
+        const payouts: Payout[] = [];
 
         const mappedFinishes: { n: string, i: string, rank: number, price: number }[] =
-            this.finishes.map(
+            this.finishes().map(
                 f => ({
                     rank: f.rank,
-                    i: this.players.find(p => p.id === f.playerId)?.image ?? '',
-                    n: this.players.find(p => p.id === f.playerId)?.name ?? '',
+                    i: this.players().find(p => p.id === f.playerId)?.image ?? '',
+                    n: this.players().find(p => p.id === f.playerId)?.name ?? '',
                     price: f.price
                 })
             );
 
-        const rankOfDeal = Math.min(...this.finishes.map(f => f.rank));
+        const rankOfDeal = Math.min(...this.finishes().map(f => f.rank));
 
         mappedFinishes.forEach((m) => {
-            this.payouts.push({
+            payouts.push({
                 rank: m.rank,
-                percentage: m.price > 0 ? `${(m.price / this.totalPricePool * 100).toFixed(1)}%` : '',
+                percentage: m.price > 0 ? `${(m.price / this.totalPricePool() * 100).toFixed(1)}%` : '',
                 price: m.price,
                 name: m.n,
                 image: m.i,
@@ -207,39 +187,28 @@ export class PayoutDetailsComponent implements OnChanges {
             });
         });
 
-        this.payouts.sort((a, b) => a.rank - b.rank);
+        payouts.sort((a, b) => a.rank - b.rank);
+
+        return payouts;
     }
 
     editPayouts(): void {
-
-        const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
-            this.entries,
-            this.buyInAmount,
-            this.rebuyAmount,
-            this.addonAmount,
-            this.initialPricePool,
-            this.percentage,
-            this.maxCap
-        );
         const dialogRef = this.dialog.open(ModifyPayoutComponent, {
             position: {
                 top: '40px'
             },
             data: {
-                pricepool: totalPricePool,
-                payouts: this.payouts.map(e => e.price),
-                tId: this.tournamentId,
-                finishes: this.finishes,
-                players: this.players
+                pricepool: this.totalPricePool(),
+                payouts: this.payouts().map(e => e.price),
+                tId: this.tournament().id,
+                finishes: this.finishes(),
+                players: this.players()
             }
         });
 
         dialogRef.afterClosed().pipe(
             takeUntilDestroyed(this.destroyRef),
-            tap(() => {
-                this.ngOnChanges({});
-                this.localRefresh.emit();
-            }),
+            tap(() => this.fetchService.trigger()),
         ).subscribe();
     }
 
@@ -258,8 +227,8 @@ export class PayoutDetailsComponent implements OnChanges {
             take(1),
             tap((result: boolean) => {
                 if (result) {
-                    this.localStorageService.deleteAdaptedPayout(this.tournamentId);
-                    this.localRefresh.emit();
+                    this.localStorageService.deleteAdaptedPayout(this.tournament().id);
+                    this.fetchService.trigger();
                 }
             })
         ).subscribe();

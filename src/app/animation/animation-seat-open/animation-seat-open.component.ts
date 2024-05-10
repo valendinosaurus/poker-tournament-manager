@@ -1,6 +1,11 @@
 import { Component, effect, input } from '@angular/core';
 import { AsyncPipe, DecimalPipe, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 
+// @ts-ignore
+import confetti from 'canvas-confetti';
+import { billPath, skullPath } from './animation-paths.const';
+import { RankPipe } from '../rank.pipe';
+
 declare var anime: any;
 
 @Component({
@@ -12,7 +17,8 @@ declare var anime: any;
         NgIf,
         NgTemplateOutlet,
         AsyncPipe,
-        NgStyle
+        NgStyle,
+        RankPipe
     ]
 })
 export class AnimationSeatOpenComponent {
@@ -20,6 +26,7 @@ export class AnimationSeatOpenComponent {
     isAnimating = input.required<boolean>();
     name = input.required<string>();
     price = input.required<number>();
+    rank = input.required<number>();
 
     _confettiEffect = effect(() => {
         if (this.isAnimating()) {
@@ -48,7 +55,7 @@ export class AnimationSeatOpenComponent {
             opacity: 0,
             duration: 1000,
             easing: 'easeInOutQuad',
-            delay: 1000
+            delay: 1000,
         });
 
         setTimeout(
@@ -61,27 +68,29 @@ export class AnimationSeatOpenComponent {
 
     shoot(withRandom = false) {
         try {
-            this.confetti({
+            const skull = confetti.shapeFromPath({path: skullPath});
+            const bill = confetti.shapeFromPath({path: billPath});
+
+            confetti({
                 angle: 90,
+                particleCount: 1000,
                 spread: 360,
-                particleCount: this.random(4000, 5000),
+                scalar: 3,
                 origin: {
                     y: withRandom ? Math.random() : 0.4,
                     x: withRandom ? Math.random() : 0.5,
-                }
+                },
+                shapes: [this.price() > 0 ? bill : skull]
             });
+
         } catch (e) {
             // noop, confettijs may not be loaded yet
+            console.log('error confetti', e);
         }
     }
 
     random(min: number, max: number) {
         return Math.random() * (max - min) + min;
-    }
-
-    confetti(args: any) {
-        // @ts-ignore
-        return window['confetti'].apply(this, arguments);
     }
 
 }

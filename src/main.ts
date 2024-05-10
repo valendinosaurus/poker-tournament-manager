@@ -9,7 +9,6 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { CanActivateFn, provideRouter, Router, Routes, withRouterConfig } from '@angular/router';
 import { WelcomePageComponent } from './app/welcome/welcome-page/welcome-page.component';
-import { TimerPageComponent } from './app/timer/page/timer-page/timer-page.component';
 import { SeriesPageComponent } from './app/series/page/series-page/series-page.component';
 import { AdminComponent } from './app/admin/admin.component';
 import { NotFoundPageComponent } from './app/not-found/not-found-page/not-found-page.component';
@@ -41,6 +40,7 @@ import {
     AdminBlindStructureComponent
 } from './app/admin/blind-structure/admin-blind-structure/admin-blind-structure.component';
 import { PlaygroundPageComponent } from './app/playground/playground-page/playground-page.component';
+import { TimerPageComponent } from './app/timer/components/tournament/timer/timer-page.component';
 
 if (environment.production) {
     enableProdMode();
@@ -88,11 +88,6 @@ const routes: Routes = [
         path: 'timer/:tId',
         loadComponent: () => TimerPageComponent,
         canActivate: [AuthGuard]
-    },
-    {
-        path: 'test',
-        loadComponent: () => TimerPageComponent,
-        canActivate: [adminGuard]
     },
     {
         path: 'playground',

@@ -1,8 +1,8 @@
 <div class="info-panel">
-    <span *ngIf="isAddPlayerBlocked && !isTournamentFinished">
+    <span *ngIf="isAddPlayerBlocked && !isTournamentFinished()">
         <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
     </span>
-    <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished && !isTournamentFinished">
+    <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()">
         <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
     </span>
     <!--        <span *ngIf="playerHasToBeMoved" class="clickable" (click)="openDrawDialog()">-->
@@ -14,11 +14,11 @@
     <span *ngIf="!canStartTournament; else readyToStart">
         <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
     </span>
-    <span *ngIf="isTournamentFinished">
+    <span *ngIf="isTournamentFinished()">
         <i class="fa fa-check"></i> Tournament is finished
     </span>
     <ng-template #readyToStart>
-        <span *ngIf="!isTournamentFinished">
+        <span *ngIf="!isTournamentFinished()">
             <i class="fa fa-check"></i> Ready to start tournament
         </span>
     </ng-template>
@@ -37,7 +37,7 @@
     </button>
 
     <button
-        *ngIf="!isSimpleTournament"
+        *ngIf="!isSimpleTournament()"
         mat-raised-button
         matTooltip="Seat Open"
         class="main"
@@ -48,7 +48,7 @@
     </button>
 
     <button
-        *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
+        *ngIf="tournament.withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
         mat-raised-button
         matTooltip="Rebuy"
         class="main"
@@ -58,7 +58,7 @@
     </button>
 
     <button
-        *ngIf="tournament.withRebuy && !isSimpleTournament && !isRebuyPhaseFinished"
+        *ngIf="tournament.withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
         mat-raised-button
         matTooltip="Addon"
         class="main"
@@ -111,6 +111,7 @@
     *ngIf="isAnimatingBubbleBoy$ | async as a"
     [isAnimating]="a"
     [name]="lastSeatOpenName"
+    [rank]="lastRank"
 ></app-animation-bubble-boy>
 
 <app-animation-seat-open
@@ -118,6 +119,7 @@
     [isAnimating]="a"
     [price]="lastPrice"
     [name]="lastSeatOpenName"
+    [rank]="lastRank"
 ></app-animation-seat-open>
 
 <app-animation-winner

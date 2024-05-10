@@ -7,7 +7,7 @@
         Blind Levels
 
         <button
-            *ngIf="!isSimpleTournament"
+            *ngIf="!isSimpleTournament()"
             mat-flat-button
             class="ml-0-5 round"
             matTooltip="Add Blind Level"
@@ -25,15 +25,15 @@
 
         <table class="blinds-table">
             <tbody>
-                <ng-container *ngFor="let level of levelsToShow; let i = index;">
+                <ng-container *ngFor="let level of levelsToShow(); let i = index;">
                     <tr
-                        *ngIf="i > currentLevelIndex - 3 && i < currentLevelIndex + 4"
-                        [class.bold]="i === currentLevelIndex"
-                        [class.opaque]="i < currentLevelIndex"
+                        *ngIf="i > currentLevelIndex() - 3 && i < currentLevelIndex() + 4"
+                        [class.bold]="i === currentLevelIndex()"
+                        [class.opaque]="i < currentLevelIndex()"
                     >
                         <td class="m-40">
                             <div class="indicator">
-                                <ng-container *ngIf="i === currentLevelIndex">
+                                <ng-container *ngIf="i === currentLevelIndex()">
                                     ►
                                 </ng-container>
                             </div>
@@ -58,7 +58,7 @@
                             <div>
                                 <ng-container *ngIf="!level.isPause; else pause">
                                     <div class="talign-center talign-center-big">
-                                        <span [innerHTML]="level | blindLevelText:!!showCondensed:false"></span>
+                                        <span [innerHTML]="level | blindLevelText:!!showCondensed():false"></span>
                                         <ng-container *ngIf="level.ante > 0">
                                             / {{ level.ante | number }}
                                         </ng-container>

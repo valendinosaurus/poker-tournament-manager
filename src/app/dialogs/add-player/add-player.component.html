@@ -1,30 +1,38 @@
 <ng-container *ngIf="data.multi; else formSingle">
-    <h2><i class="fa fa-user"></i> Add Players to "{{ data.tournament.name }}"</h2>
+    <h2><i class="fa fa-user"></i> Add Players to "{{ tournament().name }}"</h2>
 
-    <form
-        [formGroup]="form"
-    >
-        <formly-form
-            [form]="form"
-            [fields]="fields"
-            [options]="options"
-            [model]="modelMulti"
-        ></formly-form>
+    <form (ngSubmit)="onSubmit(false)">
+        <mat-form-field class="w-100">
+            <mat-label>Player *</mat-label>
+            <mat-select
+                name="eliminated"
+                [multiple]="true"
+                (selectionChange)="onSelectPlayersMulti($event)"
+            >
+                @for (player of playersToAdd(); track player.value) {
+                    <mat-option [value]="player.value">
+                        {{ player.label }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
 
         <button
-            mat-raised-button color="primary"
+            mat-raised-button
+            color="primary"
             type="submit"
-            (click)="onSubmitMulti(modelMulti, false)"
-            [disabled]="!form.valid"
+            (click)="onSubmitMulti(false)"
+            [disabled]="!modelMulti.isValid()"
         >
             ADD
         </button>
 
         <button
-            mat-raised-button color="primary"
+            mat-raised-button
+            color="accent"
             type="submit"
-            (click)="onSubmitMulti(modelMulti, true)"
-            [disabled]="!form.valid"
+            (click)="onSubmitMulti(true)"
+            [disabled]="!modelMulti.isValid()"
         >
             ADD WITH ENTRY
         </button>
@@ -32,33 +40,39 @@
 </ng-container>
 
 <ng-template #formSingle>
-    <h2><i class="fa fa-user"></i> Add Player to "{{ data.tournament.name }}"</h2>
+    <h2><i class="fa fa-user"></i> Add Player to "{{ tournament().name }}"</h2>
 
-    <form
-        [formGroup]="form"
-    >
-
-        <formly-form
-            [form]="form"
-            [fields]="fields"
-            [options]="options"
-            [model]="model"
-        ></formly-form>
+    <form>
+        <mat-form-field class="w-100">
+            <mat-label>Player *</mat-label>
+            <mat-select
+                name="eliminated"
+                (selectionChange)="this.model.playerId.set($event.value)"
+            >
+                @for (player of playersToAdd(); track player.value) {
+                    <mat-option [value]="player.value">
+                        {{ player.label }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
 
         <button
-            mat-raised-button color="primary"
+            mat-raised-button
+            color="primary"
             type="submit"
-            [disabled]="!form.valid"
-            (click)="onSubmit(model, false)"
+            [disabled]="!model.isValid()"
+            (click)="onSubmit(false)"
         >
             ADD
         </button>
 
         <button
-            mat-raised-button color="primary"
+            mat-raised-button
+            color="accent"
             type="submit"
-            [disabled]="!form.valid"
-            (click)="onSubmit(model, true)"
+            [disabled]="!model.isValid()"
+            (click)="onSubmit(true)"
         >
             ADD WITH ENTRY
         </button>
@@ -67,10 +81,10 @@
 
 <h3>Players in Tournament</h3>
 
-<ng-container *ngIf="data.tournament && data.tournament.players.length > 0; else noPlayers;">
+<ng-container *ngIf="tournament() && tournament().players?.length; else noPlayers;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of data.tournament.players">
+            <ng-container *ngFor="let e of tournament().players">
                 <tr>
                     <td>
                     <span class="flex-td">

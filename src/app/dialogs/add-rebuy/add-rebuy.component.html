@@ -1,20 +1,38 @@
-<h2>Rebuy</h2>
+<h2><i class="fa fa-refresh"></i> Rebuy</h2>
 
-<form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
->
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+<form (ngSubmit)="onSubmit()">
+    <mat-form-field class="w-100">
+        <mat-label>Player *</mat-label>
+        <mat-select
+            name="eliminated"
+            (selectionChange)="this.model.playerId.set($event.value)"
+        >
+            @for (player of playersToRebuy(); track player.value) {
+                <mat-option [value]="player.value">
+                    {{ player.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+        <mat-label>Eliminator *</mat-label>
+        <mat-select
+            name="eliminator"
+            (selectionChange)="this.model.eliminatedBy.set($event.value)"
+        >
+            @for (player of eliminators(); track player.value) {
+                <mat-option [value]="player.value">
+                    {{ player.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid"
     >
         REBUY
     </button>
@@ -29,10 +47,10 @@
 
 <h3>Conducted Rebuys</h3>
 
-<ng-container *ngIf="conductedRebuys && conductedRebuys.length > 0; else noRebuys;">
+<ng-container *ngIf="conductedRebuys().length > 0; else noRebuys;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedRebuys">
+            <ng-container *ngFor="let e of conductedRebuys()">
                 <tr>
                     <td class="small-gray">
                         {{ e.time | date:'d.M.yy, hh:mm:ss' }}

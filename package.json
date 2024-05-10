@@ -28,6 +28,7 @@
     "@ngx-formly/core": "^6.1.8",
     "@ngx-formly/material": "^6.1.8",
     "@types/mathjax": "^0.0.40",
+    "canvas-confetti": "^1.9.3",
     "confetti-js": "^0.0.18",
     "font-awesome": "^4.7.0",
     "keen-slider": "^6.8.6",

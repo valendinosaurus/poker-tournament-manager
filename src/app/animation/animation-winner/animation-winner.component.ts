@@ -3,6 +3,10 @@ import { DecimalPipe, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { of, range, Subject, Subscription } from 'rxjs';
 import { concatMap, delay, tap } from 'rxjs/operators';
 
+// @ts-ignore
+import confetti from 'canvas-confetti';
+import { billPath } from '../animation-seat-open/animation-paths.const';
+
 declare var anime: any;
 
 @Component({
@@ -73,14 +77,18 @@ export class AnimationWinnerComponent implements OnChanges {
 
     shoot(withRandom = false) {
         try {
-            this.confetti({
+            const bill = confetti.shapeFromPath({path: billPath});
+
+            confetti({
                 angle: 90,
+                particleCount: 1000,
                 spread: 360,
-                particleCount: this.random(4000, 5000),
+                scalar: 3,
                 origin: {
                     y: withRandom ? Math.random() : 0.4,
                     x: withRandom ? Math.random() : 0.5,
-                }
+                },
+                shapes: [bill, 'start']
             });
         } catch (e) {
             // noop, confettijs may not be loaded yet
@@ -89,11 +97,6 @@ export class AnimationWinnerComponent implements OnChanges {
 
     random(min: number, max: number) {
         return Math.random() * (max - min) + min;
-    }
-
-    confetti(args: any) {
-        // @ts-ignore
-        return window['confetti'].apply(this, arguments);
     }
 
     endWinnerAnimation(): void {

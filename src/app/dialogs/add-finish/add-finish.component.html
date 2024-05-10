@@ -1,22 +1,49 @@
-<h2><i class="fa fa-skull"></i> Seat open - Rank {{ rank }}</h2>
+<h2><i class="fa fa-skull"></i> Seat open - Rank {{ rank() }}</h2>
 
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    (ngSubmit)="onSubmit()"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field class="w-100">
+        <mat-label>Player *</mat-label>
+        <mat-select
+            name="eliminated"
+            (selectionChange)="this.model.playerId.set($event.value)"
+        >
+            @for (player of playersToEliminate(); track player.value) {
+                <mat-option [value]="player.value">
+                    {{ player.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
 
-    <h1>is {{ isLoading }}</h1>
+    <mat-form-field class="w-100">
+        <mat-label>Eliminator *</mat-label>
+        <mat-select
+            name="eliminator"
+            (selectionChange)="this.model.eliminatedBy.set($event.value)"
+        >
+            @for (player of eliminators(); track player.value) {
+                <mat-option [value]="player.value">
+                    {{ player.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+<!--    <formly-form-->
+<!--        [form]="form"-->
+<!--        [fields]="fields"-->
+<!--        [options]="options"-->
+<!--        [model]="model"-->
+<!--    ></formly-form>-->
+
+<!--    <h1>is {{ isLoading }}</h1>-->
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid || isLoadingAdd"
+        [disabled]="!model.isValid() || isLoadingAdd"
     >
         <ng-container *ngIf="!isLoadingAdd">
             LEAVE TOURNAMENT
@@ -24,6 +51,13 @@
         <ng-container *ngIf="isLoadingAdd">
             <i class="fa fa-spinner fa-spin"></i>
         </ng-container>
+    </button>
+
+    <button
+        mat-raised-button
+        (click)="closeDialog($event)"
+    >
+        CANCEL
     </button>
 
     @if (isLoading) {
@@ -37,10 +71,10 @@
 
 <h3>Eliminated players</h3>
 
-<ng-container *ngIf="conductedSeatOpens && conductedSeatOpens.length > 0; else noSeatOpens;">
+<ng-container *ngIf="conductedFinishes().length > 0; else noSeatOpens;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedSeatOpens; let i = index">
+            <ng-container *ngFor="let e of conductedFinishes(); let i = index">
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, hh:mm:ss' }}
@@ -83,10 +117,10 @@
 
 <h3>Eliminations</h3>
 
-<ng-container *ngIf="conductedEliminations && conductedEliminations.length > 0; else noEliminations;">
+<ng-container *ngIf="conductedEliminations().length > 0; else noEliminations;">
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedEliminations; let i = index">
+            <ng-container *ngFor="let e of conductedEliminations(); let i = index">
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, hh:mm:ss' }}

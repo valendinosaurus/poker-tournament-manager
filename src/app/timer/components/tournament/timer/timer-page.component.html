@@ -1,0 +1,11 @@
+<ng-container>
+    <app-overview *ngIf="canShow"></app-overview>
+</ng-container>
+
+<div *ngIf="isNotAllowed">
+    <h1>
+        You are not allowed to see this tournament
+    </h1>
+</div>
+
+

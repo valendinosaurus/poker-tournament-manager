@@ -1,6 +1,10 @@
 import { Component, effect, input } from '@angular/core';
 import { DecimalPipe, NgIf, NgTemplateOutlet } from '@angular/common';
 
+// @ts-ignore
+import confetti from 'canvas-confetti';
+import { RankPipe } from '../rank.pipe';
+
 declare var anime: any;
 
 @Component({
@@ -9,7 +13,8 @@ declare var anime: any;
     imports: [
         DecimalPipe,
         NgIf,
-        NgTemplateOutlet
+        NgTemplateOutlet,
+        RankPipe
     ],
     templateUrl: './animation-bubble-boy.component.html',
 })
@@ -17,6 +22,7 @@ export class AnimationBubbleBoyComponent {
 
     isAnimating = input.required<boolean>();
     name = input.required<string>();
+    rank = input.required<number>();
 
     _confettiEffect = effect(() => {
         if (this.isAnimating()) {
@@ -51,14 +57,16 @@ export class AnimationBubbleBoyComponent {
 
     shoot(withRandom = false) {
         try {
-            this.confetti({
+            confetti({
                 angle: 90,
+                particleCount: 1000,
                 spread: 360,
-                particleCount: this.random(4000, 5000),
+                scalar: 3,
                 origin: {
                     y: withRandom ? Math.random() : 0.4,
                     x: withRandom ? Math.random() : 0.5,
-                }
+                },
+                shapes: ['circle']
             });
         } catch (e) {
             // noop, confettijs may not be loaded yet
@@ -67,11 +75,6 @@ export class AnimationBubbleBoyComponent {
 
     random(min: number, max: number) {
         return Math.random() * (max - min) + min;
-    }
-
-    confetti(args: any) {
-        // @ts-ignore
-        return window['confetti'].apply(this, arguments);
     }
 
 }

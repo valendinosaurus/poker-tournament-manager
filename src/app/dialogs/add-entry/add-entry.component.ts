@@ -1,108 +1,89 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
+import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
-import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { Player } from '../../shared/models/player.interface';
 import { FetchService } from '../../core/services/fetch.service';
-import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { Tournament } from '../../shared/models/tournament.interface';
-import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { TournamentService } from '../../core/services/util/tournament.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { TimerStateService } from '../../timer/services/timer-state.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { AddEntryModel } from './add-entry-model.interface';
 
 @Component({
     selector: 'app-add-re-entry',
     templateUrl: './add-entry.component.html',
     styleUrls: ['./add-entry.component.scss'],
     standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe]
+    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule, JsonPipe]
 })
 export class AddEntryComponent implements OnInit {
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: { playerId: number | undefined, tournamentId: number };
-    fields: FormlyFieldConfig[];
+    playersToEnter: Signal<{ label: string, value: number }[]>;
+    conductedEntries: Signal<ConductedEntry[]>;
+
+    model: AddEntryModel;
 
     private dialogRef: MatDialogRef<AddEntryComponent> = inject(MatDialogRef<AddEntryComponent>);
     data: {
-        tournamentId: number,
         isReentry: boolean,
-        clientId: number,
-        tournamentName: string,
     } = inject(MAT_DIALOG_DATA);
 
-    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
-    private destroyRef: DestroyRef = inject(DestroyRef);
     private tEventApiService: TEventApiService = inject(TEventApiService);
-
-    allPlayers: { label: string, value: number }[];
-    eligibleForEntryOrReEntry: Player[];
-    conductedEntries: ConductedEntry[];
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     private dialog: MatDialog = inject(MatDialog);
 
     ngOnInit(): void {
-        this.fetchService.getFetchTrigger$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId)),
-            tap((tournament: Tournament) => {
-                this.eligibleForEntryOrReEntry = this.tournamentService.getPlayersEligibleForEntryOrReEntry(tournament, this.data.isReentry);
-                this.allPlayers = this.eligibleForEntryOrReEntry.map(
-                    player => ({
-                        label: player.name,
-                        value: player.id
-                    })
-                );
+        this.initModel();
 
-                this.conductedEntries = this.tournamentService.getConductedEntries(tournament);
+        const players = this.data.isReentry
+            ? this.timerStateService.eligibleForReEntry
+            : this.timerStateService.eligibleForEntry;
 
-                this.initModel();
-                this.initFields();
+        console.log('players', players());
+
+        this.playersToEnter = computed(() => players().map(
+            player => ({
+                label: player.name,
+                value: player.id
             })
-        ).subscribe();
+        ));
 
-        this.fetchService.trigger();
+        this.conductedEntries = this.timerStateService.conductedEntries;
     }
 
     private initModel(): void {
         this.model = {
-            playerId: undefined,
-            tournamentId: this.data.tournamentId
+            playerId: signal(undefined),
+            isValid: computed(() => this.model.playerId() !== undefined)
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers)
-        ];
-    }
+    onSubmit(): void {
+        const playerId = this.model.playerId();
 
-    onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
-        if (model.playerId && model.tournamentId) {
+        if (playerId) {
             this.entryApiService.post$({
                 id: undefined,
-                playerId: model.playerId,
-                tournamentId: model.tournamentId,
+                playerId: playerId,
+                tournamentId: this.timerStateService.tournament().id,
                 type: this.data.isReentry ? EntryType.RE_ENTRY : EntryType.ENTRY,
                 timestamp: -1
             }).pipe(
@@ -112,14 +93,14 @@ export class AddEntryComponent implements OnInit {
                     return of(null);
                 }),
                 tap(() => {
-                    const playerName = this.eligibleForEntryOrReEntry.filter(e => e.id === model.playerId)[0].name;
+                    const playerName = this.playersToEnter().filter(e => e.value === playerId)[0].label;
                     this.notificationService.success(`${this.data.isReentry ? 'Re-Entry' : 'Entry'} - ${playerName}`);
                 }),
                 switchMap(() => {
-                    const playerName = this.eligibleForEntryOrReEntry.filter(e => e.id === model.playerId)[0].name;
+                    const playerName = this.playersToEnter().filter(e => e.value === playerId)[0].label;
 
                     return this.tEventApiService.post$(
-                        model.tournamentId,
+                        this.timerStateService.tournament().id,
                         `<strong>${playerName}</strong> entered the tournament!`,
                         TEventType.ENTRY
                     );
@@ -137,7 +118,7 @@ export class AddEntryComponent implements OnInit {
                 {
                     data: {
                         title: 'Remove Entry',
-                        body: `Do you really want to remove the entry of <strong>${playerName}</strong> from tournament <strong>${this.data.tournamentName}</strong>`,
+                        body: `Do you really want to remove the entry of <strong>${playerName}</strong> from tournament <strong>${this.timerStateService.tournament().name}</strong>`,
                         confirm: 'Remove Entry',
                         isDelete: true
                     }
@@ -157,7 +138,7 @@ export class AddEntryComponent implements OnInit {
                                 }),
                                 switchMap(() => {
                                     return this.tEventApiService.post$(
-                                        this.data.tournamentId,
+                                        this.timerStateService.tournament().id,
                                         `<strong>${playerName}</strong> left the tournament!`,
                                         TEventType.CORRECTION
                                     );

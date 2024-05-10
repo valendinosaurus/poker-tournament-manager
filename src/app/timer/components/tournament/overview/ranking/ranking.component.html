@@ -20,7 +20,7 @@
                     Points
                 </th>
             </tr>
-            <ng-container *ngFor="let e of missingRankes">
+            <ng-container *ngFor="let e of missingRanks()">
                 <tr class="opaque">
                     <td>
                 <span class="flex-td">
@@ -53,7 +53,7 @@
                     </td>
                 </tr>
             </ng-container>
-            <ng-container *ngFor="let e of combFinishes">
+            <ng-container *ngFor="let e of combFinishes()">
                 <tr>
                     <td>
                 <span class="flex-td">

@@ -1,105 +1,82 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
-import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { Player } from '../../shared/models/player.interface';
 import { FetchService } from '../../core/services/fetch.service';
-import { ActionEventApiService } from '../../core/services/api/action-event-api.service';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { TournamentService } from '../../core/services/util/tournament.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Tournament } from '../../shared/models/tournament.interface';
 import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { TimerStateService } from '../../timer/services/timer-state.service';
+import { AddAddonModel } from './add-addon-model.interface';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
     selector: 'app-add-addon',
     templateUrl: './add-addon.component.html',
     styleUrls: ['./add-addon.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule]
 })
 export class AddAddonComponent implements OnInit {
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: { playerId: number | undefined, tournamentId: number };
-    fields: FormlyFieldConfig[];
+    playersToAddOn: Signal<{ label: string, value: number }[]>;
+    conductedAddons: Signal<ConductedEntry[]>;
+
+    model: AddAddonModel;
 
     private dialogRef: MatDialogRef<AddAddonComponent> = inject(MatDialogRef<AddAddonComponent>);
-    data: {
-        tournamentId: number,
-        tournamentName: string,
-        clientId: number
-    } = inject(MAT_DIALOG_DATA);
 
-    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
-    private destroyRef: DestroyRef = inject(DestroyRef);
     private tEventApiService: TEventApiService = inject(TEventApiService);
-
-    allPlayers: { label: string, value: number }[];
-    eligibleForAddon: Player[];
-    conductedAddons: ConductedEntry[];
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     private dialog: MatDialog = inject(MatDialog);
 
     ngOnInit(): void {
-        this.fetchService.getFetchTrigger$().pipe(
-            takeUntilDestroyed(this.destroyRef),
-            switchMap(() => this.tournamentApiService.get$(this.data.tournamentId)),
-            tap((tournament: Tournament) => {
-                this.eligibleForAddon = this.tournamentService.getPlayersEligibleForAddon(tournament);
-                this.allPlayers = this.eligibleForAddon.map(
-                    player => ({
-                        label: player.name,
-                        value: player.id
-                    })
-                );
-
-                this.conductedAddons = this.tournamentService.getConductedAddons(tournament);
-
-                this.initModel();
-                this.initFields();
-            })
-        ).subscribe();
+        this.initModel();
+        this.initSignals();
     }
 
     private initModel(): void {
         this.model = {
-            playerId: undefined,
-            tournamentId: this.data.tournamentId
+            playerId: signal(undefined),
+            isValid: computed(() => this.model.playerId() !== undefined)
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultSelectField('playerId', 'Player', true, this.allPlayers)
-        ];
+    private initSignals(): void {
+        this.playersToAddOn = computed(() => this.timerStateService.eligibleForAddon().map(player => ({
+                label: player.name,
+                value: player.id
+            })
+        ));
+
+        this.conductedAddons = this.timerStateService.conductedAddons;
     }
 
-    onSubmit(model: { playerId: number | undefined, tournamentId: number }): void {
-        if (model.playerId && model.tournamentId) {
+    onSubmit(): void {
+        const playerId = this.model.playerId();
+
+        if (playerId) {
             this.entryApiService.post$({
                 id: undefined,
-                playerId: model.playerId,
-                tournamentId: model.tournamentId,
+                playerId: playerId,
+                tournamentId: this.timerStateService.tournament().id,
                 type: EntryType.ADDON,
                 timestamp: -1
             }).pipe(
@@ -108,15 +85,11 @@ export class AddAddonComponent implements OnInit {
                     this.notificationService.error('Error adding Addon');
                     return of(null);
                 }),
-                tap(() => {
-                    const playerName = this.eligibleForAddon.filter(e => e.id === model.playerId)[0].name;
-                    this.notificationService.success(`Addon - ${playerName}`);
-                }),
                 switchMap(() => {
-                    const playerName = this.eligibleForAddon.filter(e => e.id === model.playerId)[0].name;
+                    const playerName = this.playersToAddOn().filter(e => e.value === playerId)[0].label;
 
                     return this.tEventApiService.post$(
-                        this.data.tournamentId,
+                        this.timerStateService.tournament().id,
                         `Addon for <strong>${playerName}</strong>!`,
                         TEventType.ADDON
                     );
@@ -134,7 +107,7 @@ export class AddAddonComponent implements OnInit {
                 {
                     data: {
                         title: 'Remove Addon',
-                        body: `Do you really want to remove the addon of <strong>${playerName}</strong> from tournament <strong>${this.data.tournamentName}</strong>`,
+                        body: `Do you really want to remove the addon of <strong>${playerName}</strong> from tournament <strong>${this.timerStateService.tournament().name}</strong>`,
                         confirm: 'Remove Addon',
                         isDelete: true
                     }
@@ -149,12 +122,9 @@ export class AddAddonComponent implements OnInit {
                                 this.notificationService.error('Error removing Addon');
                                 return of(null);
                             }),
-                            tap(() => {
-                                this.notificationService.success(`Addon deleted - ${playerName}`);
-                            }),
                             switchMap(() => {
                                 return this.tEventApiService.post$(
-                                    this.data.tournamentId,
+                                    this.timerStateService.tournament().id,
                                     `<strong>${playerName}</strong> cancelled his Addon!`,
                                     TEventType.CORRECTION
                                 );

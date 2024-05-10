@@ -27,6 +27,7 @@ import {
     BlindStructureViewComponent
 } from '../../../shared/components/blind-structure-view/blind-structure-view.component';
 import { AssignBlindStructureComponent } from '../assign-blind-structure/assign-blind-structure.component';
+import { TimerStateService } from '../../../timer/services/timer-state.service';
 
 @Component({
     selector: 'app-admin-tournament',
@@ -48,6 +49,7 @@ export class AdminTournamentComponent implements OnInit {
     private dialog: MatDialog = inject(MatDialog);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private trigger$: ReplaySubject<void> = new ReplaySubject<void>();
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     blindPositions: number[];
 
@@ -68,7 +70,10 @@ export class AdminTournamentComponent implements OnInit {
             switchMap(([_, tId]: [void, number]) =>
                 this.tournamentApiService.get$(tId)
             ),
-            tap((tournament: Tournament) => this.blindPositions = tournament.structure.map(e => e.position))
+            tap((tournament: Tournament) => {
+                this.blindPositions = tournament.structure.map(e => e.position);
+                this.timerStateService.tournament.set(tournament);
+            })
         );
 
         this.trigger$.next();
@@ -177,9 +182,7 @@ export class AdminTournamentComponent implements OnInit {
     addPlayers(tournament: Tournament): void {
         const dialogRef = this.dialog.open(AddPlayerComponent, {
             data: {
-                tournament: tournament,
-                multi: true,
-                clientId: -1
+                multi: true
             }
         });
 

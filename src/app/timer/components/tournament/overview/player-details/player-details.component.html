@@ -14,7 +14,7 @@
                 <th class="center"><small>Addons</small></th>
                 <th class="center"><small>Eliminations</small></th>
             </tr>
-            <ng-container *ngFor="let e of combination">
+            <ng-container *ngFor="let e of combination()">
                 <tr [class.finished]="e.isFinished">
                     <td>
                     <span class="flex-td">

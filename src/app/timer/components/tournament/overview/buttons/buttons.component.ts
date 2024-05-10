@@ -8,11 +8,10 @@ import {
     OnChanges,
     OnInit,
     Output,
-    SimpleChanges
+    WritableSignal
 } from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
-import { ActionEventApiService } from '../../../../../core/services/api/action-event-api.service';
 import { tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddRebuyComponent } from '../../../../../dialogs/add-rebuy/add-rebuy.component';
@@ -35,6 +34,7 @@ import {
 } from '../../../../../animation/animation-bubble-boy/animation-bubble-boy.component';
 import { AnimationSeatOpenComponent } from '../../../../../animation/animation-seat-open/animation-seat-open.component';
 import { AnimationWinnerComponent } from '../../../../../animation/animation-winner/animation-winner.component';
+import { TimerStateService } from '../../../../services/timer-state.service';
 
 declare var anime: any;
 
@@ -59,13 +59,13 @@ declare var anime: any;
 })
 export class ButtonsComponent implements OnInit, OnChanges {
 
-    @Input() clientId: number;
+    metadata: WritableSignal<SeriesMetadata | undefined>;
+    isSimpleTournament: WritableSignal<boolean>;
+    isTournamentFinished: WritableSignal<boolean>;
+    isRebuyPhaseFinished: WritableSignal<boolean>;
+
     @Input() running: boolean;
     @Input() tournament: Tournament;
-    @Input() seriesMetadata: SeriesMetadata | null;
-    @Input() isSimpleTournament: boolean;
-    @Input() isRebuyPhaseFinished: boolean;
-    @Input() isTournamentFinished: boolean;
 
     isAnimatingSeatOpen$ = new BehaviorSubject(false);
     isAnimatingBubbleBoy$ = new BehaviorSubject(false);
@@ -76,6 +76,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
     winnerName = 'WINNER';
     winnerPrice = 0;
     lastPrice = 0;
+    lastRank = 0;
     lastIsBubble = false;
     canStartTournament = false;
     playerHasToBeMoved = false;
@@ -83,16 +84,15 @@ export class ButtonsComponent implements OnInit, OnChanges {
     isFullscreen = false;
     elem: HTMLElement;
     menuVisible = false;
-    isRebuyPhaseFinished$ = new ReplaySubject<boolean>();
     isAdaptedPayoutSumCorrect = true;
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private rankingService: RankingService = inject(RankingService);
-    private eventApiService: ActionEventApiService = inject(ActionEventApiService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
     private document: Document = inject(DOCUMENT);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -113,25 +113,19 @@ export class ButtonsComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
+        this.metadata = this.timerStateService.metadata;
+        this.isTournamentFinished = this.timerStateService.isTournamentFinished;
+        this.isSimpleTournament = this.timerStateService.isSimpleTournament;
+        this.isRebuyPhaseFinished = this.timerStateService.isRebuyPhaseFinished;
         this.elem = this.document.documentElement;
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
+    ngOnChanges(): void {
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament.id);
 
         if (adaptedPayouts) {
-            const {totalPricePool, deduction} = this.rankingService.getTotalPricePool(
-                this.tournament.entries,
-                this.tournament.buyInAmount,
-                this.tournament.rebuyAmount,
-                this.tournament.addonAmount,
-                this.tournament.initialPricePool,
-                this.seriesMetadata?.percentage,
-                this.seriesMetadata?.maxAmountPerTournament
-            );
-
             const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
-            this.isAdaptedPayoutSumCorrect = totalPricePool === adaptedSum;
+            this.isAdaptedPayoutSumCorrect = this.timerStateService.totalPricePool() === adaptedSum;
         } else {
             this.isAdaptedPayoutSumCorrect = true;
         }
@@ -151,10 +145,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
         if (draw) {
             this.playerHasToBeMoved = this.getPlayerHasToBeMoved(draw);
             this.tableHasToBeEliminated = draw.tableHasToBeEliminated;
-        }
-
-        if (changes['isRebuyPhaseFinished']?.currentValue !== undefined) {
-            this.isRebuyPhaseFinished$.next(this.isRebuyPhaseFinished);
         }
     }
 
@@ -177,12 +167,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
     addRebuy(): void {
         const dialogRef = this.dialog.open(AddRebuyComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournamentId: this.tournament.id,
-                tournamentName: this.tournament.name,
-                clientId: this.clientId
-            }
+            ...TIMER_DIALOG_PANEL_CLASS
         });
 
         dialogRef.afterClosed().pipe(
@@ -193,12 +178,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
     addAddon(): void {
         const dialogRef = this.dialog.open(AddAddonComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournamentId: this.tournament.id,
-                tournamentName: this.tournament.name,
-                clientId: this.clientId
-            }
+            ...TIMER_DIALOG_PANEL_CLASS
         });
 
         dialogRef.afterClosed().pipe(
@@ -210,9 +190,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
         const dialogRef = this.dialog.open(TableDrawDialogComponent, {
             ...DEFAULT_DIALOG_POSITION,
             ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournament: this.tournament,
-            },
             id: 'draw'
         });
 
@@ -224,12 +201,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
     seatOpen(): void {
         const dialogRef = this.dialog.open(AddFinishComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            ...TIMER_DIALOG_PANEL_CLASS,
-            data: {
-                tournament: this.tournament,
-                metadata: this.seriesMetadata,
-                clientId: this.clientId
-            }
+            ...TIMER_DIALOG_PANEL_CLASS
         });
 
         dialogRef.afterClosed().pipe(
@@ -241,6 +213,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
                     this.lastIsBubble = e.isBubble;
                     this.winnerPrice = e.winnerPrice;
                     this.winnerName = e.winnerName;
+                    this.lastRank = e.rank;
 
                     if (this.lastIsBubble) {
                         this.isAnimatingBubbleBoy$.next(true);
@@ -299,11 +272,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
         const dialogRef = this.dialog.open(
             MenuDialogComponent, {
                 data: {
-                    isSimpleTournament: this.isSimpleTournament,
-                    isRebuyPhaseFinished$: this.isRebuyPhaseFinished$,
-                    tournament: this.tournament,
-                    seriesMetadata: this.seriesMetadata,
-                    clientId: this.clientId,
                     running: this.running,
                     isAddPlayerBlocked: this.isAddPlayerBlocked
                 },

@@ -18,6 +18,10 @@
         {{ name().toLocaleUpperCase() }}
     </span>
 
+    <span class="word gray">
+        {{ rank() | rank }} Place
+    </span>
+
     @if (price() > 0) {
         <span class="word green">
             $ {{ price() }}
@@ -26,20 +30,20 @@
 </div>
 
 
-<div
-    *ngIf="price() > 0"
-    id="itm-animation">
-    <ng-container *ngTemplateOutlet="money"></ng-container>
-</div>
+<!--<div-->
+<!--    *ngIf="price() > 0"-->
+<!--    id="itm-animation">-->
+<!--    <ng-container *ngTemplateOutlet="money"></ng-container>-->
+<!--</div>-->
 
-<ng-template #money>
-    <div id="money">
-        @for (c of config; track c) {
-            <div
-                class="bill"
-                [style.left.vw]="c.left"
-                [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"
-            ></div>
-        }
-    </div>
-</ng-template>
+<!--<ng-template #money>-->
+<!--    <div id="money">-->
+<!--        @for (c of config; track c) {-->
+<!--            <div-->
+<!--                class="bill"-->
+<!--                [style.left.vw]="c.left"-->
+<!--                [ngStyle]="{ 'animation-duration' :  (c.duration) + 's'}"-->
+<!--            ></div>-->
+<!--        }-->
+<!--    </div>-->
+<!--</ng-template>-->

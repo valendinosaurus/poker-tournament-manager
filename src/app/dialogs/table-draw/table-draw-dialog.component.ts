@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, WritableSignal } from '@angular/core';
 import { TableDraw } from '../../shared/models/table-draw.interface';
 import { Player } from '../../shared/models/player.interface';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { TableDrawService } from '../../core/services/table-draw.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
@@ -13,7 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TableDrawStateComponent } from '../../shared/components/table-draw-state/table-draw-state.component';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
+import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Component({
     selector: 'app-table-draw-dialog',
@@ -24,9 +25,7 @@ import { NgIf, NgFor } from '@angular/common';
 })
 export class TableDrawDialogComponent implements OnInit {
 
-    data: {
-        tournament: Tournament
-    } = inject(MAT_DIALOG_DATA);
+    tournament: WritableSignal<Tournament>;
 
     tableDraw: TableDraw;
     maxPlayersPerTable = 9;
@@ -36,18 +35,21 @@ export class TableDrawDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<TableDrawDialogComponent> = inject(MatDialogRef<TableDrawDialogComponent>);
     private tableDrawService: TableDrawService = inject(TableDrawService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     ngOnInit() {
-        const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.data.tournament.id);
+        this.tournament = this.timerStateService.tournament;
 
-        this.testPlayers = [...this.data.tournament.players];
+        const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
+
+        this.testPlayers = [...this.tournament().players];
 
         if (draw) {
             this.tableDraw = draw;
-            draw.tournament.finishes = [...this.data.tournament.finishes];
+            draw.tournament.finishes = [...this.tournament().finishes];
             this.loadExistingDrawAndCheck(draw);
         } else {
-            // this.availablePlayers = [...this.data.tournament.players];
+            // this.availablePlayers = [...this.tournament().players];
             this.setupEmptyTables();
         }
     }
@@ -57,7 +59,7 @@ export class TableDrawDialogComponent implements OnInit {
     }
 
     setupEmptyTables(): void {
-        this.tableDraw = this.tableDrawService.setupEmptyTables(this.data.tournament, this.maxPlayersPerTable);
+        this.tableDraw = this.tableDrawService.setupEmptyTables(this.tournament(), this.maxPlayersPerTable);
     }
 
     confirmSetup(): void {
@@ -72,7 +74,7 @@ export class TableDrawDialogComponent implements OnInit {
     }
 
     reset(): void {
-        this.tableDrawService.resetTableDraw(this.data.tournament.id);
+        this.tableDrawService.resetTableDraw(this.tournament().id);
         this.tableDraw.tables = [];
         this.tableDraw.state = TableDrawState.BLANK;
         this.tableDraw.tableHasToBeEliminated = false;

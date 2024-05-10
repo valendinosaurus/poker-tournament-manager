@@ -1,9 +1,8 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { Entry } from '../../../../../shared/models/entry.interface';
-import { Player } from '../../../../../shared/models/player.interface';
-import { Finish } from '../../../../../shared/models/finish.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { DecimalPipe } from '@angular/common';
+import { TimerStateService } from '../../../../services/timer-state.service';
 
 @Component({
     selector: 'app-chips-overview',
@@ -12,35 +11,42 @@ import { DecimalPipe } from '@angular/common';
     standalone: true,
     imports: [DecimalPipe],
 })
-export class ChipsOverviewComponent implements OnChanges {
+export class ChipsOverviewComponent implements OnInit {
 
-    @Input() entries: Entry[];
-    @Input() players: Player[];
-    @Input() finishes: Finish[];
-    @Input() startStack: number;
-    @Input() rebuyStack: number;
-    @Input() addonStack: number;
+    totalChips: Signal<number>;
+    averageStack: Signal<number>;
 
-    totalChips: number = 0;
-    averageStack: number = 0;
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
-    ngOnChanges(): void {
-        const entries = this.entries.filter((e: Entry) => e.type === EntryType.ENTRY).length;
-        const rebuys = this.entries.filter((e: Entry) => e.type === EntryType.REBUY).length;
-        const addons = this.entries.filter((e: Entry) => e.type === EntryType.ADDON).length;
-        const reEntries = this.entries.filter((e: Entry) => e.type === EntryType.RE_ENTRY).length;
+    ngOnInit(): void {
+        const tournament = computed(() => this.timerStateService.tournament());
 
-        this.totalChips = entries * this.startStack
-            + reEntries * this.startStack
-            + rebuys * this.rebuyStack
-            + addons * this.addonStack;
+        const entries = computed(() => tournament().entries.filter((e: Entry) => e.type === EntryType.ENTRY).length);
+        const rebuys = computed(() => tournament().entries.filter((e: Entry) => e.type === EntryType.REBUY).length);
+        const addons = computed(() => tournament().entries.filter((e: Entry) => e.type === EntryType.ADDON).length);
+        const players = computed(() => tournament().players);
+        const finishes = computed(() => tournament().finishes);
 
-        const playersIn = this.players.length - this.finishes.length;
+        const reEntries = computed(() => tournament().entries.filter((e: Entry) => e.type === EntryType.RE_ENTRY).length);
+        const startStack = computed(() => tournament().startStack);
+        const rebuyStack = computed(() => tournament().rebuyStack);
+        const addonStack = computed(() => tournament().addonStack);
 
-        if (this.finishes.length === this.players.length) {
-            this.averageStack = this.totalChips;
-        } else {
-            this.averageStack = Math.floor(this.totalChips / playersIn);
-        }
+        this.totalChips = computed(() =>
+            entries() * startStack()
+            + reEntries() * startStack()
+            + rebuys() * rebuyStack()
+            + addons() * addonStack()
+        );
+
+        const playersIn = computed(() => players().length - finishes().length);
+
+        this.averageStack = computed(() => {
+            if (finishes().length === players().length) {
+                return this.totalChips();
+            } else {
+                return Math.floor(this.totalChips() / playersIn());
+            }
+        });
     }
 }

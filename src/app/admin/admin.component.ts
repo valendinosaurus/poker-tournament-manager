@@ -16,8 +16,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthUtilService } from '../core/services/auth-util.service';
+import { take, tap } from 'rxjs/operators';
+import { Player } from '../shared/models/player.interface';
+import { PlayerApiService } from '../core/services/api/player-api.service';
+import { TimerStateService } from '../timer/services/timer-state.service';
 
 @Component({
     selector: 'app-admin',
@@ -56,12 +59,22 @@ export class AdminComponent implements OnInit {
     isOpen = signal(window.innerWidth >= 800);
 
     private authUtilService: AuthUtilService = inject(AuthUtilService);
+    private playerApiService: PlayerApiService = inject(PlayerApiService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     ngOnInit() {
         this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
         this.user$ = this.authUtilService.getUser$();
         this.isAdmin$ = this.authUtilService.isAdmin$();
         this.isPro$ = this.authUtilService.isPro$();
+
+        this.playerApiService.getAll$().pipe(
+            take(1),
+            tap((players: Player[]) => {
+                console.log('all', players);
+                this.timerStateService.allAvailablePlayers.set(players);
+            })
+        ).subscribe();
     }
 
     toggleSidenav(): void {

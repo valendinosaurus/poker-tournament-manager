@@ -1,7 +1,7 @@
 <div class="overview">
     <div class="overview-header">
         <span style="font-weight: bold">{{ today | date:'dd.MM.YYYY HH:mm' }}</span>
-        <span style="font-weight: bold">{{ tournament.name }}</span>
+        <span style="font-weight: bold">{{ tournament().name }}</span>
     </div>
 
     <div class="overview-wrapper">
@@ -11,41 +11,24 @@
                     <div class="keen-slider" #sliderRef>
                         <div class="keen-slider__slide number-slide1 slide-blinds">
                             <app-blind-level-overview
-                                [isSimpleTournament]="isSimpleTournament"
-                                [levels]="tournament.structure"
-                                [currentLevelIndex]="currentLevelIndex"
+                                [levels]="tournament().structure"
                                 [showCondensed]="showCondensedBlinds$ | async"
                                 (addBlind)="addBlind()"
                             ></app-blind-level-overview>
                         </div>
 
                         <div class="keen-slider__slide number-slide2 slide-stats">
-                            <app-player-details
-                                [players]="tournament.players"
-                                [entries]="tournament.entries"
-                                [finishes]="tournament.finishes"
-                                [eliminations]="tournament.eliminations"
-                                [trigger]="scrollTrigger$ | async"
-                                [tId]="tournament.id"
-                                [clientId]="clientId"
-                            ></app-player-details>
+                            <app-player-details></app-player-details>
                         </div>
 
                         <div class="keen-slider__slide number-slide3 slide-stats">
                             <app-ranking
-                                *ngIf="tournament.finishes.length > tournament.players.length / 2; else blinds;"
-                                [players]="tournament.players"
-                                [entries]="tournament.entries"
-                                [finishes]="tournament.finishes"
-                                [tournament]="tournament"
-                                [seriesMetadata]="seriesMetadata"
+                                *ngIf="tournament().finishes.length > tournament().players.length / 2; else blinds;"
                             ></app-ranking>
 
                             <ng-template #blinds>
                                 <app-blind-level-overview
-                                    [isSimpleTournament]="isSimpleTournament"
-                                    [levels]="tournament.structure"
-                                    [currentLevelIndex]="currentLevelIndex"
+                                    [levels]="tournament().structure"
                                     [showCondensed]="showCondensedBlinds$ | async"
                                     (addBlind)="addBlind()"
                                 ></app-blind-level-overview>
@@ -56,19 +39,9 @@
                             class="keen-slider__slide number-slide4 slide-stats"
                         >
                             @if (isTournamentPartOfSeries()) {
-                                <app-leaderboard-info
-                                    [seriesMetadata]="seriesMetadata"
-                                ></app-leaderboard-info>
+                                <app-leaderboard-info></app-leaderboard-info>
                             } @else {
-                                <app-player-details
-                                    [players]="tournament.players"
-                                    [entries]="tournament.entries"
-                                    [finishes]="tournament.finishes"
-                                    [eliminations]="tournament.eliminations"
-                                    [trigger]="scrollTrigger$ | async"
-                                    [tId]="tournament.id"
-                                    [clientId]="clientId"
-                                ></app-player-details>
+                                <app-player-details></app-player-details>
                             }
                         </div>
                     </div>
@@ -103,16 +76,16 @@
                     {{ currentLevelTimeLeft | time }}
                 </h1>
 
-                <div *ngIf="!running && !finished" class="popup paused">
+                <div *ngIf="!running && !isFinished()" class="popup paused">
                     PAUSED
                 </div>
 
-                <div *ngIf="finished" class="popup finished">
+                <div *ngIf="isFinished()" class="popup finished">
                     FINISHED
                 </div>
 
                 <countdown
-                    *ngIf="!finished"
+                    *ngIf="!isFinished()"
                     class="countdown"
                     #cd
                     (event)="handleEvent($event)"
@@ -121,16 +94,16 @@
             </div>
 
             <div
-                *ngIf="!finished && tournament.structure.length > 0"
+                *ngIf="!isFinished() && tournament().structure.length > 0"
                 class="current-level"
             >
                 <p class="level"
-                   [innerHTML]="levels[currentLevelIndex] | blindLevelText:!!(showCondensedBlinds$ | async):true"
+                   [innerHTML]="levels[currentLevelIndex()] | blindLevelText:!!(showCondensedBlinds$ | async):true"
                 ></p>
             </div>
 
             <div
-                *ngIf="!finished && tournament.structure.length > 1 && currentLevelIndex < tournament.structure.length"
+                *ngIf="!isFinished() && tournament().structure.length > 1 && currentLevelIndex() < tournament().structure.length"
                 class="next-level"
             >
                 <p class="next-level-title">
@@ -139,7 +112,7 @@
 
                 <p
                     class="next-level-text"
-                    [innerHTML]="levels[currentLevelIndex + 1] | blindLevelText:!!(showCondensedBlinds$ | async):false"
+                    [innerHTML]="levels[currentLevelIndex() + 1] | blindLevelText:!!(showCondensedBlinds$ | async):false"
                 ></p>
             </div>
 
@@ -148,12 +121,7 @@
             >
                 <app-buttons
                     [running]="running"
-                    [clientId]="clientId"
-                    [tournament]="tournament"
-                    [seriesMetadata]="seriesMetadata"
-                    [isRebuyPhaseFinished]="isRebuyPhaseFinished"
-                    [isSimpleTournament]="isSimpleTournament"
-                    [isTournamentFinished]="finished"
+                    [tournament]="tournament()"
                     (start)="start()"
                     (pause)="pause()"
                     (addMinute)="addMinute()"
@@ -170,39 +138,13 @@
                 Tournament Info
             </h3>
 
-            <app-payout-details
-                [entries]="tournament.entries"
-                [buyInAmount]="tournament.buyInAmount"
-                [rebuyAmount]="tournament.rebuyAmount"
-                [addonAmount]="tournament.addonAmount"
-                [payout]="tournament.payout"
-                [players]="tournament.players"
-                [finishes]="tournament.finishes"
-                [percentage]="seriesMetadata?.percentage"
-                [maxCap]="seriesMetadata?.maxAmountPerTournament"
-                [initialPricePool]="tournament.initialPricePool"
-                [tournamentId]="tournament.id"
-                (localRefresh)="refreshViews()"
-            ></app-payout-details>
+            <app-payout-details></app-payout-details>
 
-            <app-player-overview
-                [players]="tournament.players"
-                [finishes]="tournament.finishes"
-            ></app-player-overview>
+            <app-player-overview></app-player-overview>
 
-            <app-buyin-overview
-                [entries]="tournament.entries"
-                [tournament]="tournament"
-            ></app-buyin-overview>
+            <app-buyin-overview></app-buyin-overview>
 
-            <app-chips-overview
-                [entries]="tournament.entries"
-                [players]="tournament.players"
-                [startStack]="tournament.startStack"
-                [rebuyStack]="tournament.rebuyStack"
-                [addonStack]="tournament.addonStack"
-                [finishes]="tournament.finishes"
-            ></app-chips-overview>
+            <app-chips-overview></app-chips-overview>
         </div>
     </div>
 </div>

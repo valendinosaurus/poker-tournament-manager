@@ -4,10 +4,10 @@
             Entries
         </h4>
         <p class="big">
-            {{ textEntries }}
+            {{ textEntries() }}
         </p>
         <span class="small">
-            x {{ tournament.startStack | number:'':'de-CH' }}
+            x {{ tournament().startStack | number:'':'de-CH' }}
         </span>
     </div>
 
@@ -16,10 +16,10 @@
         >Rebuys
         </h4>
         <p class="big">
-            {{ textRebuys }}
+            {{ textRebuys() }}
         </p>
         <span class="small">
-            x {{ tournament.rebuyStack | number:'':'de-CH' }}
+            x {{ tournament().rebuyStack | number:'':'de-CH' }}
         </span>
     </div>
 
@@ -28,10 +28,10 @@
             Addons
         </h4>
         <p class="big">
-            {{ textAddons }}
+            {{ textAddons() }}
         </p>
         <span class="small">
-            x {{ tournament.addonStack | number:'':'de-CH' }}
+            x {{ tournament().addonStack | number:'':'de-CH' }}
         </span>
     </div>
 </div>

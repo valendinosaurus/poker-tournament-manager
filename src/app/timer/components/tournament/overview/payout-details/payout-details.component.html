@@ -3,62 +3,62 @@
         <span>
             effective price pool
         </span>
-        {{ totalPricePool | number:'':'de-CH' }} $
+        {{ totalPricePool() | number:'':'de-CH' }} $
     </h1>
 
     <h2
-        *ngIf="deduction > 0"
+        *ngIf="deduction() > 0"
         class="no-mb border-bottom-1-dark"
     >
         <span>
             total price pool
         </span>
         <span>
-            {{ +deduction + +totalPricePool  | number:'':'de-CH' }} $
+            {{ +deduction() + +totalPricePool()  | number:'':'de-CH' }} $
         </span>
     </h2>
 
     <h2
-        *ngIf="initialPricePool > 0"
-        [class.no-mb]="initialPricePool > 0 && deduction > 0"
+        *ngIf="initialPricePool() > 0"
+        [class.no-mb]="initialPricePool() > 0 && deduction() > 0"
         class="no-mb border-bottom-1-dark"
     >
         <span>
             initial pricepool
         </span>
         <span class="opaque">
-            {{ initialPricePool | number:'':'de-CH' }} $
+            {{ initialPricePool() | number:'':'de-CH' }} $
         </span>
     </h2>
 
     <h2
-        *ngIf="deduction > 0"
+        *ngIf="deduction() > 0"
         class="border-bottom-1-dark"
     >
         <span>
             added to final pot
         </span>
         <span class="dark-red-opaque">
-            {{ deduction  | number:'':'de-CH' }} $
+            {{ deduction() | number:'':'de-CH' }} $
         </span>
     </h2>
 </div>
 
 <div class="stats-container border-bottom-2 w-100">
     <h4>
-        <span *ngIf="!isAdaptedPayoutSumCorrect">
+        <span *ngIf="!isAdaptedPayoutSumCorrect()">
             <i class="fa fa-exclamation-triangle mr-1"></i>
         </span>
 
         Payout structure
-        <ng-container *ngIf="wasDealMade">
+        <ng-container *ngIf="wasDealMade()">
             <span>
                 <i class="fa fa-handshake"></i>
                 DEAL WAS MADE
             </span>
         </ng-container>
 
-        <span *ngIf="playersLeft >= 2">
+        <span *ngIf="playersLeft() >= 2">
             <button
                 mat-flat-button
                 class="ml-0-5 round"
@@ -71,12 +71,11 @@
             </button>
         </span>
 
-        <span *ngIf="isPayoutAdapted">
-
+        <span *ngIf="isPayoutAdapted()">
             <button
                 mat-flat-button
                 class="ml-0-5 round"
-                matTooltip="Edit"
+                matTooltip="Remove"
                 matTooltipPosition="above"
                 [matTooltipHideDelay]="600000"
                 (click)="removeAdaptedPayouts()"
@@ -89,7 +88,7 @@
     <div class="overflow-y-auto">
         <div id="topd"></div>
         <table cellspacing="0" cellpadding="0">
-            <ng-container *ngFor="let e of payouts">
+            <ng-container *ngFor="let e of payouts()">
                 <tr [class.opaque]="!e.name">
                     <td>
                         <span class="flex-td">
@@ -114,8 +113,9 @@
                         </div>
                     </td>
                     <td class="bold text-align-right">
-                        {{ e.price | number:'':'de-CH' }} $
-                        <span class="regular">({{ e.percentage }})</span>
+                        <span class="green">{{ e.price | number:'':'de-CH' }} $</span>
+                        <br>
+                        <span class="regular"><small>({{ e.percentage }})</small></span>
                     </td>
                 </tr>
             </ng-container>

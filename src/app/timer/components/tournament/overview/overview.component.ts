@@ -5,14 +5,10 @@ import {
     ElementRef,
     HostListener,
     inject,
-    Input,
-    OnChanges,
     OnInit,
-    QueryList,
     signal,
-    SimpleChanges,
     ViewChild,
-    ViewChildren
+    WritableSignal
 } from '@angular/core';
 import { interval, Observable, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -39,6 +35,7 @@ import { LeaderboardInfoComponent } from './leaderboard/leaderboard-info.compone
 import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
 import { SeriesMetadata } from '../../../../shared/models/series.interface';
 import { DEFAULT_DIALOG_POSITION } from '../../../../core/const/app.const';
+import { TimerStateService } from '../../../services/timer-state.service';
 
 @Component({
     selector: 'app-overview',
@@ -63,30 +60,25 @@ import { DEFAULT_DIALOG_POSITION } from '../../../../core/const/app.const';
         BlindLevelTextPipe,
     ],
 })
-export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
+export class OverviewComponent implements OnInit, AfterViewInit {
 
-    @Input() clientId: number;
-    @Input() tournament: Tournament;
-    @Input() isSimpleTournament: boolean;
-    @Input() seriesMetadata: SeriesMetadata | null;
-
+    tournament: WritableSignal<Tournament>;
+    metadata: WritableSignal<SeriesMetadata | undefined>;
+    isFinished: WritableSignal<boolean>;
+    currentLevelIndex: WritableSignal<number>;
     isTournamentPartOfSeries = signal(false);
 
     levels: BlindLevel[];
 
-    currentLevelIndex = 0;
     currentLevelTimeLeft: number = 0;
     currentTimeLeftPercentage: number = 100;
     blindDuration: number = 0;
     blindDurationFixed: number = 0;
     showTimer = true;
     running = false;
-    finished = false;
 
     protected readonly window = window;
     countdownConfig: CountdownConfig;
-
-    isRebuyPhaseFinished = false;
 
     scrollTrigger$: ReplaySubject<string> = new ReplaySubject<string>();
 
@@ -100,12 +92,6 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     @ViewChild('cd') countdown!: CountdownComponent;
     @ViewChild('sliderRef') sliderRef: ElementRef<HTMLElement>;
 
-    @ViewChildren(ChipsOverviewComponent) chips: QueryList<ChipsOverviewComponent>;
-    @ViewChildren(PlayerOverviewComponent) playersCmp: QueryList<PlayerOverviewComponent>;
-    @ViewChildren(BuyinOverviewComponent) buyInCmp: QueryList<BuyinOverviewComponent>;
-    @ViewChild(PlayerDetailsComponent) playersDCmp: PlayerDetailsComponent;
-    @ViewChild(PayoutDetailsComponent) payoutCmp: PayoutDetailsComponent;
-    @ViewChild(RankingComponent) rankingCmp: RankingComponent;
     @ViewChild(BlindLevelOverviewComponent) blindCmp: BlindLevelOverviewComponent;
     @ViewChild(ButtonsComponent) buttonsCmp: ButtonsComponent;
 
@@ -118,6 +104,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownHandler(event: Event) {
@@ -131,32 +118,35 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.tournament = this.timerStateService.tournament;
+        this.metadata = this.timerStateService.metadata;
+        this.isFinished = this.timerStateService.isTournamentFinished;
+        this.currentLevelIndex = this.timerStateService.currentLevelIndex;
+
         this.showCondensedBlinds$ = this.localStorageService.getShowCondensedBlinds$();
 
         setInterval(() => {
             this.today = Date.now();
         }, 1);
-    }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        this.isTournamentPartOfSeries.set(this.seriesMetadata !== null);
+        this.isTournamentPartOfSeries.set(this.metadata() !== undefined);
 
-        if (this.tournament && this.tournament.structure.length > 0) {
-            this.levels = this.tournament.structure;
+        if (this.tournament().structure.length > 0) {
+            this.levels = this.tournament().structure;
 
             this.initLevels();
             this.initTimeValues();
             this.initCountdownConfig();
 
-            this.finished = !this.isSimpleTournament
-                && this.tournament.players.length === this.tournament.finishes.length
-                && this.tournament.players.length > 0;
+            this.timerStateService.isTournamentFinished.set(
+                !this.timerStateService.isSimpleTournament()
+                && this.tournament().players.length === this.tournament().finishes.length
+                && this.tournament().players.length > 0
+            );
 
             this.checkIsRebuyPhaseFinished();
 
             if (this.changes > 1) {
-                //    console.log('**** LIVE CHANGE');
-
                 if (this.running) {
                     setTimeout(() => {
                         this.countdown.resume();
@@ -168,12 +158,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
             this.changes++;
 
-            this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
-        }
-
-        if (this.clientId && this.tournament) {
-            this.tournamentService.tournamentId$.next(this.tournament.id);
-            this.tournamentService.clientId$.next(this.clientId);
+            this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament());
         }
     }
 
@@ -211,18 +196,18 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     private initTimeValues(): void {
-        const fromLocalStorage = this.localStorageService.getTournamentStateById(this.tournament.id);
+        const fromLocalStorage = this.localStorageService.getTournamentStateById(this.tournament().id);
 
         if (fromLocalStorage) {
             this.currentLevelTimeLeft = fromLocalStorage.timeLeft;
             this.blindDuration = fromLocalStorage.timeLeft;
-            this.currentLevelIndex = fromLocalStorage.levelIndex;
+            this.currentLevelIndex.set(fromLocalStorage.levelIndex);
         } else {
-            this.currentLevelTimeLeft = this.levels[this.currentLevelIndex].duration * 60;
-            this.blindDuration = this.levels[this.currentLevelIndex].duration * 60;
+            this.currentLevelTimeLeft = this.levels[this.currentLevelIndex()].duration * 60;
+            this.blindDuration = this.levels[this.currentLevelIndex()].duration * 60;
         }
 
-        this.blindDurationFixed = this.levels[this.currentLevelIndex].duration * 60;
+        this.blindDurationFixed = this.levels[this.currentLevelIndex()].duration * 60;
     }
 
     private initCountdownConfig(): void {
@@ -235,8 +220,14 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     private checkIsRebuyPhaseFinished(): void {
-        const rebuyEndLevel = this.tournament.structure.findIndex(b => b.endsRebuy);
-        this.isRebuyPhaseFinished = (this.currentLevelIndex > rebuyEndLevel || rebuyEndLevel === -1) && this.tournament.players.length > 0;
+        const rebuyEndLevel = this.tournament().structure.findIndex(b => b.endsRebuy);
+        this.timerStateService.isRebuyPhaseFinished.set(
+            (
+                this.currentLevelIndex() > rebuyEndLevel
+                || rebuyEndLevel === -1
+            )
+            && this.tournament().players.length > 0
+        );
     }
 
     handleEvent(e: CountdownEvent) {
@@ -246,14 +237,14 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
 
         if (e.action === 'done') {
             this.showTimer = false;
-            this.currentLevelIndex++;
+            this.currentLevelIndex.update(previous => previous + 1);
             this.checkIsRebuyPhaseFinished();
 
-            if (this.currentLevelIndex === this.levels.length) {
-                this.finished = true;
+            if (this.currentLevelIndex() === this.levels.length) {
+                this.timerStateService.isTournamentFinished.set(true);
             } else {
                 setTimeout(() => {
-                    this.currentLevelTimeLeft = this.levels[this.currentLevelIndex].duration * 60;
+                    this.currentLevelTimeLeft = this.levels[this.currentLevelIndex()].duration * 60;
                     this.blindDuration = this.currentLevelTimeLeft;
                     this.blindDurationFixed = this.currentLevelTimeLeft;
                     this.currentTimeLeftPercentage = 100;
@@ -264,8 +255,8 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
                     };
 
                     this.localStorageService.storeTournamentState(
-                        this.tournament.id,
-                        this.currentLevelIndex,
+                        this.tournament().id,
+                        this.currentLevelIndex(),
                         this.currentLevelTimeLeft
                     );
 
@@ -293,15 +284,15 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
             this.currentTimeLeftPercentage = (this.currentLevelTimeLeft / this.blindDurationFixed) * 100;
 
             this.localStorageService.storeTournamentState(
-                this.tournament.id,
-                this.currentLevelIndex,
+                this.tournament().id,
+                this.currentLevelIndex(),
                 this.currentLevelTimeLeft
             );
         }
     }
 
     start(): void {
-        if (!this.running && this.canStartTournament && !this.finished) {
+        if (!this.running && this.canStartTournament && !this.timerStateService.isTournamentFinished()) {
             this.running = true;
             this.countdown.resume();
         }
@@ -343,7 +334,7 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     goToPreviousLevel(): void {
-        this.currentLevelIndex -= 2;
+        this.currentLevelIndex.update(previous => previous - 2);
 
         this.handleEvent({
             status: CountdownStatus.done,
@@ -367,12 +358,6 @@ export class OverviewComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     refreshViews(): void {
-        this.playersCmp.forEach(e => e.ngOnChanges());
-        this.playersDCmp.ngOnChanges({});
-        this.buyInCmp.forEach(e => e.ngOnChanges());
-        this.chips.forEach(e => e.ngOnChanges());
-        this.payoutCmp.ngOnChanges({});
-        this.rankingCmp?.ngOnChanges({});
-        this.buttonsCmp.ngOnChanges({});
+        this.buttonsCmp.ngOnChanges();
     }
 }

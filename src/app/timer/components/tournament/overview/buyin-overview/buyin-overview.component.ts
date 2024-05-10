@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { Entry } from '../../../../../shared/models/entry.interface';
-import { Tournament } from '../../../../../shared/models/tournament.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { DecimalPipe } from '@angular/common';
+import { TimerStateService } from '../../../../services/timer-state.service';
+import { Tournament } from '../../../../../shared/models/tournament.interface';
 
 @Component({
     selector: 'app-buyin-overview',
@@ -11,25 +12,29 @@ import { DecimalPipe } from '@angular/common';
     standalone: true,
     imports: [DecimalPipe],
 })
-export class BuyinOverviewComponent implements OnChanges {
+export class BuyinOverviewComponent implements OnInit {
 
-    @Input() entries: Entry[];
-    @Input() tournament: Tournament;
+    tournament: Signal<Tournament>;
+    textEntries: Signal<string>;
+    textRebuys: Signal<string>;
+    textAddons: Signal<string>;
 
-    textEntries = '';
-    textRebuys = '';
-    textAddons = '';
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
-    ngOnChanges(): void {
-        const entries = this.entries.filter((e: Entry) => e.type === EntryType.ENTRY).length;
-        const reEntries = this.entries.filter((e: Entry) => e.type === EntryType.RE_ENTRY).length;
-        const rebuys = this.entries.filter((e: Entry) => e.type === EntryType.REBUY).length;
-        const addons = this.entries.filter((e: Entry) => e.type === EntryType.ADDON).length;
+    ngOnInit(): void {
+        this.tournament = computed(() => this.timerStateService.tournament());
+        const entries = computed(() =>
+            this.tournament().entries.filter((e: Entry) => e.type === EntryType.ENTRY).length
+        );
 
-        this.textEntries = `${entries + reEntries}`;
+        const reEntries = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.RE_ENTRY).length);
+        const rebuys = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.REBUY).length);
+        const addons = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.ADDON).length);
 
-        this.textRebuys = `${rebuys}`;
+        this.textEntries = computed(() => `${entries() + reEntries()}`);
 
-        this.textAddons = `${addons}`;
+        this.textRebuys = computed(() => `${rebuys()}`);
+
+        this.textAddons = computed(() => `${addons()}`);
     }
 }

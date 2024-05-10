@@ -8,43 +8,31 @@ import { ConductedFinish } from '../../../shared/models/util/conducted-finish.in
 import { Finish } from '../../../shared/models/finish.interface';
 import { ConductedElimination } from '../../../shared/models/util/conducted-elimination.interface';
 import { Elimination } from '../../../shared/models/elimination.interface';
-import { distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { ReplaySubject, zip } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ActionEventApiService } from '../api/action-event-api.service';
+import { TimerStateService } from '../../../timer/services/timer-state.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TournamentService {
 
-    tournamentId$ = new ReplaySubject<number>();
-    clientId$ = new ReplaySubject<number>();
-
     private actionEventApiService: ActionEventApiService = inject(ActionEventApiService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
-    postActionEvent$ = switchMap(
-        () => zip(
-            this.tournamentId$,
-            this.clientId$
-        ).pipe(
-            distinctUntilChanged(
-                (a: [number, number], b: [number, number]) => a[0] === b[0] && a[1] === b[1]
-            ),
-            switchMap(([tId, cId]: [number, number]) => this.actionEventApiService.post$({
-                id: null,
-                tId: tId,
-                clientId: cId
-            }))
-        )
-    );
+    postActionEvent$ =
+        switchMap(() => this.actionEventApiService.post$({
+            id: null,
+            tId: this.timerStateService.tournament().id,
+            clientId: this.timerStateService.clientId()
+        }));
 
     getPlayersEligibleForEntryOrReEntry(tournament: Tournament, isReEntry: boolean): Player[] {
         return tournament.players
             .filter(player => {
                 const finishedIds = tournament.finishes.map(f => f.playerId);
                 return isReEntry ? finishedIds.includes(player.id) : !finishedIds.includes(player.id);
-            })
-            .filter(player => {
+            }).filter(player => {
                 if (isReEntry) {
                     const allowed = tournament.noOfReEntries;
                     const rebuysOfPlayer = tournament.entries.filter(
@@ -78,106 +66,6 @@ export class TournamentService {
                     || e.type === EntryType.REBUY).map(e => e.playerId).includes(entry.playerId)
             })
         );
-    }
-
-    getPlayersEligibleForRebuy(tournament: Tournament): Player[] {
-        return tournament.players.filter(
-            player => !tournament.finishes.map(f => f.playerId).includes(player.id)
-        ).filter(
-            player => tournament.entries.filter(e => e.type === EntryType.ENTRY).map(f => f.playerId).includes(player.id)
-        ).filter(
-            player => tournament.entries.filter(
-                (entry: Entry) => entry.playerId === player.id && entry.type === EntryType.REBUY
-            ).length < tournament.noOfRebuys
-        );
-    }
-
-    getConductedRebuys(tournament: Tournament): ConductedEntry[] {
-        return tournament.entries.filter(
-            (entry: Entry) => entry.type === EntryType.REBUY
-        ).map(
-            (entry: Entry) => ({
-                entryId: entry.id ?? -1,
-                time: entry.timestamp,
-                playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
-                name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
-                image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
-                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId),
-                type: entry.type
-            })
-        );
-    }
-
-    getPlayersEligibleForAddon(tournament: Tournament): Player[] {
-        return tournament.players.filter(
-            player => !tournament.finishes.map(f => f.playerId).includes(player.id)
-        ).filter(
-            player => tournament.entries.filter(e => e.type === EntryType.ENTRY).map(f => f.playerId).includes(player.id)
-        ).filter(player => {
-            const allowed = 1;
-            const addonsOfPlayer = tournament.entries.filter(
-                (entry: Entry) => entry.playerId === player.id && entry.type === EntryType.ADDON
-            ).length;
-
-            return addonsOfPlayer < allowed;
-        });
-    }
-
-    getConductedAddons(tournament: Tournament): ConductedEntry[] {
-        return tournament.entries.filter(
-            (entry: Entry) => entry.type === EntryType.ADDON
-        ).map(
-            (entry: Entry) => ({
-                entryId: entry.id ?? -1,
-                time: entry.timestamp,
-                playerId: (tournament.players.filter(p => p.id === entry.playerId)[0].id) ?? -1,
-                name: (tournament.players.filter(p => p.id === entry.playerId)[0].name) ?? '',
-                image: (tournament.players.filter(p => p.id === entry.playerId)[0].image) ?? '',
-                isFinished: tournament.finishes.map(f => f.playerId).includes(entry.playerId),
-                type: entry.type
-            })
-        );
-    }
-
-    getPlayersEligibleForSeatOpen(tournament: Tournament): Player[] {
-        return tournament.players.filter(
-            player => !tournament.finishes.map(f => f.playerId).includes(player.id)
-        ).filter(
-            player => tournament.entries.filter(e => e.type === EntryType.ENTRY).map(f => f.playerId).includes(player.id)
-        );
-    }
-
-    getConductedSeatOpens(tournament: Tournament): ConductedFinish[] {
-        return tournament.finishes.map(
-            (finish: Finish) => ({
-                tId: tournament.id,
-                playerId: finish.playerId,
-                image: tournament.players.filter(p => p.id === finish.playerId)[0].image,
-                name: tournament.players.filter(p => p.id === finish.playerId)[0].name,
-                time: finish.timestamp,
-                rank: +finish.rank
-            })
-        ).sort(
-            (a, b) => a.rank - b.rank
-        );
-    }
-
-    getConductedEliminations(tournament: Tournament): ConductedElimination[] {
-        return tournament.eliminations
-            .filter((elimination: Elimination) => elimination.eliminator !== -1)
-            .map(
-                (elimination: Elimination) => ({
-                    tId: tournament.id,
-                    eliminatorId: elimination.eliminator,
-                    eliminatorImage: tournament.players.filter(p => p.id === elimination.eliminator)[0].image,
-                    eliminatorName: tournament.players.filter(p => p.id === elimination.eliminator)[0].name,
-                    eliminatedId: elimination.eliminated,
-                    eliminatedImage: tournament.players.filter(p => p.id === elimination.eliminated)[0].image,
-                    eliminatedName: tournament.players.filter(p => p.id === elimination.eliminated)[0].name,
-                    time: elimination.timestamp,
-                    eId: elimination.eId
-                })
-            );
     }
 
     getCanStartTournament(tournament: Tournament): boolean {

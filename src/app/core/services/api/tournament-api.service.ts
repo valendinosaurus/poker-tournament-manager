@@ -39,7 +39,6 @@ export class TournamentApiService {
 
     get$(id: number): Observable<Tournament> {
         return this.authUtilService.getSub$().pipe(
-            delay(800),
             switchMap((sub: string) => this.http.get<Tournament | null>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ).pipe(

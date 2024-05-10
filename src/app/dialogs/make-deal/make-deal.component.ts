@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, inject, OnInit, WritableSignal } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../shared/models/series.interface';
 import { Player } from '../../shared/models/player.interface';
@@ -17,6 +17,7 @@ import { TEventApiService } from '../../core/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { MatButtonModule } from '@angular/material/button';
 import { TournamentService } from '../../core/services/util/tournament.service';
+import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Component({
     selector: 'app-make-deal',
@@ -27,12 +28,10 @@ import { TournamentService } from '../../core/services/util/tournament.service';
 })
 export class MakeDealComponent implements OnInit {
 
+    tournament: WritableSignal<Tournament>;
+    metadata: WritableSignal<SeriesMetadata | undefined>;
+
     private dialogRef: MatDialogRef<MakeDealComponent> = inject(MatDialogRef<MakeDealComponent>);
-    data: {
-        tournament: Tournament,
-        metadata: SeriesMetadata | undefined,
-        clientId: number
-    } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
@@ -51,24 +50,28 @@ export class MakeDealComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private notificationService: NotificationService = inject(NotificationService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
+    private timerStateService: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        const pricePool = this.rankingService.getSimplePricePool(this.data.tournament);
-        const contribution = pricePool * (this.data.metadata?.percentage ?? 0) / 100;
-        const realContribution = contribution > (this.data.metadata?.maxAmountPerTournament ?? 0) ? (this.data.metadata?.maxAmountPerTournament ?? 0) : contribution;
+        this.tournament = this.timerStateService.tournament;
+        this.metadata = this.timerStateService.metadata;
+
+        const pricePool = this.rankingService.getSimplePricePool(this.tournament());
+        const contribution = pricePool * (this.metadata()?.percentage ?? 0) / 100;
+        const realContribution = contribution > (this.metadata()?.maxAmountPerTournament ?? 0) ? (this.metadata()?.maxAmountPerTournament ?? 0) : contribution;
         const effectivePricePool = pricePool - realContribution;
 
-        const sumPayed = this.data.tournament.finishes.map(
+        const sumPayed = this.tournament().finishes.map(
             f => f.price
         ).reduce(
             (acc, curr) => +acc + +curr, 0
         );
 
         this.toDistribute = effectivePricePool - sumPayed;
-        const noOfRemainingPlaces = this.data.tournament.players.length - this.data.tournament.finishes.length;
-        const finishedPlayers = this.data.tournament.finishes.map(f => f.playerId);
+        const noOfRemainingPlaces = this.tournament().players.length - this.tournament().finishes.length;
+        const finishedPlayers = this.tournament().finishes.map(f => f.playerId);
 
-        const remainingPlayers = this.data.tournament.players.filter(
+        const remainingPlayers = this.tournament().players.filter(
             (player: Player) => !finishedPlayers.includes(player.id)
         );
 
@@ -99,7 +102,7 @@ export class MakeDealComponent implements OnInit {
     distributeEvenly(event: Event): void {
         event.preventDefault();
         const total = this.toDistribute;
-        const noOfRemainingPlaces = this.data.tournament.players.length - this.data.tournament.finishes.length;
+        const noOfRemainingPlaces = this.tournament().players.length - this.tournament().finishes.length;
 
         const even = total / noOfRemainingPlaces;
 
@@ -116,7 +119,7 @@ export class MakeDealComponent implements OnInit {
                     playerId: +k,
                     price: model[k],
                     rank: this.rankAfterDeal,
-                    tournamentId: this.data.tournament.id,
+                    tournamentId: this.tournament().id,
                     timestamp: -1,
                 })
             );
@@ -137,7 +140,7 @@ export class MakeDealComponent implements OnInit {
                 let names = ' ';
 
                 for (let i = 0; i < this.keys.length - 1; i++) {
-                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i])[0].name;
+                    const name = this.tournament().players.filter(e => e.id === +this.keys[i])[0].name;
 
                     if (i > 0) {
                         names += ', ';
@@ -147,7 +150,7 @@ export class MakeDealComponent implements OnInit {
                 }
 
                 for (let i = this.keys.length - 1; i <= this.keys.length - 1; i++) {
-                    const name = this.data.tournament.players.filter(e => e.id === +this.keys[i])[0].name;
+                    const name = this.tournament().players.filter(e => e.id === +this.keys[i])[0].name;
 
                     names += ` and <strong>${name}</strong> `;
                 }
@@ -155,11 +158,11 @@ export class MakeDealComponent implements OnInit {
                 message += names + `agreed to share ${this.rankAfterDeal}th place in the tournament with following payout:`;
 
                 this.keys.forEach(k => {
-                    const name = this.data.tournament.players.filter(e => e.id === +k)[0].name;
+                    const name = this.tournament().players.filter(e => e.id === +k)[0].name;
                     message += `<br>${name}: ${model[k]}.-`;
                 });
 
-                return this.tEventApiService.post$(this.data.tournament.id, message, TEventType.DEAL);
+                return this.tEventApiService.post$(this.tournament().id, message, TEventType.DEAL);
             }),
             tap(() => this.fetchService.trigger()),
             this.tournamentService.postActionEvent$,
