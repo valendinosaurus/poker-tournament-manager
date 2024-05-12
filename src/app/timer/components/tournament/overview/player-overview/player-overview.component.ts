@@ -11,10 +11,10 @@ export class PlayerOverviewComponent implements OnInit {
 
     text: Signal<string>;
 
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        const tournament = computed(() => this.timerStateService.tournament());
+        const tournament = computed(() => this.state.tournament());
         const playersIn = computed(() => tournament().players.length - tournament().finishes.length);
         this.text = computed(() => `${playersIn()}/${tournament().players.length}`);
     }

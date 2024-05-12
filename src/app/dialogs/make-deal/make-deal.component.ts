@@ -50,11 +50,11 @@ export class MakeDealComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private notificationService: NotificationService = inject(NotificationService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        this.tournament = this.timerStateService.tournament;
-        this.metadata = this.timerStateService.metadata;
+        this.tournament = this.state.tournament;
+        this.metadata = this.state.metadata;
 
         const pricePool = this.rankingService.getSimplePricePool(this.tournament());
         const contribution = pricePool * (this.metadata()?.percentage ?? 0) / 100;

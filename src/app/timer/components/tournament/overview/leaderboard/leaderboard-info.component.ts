@@ -1,4 +1,4 @@
-import { Component, inject, OnChanges, OnInit, WritableSignal } from '@angular/core';
+import { Component, inject, OnInit, WritableSignal } from '@angular/core';
 import { LeaderboardRow } from '../../../../../series/models/overall-ranking.interface';
 import { SeriesMetadata, SeriesS } from '../../../../../shared/models/series.interface';
 import { SeriesService } from '../../../../../core/services/series.service';
@@ -7,18 +7,19 @@ import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { SeriesTournament } from '../../../../../series/models/combined-ranking.interface';
 import { SeriesApiService } from '../../../../../core/services/api/series-api.service';
 import { FetchService } from '../../../../../core/services/fetch.service';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { LeaderboardComponent } from '../../../../../shared/components/leaderboard/leaderboard.component';
 import { TimerStateService } from '../../../../services/timer-state.service';
+import { NullsafePrimitivePipe } from '../../../../../core/pipes/nullsafe-primitive.pipe';
 
 @Component({
     selector: 'app-leaderboard-info',
     templateUrl: './leaderboard-info.component.html',
     styleUrls: ['./leaderboard-info.component.scss'],
     standalone: true,
-    imports: [LeaderboardComponent, AsyncPipe]
+    imports: [LeaderboardComponent, AsyncPipe, NullsafePrimitivePipe, NgIf]
 })
-export class LeaderboardInfoComponent implements OnInit, OnChanges {
+export class LeaderboardInfoComponent implements OnInit {
 
     metadata: WritableSignal<SeriesMetadata | undefined>;
 
@@ -28,10 +29,10 @@ export class LeaderboardInfoComponent implements OnInit, OnChanges {
     private seriesService: SeriesService = inject(SeriesService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private fetchService: FetchService = inject(FetchService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        this.metadata = this.timerStateService.metadata;
+        this.metadata = this.state.metadata;
 
         const metadata = this.metadata();
 
@@ -68,9 +69,6 @@ export class LeaderboardInfoComponent implements OnInit, OnChanges {
                 )),
             );
         }
-    }
-
-    ngOnChanges(): void {
     }
 
 }

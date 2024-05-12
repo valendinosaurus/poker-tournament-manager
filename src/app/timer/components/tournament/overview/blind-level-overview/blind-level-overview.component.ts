@@ -33,7 +33,6 @@ import { TimerStateService } from '../../../../services/timer-state.service';
 export class BlindLevelOverviewComponent implements OnInit {
 
     levels = input.required<BlindLevel[]>();
-    showCondensed = input.required<boolean | null>();
 
     @Output() addBlind = new EventEmitter<void>();
 
@@ -43,11 +42,11 @@ export class BlindLevelOverviewComponent implements OnInit {
 
     ii = 1;
 
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        this.isSimpleTournament = this.timerStateService.isTournamentFinished;
-        this.currentLevelIndex = this.timerStateService.currentLevelIndex;
+        this.isSimpleTournament = this.state.isTournamentFinished;
+        this.currentLevelIndex = this.state.currentLevelIndex;
 
         this.levelsToShow = computed(() =>
             this.levels().map(l => ({

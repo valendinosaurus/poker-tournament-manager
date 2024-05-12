@@ -43,7 +43,7 @@ export class AddAddonComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private notificationService: NotificationService = inject(NotificationService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     private dialog: MatDialog = inject(MatDialog);
 
@@ -60,13 +60,13 @@ export class AddAddonComponent implements OnInit {
     }
 
     private initSignals(): void {
-        this.playersToAddOn = computed(() => this.timerStateService.eligibleForAddon().map(player => ({
+        this.playersToAddOn = computed(() => this.state.eligibleForAddon().map(player => ({
                 label: player.name,
                 value: player.id
             })
         ));
 
-        this.conductedAddons = this.timerStateService.conductedAddons;
+        this.conductedAddons = this.state.conductedAddons;
     }
 
     onSubmit(): void {
@@ -76,7 +76,7 @@ export class AddAddonComponent implements OnInit {
             this.entryApiService.post$({
                 id: undefined,
                 playerId: playerId,
-                tournamentId: this.timerStateService.tournament().id,
+                tournamentId: this.state.tournament().id,
                 type: EntryType.ADDON,
                 timestamp: -1
             }).pipe(
@@ -89,7 +89,7 @@ export class AddAddonComponent implements OnInit {
                     const playerName = this.playersToAddOn().filter(e => e.value === playerId)[0].label;
 
                     return this.tEventApiService.post$(
-                        this.timerStateService.tournament().id,
+                        this.state.tournament().id,
                         `Addon for <strong>${playerName}</strong>!`,
                         TEventType.ADDON
                     );
@@ -107,7 +107,7 @@ export class AddAddonComponent implements OnInit {
                 {
                     data: {
                         title: 'Remove Addon',
-                        body: `Do you really want to remove the addon of <strong>${playerName}</strong> from tournament <strong>${this.timerStateService.tournament().name}</strong>`,
+                        body: `Do you really want to remove the addon of <strong>${playerName}</strong> from tournament <strong>${this.state.tournament().name}</strong>`,
                         confirm: 'Remove Addon',
                         isDelete: true
                     }
@@ -124,7 +124,7 @@ export class AddAddonComponent implements OnInit {
                             }),
                             switchMap(() => {
                                 return this.tEventApiService.post$(
-                                    this.timerStateService.tournament().id,
+                                    this.state.tournament().id,
                                     `<strong>${playerName}</strong> cancelled his Addon!`,
                                     TEventType.CORRECTION
                                 );

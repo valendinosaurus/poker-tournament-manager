@@ -27,9 +27,10 @@
 
     <div class="leaderboard">
         <app-leaderboard
-            [leaderboard]="leaderboard$ | async"
-            [series]="series$ | async"
-            [userEmail]="userEmail$ | async"
+            *ngIf="series$ | async as series"
+            [leaderboard]="leaderboard$ | async | nullsafePrimitive:[]"
+            [series]="series"
+            [userEmail]="userEmail$ | async | nullsafePrimitive:''"
         ></app-leaderboard>
 
         <div class="legend-wrapper">

@@ -14,7 +14,6 @@ export interface LocalSettings {
 export class LocalStorageService {
 
     localSettings: LocalSettings = this.getLocalSettings();
-    showCondensedBlinds$ = new BehaviorSubject<boolean>(this.localSettings.showCondensedBlinds);
 
     storeTournamentState(id: number, levelIndex: number, timeLeft: number): void {
         if (id !== -1) {
@@ -90,11 +89,6 @@ export class LocalStorageService {
             showCondensedBlinds
         }));
 
-        this.showCondensedBlinds$.next(showCondensedBlinds);
-    }
-
-    getShowCondensedBlinds$(): Observable<boolean> {
-        return this.showCondensedBlinds$.asObservable();
     }
 
     saveTableDraw(tableDraw: TableDraw): void {

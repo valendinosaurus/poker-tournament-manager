@@ -49,7 +49,7 @@ export class AddRebuyComponent implements OnInit {
     private eliminationApiService: EliminationApiService = inject(EliminationApiService);
     private notificationService: NotificationService = inject(NotificationService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     private dialog: MatDialog = inject(MatDialog);
 
@@ -71,14 +71,14 @@ export class AddRebuyComponent implements OnInit {
     }
 
     private initSignals(): void {
-        this.playersToRebuy = computed(() => this.timerStateService.eligibleForRebuy().map(
+        this.playersToRebuy = computed(() => this.state.eligibleForRebuy().map(
             player => ({
                 label: player.name,
                 value: player.id
             })
         ));
 
-        this.conductedRebuys = this.timerStateService.conductedRebuys;
+        this.conductedRebuys = this.state.conductedRebuys;
         this.eliminators = computed(() =>
             this.playersToRebuy().filter(p => p.value !== this.model.playerId())
         );
@@ -92,7 +92,7 @@ export class AddRebuyComponent implements OnInit {
             this.entryApiService.post$({
                 id: undefined,
                 playerId: playerId,
-                tournamentId: this.timerStateService.tournament().id,
+                tournamentId: this.state.tournament().id,
                 type: EntryType.REBUY,
                 timestamp: -1
             }).pipe(
@@ -102,7 +102,7 @@ export class AddRebuyComponent implements OnInit {
                     return of(null);
                 }),
                 switchMap((res: ServerResponse | null) =>
-                    this.postElimination$(eliminatedById, playerId, this.timerStateService.tournament().id, res?.id)
+                    this.postElimination$(eliminatedById, playerId, this.state.tournament().id, res?.id)
                 ),
                 switchMap(() => this.postRebuyTEvent$(playerId, eliminatedById)),
                 tap((a) => this.fetchService.trigger()),
@@ -131,7 +131,7 @@ export class AddRebuyComponent implements OnInit {
         const eliminator = this.playersToRebuy().filter(e => e.value === eById)[0].label;
         const message = `Rebuy for <strong>${eliminated}</strong>, who was kicked out by ${eliminator}!`;
 
-        return this.tEventApiService.post$(this.timerStateService.tournament().id, message, TEventType.REBUY);
+        return this.tEventApiService.post$(this.state.tournament().id, message, TEventType.REBUY);
     }
 
     deleteRebuy(entryId: number, playerName: string): void {
@@ -141,7 +141,7 @@ export class AddRebuyComponent implements OnInit {
                 {
                     data: {
                         title: 'Remove Rebuy',
-                        body: `Do you really want to remove the rebuy of <strong>${playerName}</strong> from tournament <strong>${this.timerStateService.tournament().name}</strong>`,
+                        body: `Do you really want to remove the rebuy of <strong>${playerName}</strong> from tournament <strong>${this.state.tournament().name}</strong>`,
                         confirm: 'Remove Rebuy',
                         isDelete: true
                     }
@@ -166,7 +166,7 @@ export class AddRebuyComponent implements OnInit {
                             )),
                             switchMap(() => {
                                 return this.tEventApiService.post$(
-                                    this.timerStateService.tournament().id,
+                                    this.state.tournament().id,
                                     `<strong>${playerName}</strong> cancelled his Rebuy!`,
                                     TEventType.CORRECTION
                                 );

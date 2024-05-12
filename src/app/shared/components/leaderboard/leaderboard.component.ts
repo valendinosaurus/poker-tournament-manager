@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { LeaderboardRow } from '../../../series/models/overall-ranking.interface';
 import { Series, SeriesS } from '../../models/series.interface';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,10 +17,10 @@ import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 })
 export class LeaderboardComponent {
 
-    @Input() leaderboard: LeaderboardRow[] | null;
-    @Input() series: Series | SeriesS | null;
-    @Input() userEmail: string | undefined | null;
-    @Input() full = true;
+    leaderboard = input.required<LeaderboardRow[]>();
+    series = input.required<Series | SeriesS>();
+    userEmail = input<string>();
+    full = input<boolean>(true);
 
     private dialog: MatDialog = inject(MatDialog);
 

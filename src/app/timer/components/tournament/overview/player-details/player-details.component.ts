@@ -36,13 +36,13 @@ export class PlayerDetailsComponent implements OnInit {
 
     combination: Signal<Combination[]>;
 
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        const players = computed(() => this.timerStateService.tournament().players);
-        const entries = computed(() => this.timerStateService.tournament().entries);
-        const finishes = computed(() => this.timerStateService.tournament().finishes);
-        const eliminations = computed(() => this.timerStateService.tournament().eliminations);
+        const players = computed(() => this.state.tournament().players);
+        const entries = computed(() => this.state.tournament().entries);
+        const finishes = computed(() => this.state.tournament().finishes);
+        const eliminations = computed(() => this.state.tournament().eliminations);
 
         const minRank = Math.min(...finishes().map(f => f.rank));
 

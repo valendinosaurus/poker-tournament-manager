@@ -16,10 +16,10 @@ export class ChipsOverviewComponent implements OnInit {
     totalChips: Signal<number>;
     averageStack: Signal<number>;
 
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        const tournament = computed(() => this.timerStateService.tournament());
+        const tournament = computed(() => this.state.tournament());
 
         const entries = computed(() => tournament().entries.filter((e: Entry) => e.type === EntryType.ENTRY).length);
         const rebuys = computed(() => tournament().entries.filter((e: Entry) => e.type === EntryType.REBUY).length);

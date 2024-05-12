@@ -30,7 +30,7 @@ export class TimerPageComponent implements OnInit {
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private route: ActivatedRoute = inject(ActivatedRoute);
 
@@ -38,7 +38,7 @@ export class TimerPageComponent implements OnInit {
 
     ngOnInit(): void {
         this.fetchTrigger$ = this.fetchService.getFetchTrigger$();
-        this.timerStateService.clientId.set(Math.ceil(Math.random() * 100000));
+        this.state.clientId.set(Math.ceil(Math.random() * 100000));
 
         const tournamentId = +this.route.snapshot.params['tId'];
 
@@ -46,13 +46,13 @@ export class TimerPageComponent implements OnInit {
 
         this.tournamentApiService.getSeriesMetadata$(tournamentId).pipe(
             take(1),
-            tap((metadata) => this.timerStateService.metadata.set(metadata))
+            tap((metadata) => this.state.metadata.set(metadata))
         ).subscribe();
 
         this.fetchTrigger$.pipe(
             switchMap(() => this.tournamentApiService.get$(tournamentId)),
             tap((tournament: Tournament) => {
-                this.timerStateService.tournament.set(tournament);
+                this.state.tournament.set(tournament);
                 this.canShow = true;
             }),
             shareReplay(1)
@@ -61,8 +61,7 @@ export class TimerPageComponent implements OnInit {
         this.playerApiService.getAll$().pipe(
             take(1),
             tap((players: Player[]) => {
-                console.log('all', players);
-                this.timerStateService.allAvailablePlayers.set(players);
+                this.state.allAvailablePlayers.set(players);
             })
         ).subscribe();
     }

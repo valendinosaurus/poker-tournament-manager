@@ -19,10 +19,10 @@ export class BuyinOverviewComponent implements OnInit {
     textRebuys: Signal<string>;
     textAddons: Signal<string>;
 
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        this.tournament = computed(() => this.timerStateService.tournament());
+        this.tournament = computed(() => this.state.tournament());
         const entries = computed(() =>
             this.tournament().entries.filter((e: Entry) => e.type === EntryType.ENTRY).length
         );
@@ -32,9 +32,7 @@ export class BuyinOverviewComponent implements OnInit {
         const addons = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.ADDON).length);
 
         this.textEntries = computed(() => `${entries() + reEntries()}`);
-
         this.textRebuys = computed(() => `${rebuys()}`);
-
         this.textAddons = computed(() => `${addons()}`);
     }
 }

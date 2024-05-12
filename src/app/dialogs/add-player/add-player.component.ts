@@ -55,7 +55,7 @@ export class AddPlayerComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private tournamentService: TournamentService = inject(TournamentService);
     private notificationService: NotificationService = inject(NotificationService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     private dialog: MatDialog = inject(MatDialog);
 
@@ -79,11 +79,11 @@ export class AddPlayerComponent implements OnInit {
     }
 
     private initSignals(): void {
-        this.tournament = this.timerStateService.tournament;
+        this.tournament = this.state.tournament;
 
-        console.log(this.timerStateService.playersNotInTournament());
+        console.log(this.state.playersNotInTournament());
 
-        this.playersToAdd = computed(() => this.timerStateService.playersNotInTournament().map(player => ({
+        this.playersToAdd = computed(() => this.state.playersNotInTournament().map(player => ({
                 label: player.name,
                 value: player.id
             })

@@ -46,7 +46,7 @@ export class AddEntryComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private notificationService: NotificationService = inject(NotificationService);
     private tEventApiService: TEventApiService = inject(TEventApiService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     private dialog: MatDialog = inject(MatDialog);
 
@@ -54,8 +54,8 @@ export class AddEntryComponent implements OnInit {
         this.initModel();
 
         const players = this.data.isReentry
-            ? this.timerStateService.eligibleForReEntry
-            : this.timerStateService.eligibleForEntry;
+            ? this.state.eligibleForReEntry
+            : this.state.eligibleForEntry;
 
         console.log('players', players());
 
@@ -66,7 +66,7 @@ export class AddEntryComponent implements OnInit {
             })
         ));
 
-        this.conductedEntries = this.timerStateService.conductedEntries;
+        this.conductedEntries = this.state.conductedEntries;
     }
 
     private initModel(): void {
@@ -83,7 +83,7 @@ export class AddEntryComponent implements OnInit {
             this.entryApiService.post$({
                 id: undefined,
                 playerId: playerId,
-                tournamentId: this.timerStateService.tournament().id,
+                tournamentId: this.state.tournament().id,
                 type: this.data.isReentry ? EntryType.RE_ENTRY : EntryType.ENTRY,
                 timestamp: -1
             }).pipe(
@@ -100,7 +100,7 @@ export class AddEntryComponent implements OnInit {
                     const playerName = this.playersToEnter().filter(e => e.value === playerId)[0].label;
 
                     return this.tEventApiService.post$(
-                        this.timerStateService.tournament().id,
+                        this.state.tournament().id,
                         `<strong>${playerName}</strong> entered the tournament!`,
                         TEventType.ENTRY
                     );
@@ -118,7 +118,7 @@ export class AddEntryComponent implements OnInit {
                 {
                     data: {
                         title: 'Remove Entry',
-                        body: `Do you really want to remove the entry of <strong>${playerName}</strong> from tournament <strong>${this.timerStateService.tournament().name}</strong>`,
+                        body: `Do you really want to remove the entry of <strong>${playerName}</strong> from tournament <strong>${this.state.tournament().name}</strong>`,
                         confirm: 'Remove Entry',
                         isDelete: true
                     }
@@ -138,7 +138,7 @@ export class AddEntryComponent implements OnInit {
                                 }),
                                 switchMap(() => {
                                     return this.tEventApiService.post$(
-                                        this.timerStateService.tournament().id,
+                                        this.state.tournament().id,
                                         `<strong>${playerName}</strong> left the tournament!`,
                                         TEventType.CORRECTION
                                     );

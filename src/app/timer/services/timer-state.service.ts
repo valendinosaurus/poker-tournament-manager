@@ -1,4 +1,4 @@
-import { computed, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { SeriesMetadata } from '../../shared/models/series.interface';
 import { EntryType } from '../../shared/enums/entry-type.enum';
@@ -9,15 +9,22 @@ import { Elimination } from '../../shared/models/elimination.interface';
 import { ConductedFinish } from '../../shared/models/util/conducted-finish.interface';
 import { ConductedElimination } from '../../shared/models/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
+import { LocalStorageService } from '../../core/services/util/local-storage.service';
+import { KeenSliderInstance } from 'keen-slider';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TimerStateService {
 
+    private localStorageService: LocalStorageService = inject(LocalStorageService);
+
     tournament: WritableSignal<Tournament> = signal({} as Tournament);
     metadata: WritableSignal<SeriesMetadata | undefined> = signal(undefined);
     clientId: WritableSignal<number> = signal(-1);
+
+    autoSlide: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().autoSlide ?? true);
+    showCondensedBlinds: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().showCondensedBlinds ?? true);
 
     players: Signal<Player[]> = computed(() => this.tournament().players);
     entries: Signal<Entry[]> = computed(() => this.tournament().entries);
@@ -31,10 +38,20 @@ export class TimerStateService {
         )
     );
 
+    isRunning: WritableSignal<boolean> = signal(false);
     currentLevelIndex: WritableSignal<number> = signal(0);
     isSimpleTournament: WritableSignal<boolean> = signal(false);
     isRebuyPhaseFinished: WritableSignal<boolean> = signal(false);
     isTournamentFinished: WritableSignal<boolean> = signal(false);
+    canStartTournament: Signal<boolean> = computed(() =>
+        Array.from(
+            new Set(
+                this.entries()
+                    .filter((entry: Entry) => entry.type === EntryType.ENTRY)
+                    .map((entry: Entry) => entry.playerId)
+            )
+        ).length === this.players().length
+    );
 
     totalPricePoolWithoutDeduction = computed(() =>
         this.entries().filter(

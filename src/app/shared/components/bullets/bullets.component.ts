@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { NgFor } from '@angular/common';
 
 @Component({
@@ -8,14 +8,11 @@ import { NgFor } from '@angular/common';
     standalone: true,
     imports: [NgFor]
 })
-export class BulletsComponent implements OnChanges {
+export class BulletsComponent {
 
-    @Input() number: number;
-    @Input() bulletClass = 'fa-circle';
+    number = input.required<number>();
+    bulletClass = input<string>('fa-circle');
 
-    numberArray: any[] = [];
+    numberArray = computed(() => new Array(this.number()));
 
-    ngOnChanges(changes: SimpleChanges): void {
-        this.numberArray = new Array(this.number);
-    }
 }

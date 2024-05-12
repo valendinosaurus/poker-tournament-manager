@@ -55,6 +55,9 @@ export class MenuDialogComponent implements OnInit {
     withRebuy: Signal<boolean>;
     withAddon: Signal<boolean>;
     withReEntry: Signal<boolean>;
+    autoSlide: WritableSignal<boolean>;
+    showCondensedBlinds: WritableSignal<boolean>;
+    isRunning: WritableSignal<boolean>;
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -62,20 +65,15 @@ export class MenuDialogComponent implements OnInit {
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
-    @Output() toggleAutoSlide = new EventEmitter<boolean>();
-    @Output() toggleShowCondensedBlinds = new EventEmitter<boolean>();
-    @Output() localRefresh = new EventEmitter<void>();
 
     private dialogRef: MatDialogRef<MenuDialogComponent> = inject(MatDialogRef<MenuDialogComponent>);
 
-    autoSlide = true;
     isFullscreen = false;
     isBigCursor = false;
     elem: HTMLElement;
 
     data: {
         isAddPlayerBlocked: boolean,
-        running: boolean,
     } = inject(MAT_DIALOG_DATA);
 
     payoutCache: number;
@@ -96,11 +94,9 @@ export class MenuDialogComponent implements OnInit {
     private document: Document = inject(DOCUMENT);
     private tournamentService: TournamentService = inject(TournamentService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     isAuthenticated$: Observable<boolean> = this.authUtilService.getIsAuthenticated$();
-
-    showCondensedBlinds = this.localStorageService.getLocalSettings().showCondensedBlinds;
 
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
@@ -111,12 +107,15 @@ export class MenuDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.tournament = this.timerStateService.tournament;
-        this.isSimpleTournament = this.timerStateService.isSimpleTournament;
-        this.isRebuyPhaseFinished = this.timerStateService.isRebuyPhaseFinished;
-        this.withRebuy = this.timerStateService.withRebuy;
-        this.withAddon = this.timerStateService.withAddon;
-        this.withReEntry = this.timerStateService.withReEntry;
+        this.tournament = this.state.tournament;
+        this.isSimpleTournament = this.state.isSimpleTournament;
+        this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
+        this.withRebuy = this.state.withRebuy;
+        this.withAddon = this.state.withAddon;
+        this.withReEntry = this.state.withReEntry;
+        this.autoSlide = this.state.autoSlide;
+        this.showCondensedBlinds = this.state.showCondensedBlinds;
+        this.isRunning = this.state.isRunning;
 
         this.elem = this.document.documentElement;
         this.initModel();
@@ -282,14 +281,12 @@ export class MenuDialogComponent implements OnInit {
     }
 
     onToggleAutoSlide(): void {
-        this.autoSlide = !this.autoSlide;
-        this.toggleAutoSlide.emit(this.autoSlide);
+        this.state.autoSlide.set(!this.state.autoSlide());
     }
 
     onToggleShowCondensedBlinds(): void {
-        this.showCondensedBlinds = !this.showCondensedBlinds;
-        this.toggleShowCondensedBlinds.emit(this.showCondensedBlinds);
-        this.localStorageService.saveShowCondensedBlinds(this.showCondensedBlinds);
+        this.state.showCondensedBlinds.update((previous: boolean) => !previous);
+        this.localStorageService.saveShowCondensedBlinds(this.state.showCondensedBlinds());
     }
 
     onToggleIsBigCursor(): void {
@@ -309,8 +306,6 @@ export class MenuDialogComponent implements OnInit {
                 if (model.payout !== this.payoutCache) {
                     this.localStorageService.deleteAdaptedPayout(this.tournament().id);
                 }
-
-                this.localRefresh.emit();
             }),
             tap(() => this.fetchService.trigger()),
             this.tournamentService.postActionEvent$,

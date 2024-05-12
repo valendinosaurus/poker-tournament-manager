@@ -4,10 +4,6 @@ import { Entry } from '../../../shared/models/entry.interface';
 import { Tournament } from '../../../shared/models/tournament.interface';
 import { ConductedEntry } from '../../../shared/models/util/conducted-entry.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
-import { ConductedFinish } from '../../../shared/models/util/conducted-finish.interface';
-import { Finish } from '../../../shared/models/finish.interface';
-import { ConductedElimination } from '../../../shared/models/util/conducted-elimination.interface';
-import { Elimination } from '../../../shared/models/elimination.interface';
 import { switchMap } from 'rxjs/operators';
 import { ActionEventApiService } from '../api/action-event-api.service';
 import { TimerStateService } from '../../../timer/services/timer-state.service';
@@ -18,13 +14,13 @@ import { TimerStateService } from '../../../timer/services/timer-state.service';
 export class TournamentService {
 
     private actionEventApiService: ActionEventApiService = inject(ActionEventApiService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     postActionEvent$ =
         switchMap(() => this.actionEventApiService.post$({
             id: null,
-            tId: this.timerStateService.tournament().id,
-            clientId: this.timerStateService.clientId()
+            tId: this.state.tournament().id,
+            clientId: this.state.clientId()
         }));
 
     getPlayersEligibleForEntryOrReEntry(tournament: Tournament, isReEntry: boolean): Player[] {
@@ -68,17 +64,17 @@ export class TournamentService {
         );
     }
 
-    getCanStartTournament(tournament: Tournament): boolean {
-        const noOfPlayers = tournament.players.length;
-        const entryIds = tournament.entries.filter(
-            (entry: Entry) => entry.type === EntryType.ENTRY
-        ).map(
-            (entry: Entry) => entry.playerId
-        );
-
-        const noOfDistinctEntries = Array.from(new Set(entryIds)).length;
-
-        return noOfPlayers === noOfDistinctEntries;
-    }
+    // getCanStartTournament(tournament: Tournament): boolean {
+    //     const noOfPlayers = tournament.players.length;
+    //     const entryIds = tournament.entries.filter(
+    //         (entry: Entry) => entry.type === EntryType.ENTRY
+    //     ).map(
+    //         (entry: Entry) => entry.playerId
+    //     );
+    //
+    //     const noOfDistinctEntries = Array.from(new Set(entryIds)).length;
+    //
+    //     return noOfPlayers === noOfDistinctEntries;
+    // }
 
 }

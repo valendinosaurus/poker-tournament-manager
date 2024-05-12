@@ -29,13 +29,17 @@ div.main-buttons {
 .info-panel {
     position: absolute;
     bottom: 0;
-    right: 0;
-    padding: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px;
     background: white;
-    display: none;
+    // display: none;
+    z-index: 99;
     flex-direction: column;
     border-top: solid 2px #00437b;
     border-left: solid 2px #00437b;
+    border-right: solid 2px #00437b;
+    box-sizing: border-box;
 
     span {
         display: flex;

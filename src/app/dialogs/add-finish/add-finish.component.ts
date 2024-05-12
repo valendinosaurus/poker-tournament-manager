@@ -61,7 +61,7 @@ export class AddFinishComponent implements OnInit {
     private tEventApiService: TEventApiService = inject(TEventApiService);
     private notificationService: NotificationService = inject(NotificationService);
     private dialog: MatDialog = inject(MatDialog);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
     private fetchService: FetchService = inject(FetchService);
 
     ngOnInit(): void {
@@ -83,15 +83,15 @@ export class AddFinishComponent implements OnInit {
     }
 
     private initSignals(): void {
-        this.playersToEliminate = computed(() => this.timerStateService.eligibleForSeatOpen().map(
+        this.playersToEliminate = computed(() => this.state.eligibleForSeatOpen().map(
             player => ({
                 label: player.name,
                 value: player.id
             })
         ));
 
-        this.conductedFinishes = this.timerStateService.conductedFinishes;
-        this.conductedEliminations = this.timerStateService.conductedEliminations;
+        this.conductedFinishes = this.state.conductedFinishes;
+        this.conductedEliminations = this.state.conductedEliminations;
 
         this.eliminators = computed(() =>
             this.playersToEliminate().filter(p => p.value !== this.model.playerId())
@@ -99,11 +99,11 @@ export class AddFinishComponent implements OnInit {
     }
 
     private calcRanksAndPrices(): void {
-        this.rank.set(this.timerStateService.tournament().players.length - this.timerStateService.tournament().finishes.length);
-        const payoutRaw = this.rankingService.getPayoutById(this.timerStateService.tournament().payout);
+        this.rank.set(this.state.tournament().players.length - this.state.tournament().finishes.length);
+        const payoutRaw = this.rankingService.getPayoutById(this.state.tournament().payout);
         const payoutPercentage = payoutRaw[this.rank() - 1];
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.timerStateService.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
         const placesPaid = payoutRaw.length;
 
         if (this.rank() > placesPaid) {
@@ -121,7 +121,7 @@ export class AddFinishComponent implements OnInit {
     }
 
     onSubmit(): void {
-        const placesPaid = this.rankingService.getPayoutById(this.timerStateService.tournament().payout).length;
+        const placesPaid = this.rankingService.getPayoutById(this.state.tournament().payout).length;
         const isBubble = this.rank() - placesPaid === 1;
         this.isLoadingAdd = true;
 
@@ -131,7 +131,7 @@ export class AddFinishComponent implements OnInit {
         if (playerId && eliminatedById) {
             this.finishApiService.post$({
                 playerId: playerId,
-                tournamentId: this.timerStateService.tournament().id,
+                tournamentId: this.state.tournament().id,
                 price: this.price(),
                 rank: this.rank(),
                 timestamp: -1,
@@ -143,7 +143,7 @@ export class AddFinishComponent implements OnInit {
                     return of(null);
                 }),
                 switchMap(() => this.postSeatOpenTEvent$(playerId)),
-                switchMap(() => this.postElimination$(eliminatedById, playerId, this.timerStateService.tournament().id)),
+                switchMap(() => this.postElimination$(eliminatedById, playerId, this.state.tournament().id)),
                 switchMap(() => iif(
                     () => this.rank() === 2,
                     defer(() => this.postRemainingFinish$()),
@@ -156,10 +156,10 @@ export class AddFinishComponent implements OnInit {
     }
 
     private postSeatOpenTEvent$(playerId: number): Observable<ServerResponse | null> {
-        const playerName = this.timerStateService.tournament().players.filter(e => e.id === playerId)[0].name;
+        const playerName = this.state.tournament().players.filter(e => e.id === playerId)[0].name;
 
         return this.tEventApiService.post$(
-            this.timerStateService.tournament().id,
+            this.state.tournament().id,
             `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament!`,
             TEventType.SEAT_OPEN
         );
@@ -177,7 +177,7 @@ export class AddFinishComponent implements OnInit {
                 const {eliminated, eliminator} = this.getInvolvedPlayerNames(pId, eById);
 
                 return this.tEventApiService.post$(
-                    this.timerStateService.tournament().id,
+                    this.state.tournament().id,
                     `<strong>${eliminated}</strong> was kicked out by <strong>${eliminator}</strong>!`,
                     TEventType.ELIMINATION
                 );
@@ -204,7 +204,7 @@ export class AddFinishComponent implements OnInit {
                 const name = this.playersToEliminate().filter(e => e.value === winner.playerId)[0].label;
 
                 return this.tEventApiService.post$(
-                    this.timerStateService.tournament().id,
+                    this.state.tournament().id,
                     `<strong>FINISHED! ${name}</strong> wins the tournament and takes home ${winner.price}.-! Congratulations!`,
                     TEventType.FINISH
                 );
@@ -213,16 +213,16 @@ export class AddFinishComponent implements OnInit {
     }
 
     private getRemainingFinish(): Finish {
-        const playerId = this.timerStateService.tournament().players.filter(
+        const playerId = this.state.tournament().players.filter(
             (player: Player) => {
-                const finishIds = this.timerStateService.tournament().finishes.map(f => f.playerId);
+                const finishIds = this.state.tournament().finishes.map(f => f.playerId);
 
                 return !finishIds.includes(player.id);
             }
         )[0].id;
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.timerStateService.tournament().id);
-        const payouts = this.rankingService.getPayoutById(this.timerStateService.tournament().payout);
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
+        const payouts = this.rankingService.getPayoutById(this.state.tournament().payout);
         const payoutPercentage = +payouts[0];
 
         let price = 0;
@@ -236,7 +236,7 @@ export class AddFinishComponent implements OnInit {
 
         return {
             rank: 1,
-            tournamentId: this.timerStateService.tournament().id,
+            tournamentId: this.state.tournament().id,
             price,
             playerId,
             timestamp: -1,
@@ -248,11 +248,11 @@ export class AddFinishComponent implements OnInit {
 
         if (this.dialogRef) {
             this.dialogRef.close({
-                name: this.timerStateService.tournament().players.find(e => e.id === playerId)?.name,
+                name: this.state.tournament().players.find(e => e.id === playerId)?.name,
                 price: this.price(),
                 isBubble: isBubble,
                 rank: this.rank(),
-                winnerName: this.rank() === 2 ? this.timerStateService.eligibleForSeatOpen().find(e => e.id !== playerId)?.name : '',
+                winnerName: this.rank() === 2 ? this.state.eligibleForSeatOpen().find(e => e.id !== playerId)?.name : '',
                 winnerPrice: this.winnerPrice()
             });
         }
@@ -276,7 +276,7 @@ export class AddFinishComponent implements OnInit {
         dialogRef.afterClosed().pipe(
             switchMap((result: boolean) => iif(
                     () => result,
-                    defer(() => this.finishApiService.delete$(this.timerStateService.tournament().id, pId).pipe(
+                    defer(() => this.finishApiService.delete$(this.state.tournament().id, pId).pipe(
                             take(1),
                             catchError(() => {
                                 this.notificationService.error('Error removing Seat Open');
@@ -288,13 +288,13 @@ export class AddFinishComponent implements OnInit {
                             }),
                             switchMap(() => {
                                 return this.tEventApiService.post$(
-                                    this.timerStateService.tournament().id,
+                                    this.state.tournament().id,
                                     `Oh no, There was a mistake! <strong>${playerName}</strong> is still in the tournament!!`,
                                     TEventType.CORRECTION
                                 );
                             }),
                             switchMap(() => this.eliminationApiService.deleteByEId$(
-                                `F-${this.timerStateService.tournament().id}-${pId}`
+                                `F-${this.state.tournament().id}-${pId}`
                             ).pipe(
                                 catchError(() => {
                                     this.notificationService.error('Error removing Elimination');

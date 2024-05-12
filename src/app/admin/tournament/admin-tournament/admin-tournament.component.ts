@@ -49,7 +49,7 @@ export class AdminTournamentComponent implements OnInit {
     private dialog: MatDialog = inject(MatDialog);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private trigger$: ReplaySubject<void> = new ReplaySubject<void>();
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     blindPositions: number[];
 
@@ -72,7 +72,7 @@ export class AdminTournamentComponent implements OnInit {
             ),
             tap((tournament: Tournament) => {
                 this.blindPositions = tournament.structure.map(e => e.position);
-                this.timerStateService.tournament.set(tournament);
+                this.state.tournament.set(tournament);
             })
         );
 

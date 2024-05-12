@@ -1,7 +1,4 @@
-<div
-    *ngIf="leaderboard"
-    class="table-wrapper"
->
+<div class="table-wrapper">
     <table>
         <tr>
             <th>Rank</th>
@@ -13,8 +10,8 @@
             <th *ngIf="full" class="t-center">Rebuys / Addons</th>
             <th *ngIf="full" class="t-right">Price</th>
         </tr>
-        <ng-container *ngFor="let e of leaderboard; let i = index">
-            <tr [class.finalist]="series && i < series.finalists">
+        <ng-container *ngFor="let e of leaderboard(); let i = index">
+            <tr [class.finalist]="i < series().finalists">
                 <td>
                     {{ i + 1 }}.
                 </td>
@@ -22,11 +19,11 @@
                     <span class="flex-td align-center">
                         <app-user-image-round
                             [imageUrl]="e.image"
-                            [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && userEmail === e.email) ? 'b-my-user' : 'b-regular'"
+                            [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && userEmail() === e.email) ? 'b-my-user' : 'b-regular'"
                         ></app-user-image-round>
                         {{ e.name }}
 
-                        <ng-container *ngIf="e.email && e.email.length > 0 && userEmail === e.email">
+                        <ng-container *ngIf="e.email && e.email.length > 0 && userEmail() === e.email">
                             <i (click)="openEditPlayerDialog(e)" class="fa fa-edit hoverable"></i>
                         </ng-container>
                     </span>

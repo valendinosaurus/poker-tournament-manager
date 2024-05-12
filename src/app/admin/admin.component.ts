@@ -60,7 +60,7 @@ export class AdminComponent implements OnInit {
 
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit() {
         this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
@@ -72,7 +72,7 @@ export class AdminComponent implements OnInit {
             take(1),
             tap((players: Player[]) => {
                 console.log('all', players);
-                this.timerStateService.allAvailablePlayers.set(players);
+                this.state.allAvailablePlayers.set(players);
             })
         ).subscribe();
     }

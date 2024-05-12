@@ -1,6 +1,6 @@
 <div class="overview">
     <div class="overview-header">
-        <span style="font-weight: bold">{{ today | date:'dd.MM.YYYY HH:mm' }}</span>
+        <span style="font-weight: bold">{{ today() | date:'dd.MM.YYYY HH:mm' }}</span>
         <span style="font-weight: bold">{{ tournament().name }}</span>
     </div>
 
@@ -12,7 +12,6 @@
                         <div class="keen-slider__slide number-slide1 slide-blinds">
                             <app-blind-level-overview
                                 [levels]="tournament().structure"
-                                [showCondensed]="showCondensedBlinds$ | async"
                                 (addBlind)="addBlind()"
                             ></app-blind-level-overview>
                         </div>
@@ -29,7 +28,6 @@
                             <ng-template #blinds>
                                 <app-blind-level-overview
                                     [levels]="tournament().structure"
-                                    [showCondensed]="showCondensedBlinds$ | async"
                                     (addBlind)="addBlind()"
                                 ></app-blind-level-overview>
                             </ng-template>
@@ -50,10 +48,10 @@
                     <i class="fa fa-chevron-right" (click)="slider.next()"></i>
 
                     <div class="steps">
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide === 0"></i>
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide === 1"></i>
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide === 2"></i>
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide === 3"></i>
+                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 0"></i>
+                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 1"></i>
+                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 2"></i>
+                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 3"></i>
                     </div>
                 </div>
             </div>
@@ -67,16 +65,16 @@
                     <div class="flex">
                         <i class="fa fa-clock"></i>
                         <h2 class="now">
-                            {{ today | date:'HH:mm' }}
+                            {{ today() | date:'HH:mm' }}
                         </h2>
                     </div>
                 </span>
 
                 <h1>
-                    {{ currentLevelTimeLeft | time }}
+                    {{ currentLevelTimeLeft() | time }}
                 </h1>
 
-                <div *ngIf="!running && !isFinished()" class="popup paused">
+                <div *ngIf="!isRunning() && !isFinished()" class="popup paused">
                     PAUSED
                 </div>
 
@@ -89,7 +87,7 @@
                     class="countdown"
                     #cd
                     (event)="handleEvent($event)"
-                    [config]="countdownConfig"
+                    [config]="countdownConfig()"
                 ></countdown>
             </div>
 
@@ -98,7 +96,7 @@
                 class="current-level"
             >
                 <p class="level"
-                   [innerHTML]="levels[currentLevelIndex()] | blindLevelText:!!(showCondensedBlinds$ | async):true"
+                   [innerHTML]="levels()[currentLevelIndex()] | blindLevelText:true"
                 ></p>
             </div>
 
@@ -112,7 +110,7 @@
 
                 <p
                     class="next-level-text"
-                    [innerHTML]="levels[currentLevelIndex() + 1] | blindLevelText:!!(showCondensedBlinds$ | async):false"
+                    [innerHTML]="levels()[currentLevelIndex() + 1] | blindLevelText:false"
                 ></p>
             </div>
 
@@ -120,15 +118,11 @@
                 class="button-wrapper"
             >
                 <app-buttons
-                    [running]="running"
-                    [tournament]="tournament()"
                     (start)="start()"
                     (pause)="pause()"
                     (addMinute)="addMinute()"
                     (nextLevel)="goToNextLevel()"
                     (prevLevel)="goToPreviousLevel()"
-                    (toggleAutoSlide)="autoSlide = $event"
-                    (localRefresh)="refreshViews()"
                 ></app-buttons>
             </div>
         </div>
@@ -139,11 +133,8 @@
             </h3>
 
             <app-payout-details></app-payout-details>
-
             <app-player-overview></app-player-overview>
-
             <app-buyin-overview></app-buyin-overview>
-
             <app-chips-overview></app-chips-overview>
         </div>
     </div>

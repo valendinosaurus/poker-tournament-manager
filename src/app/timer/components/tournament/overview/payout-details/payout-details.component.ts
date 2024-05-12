@@ -37,8 +37,6 @@ interface Payout {
 })
 export class PayoutDetailsComponent implements OnInit {
 
-//    @Input() tournamentId: number;
-
     tournament: Signal<Tournament>;
     metadata: Signal<SeriesMetadata | undefined>;
     entries: Signal<Entry[]>;
@@ -57,26 +55,26 @@ export class PayoutDetailsComponent implements OnInit {
     isPayoutAdapted = signal(false);
     isAdaptedPayoutSumCorrect = signal(true);
 
-    private rankingService: RankingService = inject(RankingService);
-    private destroyRef: DestroyRef = inject(DestroyRef);
-    private dialog: MatDialog = inject(MatDialog);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private fetchService: FetchService = inject(FetchService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
-
     payouts: Signal<Payout[]>;
     wasDealMade: Signal<boolean>;
     playersLeft: Signal<number>;
     placesPaid: Signal<number>;
 
+    private rankingService: RankingService = inject(RankingService);
+    private destroyRef: DestroyRef = inject(DestroyRef);
+    private dialog: MatDialog = inject(MatDialog);
+    private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private fetchService: FetchService = inject(FetchService);
+    private state: TimerStateService = inject(TimerStateService);
+
     ngOnInit(): void {
-        this.totalPricePool = this.timerStateService.totalPricePool;
-        this.deduction = this.timerStateService.pricePoolDeduction;
-        this.tournament = this.timerStateService.tournament;
-        this.metadata = this.timerStateService.metadata;
-        this.entries = this.timerStateService.entries;
-        this.finishes = this.timerStateService.finishes;
-        this.players = this.timerStateService.players;
+        this.totalPricePool = this.state.totalPricePool;
+        this.deduction = this.state.pricePoolDeduction;
+        this.tournament = this.state.tournament;
+        this.metadata = this.state.metadata;
+        this.entries = this.state.entries;
+        this.finishes = this.state.finishes;
+        this.players = this.state.players;
         this.buyInAmount = computed(() => this.tournament().buyInAmount);
         this.rebuyAmount = computed(() => this.tournament().rebuyAmount);
         this.addonAmount = computed(() => this.tournament().addonAmount);

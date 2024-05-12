@@ -1,5 +1,6 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { BlindLevel } from '../models/blind-level.interface';
+import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Pipe({
     name: 'blindLevelText',
@@ -8,13 +9,15 @@ import { BlindLevel } from '../models/blind-level.interface';
 })
 export class BlindLevelTextPipe implements PipeTransform {
 
-    transform(level: BlindLevel | undefined, showCondensed: boolean, isCurrent: boolean): string {
+    private state: TimerStateService = inject(TimerStateService);
+
+    transform(level: BlindLevel | undefined, isCurrent: boolean): string {
         if (!level) {
             return '';
         }
 
         if (!level?.isPause) {
-            if (showCondensed) {
+            if (this.state.showCondensedBlinds()) {
                 const sb = (level as BlindLevel).sb;
                 const bb = (level as BlindLevel).bb;
 

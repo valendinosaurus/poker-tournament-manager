@@ -2,7 +2,7 @@
     <span *ngIf="isAddPlayerBlocked && !isTournamentFinished()">
         <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
     </span>
-    <span *ngIf="tournament.withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()">
+    <span *ngIf="tournament().withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()">
         <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
     </span>
     <!--        <span *ngIf="playerHasToBeMoved" class="clickable" (click)="openDrawDialog()">-->
@@ -11,7 +11,7 @@
     <!--    <span *ngIf="tableHasToBeEliminated" class="clickable" (click)="openDrawDialog()">-->
     <!--            <i class="fa fa-exclamation-triangle"></i> Table can be eliminated-->
     <!--        </span>-->
-    <span *ngIf="!canStartTournament; else readyToStart">
+    <span *ngIf="!canStartTournament(); else readyToStart">
         <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
     </span>
     <span *ngIf="isTournamentFinished()">
@@ -32,8 +32,8 @@
         class="main"
         (click)="toggleRunning()"
     >
-        <i *ngIf="!running" class="fa fa-play"></i>
-        <i *ngIf="running" class="fa fa-pause"></i>
+        <i *ngIf="!isRunning()" class="fa fa-play"></i>
+        <i *ngIf="isRunning()" class="fa fa-pause"></i>
     </button>
 
     <button
@@ -48,7 +48,7 @@
     </button>
 
     <button
-        *ngIf="tournament.withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
+        *ngIf="tournament().withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
         mat-raised-button
         matTooltip="Rebuy"
         class="main"
@@ -58,7 +58,7 @@
     </button>
 
     <button
-        *ngIf="tournament.withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
+        *ngIf="tournament().withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
         mat-raised-button
         matTooltip="Addon"
         class="main"

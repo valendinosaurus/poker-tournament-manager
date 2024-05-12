@@ -35,10 +35,10 @@ export class TableDrawDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<TableDrawDialogComponent> = inject(MatDialogRef<TableDrawDialogComponent>);
     private tableDrawService: TableDrawService = inject(TableDrawService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit() {
-        this.tournament = this.timerStateService.tournament;
+        this.tournament = this.state.tournament;
 
         const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
 

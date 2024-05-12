@@ -4,10 +4,9 @@ import {
     EventEmitter,
     HostListener,
     inject,
-    Input,
-    OnChanges,
     OnInit,
     Output,
+    Signal,
     WritableSignal
 } from '@angular/core';
 import { Tournament } from '../../../../../shared/models/tournament.interface';
@@ -57,15 +56,15 @@ declare var anime: any;
         AsyncPipe
     ]
 })
-export class ButtonsComponent implements OnInit, OnChanges {
+export class ButtonsComponent implements OnInit {
 
+    tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
     isSimpleTournament: WritableSignal<boolean>;
     isTournamentFinished: WritableSignal<boolean>;
     isRebuyPhaseFinished: WritableSignal<boolean>;
-
-    @Input() running: boolean;
-    @Input() tournament: Tournament;
+    canStartTournament: Signal<boolean>;
+    isRunning: WritableSignal<boolean>;
 
     isAnimatingSeatOpen$ = new BehaviorSubject(false);
     isAnimatingBubbleBoy$ = new BehaviorSubject(false);
@@ -78,7 +77,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
     lastPrice = 0;
     lastRank = 0;
     lastIsBubble = false;
-    canStartTournament = false;
     playerHasToBeMoved = false;
     tableHasToBeEliminated = false;
     isFullscreen = false;
@@ -92,7 +90,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentService: TournamentService = inject(TournamentService);
     private document: Document = inject(DOCUMENT);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     @Output() start = new EventEmitter<void>();
     @Output() pause = new EventEmitter<void>();
@@ -100,9 +98,6 @@ export class ButtonsComponent implements OnInit, OnChanges {
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
-    @Output() toggleAutoSlide = new EventEmitter<boolean>();
-    @Output() toggleShowCondensedBlinds = new EventEmitter<boolean>();
-    @Output() localRefresh = new EventEmitter<void>();
 
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
@@ -113,34 +108,34 @@ export class ButtonsComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.metadata = this.timerStateService.metadata;
-        this.isTournamentFinished = this.timerStateService.isTournamentFinished;
-        this.isSimpleTournament = this.timerStateService.isSimpleTournament;
-        this.isRebuyPhaseFinished = this.timerStateService.isRebuyPhaseFinished;
+        this.tournament = this.state.tournament;
+        this.metadata = this.state.metadata;
+        this.isTournamentFinished = this.state.isTournamentFinished;
+        this.isSimpleTournament = this.state.isSimpleTournament;
+        this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
+        this.isRunning = this.state.isRunning;
         this.elem = this.document.documentElement;
-    }
 
-    ngOnChanges(): void {
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament.id);
+        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament().id);
 
         if (adaptedPayouts) {
             const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
-            this.isAdaptedPayoutSumCorrect = this.timerStateService.totalPricePool() === adaptedSum;
+            this.isAdaptedPayoutSumCorrect = this.state.totalPricePool() === adaptedSum;
         } else {
             this.isAdaptedPayoutSumCorrect = true;
         }
 
         const numberOfPaidPlaces = adaptedPayouts
             ? adaptedPayouts.length
-            : this.rankingService.getPayoutById(this.tournament.payout).length;
+            : this.rankingService.getPayoutById(this.tournament().payout).length;
 
-        const playersLeft = this.tournament.players.length - this.tournament.finishes.length;
+        const playersLeft = this.state.players().length - this.state.finishes().length;
 
-        this.isAddPlayerBlocked = this.tournament.players.length >= numberOfPaidPlaces && playersLeft < numberOfPaidPlaces;
+        this.isAddPlayerBlocked = this.state.players().length >= numberOfPaidPlaces && playersLeft < numberOfPaidPlaces;
 
-        this.canStartTournament = this.tournamentService.getCanStartTournament(this.tournament);
+        this.canStartTournament = this.state.canStartTournament;
 
-        const draw: TableDraw = this.localStorageService.getTableDraw(this.tournament.id);
+        const draw: TableDraw = this.localStorageService.getTableDraw(this.tournament().id);
 
         if (draw) {
             this.playerHasToBeMoved = this.getPlayerHasToBeMoved(draw);
@@ -272,8 +267,7 @@ export class ButtonsComponent implements OnInit, OnChanges {
         const dialogRef = this.dialog.open(
             MenuDialogComponent, {
                 data: {
-                    running: this.running,
-                    isAddPlayerBlocked: this.isAddPlayerBlocked
+                    isAddPlayerBlocked: this.isAddPlayerBlocked // TODO
                 },
                 ...DEFAULT_DIALOG_POSITION
             }
@@ -285,17 +279,10 @@ export class ButtonsComponent implements OnInit, OnChanges {
         dialogRef.componentInstance.nextLevel = this.nextLevel;
         dialogRef.componentInstance.prevLevel = this.prevLevel;
         dialogRef.componentInstance.previousLevel = this.previousLevel;
-        dialogRef.componentInstance.toggleAutoSlide = this.toggleAutoSlide;
-        dialogRef.componentInstance.toggleShowCondensedBlinds = this.toggleShowCondensedBlinds;
-        dialogRef.componentInstance.localRefresh = this.localRefresh;
     }
 
     toggleRunning(): void {
-        if (this.running) {
-            this.pause.emit();
-        } else {
-            this.start.emit();
-        }
+        this.state.isRunning.update(previous => !previous);
     }
 
 }

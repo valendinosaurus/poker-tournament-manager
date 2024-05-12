@@ -22,7 +22,7 @@ export type Formula = (input: FormulaInput) => number;
 })
 export class RankingService {
 
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     defaultFormula: Formula = (input: FormulaInput) => 0;
 

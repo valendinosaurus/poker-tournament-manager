@@ -58,7 +58,7 @@
                             <div>
                                 <ng-container *ngIf="!level.isPause; else pause">
                                     <div class="talign-center talign-center-big">
-                                        <span [innerHTML]="level | blindLevelText:!!showCondensed():false"></span>
+                                        <span [innerHTML]="level | blindLevelText:false"></span>
                                         <ng-container *ngIf="level.ante > 0">
                                             / {{ level.ante | number }}
                                         </ng-container>

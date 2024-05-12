@@ -39,14 +39,14 @@ export class RankingComponent implements OnInit {
     missingRanks: Signal<Ranking[]>;
 
     private rankingService: RankingService = inject(RankingService);
-    private timerStateService: TimerStateService = inject(TimerStateService);
+    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        const tournament = computed(() => this.timerStateService.tournament());
-        const metadata = computed(() => this.timerStateService.metadata());
-        const players = computed(() => this.timerStateService.tournament().players);
-        const entries = computed(() => this.timerStateService.tournament().entries);
-        const finishes = computed(() => this.timerStateService.tournament().finishes);
+        const tournament = computed(() => this.state.tournament());
+        const metadata = computed(() => this.state.metadata());
+        const players = computed(() => this.state.tournament().players);
+        const entries = computed(() => this.state.tournament().entries);
+        const finishes = computed(() => this.state.tournament().finishes);
 
         this.combFinishes = computed(() => finishes().map(
             (finish: Finish) => ({
@@ -109,19 +109,19 @@ export class RankingComponent implements OnInit {
             reEntries: +combFinishe.reEntries,
             addons: +combFinishe.addons,
             rebuys: +combFinishe.rebuys,
-            players: this.timerStateService.tournament().players.length,
-            buyIn: +this.timerStateService.tournament().buyInAmount,
+            players: this.state.tournament().players.length,
+            buyIn: +this.state.tournament().buyInAmount,
             pricePool: +this.getPricePool(),
-            addonCost: +this.timerStateService.tournament().addonAmount
+            addonCost: +this.state.tournament().addonAmount
         }) : 0;
     }
 
     private getPricePool(): number {
-        return this.timerStateService.tournament().entries.filter(
+        return this.state.tournament().entries.filter(
                 (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
-            ).length * +this.timerStateService.tournament().buyInAmount
-            + this.timerStateService.tournament().entries.filter(e => e.type === EntryType.REBUY).length * +this.timerStateService.tournament().rebuyAmount
-            + this.timerStateService.tournament().entries.filter(e => e.type === EntryType.ADDON).length * +this.timerStateService.tournament().addonAmount
-            + +this.timerStateService.tournament().initialPricePool;
+            ).length * +this.state.tournament().buyInAmount
+            + this.state.tournament().entries.filter(e => e.type === EntryType.REBUY).length * +this.state.tournament().rebuyAmount
+            + this.state.tournament().entries.filter(e => e.type === EntryType.ADDON).length * +this.state.tournament().addonAmount
+            + +this.state.tournament().initialPricePool;
     }
 }

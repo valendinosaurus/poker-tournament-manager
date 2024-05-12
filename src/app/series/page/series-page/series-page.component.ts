@@ -25,6 +25,7 @@ import {
     ConnectToOtherUserDialogComponent
 } from '../../../welcome/components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { NullsafePrimitivePipe } from '../../../core/pipes/nullsafe-primitive.pipe';
 
 export interface SeriesHeader {
     logo: string;
@@ -63,7 +64,8 @@ export interface SeriesStats {
         SeriesTournamentComponent,
         AsyncPipe,
         MatDialogModule,
-        MatButtonModule
+        MatButtonModule,
+        NullsafePrimitivePipe
     ]
 })
 export class SeriesPageComponent implements OnInit {
