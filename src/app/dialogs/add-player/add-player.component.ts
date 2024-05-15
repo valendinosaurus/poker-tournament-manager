@@ -1,10 +1,8 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { PlayerApiService } from '../../core/services/api/player-api.service';
-import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
@@ -46,12 +44,9 @@ export class AddPlayerComponent implements OnInit {
     } = inject(MAT_DIALOG_DATA);
 
     private dialogRef: MatDialogRef<AddPlayerComponent> = inject(MatDialogRef<AddPlayerComponent>);
-    private playerApiService: PlayerApiService = inject(PlayerApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private entryApiService: EntryApiService = inject(EntryApiService);
     private finishApiService: FinishApiService = inject(FinishApiService);
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
-    private destroyRef: DestroyRef = inject(DestroyRef);
     private fetchService: FetchService = inject(FetchService);
     private tournamentService: TournamentService = inject(TournamentService);
     private notificationService: NotificationService = inject(NotificationService);
@@ -102,9 +97,7 @@ export class AddPlayerComponent implements OnInit {
     }
 
     onSelectPlayersMulti(change: MatSelectChange): void {
-        console.log(change);
         this.modelMulti.playerIds.set(change.value);
-        console.log('model', this.modelMulti.playerIds());
     }
 
     onSubmit(withEntry: boolean): void {
@@ -168,40 +161,54 @@ export class AddPlayerComponent implements OnInit {
     }
 
     removePlayer(playerId: number, playerName: string): void {
-        const dialogRef = this.dialog.open(
-            ConfirmationDialogComponent,
-            {
-                data: {
-                    title: 'Remove Player',
-                    body: `Do you really want to remove <strong>${playerName}</strong> from tournament <strong>${this.tournament().name}</strong>`,
-                    confirm: 'Remove Player',
-                    isDelete: true
-                }
-            });
+        if (this.state.finishes().map(e => e.playerId).includes(playerId)) {
+            this.dialog.open(
+                ConfirmationDialogComponent,
+                {
+                    data: {
+                        title: 'Error',
+                        body: `There are finishes for player <strong>${playerName}</strong> in tournament <strong>${this.tournament().name}</strong>. Please remove them first.`,
+                        confirm: 'OK',
+                    }
+                });
+        } else if (this.state.entries().map(e => e.playerId).includes(playerId)) {
 
-        dialogRef.afterClosed().pipe(
-            switchMap((result: boolean) => iif(
-                    () => result,
-                    defer(() => this.tournamentApiService.removePlayer$(playerId, this.tournament().id).pipe(
-                        take(1),
-                        catchError(() => {
-                            this.notificationService.error('Error removing Player');
-                            return of(null);
-                        }),
-                        switchMap(() => this.finishApiService.decreaseAllOfTournament$(
-                            this.tournament().id,
-                            this.tournament().finishes.map((finish: Finish) => finish.playerId)
-                        )),
-                        tap(() => this.fetchService.trigger()),
-                        this.tournamentService.postActionEvent$,
-                        tap(() => this.tournament().players = this.tournament().players.filter(
-                            p => p.id !== playerId
-                        )))
-                    ),
-                    defer(() => of(null))
-                )
-            )
-        ).subscribe();
+        }
+
+        // const dialogRef = this.dialog.open(
+        //     ConfirmationDialogComponent,
+        //     {
+        //         data: {
+        //             title: 'Remove Player',
+        //             body: `Do you really want to remove <strong>${playerName}</strong> from tournament <strong>${this.tournament().name}</strong>`,
+        //             confirm: 'Remove Player',
+        //             isDelete: true
+        //         }
+        //     });
+        //
+        // dialogRef.afterClosed().pipe(
+        //     switchMap((result: boolean) => iif(
+        //             () => result,
+        //             defer(() => this.tournamentApiService.removePlayer$(playerId, this.tournament().id).pipe(
+        //                 take(1),
+        //                 catchError(() => {
+        //                     this.notificationService.error('Error removing Player');
+        //                     return of(null);
+        //                 }),
+        //                 switchMap(() => this.finishApiService.decreaseAllOfTournament$(
+        //                     this.tournament().id,
+        //                     this.tournament().finishes.map((finish: Finish) => finish.playerId)
+        //                 )),
+        //                 tap(() => this.fetchService.trigger()),
+        //                 this.tournamentService.postActionEvent$,
+        //                 tap(() => this.tournament().players = this.tournament().players.filter(
+        //                     p => p.id !== playerId
+        //                 )))
+        //             ),
+        //             defer(() => of(null))
+        //         )
+        //     )
+        // ).subscribe();
     }
 
 }

@@ -17,7 +17,6 @@ import { AddRebuyComponent } from '../../../../../dialogs/add-rebuy/add-rebuy.co
 import { AddAddonComponent } from '../../../../../dialogs/add-addon/add-addon.component';
 import { AddFinishComponent } from '../../../../../dialogs/add-finish/add-finish.component';
 import { MatDialog } from '@angular/material/dialog';
-import { TournamentService } from '../../../../../core/services/util/tournament.service';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
@@ -88,12 +87,9 @@ export class ButtonsComponent implements OnInit {
     private dialog: MatDialog = inject(MatDialog);
     private rankingService: RankingService = inject(RankingService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private tournamentService: TournamentService = inject(TournamentService);
     private document: Document = inject(DOCUMENT);
     private state: TimerStateService = inject(TimerStateService);
 
-    @Output() start = new EventEmitter<void>();
-    @Output() pause = new EventEmitter<void>();
     @Output() addMinute = new EventEmitter<void>();
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
@@ -273,8 +269,6 @@ export class ButtonsComponent implements OnInit {
             }
         );
 
-        dialogRef.componentInstance.start = this.start;
-        dialogRef.componentInstance.pause = this.pause;
         dialogRef.componentInstance.addMinute = this.addMinute;
         dialogRef.componentInstance.nextLevel = this.nextLevel;
         dialogRef.componentInstance.prevLevel = this.prevLevel;
@@ -282,7 +276,11 @@ export class ButtonsComponent implements OnInit {
     }
 
     toggleRunning(): void {
-        this.state.isRunning.update(previous => !previous);
+        if (this.state.isRunning()) {
+            this.state.pauseTimer();
+        } else {
+            this.state.startTimer();
+        }
     }
 
 }

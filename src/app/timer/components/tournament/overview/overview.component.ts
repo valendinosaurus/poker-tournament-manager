@@ -99,7 +99,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     @HostListener('window:keyup.space', ['$event'])
     onKeydownHandler(event: Event) {
         event.preventDefault();
-        this.state.isRunning.update(current => !current);
+
+        if (this.state.isRunning()) {
+            this.state.pauseTimer();
+        } else {
+            this.state.startTimer();
+        }
     }
 
     _runningEffect = effect(() => {
@@ -116,13 +121,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.isFinished = this.state.isTournamentFinished;
         this.currentLevelIndex = this.state.currentLevelIndex;
         this.isRunning = this.state.isRunning;
-
         this.levels = computed(() => this.tournament().structure);
-
-        setInterval(() => {
-            this.today = computed(() => Date.now());
-        }, 100);
-
         this.isTournamentPartOfSeries.set(this.metadata() !== undefined);
 
         this.initTimeValues();
@@ -135,6 +134,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         );
 
         this.checkIsRebuyPhaseFinished();
+
+        setInterval(() => {
+            this.today = computed(() => Date.now());
+        }, 100);
     }
 
     ngAfterViewInit(): void {
@@ -241,19 +244,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 this.currentLevelIndex(),
                 this.currentLevelTimeLeft()
             );
-        }
-    }
-
-    start(): void {
-        if (!this.state.isRunning() && this.state.canStartTournament() && !this.state.isTournamentFinished()) {
-            this.state.isRunning.set(true);
-        }
-    }
-
-    pause(): void {
-        if (this.state.isRunning()) {
-            this.state.isRunning.set(false);
-            this.blindDuration.set(this.currentLevelTimeLeft() + 1);
         }
     }
 

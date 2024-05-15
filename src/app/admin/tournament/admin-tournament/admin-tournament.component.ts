@@ -80,6 +80,7 @@ export class AdminTournamentComponent implements OnInit {
     }
 
     deletePlayerFromTournament(playerId: number): void {
+        // TODO check if there are entries etc.
         this.tournament$.pipe(
             take(1),
             switchMap((tournament: Tournament) =>

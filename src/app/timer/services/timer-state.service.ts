@@ -240,4 +240,16 @@ export class TimerStateService {
             )
     );
 
+    startTimer(): void {
+        if (!this.isRunning() && this.canStartTournament() && !this.isTournamentFinished()) {
+            this.isRunning.set(true);
+        }
+    }
+
+    pauseTimer(): void {
+        if (this.isRunning()) {
+            this.isRunning.set(false);
+        }
+    }
+
 }

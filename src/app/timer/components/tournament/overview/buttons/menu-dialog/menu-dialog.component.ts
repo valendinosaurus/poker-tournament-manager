@@ -59,8 +59,6 @@ export class MenuDialogComponent implements OnInit {
     showCondensedBlinds: WritableSignal<boolean>;
     isRunning: WritableSignal<boolean>;
 
-    @Output() start = new EventEmitter<void>();
-    @Output() pause = new EventEmitter<void>();
     @Output() addMinute = new EventEmitter<void>();
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
@@ -315,5 +313,13 @@ export class MenuDialogComponent implements OnInit {
 
     closeMenu(): void {
         this.dialogRef.close();
+    }
+
+    onStart(): void {
+        this.state.startTimer();
+    }
+
+    onPause(): void {
+        this.state.pauseTimer();
     }
 }
