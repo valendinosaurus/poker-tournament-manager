@@ -8,11 +8,13 @@
     display: flex;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .fa {
     font-size: 10px;
     margin-right: 4px;
+    margin-bottom: 4px;
 }
 
 .bullet {
@@ -21,4 +23,9 @@
     border-radius: 10px;
     background: $primaryDark;
     margin-right: 4px;
+}
+
+div.break {
+    flex-basis: 100%;
+    height: 0;
 }

@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { AddEntryModel } from './add-entry-model.interface';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 
 @Component({
     selector: 'app-add-re-entry',
@@ -29,14 +30,11 @@ import { AddEntryModel } from './add-entry-model.interface';
     standalone: true,
     imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule, JsonPipe]
 })
-export class AddEntryComponent implements OnInit {
+export class AddEntryComponent extends BaseAddDialogComponent<AddEntryComponent, AddEntryModel> implements OnInit {
 
     playersToEnter: Signal<{ label: string, value: number }[]>;
     conductedEntries: Signal<ConductedEntry[]>;
 
-    model: AddEntryModel;
-
-    private dialogRef: MatDialogRef<AddEntryComponent> = inject(MatDialogRef<AddEntryComponent>);
     data: {
         isReentry: boolean,
     } = inject(MAT_DIALOG_DATA);
@@ -57,8 +55,6 @@ export class AddEntryComponent implements OnInit {
             ? this.state.eligibleForReEntry
             : this.state.eligibleForEntry;
 
-        console.log('players', players());
-
         this.playersToEnter = computed(() => players().map(
             player => ({
                 label: player.name,
@@ -78,6 +74,7 @@ export class AddEntryComponent implements OnInit {
 
     onSubmit(): void {
         const playerId = this.model.playerId();
+        this.isLoadingAdd = true;
 
         if (playerId) {
             this.entryApiService.post$({
@@ -90,6 +87,7 @@ export class AddEntryComponent implements OnInit {
                 take(1),
                 catchError(() => {
                     this.notificationService.error(`Error ${this.data.isReentry ? 'Re-Entry' : 'Entry'}`);
+                    this.isLoadingAdd = false;
                     return of(null);
                 }),
                 tap(() => {
@@ -105,13 +103,18 @@ export class AddEntryComponent implements OnInit {
                         TEventType.ENTRY
                     );
                 }),
-                tap((a) => this.fetchService.trigger()),
+                tap((a) => {
+                    this.fetchService.trigger();
+                    this.isLoadingAdd = false;
+                }),
                 this.tournamentService.postActionEvent$
             ).subscribe();
         }
     }
 
     removeEntry(entryId: number, playerName: string): void {
+        this.isLoadingRemove = true;
+
         if (entryId > -1) {
             const dialogRef = this.dialog.open(
                 ConfirmationDialogComponent,
@@ -131,6 +134,7 @@ export class AddEntryComponent implements OnInit {
                                 take(1),
                                 catchError(() => {
                                     this.notificationService.error('Error removing Entry');
+                                    this.isLoadingRemove = false;
                                     return of(null);
                                 }),
                                 tap(() => {
@@ -143,7 +147,10 @@ export class AddEntryComponent implements OnInit {
                                         TEventType.CORRECTION
                                     );
                                 }),
-                                tap((a) => this.fetchService.trigger()),
+                                tap((a) => {
+                                    this.fetchService.trigger();
+                                    this.isLoadingRemove = false;
+                                }),
                                 this.tournamentService.postActionEvent$,
                             )
                         ),
@@ -151,14 +158,6 @@ export class AddEntryComponent implements OnInit {
                     )
                 )
             ).subscribe();
-        }
-    }
-
-    closeDialog(event: Event): void {
-        event.preventDefault();
-
-        if (this.dialogRef) {
-            this.dialogRef.close();
         }
     }
 

@@ -61,7 +61,7 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="!model.isValid()"
+            [disabled]="!model.isValid() || isLoadingAdd"
             (click)="onSubmit(false)"
         >
             ADD
@@ -71,11 +71,26 @@
             mat-raised-button
             color="accent"
             type="submit"
-            [disabled]="!model.isValid()"
+            [disabled]="!model.isValid() || isLoadingAdd"
             (click)="onSubmit(true)"
         >
             ADD WITH ENTRY
         </button>
+
+        <button
+            mat-raised-button
+            [disabled]="isLoadingAdd"
+            (click)="closeDialog($event)"
+        >
+            CANCEL
+        </button>
+
+        @if (isLoadingAdd) {
+            <div class="loading-wrapper">
+                <i class="fa fa-spinner fa-spin"></i>
+            </div>
+        }
+
     </form>
 </ng-template>
 
@@ -107,7 +122,14 @@
                     </td>
                     <td>
                         <ng-container *ngIf="!isPlayerFinished(e.id) && !hasPlayerEntered(e.id);">
-                            <i (click)="removePlayer(e.id, e.name)" class="fa fa-trash"></i>
+                            @if (!isLoadingRemove) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="removePlayer(e.id, e.name)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-spinner fa-spin"></i>
+                            }
                         </ng-container>
                     </td>
                 </tr>

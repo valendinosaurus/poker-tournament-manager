@@ -1,9 +1,8 @@
 import { Component, computed, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { Player } from '../../shared/models/player.interface';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { RankingService } from '../../core/services/util/ranking.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
@@ -26,6 +25,7 @@ import { TimerStateService } from '../../timer/services/timer-state.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FetchService } from '../../core/services/fetch.service';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 
 @Component({
     selector: 'app-add-finish',
@@ -34,25 +34,21 @@ import { FetchService } from '../../core/services/fetch.service';
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, AsyncPipe, MatFormFieldModule, MatSelectModule]
 })
-export class AddFinishComponent implements OnInit {
-
-    model: AddFinishModel;
+export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponent, AddFinishModel> implements OnInit {
 
     playersToEliminate: Signal<{ label: string, value: number }[]>;
     eliminators: Signal<{ label: string, value: number }[]>;
     conductedFinishes: Signal<ConductedFinish[]>;
     conductedEliminations: Signal<ConductedElimination[]>;
-    totalPricePool: Signal<{ totalPricePool: number, deduction: number }>;
-
-    isLoading: boolean;
-    isLoadingAdd = false;
-    isLoadingRemove = false;
+    totalPricePool: WritableSignal<{ totalPricePool: number, deduction: number }> = signal({
+        deduction: 0,
+        totalPricePool: 0
+    });
 
     rank: WritableSignal<number> = signal(0);
     price: WritableSignal<number> = signal(0);
     winnerPrice: WritableSignal<number> = signal(0);
 
-    private dialogRef: MatDialogRef<AddFinishComponent> = inject(MatDialogRef<AddFinishComponent>);
     private tournamentService: TournamentService = inject(TournamentService);
     private finishApiService: FinishApiService = inject(FinishApiService);
     private eliminationApiService: EliminationApiService = inject(EliminationApiService);
@@ -92,6 +88,10 @@ export class AddFinishComponent implements OnInit {
 
         this.conductedFinishes = this.state.conductedFinishes;
         this.conductedEliminations = this.state.conductedEliminations;
+        this.totalPricePool.set({
+            totalPricePool: this.state.totalPricePool(),
+            deduction: this.state.pricePoolDeduction()
+        });
 
         this.eliminators = computed(() =>
             this.playersToEliminate().filter(p => p.value !== this.model.playerId())
@@ -106,14 +106,20 @@ export class AddFinishComponent implements OnInit {
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
         const placesPaid = payoutRaw.length;
 
+        console.log('rank', this.rank());
+        console.log('places paid', placesPaid);
+
         if (this.rank() > placesPaid) {
+            console.log('set price 0');
             this.price.set(0);
         } else {
             if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
+                console.log('set adapted price', adaptedPayouts[this.rank() - 1]);
                 this.price.set(adaptedPayouts[this.rank() - 1]);
                 this.winnerPrice.set(adaptedPayouts[0]);
             } else {
                 const {totalPricePool} = this.totalPricePool();
+                console.log('set price', totalPricePool / 100 * payoutPercentage);
                 this.price.set(totalPricePool / 100 * payoutPercentage);
                 this.winnerPrice.set(totalPricePool / 100 * payoutRaw[0]);
             }
@@ -146,7 +152,7 @@ export class AddFinishComponent implements OnInit {
                 switchMap(() => this.postElimination$(eliminatedById, playerId, this.state.tournament().id)),
                 switchMap(() => iif(
                     () => this.rank() === 2,
-                    defer(() => this.postRemainingFinish$()),
+                    defer(() => this.postRemainingFinish$(eliminatedById)),
                     of(null)
                 )),
                 this.tournamentService.postActionEvent$,
@@ -197,10 +203,10 @@ export class AddFinishComponent implements OnInit {
         };
     }
 
-    private postRemainingFinish$(): Observable<any> {
-        return this.finishApiService.post$(this.getRemainingFinish()).pipe(
+    private postRemainingFinish$(eliminator: number): Observable<any> {
+        return this.finishApiService.post$(this.getRemainingFinish(eliminator)).pipe(
             switchMap(() => {
-                const winner: Finish = this.getRemainingFinish();
+                const winner: Finish = this.getRemainingFinish(eliminator);
                 const name = this.playersToEliminate().filter(e => e.value === winner.playerId)[0].label;
 
                 return this.tEventApiService.post$(
@@ -212,15 +218,7 @@ export class AddFinishComponent implements OnInit {
         );
     }
 
-    private getRemainingFinish(): Finish {
-        const playerId = this.state.tournament().players.filter(
-            (player: Player) => {
-                const finishIds = this.state.tournament().finishes.map(f => f.playerId);
-
-                return !finishIds.includes(player.id);
-            }
-        )[0].id;
-
+    private getRemainingFinish(eliminator: number): Finish {
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
         const payouts = this.rankingService.getPayoutById(this.state.tournament().payout);
         const payoutPercentage = +payouts[0];
@@ -238,7 +236,7 @@ export class AddFinishComponent implements OnInit {
             rank: 1,
             tournamentId: this.state.tournament().id,
             price,
-            playerId,
+            playerId: eliminator,
             timestamp: -1,
         };
     }
@@ -304,7 +302,7 @@ export class AddFinishComponent implements OnInit {
                             )),
                             tap(() => {
                                 this.fetchService.trigger();
-                                //    this.isLoadingRemove = false;
+                                this.isLoadingRemove = false;
                             }),
                             this.tournamentService.postActionEvent$
                         )
@@ -313,14 +311,6 @@ export class AddFinishComponent implements OnInit {
                 )
             )
         ).subscribe();
-    }
-
-    closeDialog(event: Event): void {
-        event.preventDefault();
-
-        if (this.dialogRef) {
-            this.dialogRef.close();
-        }
     }
 
 }

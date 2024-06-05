@@ -10,18 +10,23 @@ import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { AddTournamentComponent } from '../../../dialogs/add-tournament/add-tournament.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Series } from '../../../shared/models/series.interface';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { CreateSeriesComponent } from '../create-series/create-series.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { Player } from '../../../shared/models/player.interface';
+import { PlayerApiService } from '../../../core/services/api/player-api.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
     selector: 'app-admin-series',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, MatButtonModule, MatTabsModule, UserImageRoundComponent, RouterLink],
+    imports: [CommonModule, AppHeaderComponent, MatButtonModule, MatTabsModule, UserImageRoundComponent, RouterLink, MatFormFieldModule, MatOptionModule, MatSelectModule],
     templateUrl: './admin-series.component.html',
 })
 export class AdminSeriesComponent implements OnInit {
@@ -30,9 +35,12 @@ export class AdminSeriesComponent implements OnInit {
     user$: Observable<User>;
     sub$: Observable<string>;
     sId$: Observable<number>;
+    playersEligibleForDisqualification$: Observable<Player[]>;
+    disqualifiedPlayers$: Observable<Player[]>;
 
     private route: ActivatedRoute = inject(ActivatedRoute);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
+    private playerApiService: PlayerApiService = inject(PlayerApiService);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private dialog: MatDialog = inject(MatDialog);
     private destroyRef: DestroyRef = inject(DestroyRef);
@@ -55,6 +63,26 @@ export class AdminSeriesComponent implements OnInit {
         ]).pipe(
             switchMap(([_, sId]: [void, number]) =>
                 this.seriesApiService.get$(sId)
+            ),
+            shareReplay(1)
+        );
+
+        this.disqualifiedPlayers$ = combineLatest([
+            this.trigger$,
+            this.sId$
+        ]).pipe(
+            switchMap(([_, sId]: [void, number]) => this.seriesApiService.getDisqualifiedPlayers$(sId)),
+            shareReplay(1)
+        );
+
+        this.playersEligibleForDisqualification$ = combineLatest([
+            this.playerApiService.getAll$(),
+            this.disqualifiedPlayers$
+        ]).pipe(
+            map(([all, disqualified]: [Player[], Player[]]) =>
+                all.filter(
+                    (player: Player) => !disqualified.map(p => p.id).includes(player.id)
+                )
             )
         );
 
@@ -147,6 +175,20 @@ export class AdminSeriesComponent implements OnInit {
             branding: series.branding.id,
             finalTournament: series.finalTournament?.id ?? -1
         }).pipe(
+            take(1),
+            tap(() => this.trigger$.next()),
+        ).subscribe();
+    }
+
+    disqualifyPlayer(seriesId: number, playerId: number): void {
+        this.seriesApiService.disqualifyPlayer(seriesId, playerId).pipe(
+            take(1),
+            tap(() => this.trigger$.next()),
+        ).subscribe();
+    }
+
+    removeDisqualification(seriesId: number, playerId: number): void {
+        this.seriesApiService.removeDisqualifiedPlayer(seriesId, playerId).pipe(
             take(1),
             tap(() => this.trigger$.next()),
         ).subscribe();

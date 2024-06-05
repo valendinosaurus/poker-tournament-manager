@@ -7,8 +7,10 @@ export interface SeriesTournamentRow {
     rebuys: number;
     addons: number;
     reEntries: number;
+    eliminations: number;
     points: number;
     dealMade: boolean;
     isTemp: boolean;
     email: string | undefined | null;
+    disqualified: boolean;
 }

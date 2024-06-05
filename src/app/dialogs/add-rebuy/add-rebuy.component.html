@@ -32,17 +32,25 @@
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!model.isValid"
+        [disabled]="!model.isValid() || isLoadingAdd"
     >
         REBUY
     </button>
 
     <button
         mat-raised-button
+        [disabled]="isLoadingAdd"
         (click)="closeDialog($event)"
     >
         CANCEL
     </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
+
 </form>
 
 <h3>Conducted Rebuys</h3>
@@ -66,10 +74,14 @@
                     </td>
                     <td>
                         <ng-container *ngIf="!e.isFinished; else skull">
-                            <i
-                                class="fa fa-trash"
-                                (click)="deleteRebuy(e.entryId, e.name)"
-                            ></i>
+                            @if (!isLoadingRemove) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteRebuy(e.entryId, e.name)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-spinner fa-spin"></i>
+                            }
                         </ng-container>
                         <ng-template #skull>
                             <i class="fa fa-skull"></i>

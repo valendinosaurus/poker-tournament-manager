@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input, Signal } from '@angular/core';
 import { SeriesTournament } from '../../models/combined-ranking.interface';
 import { TEventTypeIconPipe } from '../../../shared/pipes/t-event-type-icon.pipe';
 import { BulletsComponent } from '../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-series-tournament',
@@ -17,7 +17,13 @@ import { NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
 })
 export class SeriesTournamentComponent {
 
-    @Input() test: SeriesTournament | null;
-    @Input() myEmail: string | undefined | null;
+    tournament = input.required<SeriesTournament>();
+    myEmail = input.required<string | undefined | null>();
+
+    showEliminations: Signal<boolean> = computed(() =>
+        this.tournament()?.combFinishes.filter(f => f.eliminations > 0).length > 0
+    );
+
+    isLiveTickerExpanded = true;
 
 }

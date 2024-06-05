@@ -8,10 +8,14 @@
             <th *ngIf="full" class="t-center">Played</th>
             <th *ngIf="full" class="t-center">ITM (%)</th>
             <th *ngIf="full" class="t-center">Rebuys / Addons</th>
+            <th *ngIf="full" class="t-center">Eliminations</th>
             <th *ngIf="full" class="t-right">Price</th>
         </tr>
         <ng-container *ngFor="let e of leaderboard(); let i = index">
-            <tr [class.finalist]="i < series().finalists">
+            <tr
+                [class.finalist]="i < (series().finalists + numberOfDisqualifiedPlayers()) && !e.disqualified"
+                [class.disqualified]="e.disqualified"
+            >
                 <td>
                     {{ i + 1 }}.
                 </td>
@@ -37,7 +41,11 @@
                     </div>
                 </td>
                 <td *ngIf="full" class="t-center">
-                    {{ e.rank / e.tournaments | number:'1.1-1' }}
+                    @if (e.rank > 999999999) {
+                        <i class="fa fa-hourglass-2"></i>
+                    } @else {
+                        {{ e.rank / e.tournaments | number:'1.1-1' }}
+                    }
                 </td>
                 <td *ngIf="full" class="t-center">
                     {{ e.tournaments }}
@@ -47,6 +55,9 @@
                 </td>
                 <td *ngIf="full" class="t-center">
                     {{ e.rebuysAddons }}
+                </td>
+                <td *ngIf="full" class="t-center">
+                    {{ e.eliminations }}
                 </td>
                 <td *ngIf="full" class="t-right">
                     <span

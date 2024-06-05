@@ -25,7 +25,7 @@
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!model.isValid()"
+        [disabled]="!model.isValid() || isLoadingAdd"
     >
         <ng-container *ngIf="data.isReentry">
             RE-
@@ -35,10 +35,18 @@
 
     <button
         mat-raised-button
+        [disabled]="isLoadingAdd"
         (click)="closeDialog($event)"
     >
         CANCEL
     </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
+
 </form>
 
 <h3>Conducted Entries</h3>
@@ -72,7 +80,14 @@
                     </td>
                     <td>
                         <ng-container *ngIf="!e.isFinished && !e.isBlocked;">
-                            <i (click)="removeEntry(e.entryId, e.name)" class="fa fa-trash"></i>
+                            @if (!isLoadingRemove) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="removeEntry(e.entryId, e.name)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-spinner fa-spin"></i>
+                            }
                         </ng-container>
                     </td>
                 </tr>

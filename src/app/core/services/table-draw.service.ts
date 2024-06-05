@@ -152,10 +152,13 @@ export class TableDrawService {
             p => tableDraw.tournament.finishes.map(e => e.playerId).includes(p.id)
         );
 
+        console.log('eliminated', eliminatedPlayers);
+
         tableDraw.tables.forEach(
             t => t.forEach(
                 p => {
                     if (eliminatedPlayers.map(a => a.id).includes(p.player.id)) {
+                        console.log('setting eliminated');
                         p.eliminated = true;
                     }
                 }
@@ -174,6 +177,7 @@ export class TableDrawService {
         const max = Math.max(...numberOfRemainingPlayersPerTable);
 
         tableDraw.playerHasToBeMoved = max - min > 1;
+        console.log('has tp be moved', tableDraw.playerHasToBeMoved);
 
         if (tableDraw.playerHasToBeMoved) {
             tableDraw.noOfPlayersToMove = Math.floor((max - min) / 2);

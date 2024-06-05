@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
@@ -23,6 +23,7 @@ import { AddPlayerMultiModel } from './add-player-multi-model.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 
 @Component({
     selector: 'app-add-player',
@@ -31,19 +32,17 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
     standalone: true,
     imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, MatFormFieldModule, MatOptionModule, MatSelectModule]
 })
-export class AddPlayerComponent implements OnInit {
+export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponent, AddPlayerModel> implements OnInit {
 
     tournament: WritableSignal<Tournament>;
     playersToAdd: Signal<{ label: string, value: number }[]>;
 
-    model: AddPlayerModel;
     modelMulti: AddPlayerMultiModel;
 
     data: {
         multi: boolean
     } = inject(MAT_DIALOG_DATA);
 
-    private dialogRef: MatDialogRef<AddPlayerComponent> = inject(MatDialogRef<AddPlayerComponent>);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private entryApiService: EntryApiService = inject(EntryApiService);
     private finishApiService: FinishApiService = inject(FinishApiService);
@@ -102,12 +101,14 @@ export class AddPlayerComponent implements OnInit {
 
     onSubmit(withEntry: boolean): void {
         const playerId = this.model.playerId();
+        this.isLoadingAdd = true;
 
         if (playerId) {
             this.tournamentApiService.addPlayer$(playerId, this.tournament().id).pipe(
                 take(1),
                 catchError(() => {
                     this.notificationService.error(`Error adding Player`);
+                    this.isLoadingAdd = false;
                     return of(null);
                 }),
                 switchMap(() => iif(
@@ -121,6 +122,7 @@ export class AddPlayerComponent implements OnInit {
                     }).pipe(
                         catchError(() => {
                             this.notificationService.error(`Error entering Player`);
+                            this.isLoadingAdd = false;
                             return of(null);
                         })
                     )),
@@ -132,6 +134,7 @@ export class AddPlayerComponent implements OnInit {
                 )),
                 tap((result: any) => {
                     this.fetchService.trigger();
+                    this.isLoadingAdd = false;
 
                     if (this.dialogRef) {
                         this.dialogRef.close({
@@ -146,10 +149,14 @@ export class AddPlayerComponent implements OnInit {
     }
 
     onSubmitMulti(withEntry: boolean): void {
+        this.isLoadingAdd = true;
+
         if (this.modelMulti.playerIds().length > 0) {
             this.tournamentApiService.addPlayers$(this.modelMulti.playerIds(), this.tournament().id).pipe(
                 take(1),
-                tap((result: any) => {
+                tap(() => {
+                    this.isLoadingAdd = false;
+
                     if (this.dialogRef) {
                         this.dialogRef.close({
                             playerIds: this.modelMulti.playerIds()
@@ -161,54 +168,43 @@ export class AddPlayerComponent implements OnInit {
     }
 
     removePlayer(playerId: number, playerName: string): void {
-        if (this.state.finishes().map(e => e.playerId).includes(playerId)) {
-            this.dialog.open(
-                ConfirmationDialogComponent,
-                {
-                    data: {
-                        title: 'Error',
-                        body: `There are finishes for player <strong>${playerName}</strong> in tournament <strong>${this.tournament().name}</strong>. Please remove them first.`,
-                        confirm: 'OK',
-                    }
-                });
-        } else if (this.state.entries().map(e => e.playerId).includes(playerId)) {
+        this.isLoadingRemove = true;
 
-        }
+        const dialogRef = this.dialog.open(
+            ConfirmationDialogComponent,
+            {
+                data: {
+                    title: 'Remove Player',
+                    body: `Do you really want to remove <strong>${playerName}</strong> from tournament <strong>${this.tournament().name}</strong>`,
+                    confirm: 'Remove Player',
+                    isDelete: true
+                }
+            });
 
-        // const dialogRef = this.dialog.open(
-        //     ConfirmationDialogComponent,
-        //     {
-        //         data: {
-        //             title: 'Remove Player',
-        //             body: `Do you really want to remove <strong>${playerName}</strong> from tournament <strong>${this.tournament().name}</strong>`,
-        //             confirm: 'Remove Player',
-        //             isDelete: true
-        //         }
-        //     });
-        //
-        // dialogRef.afterClosed().pipe(
-        //     switchMap((result: boolean) => iif(
-        //             () => result,
-        //             defer(() => this.tournamentApiService.removePlayer$(playerId, this.tournament().id).pipe(
-        //                 take(1),
-        //                 catchError(() => {
-        //                     this.notificationService.error('Error removing Player');
-        //                     return of(null);
-        //                 }),
-        //                 switchMap(() => this.finishApiService.decreaseAllOfTournament$(
-        //                     this.tournament().id,
-        //                     this.tournament().finishes.map((finish: Finish) => finish.playerId)
-        //                 )),
-        //                 tap(() => this.fetchService.trigger()),
-        //                 this.tournamentService.postActionEvent$,
-        //                 tap(() => this.tournament().players = this.tournament().players.filter(
-        //                     p => p.id !== playerId
-        //                 )))
-        //             ),
-        //             defer(() => of(null))
-        //         )
-        //     )
-        // ).subscribe();
+        dialogRef.afterClosed().pipe(
+            switchMap((result: boolean) => iif(
+                    () => result,
+                    defer(() => this.tournamentApiService.removePlayer$(playerId, this.tournament().id).pipe(
+                        take(1),
+                        catchError(() => {
+                            this.notificationService.error('Error removing Player');
+                            this.isLoadingRemove = false;
+                            return of(null);
+                        }),
+                        switchMap(() => this.finishApiService.decreaseAllOfTournament$(
+                            this.tournament().id,
+                            this.tournament().finishes.map((finish: Finish) => finish.playerId)
+                        )),
+                        tap(() => {
+                            this.fetchService.trigger();
+                            this.isLoadingRemove = false;
+                        }),
+                        this.tournamentService.postActionEvent$,
+                    )),
+                    of(null)
+                )
+            )
+        ).subscribe();
     }
 
 }

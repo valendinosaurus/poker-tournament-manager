@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
@@ -21,6 +21,7 @@ import { AddAddonModel } from './add-addon-model.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 
 @Component({
     selector: 'app-add-addon',
@@ -29,14 +30,10 @@ import { MatSelectModule } from '@angular/material/select';
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule]
 })
-export class AddAddonComponent implements OnInit {
+export class AddAddonComponent extends BaseAddDialogComponent<AddAddonComponent, AddAddonModel> implements OnInit {
 
     playersToAddOn: Signal<{ label: string, value: number }[]>;
     conductedAddons: Signal<ConductedEntry[]>;
-
-    model: AddAddonModel;
-
-    private dialogRef: MatDialogRef<AddAddonComponent> = inject(MatDialogRef<AddAddonComponent>);
 
     private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
@@ -71,6 +68,7 @@ export class AddAddonComponent implements OnInit {
 
     onSubmit(): void {
         const playerId = this.model.playerId();
+        this.isLoadingAdd = true;
 
         if (playerId) {
             this.entryApiService.post$({
@@ -83,6 +81,7 @@ export class AddAddonComponent implements OnInit {
                 take(1),
                 catchError(() => {
                     this.notificationService.error('Error adding Addon');
+                    this.isLoadingAdd = false;
                     return of(null);
                 }),
                 switchMap(() => {
@@ -94,13 +93,18 @@ export class AddAddonComponent implements OnInit {
                         TEventType.ADDON
                     );
                 }),
-                tap((a) => this.fetchService.trigger()),
+                tap((a) => {
+                    this.fetchService.trigger();
+                    this.isLoadingAdd = false;
+                }),
                 this.tournamentService.postActionEvent$,
             ).subscribe();
         }
     }
 
     deleteAddon(entryId: number, playerName: string): void {
+        this.isLoadingRemove = true;
+
         if (entryId > -1) {
             const dialogRef = this.dialog.open(
                 ConfirmationDialogComponent,
@@ -120,6 +124,7 @@ export class AddAddonComponent implements OnInit {
                             take(1),
                             catchError(() => {
                                 this.notificationService.error('Error removing Addon');
+                                this.isLoadingRemove = false;
                                 return of(null);
                             }),
                             switchMap(() => {
@@ -129,21 +134,16 @@ export class AddAddonComponent implements OnInit {
                                     TEventType.CORRECTION
                                 );
                             }),
-                            tap((a) => this.fetchService.trigger()),
+                            tap((a) => {
+                                this.isLoadingRemove = false;
+                                this.fetchService.trigger();
+                            }),
                             this.tournamentService.postActionEvent$,
                         )),
                         defer(() => of(null))
                     )
                 )
             ).subscribe();
-        }
-    }
-
-    closeDialog(event: Event): void {
-        event.preventDefault();
-
-        if (this.dialogRef) {
-            this.dialogRef.close();
         }
     }
 

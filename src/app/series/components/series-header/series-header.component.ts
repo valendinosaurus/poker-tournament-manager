@@ -1,8 +1,8 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { SeriesHeader } from '../../page/series-page/series-page.component';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { NgIf } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 import { MathjaxModule } from 'mathjax-angular';
+import { SeriesHeader } from '../../models/series-header.interface';
 
 @Component({
     selector: 'app-series-header',
@@ -12,7 +12,7 @@ import { MathjaxModule } from 'mathjax-angular';
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [NgIf, UserImageRoundComponent, MathjaxModule]
+    imports: [NgIf, UserImageRoundComponent, MathjaxModule, JsonPipe]
 })
 export class SeriesHeaderComponent {
 

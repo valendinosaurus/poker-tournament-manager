@@ -1,13 +1,13 @@
-<div class="tournament" *ngIf="test">
+<div class="tournament" *ngIf="tournament()">
     <div class="header">
         <h5>
-            {{ test.tournament.date | date }}
+            {{ tournament().tournament.date | date }}
         </h5>
         <h4>
-            {{ test.tournament.name }}
+            {{ tournament().tournament.name }}
         </h4>
         <h5
-            *ngIf="test.playersAlive.length > 0"
+            *ngIf="tournament().playersAlive.length > 0"
             class="flex justify-center align-center"
         >
             <span class="running"></span>
@@ -18,7 +18,7 @@
             <span>
                 <p>
                     <strong class="green">
-                        $ {{ test.pricePool - test.contribution | number:'1.0-0' }}
+                        $ {{ tournament().pricePool - tournament().contribution | number:'1.0-0' }}
                     </strong>
                 </p>
                 <h5>
@@ -28,7 +28,7 @@
 
             <span>
                 <p>
-                    $ {{ test.pricePool | number:'1.0-0' }}
+                    $ {{ tournament().pricePool | number:'1.0-0' }}
                 </p>
                 <h5>
                     Total price pool
@@ -37,7 +37,7 @@
 
             <span>
                 <p>
-                    $ {{ test.contribution | number:'1.0-0' }}
+                    $ {{ tournament().contribution | number:'1.0-0' }}
                 </p>
                 <h5>
                     Goes to final pot
@@ -55,15 +55,20 @@
                 </th>
                 <th class="t-center">Rebuys</th>
                 <th class="t-center">Addons</th>
+
+                @if (showEliminations()) {
+                    <th class="t-center">Eliminations</th>
+                }
+
                 <th class="t-right">Price</th>
             </tr>
-            <ng-container *ngFor="let e of test.combFinishes">
+            <ng-container *ngFor="let e of tournament().combFinishes">
                 <tr>
                     <td>
                         <span class="flex-td">
                            <app-user-image-round
                                [imageUrl]="e.image"
-                               [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && myEmail === e.email) ? 'b-my-user' : 'b-regular'"
+                               [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && myEmail() === e.email) ? 'b-my-user' : 'b-regular'"
                            ></app-user-image-round>
                             {{ e.name }}
                         </span>
@@ -91,6 +96,16 @@
                     <td class="t-center">
                         <app-bullets [number]="e.addons"></app-bullets>
                     </td>
+
+                    @if (showEliminations()) {
+                        <td class="t-center">
+                            <app-bullets
+                                [number]="e.eliminations"
+                                bulletClass="fa-skull"
+                            ></app-bullets>
+                        </td>
+                    }
+
                     <td class="t-right">
                         <span
                             [class.green]="e.price > 0"
@@ -104,20 +119,34 @@
         </table>
     </div>
 
-    <ng-container *ngIf="test.tournament.liveTicker">
+    <ng-container *ngIf="tournament().tournament.liveTicker">
         <div
-            *ngIf="test.tournament.liveTicker.length > 0"
+            *ngIf="tournament().tournament.liveTicker.length > 0"
             class="live-ticker"
         >
-            <h4>Live-Ticker</h4>
-            <ng-container *ngFor="let e of test.tournament.liveTicker">
-                <div class="live-ticker-item">
+            <span class="flex">
+                <i
+                    class="fa fa-chevron-circle-down hoverable"
+                    [class.rotate-180]="!isLiveTickerExpanded"
+                    (click)="isLiveTickerExpanded = !isLiveTickerExpanded"
+                ></i>
+
+                <h4>Live-Ticker</h4>
+            </span>
+
+            <div
+                class="expandable"
+                [class.expanded]="isLiveTickerExpanded"
+            >
+                <ng-container *ngFor="let e of tournament().tournament.liveTicker">
+                    <div class="live-ticker-item">
                     <span class="fa-wrapper">
                         <i class="fa" [class]="e | tEventTypeIcon"></i>
                     </span>
-                    <span [innerHTML]="e.message"></span>
-                </div>
-            </ng-container>
+                        <span [innerHTML]="e.message"></span>
+                    </div>
+                </ng-container>
+            </div>
         </div>
     </ng-container>
 </div>

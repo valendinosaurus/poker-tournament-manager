@@ -57,6 +57,14 @@ export class PlayerApiService {
         );
     }
 
+    putAndKeepSub$(player: Player): Observable<ServerResponse> {
+        console.log(player);
+        return this.http.put<ServerResponse>(
+            `${BACKEND_URL}${this.ENDPOINT}-external`,
+            JSON.stringify(player)
+        );
+    }
+
     delete$(id: number): Observable<any> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.delete<any>(

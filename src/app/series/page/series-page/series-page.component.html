@@ -1,63 +1,73 @@
 <app-app-header [user]="user$ | async"></app-app-header>
 
-<div class="series-page page-with-header">
-    <app-series-header
-        [seriesHeader]="seriesHeader$ | async"
-    ></app-series-header>
+@if (isLoadingSeries$ | async) {
+    <div class="spinner-wrapper">
+        <i class="fa fa-spinner fa-spin"></i>
+    </div>
+} @else {
+    <div class="series-page page-with-header">
+        <app-series-header
+            [seriesHeader]="seriesHeader$ | async"
+        ></app-series-header>
 
-    <ng-container *ngIf="(userEmail$ | async) && (isUserConnectedHere$ | async) === false">
-        <ng-container *ngIf="ownerEmail$ | async as ownerEmail">
-            <div class="flex align-center" style="margin-top: 32px;">
-                <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">Are you part of this series?</h4>
+        <ng-container *ngIf="(userEmail$ | async) && (isUserConnectedHere$ | async) === false">
+            <ng-container *ngIf="ownerEmail$ | async as ownerEmail">
+                <div class="flex align-center" style="margin-top: 32px;">
+                    <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">Are you part of this series?</h4>
 
-                <button
-                    mat-raised-button
-                    color="accent"
-                    (click)="connectToOtherUser(ownerEmail)"
-                >
-                    CONNECT NOW
-                </button>
-            </div>
+                    <button
+                        mat-raised-button
+                        color="accent"
+                        (click)="connectToOtherUser(ownerEmail)"
+                    >
+                        CONNECT NOW
+                    </button>
+                </div>
+            </ng-container>
         </ng-container>
-    </ng-container>
 
-    <h2>
-        Current leaderboard
-    </h2>
+        <h2>
+            Current leaderboard
+        </h2>
 
-    <div class="leaderboard">
-        <app-leaderboard
-            *ngIf="series$ | async as series"
-            [leaderboard]="leaderboard$ | async | nullsafePrimitive:[]"
-            [series]="series"
-            [userEmail]="userEmail$ | async | nullsafePrimitive:''"
-        ></app-leaderboard>
+        <div class="leaderboard">
+            <app-leaderboard
+                *ngIf="series$ | async as series"
+                [leaderboard]="leaderboard$ | async | nullsafePrimitive:[]"
+                [series]="series"
+                [userEmail]="userEmail$ | async | nullsafePrimitive:''"
+            ></app-leaderboard>
 
-        <div class="legend-wrapper">
-            <div class="legend"></div>
-            Current Finalist
+            <div class="legend-wrapper">
+                <div class="legend"></div>
+                Current Finalist
+            </div>
         </div>
+
+        <!-- TODO refactor -->
+        <app-series-stats
+            *ngIf="seriesStats$ | async as stats"
+            [bestAverageRank]="stats.bestAverageRank"
+            [mostPrices]="stats.mostPrices"
+            [mostEffPrices]="stats.mostEffPrices"
+            [mostRebuysAddons]="stats.mostRebuysAddons"
+            [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
+            [mostITM]="stats.mostITM"
+            [mostPercITM]="stats.mostPercITM"
+            [mostEliminations]="stats.mostEliminations"
+            [mostSpilled]="stats.mostSpilled"
+        ></app-series-stats>
+
+        <h2>Tournaments</h2>
+
+        <ng-container *ngFor="let tournament of tournaments$ | async">
+            <app-series-tournament
+                [tournament]="tournament"
+                [myEmail]="userEmail$ | async"
+            ></app-series-tournament>
+        </ng-container>
+
     </div>
 
-    <app-series-stats
-        *ngIf="seriesStats$ | async as stats"
-        [bestAverageRank]="stats.bestAverageRank"
-        [mostPrices]="stats.mostPrices"
-        [mostEffPrices]="stats.mostEffPrices"
-        [mostRebuysAddons]="stats.mostRebuysAddons"
-        [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
-        [mostITM]="stats.mostITM"
-        [mostPercITM]="stats.mostPercITM"
-        [mostSpilled]="stats.mostSpilled"
-    ></app-series-stats>
+}
 
-    <h2>Tournaments</h2>
-
-    <ng-container *ngFor="let tournament of tournaments$ | async">
-        <app-series-tournament
-            [test]="tournament"
-            [myEmail]="userEmail$ | async"
-        ></app-series-tournament>
-    </ng-container>
-
-</div>

@@ -77,14 +77,15 @@ export class RankingService {
         }
     ];
 
-    formulas: { id: number, f: Formula, name: string, desc: string }[] = [
+    formulas: { id: number, f: Formula, name: string, desc: string, imageUrl: string }[] = [
         {
             name: 'Very Simple',
             id: 1,
             f: (input: FormulaInput) => {
                 return input.players - input.rank + 1;
             },
-            desc: '#players - rank + 1'
+            desc: '#players - rank + 1',
+            imageUrl: ''
         },
         {
             name: 'VPR with rebuy and addon',
@@ -95,7 +96,8 @@ export class RankingService {
 
                 return points;
             },
-            desc: '$\\frac{pricepool}{\\frac{\\sqrt(players * (1 + rebuys + addons)}{1 + rank}}$'
+            desc: '$\\frac{pricepool}{\\frac{\\sqrt(players * (1 + rebuys + addons)}{1 + rank}}$',
+            imageUrl: 'assets/formula_VPR_rebuy_addon.png'
         }
     ];
 

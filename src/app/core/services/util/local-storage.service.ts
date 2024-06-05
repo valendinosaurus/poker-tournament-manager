@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AdaptedPayout } from '../../../shared/models/util/adapted-payout.interface';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { TableDraw } from '../../../shared/models/table-draw.interface';
 
 export interface LocalSettings {
@@ -15,7 +14,29 @@ export class LocalStorageService {
 
     localSettings: LocalSettings = this.getLocalSettings();
 
-    storeTournamentState(id: number, levelIndex: number, timeLeft: number): void {
+    storeTournamentStarted(id: number, date: Date): void {
+        localStorage.setItem(`STARTED_${id}`, date.toString());
+    }
+
+    getTournamentStarted(id: number): Date | undefined {
+        const item = localStorage.getItem(`STARTED_${id}`);
+
+        if (item) {
+            return new Date(item);
+        }
+
+        return undefined;
+    }
+
+    resetTournamentStarted(id: number): void {
+        localStorage.removeItem(`STARTED_${id}`);
+    }
+
+    storeTournamentState(
+        id: number,
+        levelIndex: number,
+        timeLeft: number
+    ): void {
         if (id !== -1) {
             localStorage.setItem(
                 id.toString(),

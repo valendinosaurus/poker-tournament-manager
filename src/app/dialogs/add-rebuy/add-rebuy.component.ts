@@ -1,9 +1,8 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EntryApiService } from '../../core/services/api/entry-api.service';
-import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
@@ -11,7 +10,6 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { defer, iif, Observable, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { TournamentApiService } from '../../core/services/api/tournament-api.service';
 import { TournamentService } from '../../core/services/util/tournament.service';
 import { EliminationApiService } from '../../core/services/api/elimination-api.service';
 import { ServerResponse } from '../../shared/models/server-response';
@@ -25,6 +23,7 @@ import { AddRebuyModel } from './add-rebuy-model.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 
 @Component({
     selector: 'app-add-rebuy',
@@ -33,15 +32,11 @@ import { MatSelectModule } from '@angular/material/select';
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, JsonPipe, MatFormFieldModule, MatOptionModule, MatSelectModule]
 })
-export class AddRebuyComponent implements OnInit {
+export class AddRebuyComponent extends BaseAddDialogComponent<AddRebuyComponent, AddRebuyModel> implements OnInit {
 
     playersToRebuy: Signal<{ label: string, value: number }[]>;
     eliminators: Signal<{ label: string, value: number }[]>;
     conductedRebuys: Signal<ConductedEntry[]>;
-
-    model: AddRebuyModel;
-
-    private dialogRef: MatDialogRef<AddRebuyComponent> = inject(MatDialogRef<AddRebuyComponent>);
 
     private tournamentService: TournamentService = inject(TournamentService);
     private entryApiService: EntryApiService = inject(EntryApiService);
@@ -87,6 +82,7 @@ export class AddRebuyComponent implements OnInit {
     onSubmit(): void {
         const playerId = this.model.playerId();
         const eliminatedById = this.model.eliminatedBy();
+        this.isLoadingAdd = true;
 
         if (playerId && eliminatedById) {
             this.entryApiService.post$({
@@ -99,13 +95,17 @@ export class AddRebuyComponent implements OnInit {
                 take(1),
                 catchError(() => {
                     this.notificationService.error(`Error adding Rebuy`);
+                    this.isLoadingAdd = false;
                     return of(null);
                 }),
                 switchMap((res: ServerResponse | null) =>
                     this.postElimination$(eliminatedById, playerId, this.state.tournament().id, res?.id)
                 ),
                 switchMap(() => this.postRebuyTEvent$(playerId, eliminatedById)),
-                tap((a) => this.fetchService.trigger()),
+                tap((a) => {
+                    this.fetchService.trigger();
+                    this.isLoadingAdd = false;
+                }),
                 this.tournamentService.postActionEvent$,
             ).subscribe();
         }
@@ -121,6 +121,7 @@ export class AddRebuyComponent implements OnInit {
         }).pipe(
             catchError(() => {
                 this.notificationService.error('Error Elimination');
+                this.isLoadingAdd = false;
                 return of(null);
             }),
         );
@@ -135,6 +136,8 @@ export class AddRebuyComponent implements OnInit {
     }
 
     deleteRebuy(entryId: number, playerName: string): void {
+        this.isLoadingRemove = true;
+
         if (entryId > -1) {
             const dialogRef = this.dialog.open(
                 ConfirmationDialogComponent,
@@ -154,6 +157,7 @@ export class AddRebuyComponent implements OnInit {
                             take(1),
                             catchError(() => {
                                 this.notificationService.error('Error removing Rebuy');
+                                this.isLoadingRemove = false;
                                 return of(null);
                             }),
                             switchMap(() => this.eliminationApiService.deleteByEId$(
@@ -161,6 +165,7 @@ export class AddRebuyComponent implements OnInit {
                             ).pipe(
                                 catchError(() => {
                                     this.notificationService.error('Error removing Elimination');
+                                    this.isLoadingRemove = false;
                                     return of(null);
                                 })
                             )),
@@ -171,21 +176,16 @@ export class AddRebuyComponent implements OnInit {
                                     TEventType.CORRECTION
                                 );
                             }),
-                            tap((a) => this.fetchService.trigger()),
+                            tap((a) => {
+                                this.fetchService.trigger();
+                                this.isLoadingRemove = false;
+                            }),
                             this.tournamentService.postActionEvent$,
                         )),
                         defer(() => of(null))
                     )
                 )
             ).subscribe();
-        }
-    }
-
-    closeDialog(event: Event): void {
-        event.preventDefault();
-
-        if (this.dialogRef) {
-            this.dialogRef.close();
         }
     }
 

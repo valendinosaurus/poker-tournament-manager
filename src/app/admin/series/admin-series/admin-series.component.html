@@ -103,16 +103,20 @@
         </mat-tab>
 
         <mat-tab label="Tournaments">
+            <div class="admin-header">
+                <h2>Tournaments</h2>
 
-            <button
-                mat-raised-button
-                color="primary"
-                [disabled]="!!series.locked"
-                (click)="addTournament(series)"
-            >
-                ADD TOURNAMENTS
-            </button>
-            <h2>Tournaments</h2>
+                <span class="admin-header-buttons">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="!!series.locked"
+                        (click)="addTournament(series)"
+                    >
+                        <i class="fa fa-plus fa-ib"></i> ADD TOURNAMENTS
+                    </button>
+                </span>
+            </div>
 
             <table class="admin-table">
                 <ng-container *ngFor="let tournament of series.tournaments">
@@ -133,7 +137,68 @@
                     </tr>
                 </ng-container>
             </table>
+        </mat-tab>
 
+        <mat-tab label="Players">
+            <div class="admin-header">
+                <h2>Disqualified Players</h2>
+
+                <!--                <span class="admin-header-buttons">-->
+                <!--                    <button-->
+                <!--                        mat-raised-button-->
+                <!--                        color="warn"-->
+                <!--                        [disabled]="!!series.locked"-->
+                <!--                        (click)="addTournament(series)"-->
+                <!--                    >-->
+                <!--                        <i class="fa fa-cancel fa-ib"></i> DISQUALIFY PLAYER-->
+                <!--                    </button>-->
+                <!--                </span>-->
+            </div>
+
+            <mat-form-field>
+                <mat-label>Player *</mat-label>
+                <mat-select
+                    name="eliminated"
+                    #selectDisq
+                >
+                    @for (player of playersEligibleForDisqualification$ | async; track player.id) {
+                        <mat-option [value]="player.id">
+                            {{ player.name }}
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <button
+                mat-raised-button
+                color="warn"
+                [disabled]="!!series.locked"
+                (click)="disqualifyPlayer(series.id, selectDisq.value)"
+            >
+                <i class="fa fa-cancel fa-ib"></i> DISQUALIFY PLAYER
+            </button>
+
+            <hr>
+
+            <table class="admin-table">
+                <ng-container *ngFor="let player of disqualifiedPlayers$ | async">
+                    <tr>
+                        <td>
+                            <app-user-image-round [imageUrl]="player.image"></app-user-image-round>
+                        </td>
+                        <td>
+                            {{ player.name }}
+                        </td>
+                        <td>
+                            <i
+                                *ngIf="!series.locked"
+                                class="fa fa-trash"
+                                (click)="removeDisqualification(series.id, player.id)"
+                            ></i>
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
         </mat-tab>
 
     </mat-tab-group>

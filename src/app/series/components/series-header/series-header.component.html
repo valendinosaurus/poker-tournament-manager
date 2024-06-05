@@ -61,13 +61,14 @@
             </div>
         </div>
 
-        <div class="series-content-block" *ngIf="seriesHeader.formulaMathContent">
+        <div class="series-content-block" *ngIf="seriesHeader.formulaMathContent.latex">
             <div class="li-wide">
                 <h4>
                     Formula
                 </h4>
                 <!--                <span class="formula" [appMath]="seriesHeader.formulaMathContent"></span>-->
-                <span class="formula" [mathjax]="seriesHeader.formulaMathContent"></span>
+                <!--                <span class="formula" [mathjax]="seriesHeader.formulaMathContent.latex"></span>-->
+                <img [src]="seriesHeader.formulaImageUrl"/>
             </div>
         </div>
 

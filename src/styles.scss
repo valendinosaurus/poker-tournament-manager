@@ -90,15 +90,15 @@ form .loading-wrapper {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 105%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(white, 0.5);
+    background: rgba(white, 0.85);
 }
 
 form .loading-wrapper > .fa-spinner {
-    font-size: 64px !important;
+    font-size: 100px !important;
     color: #00437b;
 }
 

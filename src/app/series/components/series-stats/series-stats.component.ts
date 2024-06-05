@@ -22,6 +22,7 @@ export class SeriesStatsComponent {
     @Input() mostRebuysAddonsPerT: SimpleStat[];
     @Input() mostITM: SimpleStat[];
     @Input() mostPercITM: SimpleStat[];
+    @Input() mostEliminations: SimpleStat[];
     @Input() mostSpilled: SimpleStat[];
 
 }

@@ -10,8 +10,9 @@ import { Entry } from '../../shared/models/entry.interface';
 import { EntryType } from '../../shared/enums/entry-type.enum';
 import { SeriesMetadata, SeriesS } from '../../shared/models/series.interface';
 import { SimpleStat } from '../../shared/models/simple-stat.interface';
-import { SeriesStats } from '../../series/page/series-page/series-page.component';
 import { mostSpilled } from '../const/app.const';
+import { Elimination } from '../../shared/models/elimination.interface';
+import { SeriesStats } from '../../series/models/series-stats.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +36,7 @@ export class SeriesService {
                 const localFinished: Finish[] = tournament.finishes.filter((f: Finish) => f.tournamentId === id);
                 const localEntries: Entry[] = tournament.entries.filter((e: Entry) => e.tournamentId === id);
                 const localPlayers: PlayerInSeries[] = tournament.players.filter((p: PlayerInSeries) => p.tId === id);
+                const localEliminations: Elimination[] = tournament.eliminations.filter((e: Elimination) => e.tournamentId === id);
                 const localTournament: TournamentS = tournament;
 
                 localTournament.players = localPlayers.map((p: PlayerInSeries) => ({
@@ -43,7 +45,8 @@ export class SeriesService {
                     name: p.name,
                     tId: tournament.id,
                     email: p.email,
-                    locked: false
+                    locked: false,
+                    disqualified: p.disqualified
                 }));
                 localTournament.entries = localEntries;
                 localTournament.finishes = localFinished;
@@ -60,11 +63,13 @@ export class SeriesService {
                         rebuys: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.REBUY).length,
                         addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.ADDON).length,
                         reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.RE_ENTRY).length,
+                        eliminations: localEliminations.filter((e: Elimination) => e.eliminator === finish.playerId).length,
                         points: 0,
                         dealMade: wasDealMade && +finish.rank === rankOfDeal,
                         isTemp: false,
                         email: localPlayers.filter(p => p.id === finish.playerId)[0]?.email,
-                        playerId: finish.playerId
+                        playerId: finish.playerId,
+                        disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified
                     } as SeriesTournamentRow)
                 );
 
@@ -81,12 +86,14 @@ export class SeriesService {
                     rebuys: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.REBUY).length,
                     addons: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.ADDON).length,
                     reEntries: localEntries.filter(e => e.playerId === finish.playerId && e.type === EntryType.RE_ENTRY).length,
+                    eliminations: localEliminations.filter((e: Elimination) => e.eliminator === finish.playerId).length,
                     price: 0,
                     points: 0,
                     dealMade: false,
                     isTemp: true,
                     email: localPlayers.filter(p => p.id === finish.playerId)[0]?.email,
-                    playerId: finish.playerId
+                    playerId: finish.playerId,
+                    disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified
                 }));
 
                 combFinishes = combFinishes.sort(
@@ -144,6 +151,7 @@ export class SeriesService {
 
         combinedRankings.forEach(
             c => c.combFinishes.forEach((f: SeriesTournamentRow) => {
+                console.log('f', f.disqualified);
                 if (overallRanking.filter(e => e.name === f.name).length > 0) {
                     const index = overallRanking.findIndex(o => o.name === f.name);
 
@@ -157,10 +165,12 @@ export class SeriesService {
                         points: +f.points + +element.points,
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
                         rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons,
+                        eliminations: +f.eliminations + +element.eliminations,
                         itm: +element.itm + ((+f.rank <= 4) ? 1 : 0),
                         isTemp: f.isTemp ? true : element.isTemp,
                         email: f.email,
-                        playerId: f.playerId
+                        playerId: f.playerId,
+                        disqualified: f.disqualified
                     };
 
                 } else {
@@ -172,10 +182,12 @@ export class SeriesService {
                         rank: f.rank,
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
                         rebuysAddons: +f.rebuys + +f.addons,
+                        eliminations: f.eliminations,
                         itm: (+f.rank <= 4) ? 1 : 0,
                         isTemp: f.isTemp,
                         email: f.email,
-                        playerId: f.playerId
+                        playerId: f.playerId,
+                        disqualified: f.disqualified
                     });
                 }
             })
@@ -259,6 +271,20 @@ export class SeriesService {
         }));
     }
 
+    getMostEliminations(overallRanking: LeaderboardRow[]): SimpleStat[] {
+        const mostEl = overallRanking.sort(
+            (prev, curr) =>
+                ((prev.eliminations) - (curr.eliminations)) || prev.tournaments - curr.tournaments
+        ).reverse();
+
+        return mostEl.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.eliminations,
+            playerName: e.name,
+            image: e.image
+        }));
+    }
+
     getMostITM(overallRanking: LeaderboardRow[]): SimpleStat[] {
         const mitm = overallRanking.sort(
             (a, b) => b.itm - a.itm || a.tournaments - b.tournaments
@@ -332,6 +358,7 @@ export class SeriesService {
             mostRebuysAddonsPerT: this.getMostRebuysAddonsPerTournament([...leaderboard]),
             mostITM: this.getMostITM([...leaderboard]),
             mostPercITM: this.getMostPercentualITM([...leaderboard]),
+            mostEliminations: this.getMostEliminations([...leaderboard]),
             mostSpilled: mostSpilled
         };
     }

@@ -1,4 +1,9 @@
-<h2><i class="fa fa-skull"></i> Seat open - Rank {{ rank() }}</h2>
+<h2>
+    <i class="fa fa-skull"></i> Seat open - Rank {{ rank() }}
+    @if (price() > 0) {
+        ($ {{ price() }})
+    }
+</h2>
 
 <form
     (ngSubmit)="onSubmit()"
@@ -31,36 +36,23 @@
         </mat-select>
     </mat-form-field>
 
-<!--    <formly-form-->
-<!--        [form]="form"-->
-<!--        [fields]="fields"-->
-<!--        [options]="options"-->
-<!--        [model]="model"-->
-<!--    ></formly-form>-->
-
-<!--    <h1>is {{ isLoading }}</h1>-->
-
     <button
         mat-raised-button color="primary"
         type="submit"
         [disabled]="!model.isValid() || isLoadingAdd"
     >
-        <ng-container *ngIf="!isLoadingAdd">
-            LEAVE TOURNAMENT
-        </ng-container>
-        <ng-container *ngIf="isLoadingAdd">
-            <i class="fa fa-spinner fa-spin"></i>
-        </ng-container>
+        LEAVE TOURNAMENT
     </button>
 
     <button
         mat-raised-button
+        [disabled]="isLoadingAdd"
         (click)="closeDialog($event)"
     >
         CANCEL
     </button>
 
-    @if (isLoading) {
+    @if (isLoadingAdd) {
         <div class="loading-wrapper">
             <i class="fa fa-spinner fa-spin"></i>
         </div>
@@ -93,16 +85,17 @@
                     </span>
                     </td>
                     <td>
-                        <i
-                            *ngIf="i === 0 && !isLoadingRemove"
-                            class="fa fa-trash"
-                            (click)="removeSeatOpen(e.playerId, e.name)"
-                        ></i>
+                        @if (i === 0) {
+                            @if (!isLoadingRemove) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="removeSeatOpen(e.playerId, e.name)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-spinner fa-spin"></i>
+                            }
+                        }
 
-                        <i
-                            *ngIf="i === 0 && isLoadingRemove"
-                            class="fa fa-spinner fa-spin"
-                        ></i>
                     </td>
                 </tr>
             </ng-container>

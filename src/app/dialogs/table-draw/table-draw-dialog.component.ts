@@ -15,6 +15,7 @@ import { TableDrawStateComponent } from '../../shared/components/table-draw-stat
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor, NgIf } from '@angular/common';
 import { TimerStateService } from '../../timer/services/timer-state.service';
+import { EntryType } from '../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-table-draw-dialog',
@@ -29,7 +30,7 @@ export class TableDrawDialogComponent implements OnInit {
 
     tableDraw: TableDraw;
     maxPlayersPerTable = 9;
-    testPlayers: Player[];
+    remainingPlayers: number;
     readonly TABLE_DRAW_STATE = TableDrawState;
 
     private dialogRef: MatDialogRef<TableDrawDialogComponent> = inject(MatDialogRef<TableDrawDialogComponent>);
@@ -42,14 +43,14 @@ export class TableDrawDialogComponent implements OnInit {
 
         const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
 
-        this.testPlayers = [...this.tournament().players];
+        this.remainingPlayers = this.tournament().entries.filter(e => e.type === EntryType.ENTRY).length - this.tournament().finishes.length;
 
         if (draw) {
             this.tableDraw = draw;
+            console.log('adding finished', this.tournament().finishes);
             draw.tournament.finishes = [...this.tournament().finishes];
             this.loadExistingDrawAndCheck(draw);
         } else {
-            // this.availablePlayers = [...this.tournament().players];
             this.setupEmptyTables();
         }
     }

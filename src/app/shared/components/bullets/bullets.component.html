@@ -1,7 +1,12 @@
 <div class="bullets">
-    <i
-        *ngFor="let n of numberArray()"
-        class="fa"
-        [class]="bulletClass()"
-    ></i>
+    @for (n of numberArray(); track n; let i = $index; ) {
+        <i
+            class="fa"
+            [class]="bulletClass()"
+        ></i>
+
+        @if ((+i + 1) % 5 === 0) {
+            <div class="break"></div>
+        }
+    }
 </div>

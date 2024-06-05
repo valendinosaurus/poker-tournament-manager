@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { LeaderboardRow } from '../../../series/models/overall-ranking.interface';
 import { Series, SeriesS } from '../../models/series.interface';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,6 +22,10 @@ export class LeaderboardComponent {
     userEmail = input<string>();
     full = input<boolean>(true);
 
+    numberOfDisqualifiedPlayers = computed(() =>
+        this.leaderboard().filter(e => e.disqualified).length
+    );
+
     private dialog: MatDialog = inject(MatDialog);
 
     openEditPlayerDialog(row: LeaderboardRow): void {
@@ -37,7 +41,8 @@ export class LeaderboardComponent {
             ...DEFAULT_DIALOG_POSITION,
             data: {
                 player: playerToEdit,
-                blockName: true
+                blockName: true,
+                external: true
             }
         });
     }

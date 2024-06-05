@@ -89,7 +89,7 @@
         <div id="topd"></div>
         <table cellspacing="0" cellpadding="0">
             <ng-container *ngFor="let e of payouts()">
-                <tr [class.opaque]="!e.name">
+                <tr>
                     <td>
                         <span class="flex-td">
                             <span class="rank">
@@ -112,10 +112,9 @@
                             {{ e.name }}
                         </div>
                     </td>
-                    <td class="bold text-align-right">
+                    <td class="bold text-align-right flex justify-end align-center">
                         <span class="green">{{ e.price | number:'':'de-CH' }} $</span>
-                        <br>
-                        <span class="regular"><small>({{ e.percentage }})</small></span>
+                        <span class="regular"><small>{{ e.percentage }}</small></span>
                     </td>
                 </tr>
             </ng-container>

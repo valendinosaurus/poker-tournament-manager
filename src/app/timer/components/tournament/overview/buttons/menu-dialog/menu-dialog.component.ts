@@ -297,6 +297,11 @@ export class MenuDialogComponent implements OnInit {
         }
     }
 
+    resetStarted(): void {
+        this.localStorageService.resetTournamentStarted(this.tournament().id);
+        this.state.started.set(undefined);
+    }
+
     applySettings(model: TournamentSettings): void {
         this.tournamentApiService.putSettings$(model).pipe(
             take(1),

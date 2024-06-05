@@ -5,7 +5,6 @@ import { ConnectionRequest } from '../../shared/models/util/connection-request.i
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { Player } from '../../shared/models/player.interface';
 import { map, switchMap, take, tap } from 'rxjs/operators';
-import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 import { FetchService } from '../../core/services/fetch.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -14,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../core/services/notification.service';
+import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 
 @Component({
     selector: 'app-map-player',
@@ -54,6 +54,11 @@ export class MapPlayerComponent implements OnInit {
     }
 
     confirm(): void {
+        console.log('putting', {
+            ...this.model(),
+            email: this.data.request.requestEmail
+        });
+
         this.playerApiService.put$({
             ...this.model(),
             email: this.data.request.requestEmail

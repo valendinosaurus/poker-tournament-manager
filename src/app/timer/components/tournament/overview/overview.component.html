@@ -64,9 +64,39 @@
                 <span class="titles">
                     <div class="flex">
                         <i class="fa fa-clock"></i>
-                        <h2 class="now">
-                            {{ today() | date:'HH:mm' }}
-                        </h2>
+
+                        <div class="now">
+                           <h3>Now</h3>
+                            <h2>
+                                {{ today() | date:'HH:mm' }}
+                            </h2>
+                        </div>
+
+                        @if (started() !== undefined) {
+                            <div class="now">
+                                <h3>Started</h3>
+                                <h2>
+                                    {{ started() | date:'HH:mm' }}
+                                </h2>
+                            </div>
+
+                            <!--                            <div class="now">-->
+                                <!--                                <h3>Elapsed</h3>-->
+                                <!--                                <h2>-->
+                                <!--                                    {{ elapsed() | date:'HH:mm' }}-->
+                                <!--                                </h2>-->
+                                <!--                            </div>-->
+
+                            @if (!isRebuyPhaseFinished()) {
+                                <div class="now">
+                                    <h3>Rebuy Phase </h3>
+                                    <h2>
+                                        {{ timeForRebuy()  | date:'hh:mm:ss' }}
+                                    </h2>
+
+                                </div>
+                            }
+                        }
                     </div>
                 </span>
 

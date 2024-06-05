@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, Signal } from '@angular/core';
 import { NgFor } from '@angular/common';
 
 @Component({
@@ -13,6 +13,6 @@ export class BulletsComponent {
     number = input.required<number>();
     bulletClass = input<string>('fa-circle');
 
-    numberArray = computed(() => new Array(this.number()));
+    numberArray: Signal<number[]> = computed(() => new Array(this.number()));
 
 }

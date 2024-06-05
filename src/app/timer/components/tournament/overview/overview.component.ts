@@ -68,9 +68,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     metadata: WritableSignal<SeriesMetadata | undefined>;
     isFinished: WritableSignal<boolean>;
     currentLevelIndex: WritableSignal<number>;
-    isTournamentPartOfSeries: WritableSignal<boolean> = signal(false);
+    isTournamentPartOfSeries: Signal<boolean> = signal(false);
     isRunning: WritableSignal<boolean>;
     levels: Signal<BlindLevel[]>;
+    isRebuyPhaseFinished: Signal<boolean>;
 
     slider: KeenSliderInstance;
     currentSlide: WritableSignal<number> = signal(0);
@@ -80,6 +81,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     blindDurationFixed: WritableSignal<number> = signal(0);
 
     today: Signal<number> = signal(Date.now());
+    started: WritableSignal<Date | undefined>;
+    elapsed: Signal<number>;
+    timeForRebuy: Signal<Date>;
 
     countdownConfig: WritableSignal<CountdownConfig>;
 
@@ -122,10 +126,37 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.currentLevelIndex = this.state.currentLevelIndex;
         this.isRunning = this.state.isRunning;
         this.levels = computed(() => this.tournament().structure);
-        this.isTournamentPartOfSeries.set(this.metadata() !== undefined);
+        this.isTournamentPartOfSeries = computed(() => this.metadata() !== undefined);
+        this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
+
+        this.timeForRebuy = computed(() => {
+            if (!this.tournament().withRebuy) {
+                return new Date();
+            }
+
+            const levelOfRebuyFinishedIndex: number = this.levels().findIndex((l: BlindLevel) => l.isPause && l.endsRebuy);
+            console.log('levelindex', levelOfRebuyFinishedIndex);
+            const fullBlindsLeft = this.levels().slice(this.currentLevelIndex() + 1, levelOfRebuyFinishedIndex);
+            console.log(fullBlindsLeft);
+            const fullBlindsLeftTime = fullBlindsLeft.reduce((acc, curr) => curr.duration + acc, 0);
+            console.log(fullBlindsLeftTime * 60);
+            console.log(this.currentLevelTimeLeft());
+            console.log('tot', (fullBlindsLeftTime * 60) + this.currentLevelTimeLeft());
+
+            const date = new Date();
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds((fullBlindsLeftTime * 60) + this.currentLevelTimeLeft(), 0);
+
+            return date;
+        });
 
         this.initTimeValues();
         this.initCountdownConfig();
+
+        this.state.started.set(this.localStorageService.getTournamentStarted(this.tournament().id));
+        this.started = this.state.started;
+        this.elapsed = this.state.elapsed;
 
         this.state.isTournamentFinished.set(
             !this.state.isSimpleTournament()

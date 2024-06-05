@@ -10,7 +10,6 @@ import { ConductedFinish } from '../../shared/models/util/conducted-finish.inter
 import { ConductedElimination } from '../../shared/models/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
-import { KeenSliderInstance } from 'keen-slider';
 
 @Injectable({
     providedIn: 'root'
@@ -52,6 +51,13 @@ export class TimerStateService {
             )
         ).length === this.players().length
     );
+
+    started: WritableSignal<Date | undefined> = signal(undefined);
+
+    elapsed: Signal<number> = computed(() => {
+        const started = this.started();
+        return started ? new Date().getTime() - started.getTime() : 0;
+    });
 
     totalPricePoolWithoutDeduction = computed(() =>
         this.entries().filter(
@@ -124,9 +130,9 @@ export class TimerStateService {
             (entry: Entry) => ({
                 entryId: entry.id ?? -1,
                 time: entry.timestamp,
-                playerId: (this.players().filter(p => p.id === entry.playerId)[0].id) ?? -1,
-                name: (this.players().filter(p => p.id === entry.playerId)[0].name) ?? '',
-                image: (this.players().filter(p => p.id === entry.playerId)[0].image) ?? '',
+                playerId: (this.players().filter(p => p.id === entry.playerId)[0]?.id) ?? -1,
+                name: (this.players().filter(p => p.id === entry.playerId)[0]?.name) ?? '',
+                image: (this.players().filter(p => p.id === entry.playerId)[0]?.image) ?? '',
                 isFinished: this.finishes().map(f => f.playerId).includes(entry.playerId),
                 type: entry.type,
                 isBlocked: this.entries().filter(e => e.type === EntryType.ADDON
@@ -243,6 +249,11 @@ export class TimerStateService {
     startTimer(): void {
         if (!this.isRunning() && this.canStartTournament() && !this.isTournamentFinished()) {
             this.isRunning.set(true);
+
+            if (!this.localStorageService.getTournamentStarted(this.tournament().id)) {
+                this.started.set(new Date());
+                this.localStorageService.storeTournamentStarted(this.tournament().id, new Date());
+            }
         }
     }
 

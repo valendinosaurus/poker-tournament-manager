@@ -3,12 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
 import { combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
 import { SeriesMetadata, SeriesS } from '../../../shared/models/series.interface';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SeriesTournament } from '../../models/combined-ranking.interface';
 import { LeaderboardRow } from '../../models/overall-ranking.interface';
-import { MathContent } from '../../../shared/models/math-content.interface';
 import { SeriesService } from '../../../core/services/series.service';
-import { SimpleStat } from '../../../shared/models/simple-stat.interface';
 import { RankingService } from '../../../core/services/util/ranking.service';
 import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
@@ -26,28 +24,8 @@ import {
 } from '../../../welcome/components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
 import { NullsafePrimitivePipe } from '../../../core/pipes/nullsafe-primitive.pipe';
-
-export interface SeriesHeader {
-    logo: string;
-    name: string;
-    tournamentsPlayed: number;
-    totalTournaments: number;
-    percentageToFinalPot: number;
-    maxAmountPerTournament: number;
-    guaranteed: number;
-    formulaMathContent: MathContent;
-}
-
-export interface SeriesStats {
-    bestAverageRank: SimpleStat[];
-    mostPrices: SimpleStat[];
-    mostEffPrices: SimpleStat[];
-    mostRebuysAddons: SimpleStat[];
-    mostRebuysAddonsPerT: SimpleStat[];
-    mostITM: SimpleStat[];
-    mostPercITM: SimpleStat[];
-    mostSpilled: SimpleStat[];
-}
+import { SeriesHeader } from '../../models/series-header.interface';
+import { SeriesStats } from '../../models/series-stats.interface';
 
 @Component({
     selector: 'app-series-page',
@@ -72,7 +50,7 @@ export class SeriesPageComponent implements OnInit {
 
     user$: Observable<User | undefined | null>;
     userEmail$: Observable<string | undefined>;
-    series$: Observable<SeriesS>;
+    series$: Observable<SeriesS | null>;
     seriesHeader$: Observable<SeriesHeader>;
     leaderboard$: Observable<LeaderboardRow[]>;
     seriesStats$: Observable<SeriesStats>;
@@ -80,6 +58,7 @@ export class SeriesPageComponent implements OnInit {
     isAuthenticated$: Observable<boolean>;
     ownerEmail$: Observable<string | null>;
     isUserConnectedHere$: Observable<boolean>;
+    isLoadingSeries$: Observable<boolean>;
 
     seriesId: number;
     password: string;
@@ -114,14 +93,25 @@ export class SeriesPageComponent implements OnInit {
                     }
                 })
             )),
+            startWith(null),
             shareReplay(1)
         );
 
-        this.ownerEmail$ = this.series$.pipe(
+        this.isLoadingSeries$ = this.series$.pipe(
+            delay(1000),
+            map((series: SeriesS | null) => series === null),
+            startWith(true)
+        );
+
+        const nonNullSeries$ = this.series$.pipe(
+            filter((series: SeriesS | null): series is SeriesS => series !== null)
+        );
+
+        this.ownerEmail$ = nonNullSeries$.pipe(
             map((series) => series.ownerEmail)
         );
 
-        this.seriesHeader$ = this.series$.pipe(
+        this.seriesHeader$ = nonNullSeries$.pipe(
             map((series: SeriesS) => ({
                     logo: series.branding.logo,
                     name: series.name,
@@ -133,6 +123,7 @@ export class SeriesPageComponent implements OnInit {
                     formulaMathContent: {
                         latex: this.rankingService.getFormulaDesc(series.rankFormula)
                     },
+                    formulaImageUrl: this.rankingService.formulas.find(s => s.id === series.ftFormula)?.imageUrl ?? ''
                 })
             )
         );
@@ -142,7 +133,7 @@ export class SeriesPageComponent implements OnInit {
         );
 
         this.tournaments$ = combineLatest([
-            this.series$,
+            nonNullSeries$,
             metadata$
         ]).pipe(
             map(([series, metadata]: [SeriesS, SeriesMetadata]) =>

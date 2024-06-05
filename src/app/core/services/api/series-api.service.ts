@@ -7,6 +7,7 @@ import { Series, SeriesMetadata, SeriesModel, SeriesS } from '../../../shared/mo
 import { ServerResponse } from '../../../shared/models/server-response';
 import { AdminSeries } from '../../../shared/models/admin-series.interface';
 import { AuthUtilService } from '../auth-util.service';
+import { Player } from '../../../shared/models/player.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -86,4 +87,25 @@ export class SeriesApiService {
     removeTournament$(tournamentId: number, seriesId: number): Observable<any> {
         return this.http.delete<any>(`${BACKEND_URL}${this.ENDPOINT}/${seriesId}/tournament/${tournamentId}`);
     }
+
+    getDisqualifiedPlayers$(seriesId: number): Observable<Player[]> {
+        return this.http.get<Player[]>(`${BACKEND_URL}${this.ENDPOINT}-disqualified/${seriesId}`);
+    }
+
+    disqualifyPlayer(seriesId: number, playerId: number): Observable<ServerResponse> {
+        return this.http.post<ServerResponse>(
+            `${BACKEND_URL}${this.ENDPOINT}/disqualify`,
+            JSON.stringify({
+                sId: seriesId,
+                pId: playerId
+            })
+        );
+    }
+
+    removeDisqualifiedPlayer(seriesId: number, playerId: number): Observable<ServerResponse> {
+        return this.http.delete<ServerResponse>(
+            `${BACKEND_URL}${this.ENDPOINT}/${seriesId}/disqualify/${playerId}`
+        );
+    }
+
 }

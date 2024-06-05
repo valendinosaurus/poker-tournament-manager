@@ -28,7 +28,8 @@ export class CreatePlayerComponent implements OnInit {
 
     data: {
         player?: Player | null;
-        blockName: boolean
+        blockName: boolean,
+        external: boolean
     } = inject(MAT_DIALOG_DATA);
 
     model: {
@@ -54,17 +55,32 @@ export class CreatePlayerComponent implements OnInit {
 
     onSubmit(): void {
         if (this.data?.player) {
-            this.playerApiService.put$({
-                ...this.data.player,
-                name: this.model.name(),
-                image: this.model.userImage()
-            }).pipe(
-                take(1),
-                tap(() => {
-                    this.fetchService.trigger();
-                    this.dialogRef.close(true);
-                })
-            ).subscribe();
+            if (this.data?.external) {
+                console.log('external');
+                this.playerApiService.putAndKeepSub$({
+                    ...this.data.player,
+                    name: this.model.name(),
+                    image: this.model.userImage()
+                }).pipe(
+                    take(1),
+                    tap(() => {
+                        this.fetchService.trigger();
+                        this.dialogRef.close(true);
+                    })
+                ).subscribe();
+            } else {
+                this.playerApiService.put$({
+                    ...this.data.player,
+                    name: this.model.name(),
+                    image: this.model.userImage()
+                }).pipe(
+                    take(1),
+                    tap(() => {
+                        this.fetchService.trigger();
+                        this.dialogRef.close(true);
+                    })
+                ).subscribe();
+            }
         } else {
             this.playerApiService.post$({
                 name: this.model.name(),

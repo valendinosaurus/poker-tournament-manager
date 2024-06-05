@@ -204,3 +204,7 @@ h3 > button.round {
     overflow: hidden;
     min-height: 50vh !important;
 }
+
+.cdk-overlay-pane.menu-dialog {
+    min-width: 900px !important;
+}

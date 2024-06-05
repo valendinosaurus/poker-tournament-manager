@@ -1,9 +1,5 @@
 @import 'src/styles/colors_texts';
 
-//.draw-dialog {
-//    max-height: 80vh;
-//}
-
 .table-draw {
     display: flex;
     flex-direction: column;
@@ -14,25 +10,32 @@
     position: absolute;
     top: 8px;
     right: 8px;
+    width: fit-content !important;
 }
 
 .table-draw-stats {
     display: flex;
-    justify-content: center;
+    background: #006dc7;
+    align-items: center;
+    padding: 12px;
+    width: calc(100% - 300px);
 
     h3 {
         font-size: 16px;
-        margin-right: 32px;
+        margin-top: 0 !important;
         display: flex;
         align-items: center;
-        color: $primaryDark !important;
+        color: rgba(white, 0.5) !important;
         border: none !important;
         margin-bottom: 0 !important;
+    }
 
-        span {
-            font-size: 32px;
-            margin-left: 12px;
-        }
+    span {
+        font-size: 32px;
+        margin-left: 12px;
+        margin-right: 32px;
+        font-weight: bold;
+        color: white !important;
     }
 }
 
@@ -75,6 +78,12 @@ div.setup-wrapper {
 
     mat-form-field {
         margin-right: 20px;
+        width: 200px;
+        flex: 0 0 200px
+    }
+
+    button {
+        margin-top: 0 !important;
     }
 }
 
@@ -88,15 +97,14 @@ div.bullet-title {
 div.bullet {
     color: white;
     background: green;
-    font-size: 26px;
-    width: 42px;
-    height: 42px;
-    border-radius: 40px;
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    margin-bottom: 20px;
     margin-right: 20px;
 }
 
@@ -148,6 +156,8 @@ button[mat-raised-button] {
     p {
         font-size: 24px;
         color: $primaryDark;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
     }
 }
 

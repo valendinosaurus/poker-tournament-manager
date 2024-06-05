@@ -5,11 +5,18 @@
 tr th,
 tr td {
     color: black;
+
+    min-width: 80px;
 }
 
 tr.finalist th,
 tr.finalist td {
     background: #e8fbe8;
+}
+
+tr.disqualified th,
+tr.disqualified td {
+    opacity: 0.3;
 }
 
 //.table-wrapper {
@@ -64,6 +71,11 @@ th, td {
 .fa-edit {
     font-size: 18px;
     margin-left: 10px;
+}
+
+.fa-hourglass-2 {
+    font-size: 14px;
+    color: #999999;
 }
 
 @media (max-width: 800px) {

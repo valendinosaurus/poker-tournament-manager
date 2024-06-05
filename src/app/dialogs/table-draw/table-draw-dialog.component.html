@@ -14,19 +14,16 @@
             RESET TABLE DRAW
         </button>
 
-        <app-table-draw-state [currentState]="tableDraw.state"></app-table-draw-state>
-
         <div class="table-draw-stats">
-            <h3>No of tables:
-                <span>{{ tableDraw.noOfTables }}</span>
-            </h3>
-            <h3>Total players:
-                <span>{{ tableDraw.tournament.players.length }}</span>
-            </h3>
-            <h3>Remaining players:
-                <span>{{ testPlayers.length }}</span>
-            </h3>
+            <h3>No of tables:</h3>
+            <span>{{ tableDraw.noOfTables }}</span>
+            <h3>Total players:</h3>
+            <span>{{ tableDraw.tournament.players.length }}</span>
+            <h3>Remaining players:</h3>
+            <span>{{ remainingPlayers }}</span>
         </div>
+
+        <app-table-draw-state [currentState]="tableDraw.state"></app-table-draw-state>
 
         <div class="notification-wrapper">
             <ng-container *ngIf="tableDraw.playerHasToBeMoved && !tableDraw.playersToMove">
@@ -34,7 +31,7 @@
                     <i class="fa fa-exclamation-triangle"></i>
 
                     <span>
-                    {{tableDraw.noOfPlayersToMove}}  player
+                    {{ tableDraw.noOfPlayersToMove }}  player
                     <span *ngIf="tableDraw.noOfPlayersToMove > 1">s</span>
                     from table {{ tableDraw.tableIndexToTake + 1 }}
                         ha<i *ngIf="tableDraw.noOfPlayersToMove < 2">s</i><i
@@ -102,7 +99,7 @@
 
                 <button
                     mat-raised-button
-                    color="primary"
+                    color="accent"
                     (click)="setupEmptyTables()"
                 >
                     SET UP
