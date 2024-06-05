@@ -14,7 +14,7 @@ import { take, tap } from 'rxjs/operators';
 @Component({
     selector: 'app-save-as-structure',
     templateUrl: './save-as-structure.component.html',
-    styleUrls: ['./save-as-structure.component.css'],
+    styleUrls: ['./save-as-structure.component.scss'],
     standalone: true,
     imports: [
         FormsModule,

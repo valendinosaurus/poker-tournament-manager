@@ -67,6 +67,7 @@ export class ButtonsComponent implements OnInit {
     isRebuyPhaseFinished: WritableSignal<boolean>;
     canStartTournament: Signal<boolean>;
     isRunning: WritableSignal<boolean>;
+    isTournamentLocked: Signal<boolean>;
 
     canShowInfoPanel: Signal<boolean>;
 
@@ -119,6 +120,7 @@ export class ButtonsComponent implements OnInit {
         this.isSimpleTournament = this.state.isSimpleTournament;
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
         this.isRunning = this.state.isRunning;
+        this.isTournamentLocked = this.state.isTournamentLocked;
         this.elem = this.document.documentElement;
 
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament().id);

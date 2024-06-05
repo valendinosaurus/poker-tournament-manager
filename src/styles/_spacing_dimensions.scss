@@ -73,11 +73,6 @@
     align-items: center;
 }
 
-.flex.column-mobile {
-    @media (max-width: 800px) {
-        flex-direction: column;
-    }
-}
 
 .align-start-mobile {
     @media (max-width: 800px) {

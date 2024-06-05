@@ -13,7 +13,7 @@ import { take, tap } from 'rxjs/operators';
 @Component({
     selector: 'app-create-blind-structure',
     templateUrl: './create-blind-structure.component.html',
-    styleUrls: ['./create-blind-structure.component.css'],
+    styleUrls: ['./create-blind-structure.component.scss'],
     standalone: true,
     imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, UserImageRoundComponent]
 })

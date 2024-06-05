@@ -12,8 +12,10 @@
     >
         <h5><i class="fa fa-plus"></i> Player</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addPlayer()"
         >
             <i class="fa fa-user"></i>
@@ -26,8 +28,10 @@
     >
         <h5><i class="fa fa-plus"></i> Entry</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addEntry(false)"
         >
             <i class="fa fa-money-bill-wave"></i>
@@ -40,8 +44,10 @@
     >
         <h5><i class="fa fa-plus"></i> Rebuy</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addRebuy()"
         >
             <i class="fa fa-refresh"></i>
@@ -54,8 +60,10 @@
     >
         <h5><i class="fa fa-plus"></i> Re-Entry</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addEntry(true)"
         >
             <span class="relative-icon">
@@ -71,8 +79,10 @@
     >
         <h5><i class="fa fa-plus"></i> Addon</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addAddon()"
         >
             <i class="fa fa-database"></i>
@@ -85,8 +95,10 @@
     >
         <h5>Seat Open</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="seatOpen()"
         >
             <i class="fa fa-skull"> </i>
@@ -99,8 +111,10 @@
     >
         <h5>Make Deal</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
+            [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="makeDeal()"
         >
             <i class="fa fa-handshake"></i>
@@ -120,8 +134,9 @@
     >
         <h5>Pause</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="onPause()"
         >
             <i class="fa fa-pause"></i>
@@ -134,8 +149,9 @@
     >
         <h5>Start</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="onStart()"
         >
             <i class="fa fa-play"></i>
@@ -147,8 +163,9 @@
     >
         <h5><i class="fa fa-plus"></i> 1min</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="addMinute.emit()">
             <i class="fa fa-clock"></i>
         </button>
@@ -159,8 +176,9 @@
     >
         <h5><i class="fa fa-chevron-circle-left"></i> Level</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="prevLevel.emit()">
             <i class="fa fa-chevron-circle-left"></i>
         </button>
@@ -171,8 +189,9 @@
     >
         <h5><i class="fa fa-chevron-circle-right"></i> Level</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="nextLevel.emit()">
             <i class="fa fa-chevron-circle-right"></i>
         </button>
@@ -183,8 +202,9 @@
     >
         <h5>Draw</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="drawTables()">
             <i class="fa fa-random"></i>
         </button>
@@ -199,8 +219,9 @@
     >
         <h5>Autoslide</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="onToggleAutoSlide()">
             <i *ngIf="autoSlide()" class="fa fa-toggle-on"></i>
             <i *ngIf="!autoSlide()" class="fa fa-toggle-off"></i>
@@ -212,8 +233,9 @@
     >
         <h5>Condense</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="onToggleShowCondensedBlinds()">
             <i *ngIf="showCondensedBlinds()" class="fa fa-toggle-on"></i>
             <i *ngIf="!showCondensedBlinds()" class="fa fa-toggle-off"></i>
@@ -226,8 +248,9 @@
     >
         <h5>Fullscreen</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="fullScreen()"
         >
             <i class="fa fa-window-maximize"></i>
@@ -240,8 +263,9 @@
     >
         <h5>Normal Screen</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="cancelFullscreen()"
         >
             <i class="fa fa-times-rectangle"></i>
@@ -253,8 +277,9 @@
     >
         <h5>Cursor</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="onToggleIsBigCursor()"
         >
             <i class="fa fa-mouse-pointer"></i>
@@ -266,8 +291,9 @@
     >
         <h5>- Started</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="resetStarted()"
         >
             <i class="fa fa-eraser"></i>
@@ -279,8 +305,9 @@
     >
         <h5>Admin</h5>
         <button
-            mat-raised-button
+            mat-flat-button
             class="main"
+            color="accent"
             (click)="closeMenu()"
             [routerLink]="['/admin']" *ngIf="isAuthenticated$ | async">
             <i class="fa fa-address-card"></i>
@@ -302,7 +329,7 @@
     ></formly-form>
 
     <button
-        mat-raised-button color="primary"
+        mat-flat-button color="primary"
         type="submit"
         [disabled]="!form.valid"
         (click)="applySettings(model)"

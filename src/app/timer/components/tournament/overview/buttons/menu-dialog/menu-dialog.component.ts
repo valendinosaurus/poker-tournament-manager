@@ -52,6 +52,8 @@ export class MenuDialogComponent implements OnInit {
     metadata: WritableSignal<SeriesMetadata | undefined>;
     isSimpleTournament: WritableSignal<boolean>;
     isRebuyPhaseFinished: WritableSignal<boolean>;
+    isTournamentFinished: WritableSignal<boolean>;
+    isTournamentLocked: Signal<boolean>;
     withRebuy: Signal<boolean>;
     withAddon: Signal<boolean>;
     withReEntry: Signal<boolean>;
@@ -114,6 +116,8 @@ export class MenuDialogComponent implements OnInit {
         this.autoSlide = this.state.autoSlide;
         this.showCondensedBlinds = this.state.showCondensedBlinds;
         this.isRunning = this.state.isRunning;
+        this.isTournamentLocked = this.state.isTournamentLocked;
+        this.isTournamentFinished = this.state.isTournamentFinished;
 
         this.elem = this.document.documentElement;
         this.initModel();

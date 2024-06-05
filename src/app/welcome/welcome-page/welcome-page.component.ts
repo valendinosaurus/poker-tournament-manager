@@ -20,6 +20,7 @@ import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { AuthUtilService } from '../../core/services/auth-util.service';
 import { IPayPalConfig, NgxPayPalModule } from 'ngx-paypal';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 @Component({
     selector: 'app-welcome-page',
@@ -36,7 +37,8 @@ import { IPayPalConfig, NgxPayPalModule } from 'ngx-paypal';
         ConnectionRequestComponent,
         AsyncPipe,
         JsonPipe,
-        NgxPayPalModule
+        NgxPayPalModule,
+        UserListComponent
     ]
 })
 export class WelcomePageComponent implements OnInit {
@@ -57,7 +59,7 @@ export class WelcomePageComponent implements OnInit {
     myPlayers$: Observable<Player[]>;
     mappedUsers$: Observable<Player[]>;
 
-    userImageSize = window.innerWidth >= 800 ? 64 : 42;
+    userImageSize = window.innerWidth >= 800 ? 36 : 20;
 
     payPalConfig?: IPayPalConfig;
 

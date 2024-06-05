@@ -8,11 +8,11 @@
             <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
         </span>
 
-        <span *ngIf="playerHasToBeMoved()" class="clickable" (click)="openDrawDialog()">
+        <span *ngIf="playerHasToBeMoved() && !isTournamentFinished()" class="clickable" (click)="openDrawDialog()">
             <i class="fa fa-exclamation-triangle"></i> Player has to be moved
         </span>
 
-        <span *ngIf="tableHasToBeEliminated()" class="clickable" (click)="openDrawDialog()">
+        <span *ngIf="tableHasToBeEliminated() && !isTournamentFinished()" class="clickable" (click)="openDrawDialog()">
             <i class="fa fa-exclamation-triangle"></i> Table can be eliminated
         </span>
 
@@ -24,7 +24,7 @@
             <i class="fa fa-check"></i> Tournament is finished
         </span>
 
-        <span *ngIf="canStartTournament() && !started()">
+        <span *ngIf="canStartTournament() && !started() && !isTournamentFinished()">
             <i class="fa fa-check"></i> Ready to start tournament
         </span>
     </div>
@@ -33,9 +33,10 @@
 <div class="main-buttons">
 
     <button
-        mat-raised-button
+        mat-flat-button
         matTooltip="Play / Pause"
         class="main"
+        [disabled]="isTournamentFinished()"
         (click)="toggleRunning()"
     >
         <i *ngIf="!isRunning()" class="fa fa-play"></i>
@@ -44,10 +45,10 @@
 
     <button
         *ngIf="!isSimpleTournament()"
-        mat-raised-button
+        mat-flat-button
         matTooltip="Seat Open"
         class="main"
-        [disabled]="!isAdaptedPayoutSumCorrect"
+        [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked() || isTournamentFinished()"
         (click)="seatOpen()"
     >
         <i class="fa fa-skull"></i>
@@ -55,9 +56,10 @@
 
     <button
         *ngIf="tournament().withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        mat-raised-button
+        mat-flat-button
         matTooltip="Rebuy"
         class="main"
+        [disabled]="isTournamentLocked() || isTournamentFinished()"
         (click)="addRebuy()"
     >
         <i class="fa fa-refresh"></i>
@@ -65,9 +67,10 @@
 
     <button
         *ngIf="tournament().withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        mat-raised-button
+        mat-flat-button
         matTooltip="Addon"
         class="main"
+        [disabled]="isTournamentLocked() || isTournamentFinished()"
         (click)="addAddon()"
     >
         <i class="fa fa-database"></i>
@@ -75,7 +78,7 @@
 
     <button
         *ngIf="!isFullscreen"
-        mat-raised-button
+        mat-flat-button
         class="main mobile-only"
         matTooltip="Fullscreen"
         (click)="fullScreen()"
@@ -85,7 +88,7 @@
 
     <button
         *ngIf="isFullscreen"
-        mat-raised-button
+        mat-flat-button
         class="main mobile-only"
         matTooltip="Exit Fullscreen"
         (click)="cancelFullscreen()"
@@ -94,7 +97,7 @@
     </button>
 
     <button
-        mat-raised-button
+        mat-flat-button
         class="main mobile-only"
         matTooltip="Table Draw"
         (click)="openDrawDialog()"
@@ -103,7 +106,7 @@
     </button>
 
     <button
-        mat-raised-button
+        mat-flat-button
         matTooltip="More"
         class="main hide-800"
         type="button"

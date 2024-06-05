@@ -16,7 +16,6 @@ import { CreateBlindStructureComponent } from '../create-blind-structure/create-
 @Component({
     selector: 'app-blind-structure-tab',
     templateUrl: './blind-structure-tab.component.html',
-    styleUrls: ['./blind-structure-tab.component.css'],
     standalone: true,
     imports: [
         MatButtonModule,

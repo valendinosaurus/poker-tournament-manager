@@ -40,9 +40,10 @@ export class TimerStateService {
 
     isRunning: WritableSignal<boolean> = signal(false);
     currentLevelIndex: WritableSignal<number> = signal(0);
-    isSimpleTournament: WritableSignal<boolean> = signal(false);
-    isRebuyPhaseFinished: WritableSignal<boolean> = signal(false);
-    isTournamentFinished: WritableSignal<boolean> = signal(false);
+    isTournamentLocked = computed(() => this.tournament().locked);
+    isSimpleTournament: WritableSignal<boolean> = signal(false); // TODO compute
+    isRebuyPhaseFinished: WritableSignal<boolean> = signal(false); // TODO compute
+    isTournamentFinished: WritableSignal<boolean> = signal(false); // TODO compute
     canStartTournament: Signal<boolean> = computed(() =>
         Array.from(
             new Set(

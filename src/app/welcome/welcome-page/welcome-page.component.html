@@ -10,16 +10,16 @@
         <div class="flex justify-center">
             <span class="desktop-only">
                 <app-user-image-round
-                        [imageUrl]="userImage$ | async"
-                        [size]="200"
-                        border="b-black"
+                    [imageUrl]="userImage$ | async"
+                    [size]="200"
+                    border="b-black"
                 ></app-user-image-round>
             </span>
             <span class="mobile-only">
                 <app-user-image-round
-                        [imageUrl]="userImage$ | async"
-                        [size]="100"
-                        border="b-black"
+                    [imageUrl]="userImage$ | async"
+                    [size]="100"
+                    border="b-black"
                 ></app-user-image-round>
             </span>
         </div>
@@ -35,63 +35,31 @@
 
         <hr>
 
-        <ng-container *ngIf="myPlayers$ | async as myPlayers">
-            <ng-container *ngIf="myPlayers.length > 0">
+        <div class="flex">
+            <div class="flex-50">
                 <h2>You in other user's tournaments</h2>
 
-                <div class="flex column-mobile">
-                    <ng-container *ngFor="let player of myPlayers">
-                    <span class="flex user-list-item">
-                        <app-user-image-round
-                            [imageUrl]="player.image"
-                            [size]="userImageSize"
-                        ></app-user-image-round>
+                <app-user-list
+                    [users]="myPlayers$ | async"
+                    [userImageSize]="userImageSize"
+                    noEntriesText="You are not part of other user's tournaments"
+                ></app-user-list>
+            </div>
 
-                        <div class="li-pair">
-                            <span class="name">
-                                {{ player.name }}
-                            </span>
-                            <span *ngIf="player.email">
-                                <small>{{ player.email }}</small>
-                            </span>
-                        </div>
-                    </span>
-                    </ng-container>
-                </div>
-
-                <hr>
-            </ng-container>
-        </ng-container>
-
-        <ng-container *ngIf="mappedUsers$ | async as mappedUsers">
-            <ng-container *ngIf="mappedUsers.length > 0">
+            <div class="flex-50">
                 <h2>Other users in your tournaments</h2>
 
-                <div class="flex column-mobile">
-                    <ng-container *ngFor="let player of mappedUsers">
-                    <span class="flex user-list-item">
-                        <app-user-image-round
-                            [imageUrl]="player.image"
-                            [size]="userImageSize"
-                        ></app-user-image-round>
+                <app-user-list
+                    [users]="mappedUsers$ | async"
+                    [userImageSize]="userImageSize"
+                    noEntriesText="No other users are part of your tournaments"
+                ></app-user-list>
+            </div>
+        </div>
 
-                        <div class="li-pair">
-                            <span class="name">
-                                {{ player.name }}
-                            </span>
-                            <span *ngIf="player.email">
-                                <small>{{ player.email }}</small>
-                            </span>
-                        </div>
-                    </span>
-                    </ng-container>
-                </div>
+        <hr>
 
-                <hr>
-            </ng-container>
-        </ng-container>
-
-        <div class="flex align-center column-mobile align-start-mobile">
+        <div class="flex align-center align-start-mobile">
             <h2>Are you part of another user's series or tournament? Connect here!</h2>
 
             <button
