@@ -75,16 +75,11 @@ export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponen
     private initSignals(): void {
         this.tournament = this.state.tournament;
 
-        console.log(this.state.playersNotInTournament());
-
         this.playersToAdd = computed(() => this.state.playersNotInTournament().map(player => ({
                 label: player.name,
                 value: player.id
             })
         ));
-
-        console.log(this.playersToAdd());
-
     }
 
     isPlayerFinished(playerId: number): boolean {

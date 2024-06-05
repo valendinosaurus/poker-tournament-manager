@@ -1,7 +1,7 @@
 <div class="table-wrapper">
     <table>
         <tr>
-            <th>Rank</th>
+            <th class="t-rank">Rank</th>
             <th>Name</th>
             <th class="t-right">Points</th>
             <th *ngIf="full" class="t-center">&#x2205; Rank</th>
@@ -16,7 +16,7 @@
                 [class.finalist]="i < (series().finalists + numberOfDisqualifiedPlayers()) && !e.disqualified"
                 [class.disqualified]="e.disqualified"
             >
-                <td>
+                <td class="t-rank">
                     {{ i + 1 }}.
                 </td>
                 <td>

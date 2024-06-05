@@ -54,11 +54,6 @@ export class MapPlayerComponent implements OnInit {
     }
 
     confirm(): void {
-        console.log('putting', {
-            ...this.model(),
-            email: this.data.request.requestEmail
-        });
-
         this.playerApiService.put$({
             ...this.model(),
             email: this.data.request.requestEmail

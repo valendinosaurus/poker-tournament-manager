@@ -2,7 +2,6 @@ import { Component, inject, OnInit, WritableSignal } from '@angular/core';
 import { TableDraw } from '../../shared/models/table-draw.interface';
 import { Player } from '../../shared/models/player.interface';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Tournament } from '../../shared/models/tournament.interface';
 import { TableDrawService } from '../../core/services/table-draw.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
@@ -15,7 +14,6 @@ import { TableDrawStateComponent } from '../../shared/components/table-draw-stat
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor, NgIf } from '@angular/common';
 import { TimerStateService } from '../../timer/services/timer-state.service';
-import { EntryType } from '../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-table-draw-dialog',
@@ -26,11 +24,8 @@ import { EntryType } from '../../shared/enums/entry-type.enum';
 })
 export class TableDrawDialogComponent implements OnInit {
 
-    tournament: WritableSignal<Tournament>;
-
-    tableDraw: TableDraw;
+    tableDraw: WritableSignal<TableDraw>;
     maxPlayersPerTable = 9;
-    remainingPlayers: number;
     readonly TABLE_DRAW_STATE = TableDrawState;
 
     private dialogRef: MatDialogRef<TableDrawDialogComponent> = inject(MatDialogRef<TableDrawDialogComponent>);
@@ -39,67 +34,47 @@ export class TableDrawDialogComponent implements OnInit {
     private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit() {
-        this.tournament = this.state.tournament;
-
-        const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
-
-        this.remainingPlayers = this.tournament().entries.filter(e => e.type === EntryType.ENTRY).length - this.tournament().finishes.length;
-
-        if (draw) {
-            this.tableDraw = draw;
-            console.log('adding finished', this.tournament().finishes);
-            draw.tournament.finishes = [...this.tournament().finishes];
-            this.loadExistingDrawAndCheck(draw);
-        } else {
-            this.setupEmptyTables();
-        }
-    }
-
-    loadExistingDrawAndCheck(localDraw: TableDraw): void {
-        this.tableDraw = this.tableDrawService.loadExistingDrawAndCheck(localDraw);
+        this.tableDrawService.update();
+        this.tableDraw = this.tableDrawService.tableDraw;
     }
 
     setupEmptyTables(): void {
-        this.tableDraw = this.tableDrawService.setupEmptyTables(this.tournament(), this.maxPlayersPerTable);
+        this.tableDrawService.setupEmptyTables();
     }
 
     confirmSetup(): void {
-        this.tableDraw.state = TableDrawState.SET_UP;
-        this.localStorageService.saveTableDraw(this.tableDraw);
+        this.tableDrawService.confirmSetup();
     }
 
     addFixedSeat(table: number, seat: number, player: Player): void {
-        this.tableDraw.availablePlayers = this.tableDrawService.addFixedSeat(
-            table, seat, player, this.tableDraw
+        this.tableDrawService.addFixedSeat(
+            table, seat, player
         );
     }
 
     reset(): void {
-        this.tableDrawService.resetTableDraw(this.tournament().id);
-        this.tableDraw.tables = [];
-        this.tableDraw.state = TableDrawState.BLANK;
-        this.tableDraw.tableHasToBeEliminated = false;
-        this.tableDraw.playerHasToBeMoved = false;
-        this.tableDraw.playersToMove = undefined;
+        this.tableDrawService.resetTableDraw();
         // SAVE ?
     }
 
     draw(): void {
-        this.tableDraw.state = TableDrawState.DRAWN;
-        this.tableDraw = this.tableDrawService.drawPlayers(this.tableDraw);
+        this.tableDrawService.drawPlayers();
     }
 
     movePlayer(): void {
-        this.tableDraw = this.tableDrawService.movePlayer(this.tableDraw);
+        this.tableDrawService.movePlayer();
     }
 
     eliminateTable(): void {
-        this.tableDraw = this.tableDrawService.eliminateTable(this.tableDraw);
+        this.tableDrawService.eliminateTable();
     }
 
     playerMoved(): void {
-        this.tableDraw.playersToMove = undefined;
-        this.localStorageService.saveTableDraw(this.tableDraw);
+        this.tableDrawService.playerMoved();
+    }
+
+    changeMaxPlayers(number: number): void {
+        this.tableDrawService.maxPlayersPerTable.set(number);
     }
 
 }

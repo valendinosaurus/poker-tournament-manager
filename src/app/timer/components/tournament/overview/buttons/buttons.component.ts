@@ -7,7 +7,6 @@ import {
     inject,
     OnInit,
     Output,
-    signal,
     Signal,
     WritableSignal
 } from '@angular/core';
@@ -75,8 +74,8 @@ export class ButtonsComponent implements OnInit {
     isAnimatingBubbleBoy$ = new BehaviorSubject(false);
     winnerTrigger$ = new ReplaySubject<number>();
 
-    playerHasToBeMoved: WritableSignal<boolean> = signal(false);
-    tableHasToBeEliminated: WritableSignal<boolean> = signal(false);
+    playerHasToBeMoved: Signal<boolean>;
+    tableHasToBeEliminated: Signal<boolean>;
     // TODO singals
     isAddPlayerBlocked = false;
     lastSeatOpenName = 'TEST NAME';
@@ -141,14 +140,8 @@ export class ButtonsComponent implements OnInit {
 
         this.canStartTournament = this.state.canStartTournament;
 
-        const draw: TableDraw = this.localStorageService.getTableDraw(this.tournament().id);
-
-        if (draw) {
-            console.log('in buttons');
-            this.playerHasToBeMoved.set(this.getPlayerHasToBeMoved(draw));
-            this.tableHasToBeEliminated.set(draw.tableHasToBeEliminated);
-            console.log('in buttons', this.playerHasToBeMoved);
-        }
+        this.playerHasToBeMoved = this.tableDrawService.playerHasToBeMoved;
+        this.tableHasToBeEliminated = this.tableDrawService.tableHasToBeEliminated;
 
         this.canShowInfoPanel = computed(() =>
             (this.isAddPlayerBlocked && !this.isTournamentFinished())
@@ -159,22 +152,6 @@ export class ButtonsComponent implements OnInit {
             || this.playerHasToBeMoved()
             || this.tableHasToBeEliminated()
         );
-    }
-
-    private getPlayerHasToBeMoved(tableDraw: TableDraw): boolean {
-
-        const numberOfRemainingPlayersPerTable: number[] = [];
-
-        tableDraw.tables.forEach(
-            t => {
-                numberOfRemainingPlayersPerTable.push(t.filter(e => !e.eliminated && !e.placeholder).length
-                );
-            });
-
-        const min = Math.min(...numberOfRemainingPlayersPerTable);
-        const max = Math.max(...numberOfRemainingPlayersPerTable);
-
-        return max - min > 1;
     }
 
     addRebuy(): void {

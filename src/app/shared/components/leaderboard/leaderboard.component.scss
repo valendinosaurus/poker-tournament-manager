@@ -5,7 +5,10 @@
 tr th,
 tr td {
     color: black;
+}
 
+tr th:not(.t-rank),
+tr td:not(.t-rank) {
     min-width: 80px;
 }
 
@@ -16,14 +19,10 @@ tr.finalist td {
 
 tr.disqualified th,
 tr.disqualified td {
-    opacity: 0.3;
+    //opacity: 0.3;
+    background: white;
+    color: #BBBBBB;
 }
-
-//.table-wrapper {
-//    overflow-x: auto;
-//    overflow-y: hidden;
-//    width: 100%;
-//}
 
 
 td {

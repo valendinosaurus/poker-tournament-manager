@@ -56,7 +56,6 @@ export class CreatePlayerComponent implements OnInit {
     onSubmit(): void {
         if (this.data?.player) {
             if (this.data?.external) {
-                console.log('external');
                 this.playerApiService.putAndKeepSub$({
                     ...this.data.player,
                     name: this.model.name(),

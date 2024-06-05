@@ -1,15 +1,28 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { LocalStorageService } from './util/local-storage.service';
 import { TableDrawSeat } from '../../shared/models/table-draw-seat.interface';
 import { Player } from '../../shared/models/player.interface';
 import { TableDraw } from '../../shared/models/table-draw.interface';
 import { Tournament } from '../../shared/models/tournament.interface';
 import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
+import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TableDrawService {
+
+    tournament: WritableSignal<Tournament>;
+    tableDraw: WritableSignal<TableDraw> = signal({} as TableDraw);
+    maxPlayersPerTable = signal(9);
+
+    playerHasToBeMoved = computed(() =>
+        this.tableDraw().playerHasToBeMoved
+    );
+
+    tableHasToBeEliminated = computed(() =>
+        this.tableDraw().tableHasToBeEliminated
+    );
 
     randomPlayers: Player[];
 
@@ -20,16 +33,31 @@ export class TableDrawService {
         locked: false
     };
 
+    private state: TimerStateService = inject(TimerStateService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
 
-    setupEmptyTables(tournament: Tournament, maxPlayersPerTable: number): TableDraw {
+    update(): void {
+        this.tournament = this.state.tournament;
 
+        const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
+
+        if (draw) {
+            this.tableDraw.set(draw);
+            console.log('adding finished', this.tournament().finishes);
+            draw.tournament.finishes = [...this.tournament().finishes];
+            this.loadExistingDrawAndCheck(draw);
+        } else {
+            this.setupEmptyTables();
+        }
+    }
+
+    setupEmptyTables(): void {
         const tableDraw: TableDraw = {
-            tournament: tournament,
+            tournament: this.tournament(),
             state: TableDrawState.BLANK,
             tables: [],
-            maxPlayersPerTable: maxPlayersPerTable,
-            availablePlayers: [...tournament.players],
+            maxPlayersPerTable: this.maxPlayersPerTable(),
+            availablePlayers: [...this.tournament().players],
             noOfTables: -1,
             tableIndexToAdd: -1,
             tableIndexToTake: -1,
@@ -124,12 +152,22 @@ export class TableDrawService {
             ]
         );
 
+        this.tableDraw.set(tableDraw);
         this.localStorageService.saveTableDraw(tableDraw);
-
-        return {...tableDraw};
     }
 
-    loadExistingDrawAndCheck(tableDraw: TableDraw): TableDraw {
+    confirmSetup(): void {
+        this.tableDraw.update(
+            (tableDraw: TableDraw) => ({
+                ...tableDraw,
+                state: TableDrawState.SET_UP
+            })
+        );
+
+        this.localStorageService.saveTableDraw(this.tableDraw());
+    }
+
+    loadExistingDrawAndCheck(tableDraw: TableDraw): void {
         const fixedSeats: number[] = [];
 
         tableDraw.tables.forEach(t => {
@@ -160,6 +198,8 @@ export class TableDrawService {
                     if (eliminatedPlayers.map(a => a.id).includes(p.player.id)) {
                         console.log('setting eliminated');
                         p.eliminated = true;
+                    } else {
+                        p.eliminated = false;
                     }
                 }
             )
@@ -195,100 +235,107 @@ export class TableDrawService {
         }
 
         this.localStorageService.saveTableDraw(tableDraw);
-
-        return tableDraw;
     }
 
-    addFixedSeat(table: number, seat: number, player: Player, tableDraw: TableDraw): Player[] {
-        tableDraw.tables[table][seat].fixSeat = true;
-        tableDraw.tables[table][seat].player = player;
-        tableDraw.tables[table][seat].selectVisible = false;
-        this.localStorageService.saveTableDraw(tableDraw);
-        tableDraw.availablePlayers = tableDraw.availablePlayers.filter(p => p.id !== player.id);
+    addFixedSeat(table: number, seat: number, player: Player): void {
+        this.tableDraw.update((tableDraw: TableDraw) => {
+            tableDraw.tables[table][seat].fixSeat = true;
+            tableDraw.tables[table][seat].player = player;
+            tableDraw.tables[table][seat].selectVisible = false;
+            tableDraw.availablePlayers = tableDraw.availablePlayers.filter(p => p.id !== player.id);
 
-        return [...tableDraw.availablePlayers];
-    }
-
-    drawPlayers(tableDraw: TableDraw): TableDraw {
-        let index = 0;
-
-        tableDraw.availablePlayers = this.shuffle(tableDraw.availablePlayers);
-
-        for (let i = 0; i < tableDraw.tables.length; i++) {
-            for (let j = 0; j < tableDraw.tables[i].length; j++) {
-                if (!tableDraw.tables[i][j].fixSeat && !tableDraw.tables[i][j].player.name.includes('----')) {
-                    tableDraw.tables[i][j].player = tableDraw.availablePlayers[index];
-                    index++;
-                }
-            }
-        }
-
-        this.localStorageService.saveTableDraw(tableDraw);
-
-        return {...tableDraw};
-    }
-
-    movePlayer(tableDraw: TableDraw): TableDraw {
-        tableDraw.playersToMove = this.shuffle([...tableDraw.tables[tableDraw.tableIndexToTake].filter(e => !e.placeholder && !e.fixSeat)]).slice(0, tableDraw.noOfPlayersToMove);
-
-        const indexes: number[] = [];
-
-        for (let i = 0; i < tableDraw.tables[tableDraw.tableIndexToTake].length; i++) {
-            if (tableDraw.playersToMove.map(p => p.player.id).includes(tableDraw.tables[tableDraw.tableIndexToTake][i].player.id)) {
-                indexes.push(i);
-            }
-        }
-
-        indexes.forEach((index: number) => {
-            tableDraw.tables[tableDraw.tableIndexToTake][index] = {
-                ...tableDraw.tables[tableDraw.tableIndexToTake][index],
-                placeholder: true,
-                eliminated: false,
-                player: this.emptySeatPlayer,
-            };
+            return tableDraw;
         });
 
-        const newSeats = this.getRandomFreeSeatIndexes(tableDraw, indexes.length);
+        this.localStorageService.saveTableDraw(this.tableDraw());
+    }
 
-        const indexesOfNewSeats: number[] = [];
+    drawPlayers(): void {
+        let index = 0;
 
-        for (let i = 0; i < tableDraw.tables[tableDraw.tableIndexToAdd].length; i++) {
-            if (newSeats.includes(tableDraw.tables[tableDraw.tableIndexToAdd][i].seatNo)) {
-                indexesOfNewSeats.push(i);
-            }
-        }
+        this.tableDraw.update((tableDraw: TableDraw) => {
+            tableDraw.availablePlayers = this.shuffle(tableDraw.availablePlayers);
+            tableDraw.state = TableDrawState.DRAWN;
 
-        for (let i = 0; i < indexes.length; i++) {
-            tableDraw.tables[tableDraw.tableIndexToAdd][indexesOfNewSeats[i]] = {
-                ...tableDraw.playersToMove[i],
-                seatNo: newSeats[i],
-                placeholder: false,
-                eliminated: false
-            };
-        }
-
-        tableDraw.tables = tableDraw.tables.map(
-            t => t.sort((a, b) => a.seatNo - b.seatNo)
-        );
-
-        for (let i = 0; i < tableDraw.tables.length; i++) {
-            for (let j = 0; j < tableDraw.tables[i].length; j++) {
-                if (tableDraw.tables[i][j].eliminated) {
-                    tableDraw.tables[i][j] = {
-                        ...tableDraw.tables[i][j],
-                        player: this.emptySeatPlayer,
-                        eliminated: false,
-                        placeholder: true
-                    };
+            for (let i = 0; i < tableDraw.tables.length; i++) {
+                for (let j = 0; j < tableDraw.tables[i].length; j++) {
+                    if (!tableDraw.tables[i][j].fixSeat && !tableDraw.tables[i][j].player.name.includes('----')) {
+                        tableDraw.tables[i][j].player = tableDraw.availablePlayers[index];
+                        index++;
+                    }
                 }
             }
-        }
 
-        tableDraw.playerHasToBeMoved = false;
+            return tableDraw;
+        });
 
-        this.localStorageService.saveTableDraw(tableDraw);
+        this.localStorageService.saveTableDraw(this.tableDraw());
+    }
 
-        return tableDraw;
+    movePlayer(): void {
+        this.tableDraw.update((tableDraw: TableDraw) => {
+
+            tableDraw.playersToMove = this.shuffle([...tableDraw.tables[tableDraw.tableIndexToTake].filter(e => !e.placeholder && !e.fixSeat)]).slice(0, tableDraw.noOfPlayersToMove);
+
+            const indexes: number[] = [];
+
+            for (let i = 0; i < tableDraw.tables[tableDraw.tableIndexToTake].length; i++) {
+                if (tableDraw.playersToMove.map(p => p.player.id).includes(tableDraw.tables[tableDraw.tableIndexToTake][i].player.id)) {
+                    indexes.push(i);
+                }
+            }
+
+            indexes.forEach((index: number) => {
+                tableDraw.tables[tableDraw.tableIndexToTake][index] = {
+                    ...tableDraw.tables[tableDraw.tableIndexToTake][index],
+                    placeholder: true,
+                    eliminated: false,
+                    player: this.emptySeatPlayer,
+                };
+            });
+
+            const newSeats = this.getRandomFreeSeatIndexes(tableDraw, indexes.length);
+
+            const indexesOfNewSeats: number[] = [];
+
+            for (let i = 0; i < tableDraw.tables[tableDraw.tableIndexToAdd].length; i++) {
+                if (newSeats.includes(tableDraw.tables[tableDraw.tableIndexToAdd][i].seatNo)) {
+                    indexesOfNewSeats.push(i);
+                }
+            }
+
+            for (let i = 0; i < indexes.length; i++) {
+                tableDraw.tables[tableDraw.tableIndexToAdd][indexesOfNewSeats[i]] = {
+                    ...tableDraw.playersToMove[i],
+                    seatNo: newSeats[i],
+                    placeholder: false,
+                    eliminated: false
+                };
+            }
+
+            tableDraw.tables = tableDraw.tables.map(
+                t => t.sort((a, b) => a.seatNo - b.seatNo)
+            );
+
+            for (let i = 0; i < tableDraw.tables.length; i++) {
+                for (let j = 0; j < tableDraw.tables[i].length; j++) {
+                    if (tableDraw.tables[i][j].eliminated) {
+                        tableDraw.tables[i][j] = {
+                            ...tableDraw.tables[i][j],
+                            player: this.emptySeatPlayer,
+                            eliminated: false,
+                            placeholder: true
+                        };
+                    }
+                }
+            }
+
+            tableDraw.playerHasToBeMoved = false;
+
+            return tableDraw;
+        });
+
+        this.localStorageService.saveTableDraw(this.tableDraw());
     }
 
     getRandomFreeSeatIndexes(tableDraw: TableDraw, noOfSeats: number): number[] {
@@ -304,34 +351,36 @@ export class TableDrawService {
         return emptySeats;
     }
 
-    eliminateTable(tableDraw: TableDraw): TableDraw {
-        const tableToEliminateIndex = tableDraw.tables.length - 1; // TODO random
+    eliminateTable(): void {
+        this.tableDraw.update((tableDraw: TableDraw) => {
+            const tableToEliminateIndex = tableDraw.tables.length - 1; // TODO random
 
-        const playersToDistribute = this.shuffle([...tableDraw.tables[tableToEliminateIndex]].filter(e => !e.eliminated && !e.placeholder));
+            const playersToDistribute = this.shuffle([...tableDraw.tables[tableToEliminateIndex]].filter(e => !e.eliminated && !e.placeholder));
 
-        let distributionIndex = 0;
+            let distributionIndex = 0;
 
-        for (let i = 0; i < tableToEliminateIndex; i++) {
-            for (let j = 0; j < tableDraw.tables[i].length; j++) {
-                if (tableDraw.tables[i][j].placeholder || tableDraw.tables[i][j].eliminated) {
+            for (let i = 0; i < tableToEliminateIndex; i++) {
+                for (let j = 0; j < tableDraw.tables[i].length; j++) {
+                    if (tableDraw.tables[i][j].placeholder || tableDraw.tables[i][j].eliminated) {
 
-                    tableDraw.tables[i][j] = {
-                        ...tableDraw.tables[i][j],
-                        placeholder: false,
-                        eliminated: false,
-                        isButton: false,
-                        player: playersToDistribute[distributionIndex++].player
-                    };
+                        tableDraw.tables[i][j] = {
+                            ...tableDraw.tables[i][j],
+                            placeholder: false,
+                            eliminated: false,
+                            isButton: false,
+                            player: playersToDistribute[distributionIndex++].player
+                        };
+                    }
                 }
             }
-        }
 
-        tableDraw.tables.pop();
-        tableDraw.tableHasToBeEliminated = false;
+            tableDraw.tables.pop();
+            tableDraw.tableHasToBeEliminated = false;
 
-        this.localStorageService.saveTableDraw(tableDraw);
+            return tableDraw;
+        });
 
-        return {...tableDraw};
+        this.localStorageService.saveTableDraw(this.tableDraw());
     }
 
     shuffle<T>(array: T[]): T[] {
@@ -350,7 +399,26 @@ export class TableDrawService {
         return ([] as T[]).concat(...arr);
     }
 
-    resetTableDraw(tId: number): void {
-        this.localStorageService.resetTableDraw(tId);
+    resetTableDraw(): void {
+        this.localStorageService.resetTableDraw(this.tournament().id);
+
+        this.tableDraw.update((tableDraw: TableDraw) => {
+            tableDraw.tables = [];
+            tableDraw.state = TableDrawState.BLANK;
+            tableDraw.tableHasToBeEliminated = false;
+            tableDraw.playerHasToBeMoved = false;
+            tableDraw.playersToMove = undefined;
+
+            return tableDraw;
+        });
+    }
+
+    playerMoved(): void {
+        this.tableDraw.update((tableDraw: TableDraw) => ({
+            ...tableDraw,
+            playersToMove: undefined
+        }));
+
+        this.localStorageService.saveTableDraw(this.tableDraw());
     }
 }

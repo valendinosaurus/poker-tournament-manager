@@ -151,7 +151,6 @@ export class SeriesService {
 
         combinedRankings.forEach(
             c => c.combFinishes.forEach((f: SeriesTournamentRow) => {
-                console.log('f', f.disqualified);
                 if (overallRanking.filter(e => e.name === f.name).length > 0) {
                     const index = overallRanking.findIndex(o => o.name === f.name);
 

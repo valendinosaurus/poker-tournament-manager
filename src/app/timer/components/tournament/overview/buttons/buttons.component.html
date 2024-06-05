@@ -1,23 +1,29 @@
 @if (canShowInfoPanel()) {
     <div class="info-panel">
-    <span *ngIf="isAddPlayerBlocked && !isTournamentFinished()">
-        <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
-    </span>
+        <span *ngIf="isAddPlayerBlocked && !isTournamentFinished()">
+            <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
+        </span>
+
         <span *ngIf="tournament().withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()">
-        <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
-    </span>
+            <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
+        </span>
+
         <span *ngIf="playerHasToBeMoved()" class="clickable" (click)="openDrawDialog()">
-                    <i class="fa fa-exclamation-triangle"></i> Player has to be moved
-                </span>
-        <!--    <span *ngIf="tableHasToBeEliminated" class="clickable" (click)="openDrawDialog()">-->
-        <!--            <i class="fa fa-exclamation-triangle"></i> Table can be eliminated-->
-        <!--        </span>-->
+            <i class="fa fa-exclamation-triangle"></i> Player has to be moved
+        </span>
+
+        <span *ngIf="tableHasToBeEliminated()" class="clickable" (click)="openDrawDialog()">
+            <i class="fa fa-exclamation-triangle"></i> Table can be eliminated
+        </span>
+
         <span *ngIf="!canStartTournament()">
-        <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
-    </span>
+            <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
+        </span>
+
         <span *ngIf="isTournamentFinished()">
-        <i class="fa fa-check"></i> Tournament is finished
-    </span>
+            <i class="fa fa-check"></i> Tournament is finished
+        </span>
+
         <span *ngIf="canStartTournament() && !started()">
             <i class="fa fa-check"></i> Ready to start tournament
         </span>

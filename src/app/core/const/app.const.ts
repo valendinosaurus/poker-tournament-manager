@@ -4,7 +4,9 @@ export const DEFAULT_DIALOG_POSITION = {
     position: {
         top: '10vh'
     },
-    maxHeight: '86vh'
+    maxHeight: '86vh',
+    width: window.innerWidth <= 800 ? '95%' : undefined,
+    maxWidth: window.innerWidth <= 800 ? '95vw' : '80vw'
 };
 
 export const TIMER_DIALOG_PANEL_CLASS = {

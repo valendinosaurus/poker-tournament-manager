@@ -208,3 +208,10 @@ h3 > button.round {
 .cdk-overlay-pane.menu-dialog {
     min-width: 900px !important;
 }
+
+@media (max-width: 800px) {
+    .mat-mdc-dialog-surface,
+    .mdc-dialog__surface {
+        padding: 12px !important;
+    }
+}

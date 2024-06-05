@@ -11,6 +11,7 @@ import { TimerStateService } from '../../../services/timer-state.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { Player } from '../../../../shared/models/player.interface';
+import { TableDrawService } from '../../../../core/services/table-draw.service';
 
 @Component({
     selector: 'app-timer-page',
@@ -33,6 +34,7 @@ export class TimerPageComponent implements OnInit {
     private state: TimerStateService = inject(TimerStateService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private route: ActivatedRoute = inject(ActivatedRoute);
+    private tableDrawService: TableDrawService = inject(TableDrawService);
 
     private fetchTrigger$: Observable<void>;
 
@@ -53,6 +55,7 @@ export class TimerPageComponent implements OnInit {
             switchMap(() => this.tournamentApiService.get$(tournamentId)),
             tap((tournament: Tournament) => {
                 this.state.tournament.set(tournament);
+                this.tableDrawService.update();
                 this.canShow = true;
             }),
             shareReplay(1)

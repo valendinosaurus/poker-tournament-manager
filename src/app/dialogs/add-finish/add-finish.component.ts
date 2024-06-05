@@ -106,20 +106,14 @@ export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponen
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
         const placesPaid = payoutRaw.length;
 
-        console.log('rank', this.rank());
-        console.log('places paid', placesPaid);
-
         if (this.rank() > placesPaid) {
-            console.log('set price 0');
             this.price.set(0);
         } else {
             if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
-                console.log('set adapted price', adaptedPayouts[this.rank() - 1]);
                 this.price.set(adaptedPayouts[this.rank() - 1]);
                 this.winnerPrice.set(adaptedPayouts[0]);
             } else {
                 const {totalPricePool} = this.totalPricePool();
-                console.log('set price', totalPricePool / 100 * payoutPercentage);
                 this.price.set(totalPricePool / 100 * payoutPercentage);
                 this.winnerPrice.set(totalPricePool / 100 * payoutRaw[0]);
             }

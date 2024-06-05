@@ -71,7 +71,6 @@ export class AdminComponent implements OnInit {
         this.playerApiService.getAll$().pipe(
             take(1),
             tap((players: Player[]) => {
-                console.log('all', players);
                 this.state.allAvailablePlayers.set(players);
             })
         ).subscribe();

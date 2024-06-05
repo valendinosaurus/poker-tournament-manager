@@ -50,3 +50,10 @@
         display: block;
     }
 }
+
+
+@media (max-width: 800px) {
+    table * {
+        font-size: 14px;
+    }
+}

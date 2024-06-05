@@ -10,6 +10,7 @@ import { ConductedFinish } from '../../shared/models/util/conducted-finish.inter
 import { ConductedElimination } from '../../shared/models/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
+import { TableDraw } from '../../shared/models/table-draw.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -262,5 +263,10 @@ export class TimerStateService {
             this.isRunning.set(false);
         }
     }
+
+    // TABLE DRAW
+    tableDraw: Signal<TableDraw | undefined> = computed(() =>
+        undefined
+    );
 
 }

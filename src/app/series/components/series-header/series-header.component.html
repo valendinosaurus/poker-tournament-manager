@@ -25,39 +25,39 @@
     <div class="series-content">
         <div class="series-content-block">
             <div class="li-pair">
+                <span>
+                    {{ seriesHeader.tournamentsPlayed }} / {{ seriesHeader.totalTournaments }}
+                </span>
                 <h4>
                     Tournaments played
                 </h4>
-                <span>
-                {{ seriesHeader.tournamentsPlayed }} / {{ seriesHeader.totalTournaments }}
-            </span>
             </div>
 
             <div class="li-pair">
+                <span>
+                    {{ seriesHeader.percentageToFinalPot }}%
+                </span>
                 <h4>
                     % to final pot
                 </h4>
-                <span>
-                {{ seriesHeader.percentageToFinalPot }}%
-            </span>
             </div>
 
             <div class="li-pair">
+                <span>
+                    ${{ seriesHeader.maxAmountPerTournament }}
+                </span>
                 <h4>
                     Max. to final pot
                 </h4>
-                <span>
-                ${{ seriesHeader.maxAmountPerTournament }}
-            </span>
             </div>
 
             <div class="li-pair">
+                <span>
+                    ${{ seriesHeader.guaranteed }}
+                </span>
                 <h4>
                     Guaranteed
                 </h4>
-                <span>
-                ${{ seriesHeader.guaranteed }}
-            </span>
             </div>
         </div>
 

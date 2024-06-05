@@ -38,6 +38,7 @@ import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
 import { SeriesMetadata } from '../../../../shared/models/series.interface';
 import { DEFAULT_DIALOG_POSITION } from '../../../../core/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
+import { TableDrawService } from '../../../../core/services/table-draw.service';
 
 @Component({
     selector: 'app-overview',
@@ -99,6 +100,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private state: TimerStateService = inject(TimerStateService);
+    private tableDrawService: TableDrawService = inject(TableDrawService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownHandler(event: Event) {
@@ -135,13 +137,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             }
 
             const levelOfRebuyFinishedIndex: number = this.levels().findIndex((l: BlindLevel) => l.isPause && l.endsRebuy);
-            console.log('levelindex', levelOfRebuyFinishedIndex);
             const fullBlindsLeft = this.levels().slice(this.currentLevelIndex() + 1, levelOfRebuyFinishedIndex);
-            console.log(fullBlindsLeft);
             const fullBlindsLeftTime = fullBlindsLeft.reduce((acc, curr) => curr.duration + acc, 0);
-            console.log(fullBlindsLeftTime * 60);
-            console.log(this.currentLevelTimeLeft());
-            console.log('tot', (fullBlindsLeftTime * 60) + this.currentLevelTimeLeft());
 
             const date = new Date();
             date.setHours(0);
@@ -169,6 +166,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         setInterval(() => {
             this.today = computed(() => Date.now());
         }, 100);
+
+        this.tableDrawService.update();
     }
 
     ngAfterViewInit(): void {
