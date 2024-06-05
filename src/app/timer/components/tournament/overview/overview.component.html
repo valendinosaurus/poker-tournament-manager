@@ -7,56 +7,64 @@
     <div class="overview-wrapper">
         <div class="left">
             <div class="info-panel">
-                <div class="slider-wrapper">
-                    <div class="keen-slider" #sliderRef>
-                        <div class="keen-slider__slide number-slide1 slide-blinds">
-                            <app-blind-level-overview
-                                [levels]="tournament().structure"
-                                (addBlind)="addBlind()"
-                            ></app-blind-level-overview>
-                        </div>
-
-                        <div class="keen-slider__slide number-slide2 slide-stats">
-                            <app-player-details></app-player-details>
-                        </div>
-
-                        <div class="keen-slider__slide number-slide3 slide-stats">
-                            <app-ranking
-                                *ngIf="tournament().finishes.length > tournament().players.length / 2; else blinds;"
-                            ></app-ranking>
-
-                            <ng-template #blinds>
+                @if (!isSimpleTournament()) {
+                    <div class="slider-wrapper">
+                        <div class="keen-slider" #sliderRef>
+                            <div class="keen-slider__slide number-slide1 slide-blinds">
                                 <app-blind-level-overview
                                     [levels]="tournament().structure"
                                     (addBlind)="addBlind()"
                                 ></app-blind-level-overview>
-                            </ng-template>
-                        </div>
+                            </div>
 
-                        <div
-                            class="keen-slider__slide number-slide4 slide-stats"
-                        >
-                            @if (isTournamentPartOfSeries()) {
-                                <app-leaderboard-info></app-leaderboard-info>
-                            } @else {
+                            <div class="keen-slider__slide number-slide2 slide-stats">
                                 <app-player-details></app-player-details>
-                            }
+                            </div>
+
+                            <div class="keen-slider__slide number-slide3 slide-stats">
+                                <app-ranking
+                                    *ngIf="tournament().finishes.length > tournament().players.length / 2; else blinds;"
+                                ></app-ranking>
+
+                                <ng-template #blinds>
+                                    <app-blind-level-overview
+                                        [levels]="tournament().structure"
+                                        (addBlind)="addBlind()"
+                                    ></app-blind-level-overview>
+                                </ng-template>
+                            </div>
+
+                            <div
+                                class="keen-slider__slide number-slide4 slide-stats"
+                            >
+                                @if (isTournamentPartOfSeries()) {
+                                    <app-leaderboard-info></app-leaderboard-info>
+                                } @else {
+                                    <app-player-details></app-player-details>
+                                }
+                            </div>
+                        </div>
+
+                        <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
+                        <i class="fa fa-chevron-right" (click)="slider.next()"></i>
+
+                        <div class="steps">
+                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 0"></i>
+                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 1"></i>
+                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 2"></i>
+                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 3"></i>
                         </div>
                     </div>
-
-                    <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
-                    <i class="fa fa-chevron-right" (click)="slider.next()"></i>
-
-                    <div class="steps">
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 0"></i>
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 1"></i>
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 2"></i>
-                        <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 3"></i>
-                    </div>
-                </div>
+                } @else {
+                    <app-blind-level-overview [levels]="tournament().structure"></app-blind-level-overview>
+                }
             </div>
         </div>
-        <div class="center">
+
+        <div
+            class="center"
+            [class.full]="isSimpleTournament()"
+        >
             <h3 class="highlighted">
                 Levels
             </h3>
@@ -79,13 +87,6 @@
                                     {{ started() | date:'HH:mm' }}
                                 </h2>
                             </div>
-
-                            <!--                            <div class="now">-->
-                                <!--                                <h3>Elapsed</h3>-->
-                                <!--                                <h2>-->
-                                <!--                                    {{ elapsed() | date:'HH:mm' }}-->
-                                <!--                                </h2>-->
-                                <!--                            </div>-->
 
                             @if (!isRebuyPhaseFinished()) {
                                 <div class="now">
@@ -155,7 +156,10 @@
             </div>
         </div>
 
-        <div class="right">
+        <div
+            *ngIf="!isSimpleTournament()"
+            class="right"
+        >
             <h3 class="highlighted">
                 Tournament Info
             </h3>

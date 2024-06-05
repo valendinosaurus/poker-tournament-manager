@@ -25,6 +25,8 @@ export class TimerStateService {
 
     autoSlide: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().autoSlide ?? true);
     showCondensedBlinds: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().showCondensedBlinds ?? true);
+    isFullScreen: WritableSignal<boolean> = signal(false);
+    isBigCursor: WritableSignal<boolean> = signal(false);
 
     players: Signal<Player[]> = computed(() => this.tournament().players);
     entries: Signal<Entry[]> = computed(() => this.tournament().entries);
@@ -40,10 +42,27 @@ export class TimerStateService {
 
     isRunning: WritableSignal<boolean> = signal(false);
     currentLevelIndex: WritableSignal<number> = signal(0);
-    isTournamentLocked = computed(() => this.tournament().locked);
-    isSimpleTournament: WritableSignal<boolean> = signal(false); // TODO compute
-    isRebuyPhaseFinished: WritableSignal<boolean> = signal(false); // TODO compute
-    isTournamentFinished: WritableSignal<boolean> = signal(false); // TODO compute
+    isTournamentLocked = computed(() => Boolean(this.tournament().locked));
+
+    isSimpleTournament: Signal<boolean> = computed(() =>
+        this.tournament().players.length === 0
+        && !this.tournament().withRebuy
+        && !this.tournament().withAddon
+        && !this.tournament().withReEntry
+    );
+
+    isRebuyPhaseFinished: Signal<boolean> = computed(() =>
+        (
+            this.currentLevelIndex() > this.tournament().structure.findIndex(b => b.endsRebuy)
+            || this.tournament().structure.findIndex(b => b.endsRebuy) === -1
+        )
+        && this.tournament().players.length > 0
+    );
+
+    isTournamentFinished: Signal<boolean> = computed(() =>
+        this.tournament().players.length === this.tournament().finishes.length
+    );
+
     canStartTournament: Signal<boolean> = computed(() =>
         Array.from(
             new Set(

@@ -36,7 +36,7 @@ export class BlindLevelOverviewComponent implements OnInit {
 
     @Output() addBlind = new EventEmitter<void>();
 
-    isSimpleTournament: WritableSignal<boolean>;
+    isSimpleTournament: Signal<boolean>;
     levelsToShow: Signal<BlindLevel[]>;
     currentLevelIndex: WritableSignal<number>;
 
@@ -45,7 +45,7 @@ export class BlindLevelOverviewComponent implements OnInit {
     private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        this.isSimpleTournament = this.state.isTournamentFinished;
+        this.isSimpleTournament = this.state.isSimpleTournament;
         this.currentLevelIndex = this.state.currentLevelIndex;
 
         this.levelsToShow = computed(() =>

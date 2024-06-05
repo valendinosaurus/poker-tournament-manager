@@ -50,9 +50,9 @@ export class MenuDialogComponent implements OnInit {
 
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
-    isSimpleTournament: WritableSignal<boolean>;
-    isRebuyPhaseFinished: WritableSignal<boolean>;
-    isTournamentFinished: WritableSignal<boolean>;
+    isSimpleTournament: Signal<boolean>;
+    isRebuyPhaseFinished: Signal<boolean>;
+    isTournamentFinished: Signal<boolean>;
     isTournamentLocked: Signal<boolean>;
     withRebuy: Signal<boolean>;
     withAddon: Signal<boolean>;
@@ -68,8 +68,8 @@ export class MenuDialogComponent implements OnInit {
 
     private dialogRef: MatDialogRef<MenuDialogComponent> = inject(MatDialogRef<MenuDialogComponent>);
 
-    isFullscreen = false;
-    isBigCursor = false;
+    isFullScreen: WritableSignal<boolean>;
+    isBigCursor: WritableSignal<boolean>;
     elem: HTMLElement;
 
     data: {
@@ -118,6 +118,8 @@ export class MenuDialogComponent implements OnInit {
         this.isRunning = this.state.isRunning;
         this.isTournamentLocked = this.state.isTournamentLocked;
         this.isTournamentFinished = this.state.isTournamentFinished;
+        this.isFullScreen = this.state.isFullScreen;
+        this.isBigCursor = this.state.isBigCursor;
 
         this.elem = this.document.documentElement;
         this.initModel();
@@ -255,7 +257,7 @@ export class MenuDialogComponent implements OnInit {
     }
 
     chkScreenMode() {
-        this.isFullscreen = !!this.document.fullscreenElement;
+        this.state.isFullScreen.set(!!this.document.fullscreenElement);
     }
 
     fullScreen(): void {
@@ -292,9 +294,9 @@ export class MenuDialogComponent implements OnInit {
     }
 
     onToggleIsBigCursor(): void {
-        this.isBigCursor = !this.isBigCursor;
+        this.state.isBigCursor.set(!this.isBigCursor);
 
-        if (this.isBigCursor) {
+        if (this.isBigCursor()) {
             document.querySelector('body')?.classList.add('big-cursor');
         } else {
             document.querySelector('body')?.classList.remove('big-cursor');

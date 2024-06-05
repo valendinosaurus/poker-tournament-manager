@@ -21,7 +21,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
-import { TableDraw } from '../../../../../shared/models/table-draw.interface';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { AsyncPipe, DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -61,15 +60,16 @@ export class ButtonsComponent implements OnInit {
 
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
-    isSimpleTournament: WritableSignal<boolean>;
+    isSimpleTournament: Signal<boolean>;
     started: WritableSignal<Date | undefined>;
-    isTournamentFinished: WritableSignal<boolean>;
-    isRebuyPhaseFinished: WritableSignal<boolean>;
+    isTournamentFinished: Signal<boolean>;
+    isRebuyPhaseFinished: Signal<boolean>;
     canStartTournament: Signal<boolean>;
     isRunning: WritableSignal<boolean>;
     isTournamentLocked: Signal<boolean>;
 
     canShowInfoPanel: Signal<boolean>;
+    isFullScreen: WritableSignal<boolean>;
 
     isAnimatingSeatOpen$ = new BehaviorSubject(false);
     isAnimatingBubbleBoy$ = new BehaviorSubject(false);
@@ -85,11 +85,9 @@ export class ButtonsComponent implements OnInit {
     lastPrice = 0;
     lastRank = 0;
     lastIsBubble = false;
-    isFullscreen = false;
     elem: HTMLElement;
     menuVisible = false;
     isAdaptedPayoutSumCorrect = true;
-    tableDraw: TableDraw;
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -121,6 +119,7 @@ export class ButtonsComponent implements OnInit {
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
         this.isRunning = this.state.isRunning;
         this.isTournamentLocked = this.state.isTournamentLocked;
+        this.isFullScreen = this.state.isFullScreen;
         this.elem = this.document.documentElement;
 
         const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament().id);
@@ -233,7 +232,7 @@ export class ButtonsComponent implements OnInit {
     }
 
     chkScreenMode() {
-        this.isFullscreen = !!this.document.fullscreenElement;
+        this.state.isFullScreen.set(!!this.document.fullscreenElement);
     }
 
     fullScreen(): void {

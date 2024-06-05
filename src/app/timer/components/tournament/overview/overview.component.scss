@@ -54,6 +54,11 @@
     overflow: hidden;
 }
 
+.overview .center.full {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+}
+
 .clock {
     position: relative;
     flex: 1 1 66%;

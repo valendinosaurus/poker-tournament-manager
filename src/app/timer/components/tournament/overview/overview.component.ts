@@ -67,12 +67,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
-    isFinished: WritableSignal<boolean>;
+    isFinished: Signal<boolean>;
     currentLevelIndex: WritableSignal<number>;
     isTournamentPartOfSeries: Signal<boolean> = signal(false);
     isRunning: WritableSignal<boolean>;
     levels: Signal<BlindLevel[]>;
     isRebuyPhaseFinished: Signal<boolean>;
+    isSimpleTournament: Signal<boolean>;
 
     slider: KeenSliderInstance;
     currentSlide: WritableSignal<number> = signal(0);
@@ -130,6 +131,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.levels = computed(() => this.tournament().structure);
         this.isTournamentPartOfSeries = computed(() => this.metadata() !== undefined);
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
+        this.isSimpleTournament = this.state.isSimpleTournament;
 
         this.timeForRebuy = computed(() => {
             if (!this.tournament().withRebuy) {
@@ -154,14 +156,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.state.started.set(this.localStorageService.getTournamentStarted(this.tournament().id));
         this.started = this.state.started;
         this.elapsed = this.state.elapsed;
-
-        this.state.isTournamentFinished.set(
-            !this.state.isSimpleTournament()
-            && this.tournament().players.length === this.tournament().finishes.length
-            && this.tournament().players.length > 0
-        );
-
-        this.checkIsRebuyPhaseFinished();
 
         setInterval(() => {
             this.today = computed(() => Date.now());
@@ -213,25 +207,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private checkIsRebuyPhaseFinished(): void {
-        const rebuyEndLevel = this.tournament().structure.findIndex(b => b.endsRebuy);
-        this.state.isRebuyPhaseFinished.set(
-            (
-                this.currentLevelIndex() > rebuyEndLevel
-                || rebuyEndLevel === -1
-            )
-            && this.tournament().players.length > 0
-        );
-    }
-
     handleEvent(e: CountdownEvent) {
         if (e.action === 'done') {
-            this.currentLevelIndex.update(previous => previous + 1);
-            this.checkIsRebuyPhaseFinished();
+            this.state.currentLevelIndex.update(previous => previous + 1);
 
-            if (this.currentLevelIndex() === this.levels.length) {
-                this.state.isTournamentFinished.set(true);
-            } else {
+            if (this.currentLevelIndex() < this.levels.length) {
                 setTimeout(() => {
                     this.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
                     this.blindDuration.set(this.currentLevelTimeLeft());

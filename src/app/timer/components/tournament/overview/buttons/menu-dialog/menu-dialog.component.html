@@ -14,7 +14,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addPlayer()"
         >
@@ -30,7 +29,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addEntry(false)"
         >
@@ -46,7 +44,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addRebuy()"
         >
@@ -62,7 +59,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addEntry(true)"
         >
@@ -81,7 +77,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="addAddon()"
         >
@@ -97,7 +92,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="seatOpen()"
         >
@@ -113,7 +107,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             [disabled]="isTournamentFinished() || isTournamentLocked()"
             (click)="makeDeal()"
         >
@@ -136,7 +129,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="onPause()"
         >
             <i class="fa fa-pause"></i>
@@ -151,7 +143,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="onStart()"
         >
             <i class="fa fa-play"></i>
@@ -165,7 +156,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="addMinute.emit()">
             <i class="fa fa-clock"></i>
         </button>
@@ -178,7 +168,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="prevLevel.emit()">
             <i class="fa fa-chevron-circle-left"></i>
         </button>
@@ -191,7 +180,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="nextLevel.emit()">
             <i class="fa fa-chevron-circle-right"></i>
         </button>
@@ -204,7 +192,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="drawTables()">
             <i class="fa fa-random"></i>
         </button>
@@ -221,7 +208,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="onToggleAutoSlide()">
             <i *ngIf="autoSlide()" class="fa fa-toggle-on"></i>
             <i *ngIf="!autoSlide()" class="fa fa-toggle-off"></i>
@@ -235,7 +221,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="onToggleShowCondensedBlinds()">
             <i *ngIf="showCondensedBlinds()" class="fa fa-toggle-on"></i>
             <i *ngIf="!showCondensedBlinds()" class="fa fa-toggle-off"></i>
@@ -243,32 +228,30 @@
     </div>
 
     <div
-        *ngIf="!isFullscreen"
+        *ngIf="!isFullScreen()"
         class="action"
     >
         <h5>Fullscreen</h5>
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="fullScreen()"
         >
-            <i class="fa fa-window-maximize"></i>
+            <i class="fa fa-maximize"></i>
         </button>
     </div>
 
     <div
-        *ngIf="isFullscreen"
+        *ngIf="isFullScreen()"
         class="action"
     >
         <h5>Normal Screen</h5>
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="cancelFullscreen()"
         >
-            <i class="fa fa-times-rectangle"></i>
+            <i class="fa fa-minimize"></i>
         </button>
     </div>
 
@@ -279,7 +262,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="onToggleIsBigCursor()"
         >
             <i class="fa fa-mouse-pointer"></i>
@@ -293,7 +275,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="resetStarted()"
         >
             <i class="fa fa-eraser"></i>
@@ -307,7 +288,6 @@
         <button
             mat-flat-button
             class="main"
-            color="accent"
             (click)="closeMenu()"
             [routerLink]="['/admin']" *ngIf="isAuthenticated$ | async">
             <i class="fa fa-address-card"></i>
@@ -315,26 +295,26 @@
     </div>
 </div>
 
-
-<h4>Tournament settings</h4>
-<br>
-<form
-    [formGroup]="form"
->
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
-
-    <button
-        mat-flat-button color="primary"
-        type="submit"
-        [disabled]="!form.valid"
-        (click)="applySettings(model)"
+@if (!isTournamentLocked()) {
+    <h4>Tournament settings</h4>
+    <br>
+    <form
+        [formGroup]="form"
     >
-        APPLY
-    </button>
-</form>
-<!--</div>-->
+        <formly-form
+            [form]="form"
+            [fields]="fields"
+            [options]="options"
+            [model]="model"
+        ></formly-form>
+
+        <button
+            mat-flat-button color="primary"
+            type="submit"
+            [disabled]="!form.valid"
+            (click)="applySettings(model)"
+        >
+            APPLY
+        </button>
+    </form>
+}
