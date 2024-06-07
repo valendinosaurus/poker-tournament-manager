@@ -175,6 +175,13 @@ export class TimerStateService {
         )
     );
 
+    playersToEliminate = computed(() => this.eligibleForSeatOpen().map(
+        player => ({
+            label: player.name,
+            value: player.id
+        })
+    ));
+
     conductedFinishes: Signal<ConductedFinish[]> = computed(() =>
         this.finishes().map((finish: Finish) => ({
                 tId: this.tournament().id,
@@ -200,6 +207,13 @@ export class TimerStateService {
             ).length < this.tournament().noOfRebuys
         )
     );
+
+    playersToRebuy = computed(() => this.eligibleForRebuy().map(
+        player => ({
+            label: player.name,
+            value: player.id
+        })
+    ));
 
     conductedRebuys: Signal<ConductedEntry[]> = computed(() =>
         this.entries().filter(
@@ -232,6 +246,12 @@ export class TimerStateService {
             return addonsOfPlayer < allowed;
         })
     );
+
+    playersToAddOn = computed(() => this.eligibleForAddon().map(player => ({
+            label: player.name,
+            value: player.id
+        })
+    ));
 
     conductedAddons: Signal<ConductedEntry[]> = computed(() =>
         this.entries().filter(

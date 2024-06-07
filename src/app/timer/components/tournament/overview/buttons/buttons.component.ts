@@ -140,7 +140,6 @@ export class ButtonsComponent implements OnInit {
         this.isAddPlayerBlocked = this.state.players().length >= numberOfPaidPlaces && playersLeft < numberOfPaidPlaces;
 
         this.canStartTournament = this.state.canStartTournament;
-
         this.playerHasToBeMoved = this.tableDrawService.playerHasToBeMoved;
         this.tableHasToBeEliminated = this.tableDrawService.tableHasToBeEliminated;
 

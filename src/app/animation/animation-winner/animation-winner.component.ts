@@ -41,6 +41,7 @@ export class AnimationWinnerComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (!!changes['trigger']?.currentValue) {
             this.isAnimating.set(true);
+
             anime.timeline({loop: false})
                 .add({
                     targets: '.winner-animation .word',
@@ -63,7 +64,7 @@ export class AnimationWinnerComponent implements OnChanges {
                 this.intervalSubscription.unsubscribe();
             }
 
-            this.intervalSubscription = range(0, 1000).pipe(
+            this.intervalSubscription = range(0, 20).pipe(
                 concatMap(i => of(i).pipe(
                     delay(1000 + Math.random() * 2500),
                     tap(() => {
@@ -81,14 +82,14 @@ export class AnimationWinnerComponent implements OnChanges {
 
             confetti({
                 angle: 90,
-                particleCount: 1000,
+                particleCount: 500,
                 spread: 360,
                 scalar: 3,
                 origin: {
                     y: withRandom ? Math.random() : 0.4,
                     x: withRandom ? Math.random() : 0.5,
                 },
-                shapes: [bill, 'start']
+                shapes: [bill, 'start'],
             });
         } catch (e) {
             // noop, confettijs may not be loaded yet

@@ -119,16 +119,16 @@
         </table>
     </div>
 
-    <ng-container *ngIf="tournament().tournament.liveTicker">
+    <ng-container *ngIf="liveTicker()">
         <div
-            *ngIf="tournament().tournament.liveTicker.length > 0"
+            *ngIf="liveTicker().length > 0"
             class="live-ticker"
         >
             <span class="flex">
                 <i
                     class="fa fa-chevron-circle-down hoverable"
-                    [class.rotate-180]="!isLiveTickerExpanded"
-                    (click)="isLiveTickerExpanded = !isLiveTickerExpanded"
+                    [class.rotate-180]="!isLiveTickerExpanded()"
+                    (click)="isLiveTickerExpanded.set(!isLiveTickerExpanded())"
                 ></i>
 
                 <h4>Live-Ticker</h4>
@@ -136,13 +136,16 @@
 
             <div
                 class="expandable"
-                [class.expanded]="isLiveTickerExpanded"
+                [class.expanded]="isLiveTickerExpanded()"
             >
-                <ng-container *ngFor="let e of tournament().tournament.liveTicker">
+                <ng-container *ngFor="let e of liveTicker()">
                     <div class="live-ticker-item">
-                    <span class="fa-wrapper">
-                        <i class="fa" [class]="e | tEventTypeIcon"></i>
-                    </span>
+                        <span class="fa-wrapper">
+                            <i class="fa" [class]="e | tEventTypeIcon"></i>
+                        </span>
+                        <span class="time">
+                            {{ e.timestamp | date:'HH:mm' }}
+                        </span>
                         <span [innerHTML]="e.message"></span>
                     </div>
                 </ng-container>

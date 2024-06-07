@@ -18,7 +18,7 @@ export class FinishApiService {
         return this.http.post<ServerResponse>(
             `${BACKEND_URL}${this.ENDPOINT}`,
             JSON.stringify(player)
-        ).pipe(delay(2000));
+        );
     }
 
     delete$(tId: number, pId: number): Observable<any> {

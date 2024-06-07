@@ -2,17 +2,13 @@ import { Component, computed, inject, OnInit, signal, Signal } from '@angular/co
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MatDialog } from '@angular/material/dialog';
-import { EntryApiService } from '../../core/services/api/entry-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
-import { EntryType } from '../../shared/enums/entry-type.enum';
 import { TournamentService } from '../../core/services/util/tournament.service';
-import { TEventApiService } from '../../core/services/api/t-event-api.service';
-import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
+import { TimerApiService } from '../../core/services/api/timer-api.service';
 
 @Component({
     selector: 'app-add-addon',
@@ -36,11 +33,10 @@ export class AddAddonComponent extends BaseAddDialogComponent<AddAddonComponent,
     conductedAddons: Signal<ConductedEntry[]>;
 
     private tournamentService: TournamentService = inject(TournamentService);
-    private entryApiService: EntryApiService = inject(EntryApiService);
     private fetchService: FetchService = inject(FetchService);
     private notificationService: NotificationService = inject(NotificationService);
-    private tEventApiService: TEventApiService = inject(TEventApiService);
     private state: TimerStateService = inject(TimerStateService);
+    private timerApiService: TimerApiService = inject(TimerApiService);
 
     private dialog: MatDialog = inject(MatDialog);
 
@@ -57,12 +53,7 @@ export class AddAddonComponent extends BaseAddDialogComponent<AddAddonComponent,
     }
 
     private initSignals(): void {
-        this.playersToAddOn = computed(() => this.state.eligibleForAddon().map(player => ({
-                label: player.name,
-                value: player.id
-            })
-        ));
-
+        this.playersToAddOn = this.state.playersToAddOn;
         this.conductedAddons = this.state.conductedAddons;
     }
 
@@ -71,33 +62,19 @@ export class AddAddonComponent extends BaseAddDialogComponent<AddAddonComponent,
         this.isLoadingAdd = true;
 
         if (playerId) {
-            this.entryApiService.post$({
-                id: undefined,
-                playerId: playerId,
-                tournamentId: this.state.tournament().id,
-                type: EntryType.ADDON,
-                timestamp: -1
-            }).pipe(
+            this.timerApiService.addon$(
+                this.tournamentService.getAddonEvent(playerId)
+            ).pipe(
                 take(1),
+                tap((a) => {
+                    this.fetchService.trigger();
+                    this.isLoadingAdd = false;
+                }),
                 catchError(() => {
                     this.notificationService.error('Error adding Addon');
                     this.isLoadingAdd = false;
                     return of(null);
                 }),
-                switchMap(() => {
-                    const playerName = this.playersToAddOn().filter(e => e.value === playerId)[0].label;
-
-                    return this.tEventApiService.post$(
-                        this.state.tournament().id,
-                        `Addon for <strong>${playerName}</strong>!`,
-                        TEventType.ADDON
-                    );
-                }),
-                tap((a) => {
-                    this.fetchService.trigger();
-                    this.isLoadingAdd = false;
-                }),
-                this.tournamentService.postActionEvent$,
             ).subscribe();
         }
     }
@@ -120,25 +97,19 @@ export class AddAddonComponent extends BaseAddDialogComponent<AddAddonComponent,
             dialogRef.afterClosed().pipe(
                 switchMap((result: boolean) => iif(
                         () => result,
-                        defer(() => this.entryApiService.delete$(entryId).pipe(
+                        defer(() => this.timerApiService.deleteAddon$(
+                            this.tournamentService.getDeleteAddonEvent(entryId, playerName)
+                        ).pipe(
                             take(1),
+                            tap((a) => {
+                                this.isLoadingRemove = false;
+                                this.fetchService.trigger();
+                            }),
                             catchError(() => {
                                 this.notificationService.error('Error removing Addon');
                                 this.isLoadingRemove = false;
                                 return of(null);
                             }),
-                            switchMap(() => {
-                                return this.tEventApiService.post$(
-                                    this.state.tournament().id,
-                                    `<strong>${playerName}</strong> cancelled his Addon!`,
-                                    TEventType.CORRECTION
-                                );
-                            }),
-                            tap((a) => {
-                                this.isLoadingRemove = false;
-                                this.fetchService.trigger();
-                            }),
-                            this.tournamentService.postActionEvent$,
                         )),
                         defer(() => of(null))
                     )

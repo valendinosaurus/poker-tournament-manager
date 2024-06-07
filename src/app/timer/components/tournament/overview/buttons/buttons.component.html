@@ -31,7 +31,6 @@
 }
 
 <div class="main-buttons">
-
     <button
         mat-flat-button
         matTooltip="Play / Pause"
@@ -48,7 +47,7 @@
         mat-flat-button
         matTooltip="Seat Open"
         class="main"
-        [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked() || isTournamentFinished()"
+        [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked()"
         (click)="seatOpen()"
     >
         <i class="fa fa-skull"></i>
