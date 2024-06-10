@@ -7,7 +7,7 @@
 } @else {
     <div class="series-page page-with-header">
         <app-series-header
-            [seriesHeader]="seriesHeader$ | async"
+            [seriesHeader]="seriesHeader$ | async | nullsafePrimitive:{}"
         ></app-series-header>
 
         <ng-container *ngIf="(userEmail$ | async) && (isUserConnectedHere$ | async) === false">

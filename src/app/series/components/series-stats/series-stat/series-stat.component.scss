@@ -1,0 +1,90 @@
+:host {
+    display: contents;
+}
+
+// TODO dupliacate
+div.li-pair {
+    width: 24%;
+    flex: 0 0 24%;
+    margin-bottom: 12px;
+    background: aliceblue;
+    padding: 12px;
+    box-sizing: border-box;
+    border: solid 2px darkslategray;
+    border-radius: 12px;
+
+    h4 {
+        display: block;
+        text-align: center;
+        width: 100%;
+        font-size: 18px;
+        margin-top: 0;
+        color: #222;
+        font-weight: normal;
+    }
+
+    span {
+        text-align: center;
+        font-size: 32px;
+        margin-bottom: 0;
+        color: #222;
+        font-weight: bold;
+
+        &.smaller {
+            font-size: 20px;
+            font-weight: normal;
+
+            span {
+                font-size: 18px;
+                font-weight: normal;
+            }
+        }
+    }
+
+    @media (max-width: 800px) {
+        width: 48%;
+        flex: 0 0 48%;
+        margin-bottom: 2%;
+
+        h4 {
+            font-size: 12px;
+        }
+
+        span {
+            font-size: 20px;
+        }
+    }
+}
+
+.li-pair > h4 {
+    text-align: left !important;
+    font-weight: bold !important;
+    margin-bottom: 12px !important;
+}
+
+.li-pair > span {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+        display: flex;
+        align-items: center;
+
+        app-user-image-round {
+            display: inline-block;
+            margin-left: 4px;
+        }
+    }
+
+    strong {
+        margin-right: 4px;
+    }
+}
+
+@media (max-width: 800px) {
+    .li-pair {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        margin-bottom: 2%;
+    }
+}

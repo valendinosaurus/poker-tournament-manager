@@ -1,7 +1,7 @@
 <div
-    [ngStyle]="{ 'background-image': 'url(' + imageUrl + ')', 'border-width': borderWidth + 'px'}"
-    [style.width.px]="size"
-    [style.height.px]="size"
-    [style.border-radius.px]="size"
-    [class]="border"
+    [ngStyle]="{ 'background-image': 'url(' + imageUrl() + ')', 'border-width': borderWidth() + 'px'}"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    [style.border-radius.px]="size()"
+    [class]="border()"
 ></div>

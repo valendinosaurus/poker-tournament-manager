@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NgStyle } from '@angular/common';
 
 @Component({
@@ -10,9 +10,9 @@ import { NgStyle } from '@angular/common';
 })
 export class UserImageRoundComponent {
 
-    @Input() imageUrl: string | undefined | null;
-    @Input() size = 32;
-    @Input() border: string = 'b-regular';
-    @Input() borderWidth = 4;
+    imageUrl = input.required<string | undefined | null>();
+    size = input<number>(32);
+    border = input<string>('b-regular');
+    borderWidth = input<number>(4);
 
 }

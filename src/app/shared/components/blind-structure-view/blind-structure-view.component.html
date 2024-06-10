@@ -1,5 +1,5 @@
 <div
-    *ngIf="estimationVisible && structure().length > 0"
+    *ngIf="estimationVisible() && structure().length > 0"
     class="duration"
 >
     <div
@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="b-duration">
-                    {{ blind.duration}}min
+                    {{ blind.duration }}min
                 </div>
 
                 <div class="b-small">
@@ -120,7 +120,7 @@
                 </div>
                 <div class="b-action">
                     <i
-                        *ngIf="!locked"
+                        *ngIf="!locked()"
                         class="fa fa-trash"
                         (click)="deleteBlind.emit(blind.id)"
                     ></i>
@@ -131,7 +131,7 @@
         <ng-template #pause>
             <div class="pause-element">
                 <div class="b-name">
-                    {{ blind.duration}}min
+                    {{ blind.duration }}min
                 </div>
                 <div class="b-long-name">
                     PAUSE
@@ -144,7 +144,7 @@
                 </div>
                 <div class="b-action">
                     <i
-                        *ngIf="!locked"
+                        *ngIf="!locked()"
                         class="fa fa-trash"
                         (click)="deleteBlind.emit(blind.id)"
                     ></i>
@@ -154,7 +154,7 @@
 
 
         <div
-            *ngIf="blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked"
+            *ngIf="blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()"
             class="b-insert-pause"
             (click)="addPause.emit(blind.position)"
         >

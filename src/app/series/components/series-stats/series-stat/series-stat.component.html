@@ -1,0 +1,21 @@
+<div class="li-pair">
+    <h4>
+        {{ statTitle() }}
+    </h4>
+
+    @for (e of stat(); track e.playerName; let i = $index; ) {
+        <span class="smaller">
+            <span>
+                {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
+                {{ e.playerName }}
+            </span>
+            <span>
+                @if (useNumberPipe()) {
+                    <strong>{{ e.value | number:'1.1-1' }} $</strong> ({{ e.played }})
+                } @else {
+                    <strong>{{ e.value }}</strong> ({{ e.played }})
+                }
+            </span>
+        </span>
+    }
+</div>

@@ -10,116 +10,50 @@
 </p>
 
 <div class="series-content-block spaced">
-    <div class="li-pair">
-        <h4>Best &#x2205; rank (p > 1)</h4>
-        <span class="smaller" *ngFor="let e of bestAverageRank; let i = index;">
-            <span>{{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                {{ e.playerName }}</span>
-            <span>
-                <strong>{{ e.value | number:'1.1-1' }}</strong>
-                ({{ e.played }})
-            </span>
-        </span>
-    </div>
+    <app-series-stat
+        [stat]="bestAverageRank()"
+        [useNumberPipe]="true"
+        statTitle="Best &#x2205; rank (p > 1)"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most prices
-        </h4>
-        <span class="smaller" *ngFor="let e of mostPrices; let i = index;">
-            <span>
-                {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                {{ e.playerName }}
-            </span>
-            <span>
-                <strong>{{ e.value }} $</strong> ({{ e.played }})
-            </span>
-        </span>
-    </div>
+    <app-series-stat
+        [stat]="mostPrices()"
+        statTitle="Most prices"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most effective prices
-        </h4>
-        <span class="smaller" *ngFor="let e of mostEffPrices; let i = index;">
-            <span>
-                {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                {{ e.playerName }}
-            </span>
-            <span>
-                <strong>{{ e.value }}$</strong> ({{ e.played }})
-            </span>
-        </span>
-    </div>
+    <app-series-stat
+        [stat]="mostEffPrices()"
+        statTitle="Most effective prices"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most RB & A
-        </h4>
-        <span class="smaller" *ngFor="let e of mostRebuysAddons; let i = index;">
-                        <span>{{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }}
-            )</span>
-                    </span>
-    </div>
+    <app-series-stat
+        [stat]="mostRebuysAddons()"
+        statTitle="Most RB & A"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most &#x2205; RB & A (p > 1)
-        </h4>
-        <span class="smaller" *ngFor="let e of mostRebuysAddonsPerT; let i = index;">
-                        <span>{{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value | number:'1.1-1' | number:'1.1-1' }}
-                    </strong> ({{ e.played }})</span>
-                    </span>
-    </div>
+    <app-series-stat
+        [stat]="mostRebuysAddonsPerT()"
+        [useNumberPipe]="true"
+        statTitle="Most &#x2205; RB & A (p > 1)"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most times ITM
-        </h4>
-        <span class="smaller" *ngFor="let e of mostITM; let i = index;">
-                        <span>{{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }}
-            )</span>
-                    </span>
-    </div>
+    <app-series-stat
+        [stat]="mostITM()"
+        statTitle="Most times ITM"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most % ITM
-        </h4>
-        <span class="smaller" *ngFor="let e of mostPercITM; let i = index;">
-                        <span>{{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value | number:'1.1-1' }}
-            %</strong> ({{ e.played }})</span>
-                    </span>
-    </div>
+    <app-series-stat
+        [stat]="mostPercITM()"
+        statTitle="Most % ITM"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Most Eliminations
-        </h4>
-        <span class="smaller" *ngFor="let e of mostEliminations; let i = index;">
-            <span>
-                {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                {{ e.playerName }}
-            </span>
-            <span>
-                <strong>{{ e.value }}</strong> ({{ e.played }})
-            </span>
-        </span>
-    </div>
+    <app-series-stat
+        [stat]="mostEliminations()"
+        statTitle="Most Eliminations"
+    ></app-series-stat>
 
-    <div class="li-pair">
-        <h4>
-            Spilled & broken
-        </h4>
-
-        <span class="smaller" *ngFor="let e of mostSpilled; let i = index;">
-                        <span>{{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
-                            {{ e.playerName }}</span> <span><strong>{{ e.value }}</strong> ({{ e.played }}
-            )</span>
-                    </span>
-    </div>
+    <app-series-stat
+        [stat]="mostSpilled()"
+        statTitle="Spilled & Broken"
+    ></app-series-stat>
 </div>

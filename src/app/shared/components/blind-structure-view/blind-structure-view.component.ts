@@ -20,9 +20,8 @@ import { FormsModule } from '@angular/forms';
 export class BlindStructureViewComponent {
 
     structure = input.required<BlindLevel[]>();
-    //   @Input({required: true}) structure: BlindLevel[];
-    @Input() locked = false;
-    @Input() estimationVisible = true;
+    locked = input<boolean>(false);
+    estimationVisible = input<boolean>(true);
 
     noOfPlayers = signal(10);
     startStack = signal(10000);

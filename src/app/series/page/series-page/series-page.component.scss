@@ -43,7 +43,7 @@ h1 {
     justify-content: space-around;
     flex-wrap: wrap;
 
-    & > div.li-wide {
+    div.li-wide {
         width: 100%;
         flex: 0 0 100%;
         background: aliceblue;
@@ -69,7 +69,7 @@ h1 {
         }
     }
 
-    & > div.li-pair {
+    div.li-pair {
         width: 24%;
         flex: 0 0 24%;
         margin-bottom: 40px;

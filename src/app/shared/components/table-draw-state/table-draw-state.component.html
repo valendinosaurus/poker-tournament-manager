@@ -2,13 +2,13 @@
     <div class="bullets">
         <div class="bullet completed">1</div>
         <div class="line"
-             [class.completed]="currentState === TABLE_DRAW_STATE.SET_UP || currentState === TABLE_DRAW_STATE.DRAWN"></div>
+             [class.completed]="currentState() === TABLE_DRAW_STATE.SET_UP || currentState() === TABLE_DRAW_STATE.DRAWN"></div>
         <div class="bullet"
-             [class.completed]="currentState === TABLE_DRAW_STATE.SET_UP || currentState === TABLE_DRAW_STATE.DRAWN">
+             [class.completed]="currentState() === TABLE_DRAW_STATE.SET_UP || currentState() === TABLE_DRAW_STATE.DRAWN">
             2
         </div>
-        <div class="line" [class.completed]="currentState === TABLE_DRAW_STATE.DRAWN"></div>
-        <div class="bullet" [class.completed]="currentState === TABLE_DRAW_STATE.DRAWN">
+        <div class="line" [class.completed]="currentState() === TABLE_DRAW_STATE.DRAWN"></div>
+        <div class="bullet" [class.completed]="currentState() === TABLE_DRAW_STATE.DRAWN">
             3
         </div>
     </div>
@@ -18,11 +18,11 @@
             SET UP
         </p>
 
-        <p [class.completed]="currentState === TABLE_DRAW_STATE.SET_UP || currentState === TABLE_DRAW_STATE.DRAWN">
+        <p [class.completed]="currentState() === TABLE_DRAW_STATE.SET_UP || currentState() === TABLE_DRAW_STATE.DRAWN">
             DRAW
         </p>
 
-        <p [class.completed]="currentState === TABLE_DRAW_STATE.DRAWN">
+        <p [class.completed]="currentState() === TABLE_DRAW_STATE.DRAWN">
             MANAGE
         </p>
     </div>

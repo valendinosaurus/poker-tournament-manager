@@ -1,8 +1,8 @@
 <header>
     <mat-toolbar>
         <span class="username">
-            <p *ngIf="user">
-                Hello {{ user.name }}
+            <p *ngIf="user()">
+                Hello {{ user()?.name }}
             </p>
         </span>
 

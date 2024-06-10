@@ -1,6 +1,6 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, ViewChild } from '@angular/core';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { JsonPipe, NgIf } from '@angular/common';
+import { JsonPipe } from '@angular/common';
 import { MathjaxModule } from 'mathjax-angular';
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 
@@ -12,11 +12,11 @@ import { SeriesHeader } from '../../interfaces/series-header.interface';
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [NgIf, UserImageRoundComponent, MathjaxModule, JsonPipe]
+    imports: [UserImageRoundComponent, MathjaxModule, JsonPipe]
 })
 export class SeriesHeaderComponent {
 
-    @Input() seriesHeader: SeriesHeader | null;
+    seriesHeader = input.required<SeriesHeader>();
 
     @ViewChild('mathParagraph') paragraphElement: ElementRef;
 

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class AppHeaderComponent implements OnInit {
 
-    @Input() user: User | null | undefined;
+    user = input.required<User | null | undefined>();
 
     isAuthenticated$: Observable<boolean>;
 

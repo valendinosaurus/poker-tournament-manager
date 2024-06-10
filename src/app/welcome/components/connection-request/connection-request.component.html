@@ -1,6 +1,6 @@
 <div class="connection-request">
     <div class="status">
-        <ng-container [ngSwitch]="connectionRequest.state">
+        <ng-container [ngSwitch]="connectionRequest().state">
             <ng-container *ngSwitchCase="0">
                 <i class="fa fa-hourglass-half"></i>
             </ng-container>
@@ -15,42 +15,42 @@
         </ng-container>
     </div>
 
-    <p *ngIf="connectionRequest.state === 0;">
-        <strong>{{ connectionRequest.requestEmail === myEmail ? 'You' : connectionRequest.requestEmail}}</strong>
+    <p *ngIf="connectionRequest().state === 0;">
+        <strong>{{ connectionRequest().requestEmail === myEmail() ? 'You' : connectionRequest().requestEmail }}</strong>
         requested a connection to
-        <strong>{{ connectionRequest.ownerEmail === myEmail ? 'you' : connectionRequest.ownerEmail }}</strong> for
+        <strong>{{ connectionRequest().ownerEmail === myEmail() ? 'you' : connectionRequest().ownerEmail }}</strong> for
         player
-        <strong>{{ connectionRequest.externalName }}</strong>
+        <strong>{{ connectionRequest().externalName }}</strong>
     </p>
 
-    <p *ngIf="connectionRequest.state === 1;">
-        You are now connected to the player <strong>{{ connectionRequest.externalName }}</strong> of
-        <strong>{{ connectionRequest.ownerEmail }}</strong> as
+    <p *ngIf="connectionRequest().state === 1;">
+        You are now connected to the player <strong>{{ connectionRequest().externalName }}</strong> of
+        <strong>{{ connectionRequest().ownerEmail }}</strong> as
 
     </p>
 
-    <p *ngIf="connectionRequest.state === 2;">
-        <strong>{{ connectionRequest.ownerEmail}}</strong> declined your request for connection to the player
-        <strong>{{ connectionRequest.externalName }}</strong>
+    <p *ngIf="connectionRequest().state === 2;">
+        <strong>{{ connectionRequest().ownerEmail }}</strong> declined your request for connection to the player
+        <strong>{{ connectionRequest().externalName }}</strong>
     </p>
 
     <div class="actions">
         <div
-            *ngIf="myEmail === connectionRequest.requestEmail"
+            *ngIf="myEmail() === connectionRequest().requestEmail"
             class="action-wrapper hoverable"
             (click)="deleteRequest()"
         >
             <i class="fa fa-trash"></i>
         </div>
         <div
-            *ngIf="myEmail === connectionRequest.ownerEmail && connectionRequest.state === 0"
+            *ngIf="myEmail() === connectionRequest().ownerEmail && connectionRequest().state === 0"
             class="action-wrapper hoverable"
             (click)="acceptRequest()"
         >
             <i class="fa fa-check"></i>
         </div>
         <div
-            *ngIf="myEmail === connectionRequest.ownerEmail && connectionRequest.state === 0"
+            *ngIf="myEmail() === connectionRequest().ownerEmail && connectionRequest().state === 0"
             class="action-wrapper hoverable"
             (click)="declineRequest()"
         >

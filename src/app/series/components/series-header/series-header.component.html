@@ -1,76 +1,74 @@
-<ng-container *ngIf="seriesHeader">
-    <div class="flex justify-center">
+<div class="flex justify-center">
         <span class="desktop-only">
             <app-user-image-round
-                [imageUrl]="seriesHeader.logo"
+                [imageUrl]="seriesHeader().logo"
                 [size]="200"
                 border="b-black"
             ></app-user-image-round>
         </span>
-        <span class="mobile-only">
+    <span class="mobile-only">
             <app-user-image-round
-                [imageUrl]="seriesHeader.logo"
+                [imageUrl]="seriesHeader().logo"
                 [size]="100"
                 border="b-black"
             ></app-user-image-round>
         </span>
-    </div>
+</div>
 
-    <h1>
-        {{ seriesHeader.name }}
-    </h1>
+<h1>
+    {{ seriesHeader().name }}
+</h1>
 
-    <hr>
+<hr>
 
-    <div class="series-content">
-        <div class="series-content-block">
-            <div class="li-pair">
+<div class="series-content">
+    <div class="series-content-block">
+        <div class="li-pair">
                 <span>
-                    {{ seriesHeader.tournamentsPlayed }} / {{ seriesHeader.totalTournaments }}
+                    {{ seriesHeader().tournamentsPlayed }} / {{ seriesHeader().totalTournaments }}
                 </span>
-                <h4>
-                    Tournaments played
-                </h4>
-            </div>
-
-            <div class="li-pair">
-                <span>
-                    {{ seriesHeader.percentageToFinalPot }}%
-                </span>
-                <h4>
-                    % to final pot
-                </h4>
-            </div>
-
-            <div class="li-pair">
-                <span>
-                    ${{ seriesHeader.maxAmountPerTournament }}
-                </span>
-                <h4>
-                    Max. to final pot
-                </h4>
-            </div>
-
-            <div class="li-pair">
-                <span>
-                    ${{ seriesHeader.guaranteed }}
-                </span>
-                <h4>
-                    Guaranteed
-                </h4>
-            </div>
+            <h4>
+                Tournaments played
+            </h4>
         </div>
 
-        <div class="series-content-block" *ngIf="seriesHeader.formulaMathContent.latex">
+        <div class="li-pair">
+                <span>
+                    {{ seriesHeader().percentageToFinalPot }}%
+                </span>
+            <h4>
+                % to final pot
+            </h4>
+        </div>
+
+        <div class="li-pair">
+                <span>
+                    ${{ seriesHeader().maxAmountPerTournament }}
+                </span>
+            <h4>
+                Max. to final pot
+            </h4>
+        </div>
+
+        <div class="li-pair">
+                <span>
+                    ${{ seriesHeader().guaranteed }}
+                </span>
+            <h4>
+                Guaranteed
+            </h4>
+        </div>
+    </div>
+
+    @if (seriesHeader().formulaMathContent.latex) {
+        <div class="series-content-block">
             <div class="li-wide">
                 <h4>
                     Formula
                 </h4>
-                <!--                <span class="formula" [appMath]="seriesHeader.formulaMathContent"></span>-->
-                <!--                <span class="formula" [mathjax]="seriesHeader.formulaMathContent.latex"></span>-->
-                <img [src]="seriesHeader.formulaImageUrl"/>
+                <img [src]="seriesHeader().formulaImageUrl"/>
             </div>
         </div>
+    }
 
-    </div>
-</ng-container>
+</div>
