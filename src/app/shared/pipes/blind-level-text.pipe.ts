@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { BlindLevel } from '../models/blind-level.interface';
+import { BlindLevel } from '../interfaces/blind-level.interface';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Pipe({

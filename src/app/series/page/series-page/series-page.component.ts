@@ -2,10 +2,10 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
 import { combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
-import { SeriesMetadata, SeriesS } from '../../../shared/models/series.interface';
+import { SeriesMetadata, SeriesS } from '../../../shared/interfaces/series.interface';
 import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { SeriesTournament } from '../../models/combined-ranking.interface';
-import { LeaderboardRow } from '../../models/overall-ranking.interface';
+import { SeriesTournament } from '../../interfaces/combined-ranking.interface';
+import { LeaderboardRow } from '../../interfaces/overall-ranking.interface';
 import { SeriesService } from '../../../core/services/series.service';
 import { RankingService } from '../../../core/services/util/ranking.service';
 import { User } from '@auth0/auth0-angular';
@@ -24,8 +24,8 @@ import {
 } from '../../../welcome/components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
 import { NullsafePrimitivePipe } from '../../../core/pipes/nullsafe-primitive.pipe';
-import { SeriesHeader } from '../../models/series-header.interface';
-import { SeriesStats } from '../../models/series-stats.interface';
+import { SeriesHeader } from '../../interfaces/series-header.interface';
+import { SeriesStats } from '../../interfaces/series-stats.interface';
 
 @Component({
     selector: 'app-series-page',

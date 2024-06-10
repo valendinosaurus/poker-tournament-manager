@@ -7,10 +7,10 @@ import {
     DeleteRebuyAddonEvent,
     RebuyEvent,
     SeatOpenEvent
-} from '../../../shared/models/util/seat-open-event.interface';
+} from '../../../shared/interfaces/util/seat-open-event.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
 import { TEventType } from '../../../shared/enums/t-event-type.enum';
-import { Finish } from '../../../shared/models/finish.interface';
+import { Finish } from '../../../shared/interfaces/finish.interface';
 import { RankingService } from './ranking.service';
 import { LocalStorageService } from './local-storage.service';
 

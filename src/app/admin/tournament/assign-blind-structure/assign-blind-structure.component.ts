@@ -2,8 +2,8 @@ import { Component, computed, inject, signal, Signal, WritableSignal } from '@an
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
-import { BlindStructure } from '../../../shared/models/blind-structure.interface';
-import { Tournament } from '../../../shared/models/tournament.interface';
+import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
+import { Tournament } from '../../../shared/interfaces/tournament.interface';
 import { Observable } from 'rxjs';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
 import { map, shareReplay, take, tap } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
-import { BlindLevel } from '../../../shared/models/blind-level.interface';
+import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
 
 @Component({
     selector: 'app-assign-blind-structure',

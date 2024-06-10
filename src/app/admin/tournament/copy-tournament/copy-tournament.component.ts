@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Tournament } from '../../../shared/models/tournament.interface';
+import { Tournament } from '../../../shared/interfaces/tournament.interface';
 import { JsonPipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';

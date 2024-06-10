@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { BlindLevel, BlindLevelModel } from '../../../shared/models/blind-level.interface';
+import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { switchMap } from 'rxjs/operators';
 import { ServerResponseType } from '../../../shared/types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';

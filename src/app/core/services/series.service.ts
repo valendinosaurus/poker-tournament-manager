@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
-import { Player, PlayerInSeries } from '../../shared/models/player.interface';
-import { LeaderboardRow } from '../../series/models/overall-ranking.interface';
-import { SeriesTournament } from '../../series/models/combined-ranking.interface';
-import { SeriesTournamentRow } from '../../series/models/combined-finish.interface';
-import { Tournament, TournamentS } from '../../shared/models/tournament.interface';
+import { Player, PlayerInSeries } from '../../shared/interfaces/player.interface';
+import { LeaderboardRow } from '../../series/interfaces/overall-ranking.interface';
+import { SeriesTournament } from '../../series/interfaces/combined-ranking.interface';
+import { SeriesTournamentRow } from '../../series/interfaces/combined-finish.interface';
+import { Tournament, TournamentS } from '../../shared/interfaces/tournament.interface';
 import { Formula, RankingService } from './util/ranking.service';
-import { Finish } from '../../shared/models/finish.interface';
-import { Entry } from '../../shared/models/entry.interface';
+import { Finish } from '../../shared/interfaces/finish.interface';
+import { Entry } from '../../shared/interfaces/entry.interface';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { SeriesMetadata, SeriesS } from '../../shared/models/series.interface';
-import { SimpleStat } from '../../shared/models/simple-stat.interface';
+import { SeriesMetadata, SeriesS } from '../../shared/interfaces/series.interface';
+import { SimpleStat } from '../../shared/interfaces/simple-stat.interface';
 import { mostSpilled } from '../const/app.const';
-import { Elimination } from '../../shared/models/elimination.interface';
-import { SeriesStats } from '../../series/models/series-stats.interface';
+import { Elimination } from '../../shared/interfaces/elimination.interface';
+import { SeriesStats } from '../../series/interfaces/series-stats.interface';
 
 @Injectable({
     providedIn: 'root'

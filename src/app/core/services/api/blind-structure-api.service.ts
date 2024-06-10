@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BlindStructure, BlindStructureModel } from '../../../shared/models/blind-structure.interface';
+import { BlindStructure, BlindStructureModel } from '../../../shared/interfaces/blind-structure.interface';
 import { BACKEND_URL } from '../../../app.const';
 import { ServerResponseType } from '../../../shared/types/server-response.type';
 import { switchMap } from 'rxjs/operators';

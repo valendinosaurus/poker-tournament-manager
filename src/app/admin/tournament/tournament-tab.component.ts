@@ -9,7 +9,7 @@ import { CreateTournamentComponent } from './create-tournament/create-tournament
 import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
 import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { AdminTournament } from '../../shared/models/tournament.interface';
+import { AdminTournament } from '../../shared/interfaces/tournament.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 

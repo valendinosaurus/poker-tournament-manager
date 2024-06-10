@@ -3,7 +3,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
 import { LocationApiService } from '../../../core/services/api/location-api.service';
-import { Location, LocationModel } from '../../../shared/models/location.interface';
+import { Location, LocationModel } from '../../../shared/interfaces/location.interface';
 import { take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';

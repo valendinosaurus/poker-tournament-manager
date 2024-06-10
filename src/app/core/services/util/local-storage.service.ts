@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AdaptedPayout } from '../../../shared/models/util/adapted-payout.interface';
-import { TableDraw } from '../../../shared/models/table-draw.interface';
+import { AdaptedPayout } from '../../../shared/interfaces/util/adapted-payout.interface';
+import { TableDraw } from '../../../shared/interfaces/table-draw.interface';
 
 export interface LocalSettings {
     autoSlide: boolean;

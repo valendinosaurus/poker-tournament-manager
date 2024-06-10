@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Player } from '../../../../shared/models/player.interface';
+import { Player } from '../../../../shared/interfaces/player.interface';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { filter, switchMap, take, tap } from 'rxjs/operators';

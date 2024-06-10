@@ -11,7 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
-import { Tournament, TournamentModel } from '../../../shared/models/tournament.interface';
+import { Tournament, TournamentModel } from '../../../shared/interfaces/tournament.interface';
 import { TriggerService } from '../../../core/services/util/trigger.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 

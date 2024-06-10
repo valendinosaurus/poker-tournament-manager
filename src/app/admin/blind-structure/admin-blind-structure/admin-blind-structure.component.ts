@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { BlindStructure } from '../../../shared/models/blind-structure.interface';
+import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
 import { User } from '@auth0/auth0-angular';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { AuthUtilService } from '../../../core/services/auth-util.service';

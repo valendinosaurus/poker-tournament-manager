@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { BlindLevel } from '../../shared/models/blind-level.interface';
+import { BlindLevel } from '../../shared/interfaces/blind-level.interface';
 import { AuthUtilService } from '../../core/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BlindLevelApiService } from '../../core/services/api/blind-level-api.service';
@@ -14,7 +14,7 @@ import { UserImageRoundComponent } from '../../shared/components/user-image-roun
 import { RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { CreatePauseComponent } from './create-pause/create-pause.component';
-import { BlindLevelTableSortConfig } from '../../shared/models/util/table-sort-config.interface';
+import { BlindLevelTableSortConfig } from '../../shared/interfaces/util/table-sort-config.interface';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
 

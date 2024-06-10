@@ -1,4 +1,4 @@
-import { MathContent } from '../../shared/models/math-content.interface';
+import { MathContent } from '../../shared/interfaces/math-content.interface';
 
 export interface SeriesHeader {
     logo: string;

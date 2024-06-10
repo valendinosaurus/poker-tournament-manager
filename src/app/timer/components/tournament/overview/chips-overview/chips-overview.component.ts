@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, Signal } from '@angular/core';
-import { Entry } from '../../../../../shared/models/entry.interface';
+import { Entry } from '../../../../../shared/interfaces/entry.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { DecimalPipe } from '@angular/common';
 import { TimerStateService } from '../../../../services/timer-state.service';

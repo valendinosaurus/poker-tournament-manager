@@ -1,10 +1,10 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { LeaderboardRow } from '../../../series/models/overall-ranking.interface';
-import { Series, SeriesS } from '../../models/series.interface';
+import { LeaderboardRow } from '../../../series/interfaces/overall-ranking.interface';
+import { Series, SeriesS } from '../../interfaces/series.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { CreatePlayerComponent } from '../../../dialogs/create-player/create-player.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
-import { Player } from '../../models/player.interface';
+import { Player } from '../../interfaces/player.interface';
 import { UserImageRoundComponent } from '../user-image-round/user-image-round.component';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 

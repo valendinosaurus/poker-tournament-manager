@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Entry } from '../../../shared/models/entry.interface';
-import { Tournament } from '../../../shared/models/tournament.interface';
+import { Entry } from '../../../shared/interfaces/entry.interface';
+import { Tournament } from '../../../shared/interfaces/tournament.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
 import { TimerStateService } from '../../../timer/services/timer-state.service';
 

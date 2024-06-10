@@ -9,7 +9,7 @@ import { AuthService } from '@auth0/auth0-angular';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { shareReplay, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BlindLevel } from '../../shared/models/blind-level.interface';
+import { BlindLevel } from '../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { BlindStructureApiService } from '../../core/services/api/blind-structure-api.service';

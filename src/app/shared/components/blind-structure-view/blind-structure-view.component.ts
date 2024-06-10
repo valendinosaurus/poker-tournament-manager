@@ -1,5 +1,5 @@
 import { Component, computed, EventEmitter, input, Input, Output, signal } from '@angular/core';
-import { BlindLevel } from '../../models/blind-level.interface';
+import { BlindLevel } from '../../interfaces/blind-level.interface';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { TimePipe } from '../../pipes/time.pipe';
 import { FormsModule } from '@angular/forms';

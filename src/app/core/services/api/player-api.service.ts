@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Player, PlayerModel } from '../../../shared/models/player.interface';
+import { Player, PlayerModel } from '../../../shared/interfaces/player.interface';
 import { BACKEND_URL } from '../../../app.const';
 import { switchMap } from 'rxjs/operators';
-import { ServerResponse } from '../../../shared/models/server-response';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
 import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({

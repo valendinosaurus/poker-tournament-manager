@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { SimpleStat } from '../../../shared/models/simple-stat.interface';
+import { SimpleStat } from '../../../shared/interfaces/simple-stat.interface';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { NgFor, DecimalPipe } from '@angular/common';
 

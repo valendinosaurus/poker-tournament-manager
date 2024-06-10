@@ -1,10 +1,10 @@
 import { Component, inject, OnInit, WritableSignal } from '@angular/core';
-import { LeaderboardRow } from '../../../../../series/models/overall-ranking.interface';
-import { SeriesMetadata, SeriesS } from '../../../../../shared/models/series.interface';
+import { LeaderboardRow } from '../../../../../series/interfaces/overall-ranking.interface';
+import { SeriesMetadata, SeriesS } from '../../../../../shared/interfaces/series.interface';
 import { SeriesService } from '../../../../../core/services/series.service';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { SeriesTournament } from '../../../../../series/models/combined-ranking.interface';
+import { SeriesTournament } from '../../../../../series/interfaces/combined-ranking.interface';
 import { SeriesApiService } from '../../../../../core/services/api/series-api.service';
 import { FetchService } from '../../../../../core/services/fetch.service';
 import { AsyncPipe, NgIf } from '@angular/common';

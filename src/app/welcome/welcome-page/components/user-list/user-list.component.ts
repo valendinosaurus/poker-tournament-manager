@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { UserImageRoundComponent } from '../../../../shared/components/user-image-round/user-image-round.component';
-import { Player } from '../../../../shared/models/player.interface';
+import { Player } from '../../../../shared/interfaces/player.interface';
 
 @Component({
   selector: 'app-user-list',

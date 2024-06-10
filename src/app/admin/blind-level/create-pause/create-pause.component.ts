@@ -5,7 +5,7 @@ import { FormlyFieldService } from '../../../core/services/util/formly-field.ser
 import { BlindLevelApiService } from '../../../core/services/api/blind-level-api.service';
 import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../core/services/util/trigger.service';
-import { BlindLevel, BlindLevelModel } from '../../../shared/models/blind-level.interface';
+import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';

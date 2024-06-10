@@ -10,7 +10,7 @@ import {
     Signal,
     WritableSignal
 } from '@angular/core';
-import { Tournament } from '../../../../../shared/models/tournament.interface';
+import { Tournament } from '../../../../../shared/interfaces/tournament.interface';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -25,7 +25,7 @@ import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/tabl
 import { AsyncPipe, DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { SeriesMetadata } from '../../../../../shared/models/series.interface';
+import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../core/const/app.const';
 import {
     AnimationBubbleBoyComponent

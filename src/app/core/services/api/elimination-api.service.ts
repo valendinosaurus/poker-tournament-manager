@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Elimination } from '../../../shared/models/elimination.interface';
-import { ServerResponse } from '../../../shared/models/server-response';
+import { Elimination } from '../../../shared/interfaces/elimination.interface';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
 
 @Injectable({
     providedIn: 'root'

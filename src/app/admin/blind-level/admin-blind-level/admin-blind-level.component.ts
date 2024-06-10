@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { User } from '@auth0/auth0-angular';
-import { BlindLevel } from '../../../shared/models/blind-level.interface';
+import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';

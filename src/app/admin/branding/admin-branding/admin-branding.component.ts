@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { Branding } from '../../../shared/models/branding.interface';
+import { Branding } from '../../../shared/interfaces/branding.interface';
 import { User } from '@auth0/auth0-angular';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { BrandingApiService } from '../../../core/services/api/branding-api.service';

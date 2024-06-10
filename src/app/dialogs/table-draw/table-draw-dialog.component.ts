@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, WritableSignal } from '@angular/core';
-import { TableDraw } from '../../shared/models/table-draw.interface';
-import { Player } from '../../shared/models/player.interface';
+import { TableDraw } from '../../shared/interfaces/table-draw.interface';
+import { Player } from '../../shared/interfaces/player.interface';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TableDrawService } from '../../core/services/table-draw.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';

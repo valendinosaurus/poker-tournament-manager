@@ -2,9 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Location, LocationModel } from '../../../shared/models/location.interface';
+import { Location, LocationModel } from '../../../shared/interfaces/location.interface';
 import { switchMap } from 'rxjs/operators';
-import { ServerResponse } from '../../../shared/models/server-response';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
 import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({

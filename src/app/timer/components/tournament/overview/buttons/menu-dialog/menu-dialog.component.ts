@@ -14,7 +14,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { TournamentSettings } from '../../../../../../shared/models/tournament-settings.interface';
+import { TournamentSettings } from '../../../../../../shared/interfaces/tournament-settings.interface';
 import { Observable } from 'rxjs';
 import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal.component';
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
@@ -36,8 +36,8 @@ import { CreatePlayerComponent } from '../../../../../../dialogs/create-player/c
 import { AuthUtilService } from '../../../../../../core/services/auth-util.service';
 import { TournamentService } from '../../../../../../core/services/util/tournament.service';
 import { TimerStateService } from '../../../../../services/timer-state.service';
-import { Tournament } from '../../../../../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../../../../../shared/models/series.interface';
+import { Tournament } from '../../../../../../shared/interfaces/tournament.interface';
+import { SeriesMetadata } from '../../../../../../shared/interfaces/series.interface';
 
 @Component({
     selector: 'app-menu-dialog',

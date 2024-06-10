@@ -5,7 +5,7 @@ import {
 } from '../../shared/components/page-with-slide-menu/page-with-slide-menu.component';
 import { MatButtonModule } from '@angular/material/button';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { AdminSeries } from '../../shared/models/admin-series.interface';
+import { AdminSeries } from '../../shared/interfaces/admin-series.interface';
 import { SeriesApiService } from '../../core/services/api/series-api.service';
 import { AuthUtilService } from '../../core/services/auth-util.service';
 import { Router, RouterLink } from '@angular/router';

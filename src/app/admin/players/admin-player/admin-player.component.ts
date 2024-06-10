@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Player } from '../../../shared/models/player.interface';
+import { Player } from '../../../shared/interfaces/player.interface';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';

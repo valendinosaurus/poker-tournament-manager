@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CreateLocationComponent } from './create-location/create-location.component';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { Location } from '../../shared/models/location.interface';
+import { Location } from '../../shared/interfaces/location.interface';
 import { LocationApiService } from '../../core/services/api/location-api.service';
 import { AuthUtilService } from '../../core/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';

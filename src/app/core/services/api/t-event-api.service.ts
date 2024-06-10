@@ -2,10 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { ServerResponse } from '../../../shared/models/server-response';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
 import { TEventType } from '../../../shared/enums/t-event-type.enum';
 import { map } from 'rxjs/operators';
-import { TEvent } from '../../../shared/models/t-event.interface';
+import { TEvent } from '../../../shared/interfaces/t-event.interface';
 
 @Injectable({
     providedIn: 'root'

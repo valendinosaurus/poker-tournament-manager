@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal, Signal } from '@angular/core';
-import { Entry } from '../../../../../shared/models/entry.interface';
-import { Finish } from '../../../../../shared/models/finish.interface';
-import { Player } from '../../../../../shared/models/player.interface';
+import { Entry } from '../../../../../shared/interfaces/entry.interface';
+import { Finish } from '../../../../../shared/interfaces/finish.interface';
+import { Player } from '../../../../../shared/interfaces/player.interface';
 import { RankingService } from '../../../../../core/services/util/ranking.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take, tap } from 'rxjs/operators';
@@ -16,8 +16,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { FetchService } from '../../../../../core/services/fetch.service';
 import { TimerStateService } from '../../../../services/timer-state.service';
-import { Tournament } from '../../../../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../../../../shared/models/series.interface';
+import { Tournament } from '../../../../../shared/interfaces/tournament.interface';
+import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
 
 interface Payout {
     rank: number,

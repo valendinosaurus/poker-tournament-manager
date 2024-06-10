@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { TEventType } from '../enums/t-event-type.enum';
-import { TEvent } from '../models/t-event.interface';
+import { TEvent } from '../interfaces/t-event.interface';
 
 @Pipe({
     name: 'tEventTypeIcon',

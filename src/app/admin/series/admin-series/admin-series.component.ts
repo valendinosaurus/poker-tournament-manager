@@ -13,11 +13,11 @@ import { SeriesApiService } from '../../../core/services/api/series-api.service'
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { AddTournamentComponent } from '../../../dialogs/add-tournament/add-tournament.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Series } from '../../../shared/models/series.interface';
+import { Series } from '../../../shared/interfaces/series.interface';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { CreateSeriesComponent } from '../create-series/create-series.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
-import { Player } from '../../../shared/models/player.interface';
+import { Player } from '../../../shared/interfaces/player.interface';
 import { PlayerApiService } from '../../../core/services/api/player-api.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';

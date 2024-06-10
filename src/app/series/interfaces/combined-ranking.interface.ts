@@ -1,7 +1,7 @@
-import { TournamentS } from '../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../shared/models/series.interface';
+import { TournamentS } from '../../shared/interfaces/tournament.interface';
+import { SeriesMetadata } from '../../shared/interfaces/series.interface';
 import { SeriesTournamentRow } from './combined-finish.interface';
-import { Player } from '../../shared/models/player.interface';
+import { Player } from '../../shared/interfaces/player.interface';
 
 export interface SeriesTournament {
     combFinishes: SeriesTournamentRow[];

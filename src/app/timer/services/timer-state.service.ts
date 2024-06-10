@@ -1,14 +1,14 @@
 import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { Tournament } from '../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../shared/models/series.interface';
+import { Tournament } from '../../shared/interfaces/tournament.interface';
+import { SeriesMetadata } from '../../shared/interfaces/series.interface';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { Player } from '../../shared/models/player.interface';
-import { Entry } from '../../shared/models/entry.interface';
-import { Finish } from '../../shared/models/finish.interface';
-import { Elimination } from '../../shared/models/elimination.interface';
-import { ConductedFinish } from '../../shared/models/util/conducted-finish.interface';
-import { ConductedElimination } from '../../shared/models/util/conducted-elimination.interface';
-import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
+import { Player } from '../../shared/interfaces/player.interface';
+import { Entry } from '../../shared/interfaces/entry.interface';
+import { Finish } from '../../shared/interfaces/finish.interface';
+import { Elimination } from '../../shared/interfaces/elimination.interface';
+import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.interface';
+import { ConductedElimination } from '../../shared/interfaces/util/conducted-elimination.interface';
+import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
 
 @Injectable({

@@ -1,10 +1,10 @@
 import { Component, computed, DestroyRef, inject, input, OnInit, signal, Signal, WritableSignal } from '@angular/core';
-import { SeriesTournament } from '../../models/combined-ranking.interface';
+import { SeriesTournament } from '../../interfaces/combined-ranking.interface';
 import { TEventTypeIconPipe } from '../../../shared/pipes/t-event-type-icon.pipe';
 import { BulletsComponent } from '../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { AsyncPipe, DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
-import { TEvent } from '../../../shared/models/t-event.interface';
+import { TEvent } from '../../../shared/interfaces/t-event.interface';
 import { interval, Observable } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -28,7 +28,7 @@ export class SeriesTournamentComponent implements OnInit {
     password = input.required<string>();
 
     showEliminations: Signal<boolean> = computed(() =>
-        this.tournament()?.combFinishes.filter(f => f.eliminations > 0).length > 0
+        this.tournament()?.combFinishes.filter((f) => f.eliminations > 0).length > 0
     );
 
     liveTicker: WritableSignal<TEvent[]> = signal([]);

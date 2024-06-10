@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { BlindStructure } from '../../../shared/models/blind-structure.interface';
+import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
 import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';

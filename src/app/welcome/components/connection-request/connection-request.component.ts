@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { ConnectionRequest } from '../../../shared/models/util/connection-request.interface';
+import { ConnectionRequest } from '../../../shared/interfaces/util/connection-request.interface';
 import { ConnectionRequestApiService } from '../../../core/services/api/connection-request-api.service';
 import { take, tap } from 'rxjs/operators';
 import { FetchService } from '../../../core/services/fetch.service';

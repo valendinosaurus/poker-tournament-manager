@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
-import { Branding, BrandingModel } from '../../../shared/models/branding.interface';
+import { Branding, BrandingModel } from '../../../shared/interfaces/branding.interface';
 import { BrandingApiService } from '../../../core/services/api/branding-api.service';
 import { take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';

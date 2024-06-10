@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { Location } from '../../../shared/models/location.interface';
+import { Location } from '../../../shared/interfaces/location.interface';
 import { User } from '@auth0/auth0-angular';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { LocationApiService } from '../../../core/services/api/location-api.service';

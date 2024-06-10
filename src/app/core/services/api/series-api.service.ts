@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { switchMap } from 'rxjs/operators';
-import { Series, SeriesMetadata, SeriesModel, SeriesS } from '../../../shared/models/series.interface';
-import { ServerResponse } from '../../../shared/models/server-response';
-import { AdminSeries } from '../../../shared/models/admin-series.interface';
+import { Series, SeriesMetadata, SeriesModel, SeriesS } from '../../../shared/interfaces/series.interface';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { AdminSeries } from '../../../shared/interfaces/admin-series.interface';
 import { AuthUtilService } from '../auth-util.service';
-import { Player } from '../../../shared/models/player.interface';
+import { Player } from '../../../shared/interfaces/player.interface';
 
 @Injectable({
     providedIn: 'root'

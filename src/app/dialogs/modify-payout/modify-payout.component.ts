@@ -4,10 +4,10 @@ import { FormGroup, FormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
-import { AdaptedPayout } from '../../shared/models/util/adapted-payout.interface';
-import { Finish } from '../../shared/models/finish.interface';
+import { AdaptedPayout } from '../../shared/interfaces/util/adapted-payout.interface';
+import { Finish } from '../../shared/interfaces/finish.interface';
 import { NotificationService } from '../../core/services/notification.service';
-import { Player } from '../../shared/models/player.interface';
+import { Player } from '../../shared/interfaces/player.interface';
 import { DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 

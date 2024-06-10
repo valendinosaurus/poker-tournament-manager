@@ -18,7 +18,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthUtilService } from '../core/services/auth-util.service';
 import { take, tap } from 'rxjs/operators';
-import { Player } from '../shared/models/player.interface';
+import { Player } from '../shared/interfaces/player.interface';
 import { PlayerApiService } from '../core/services/api/player-api.service';
 import { TimerStateService } from '../timer/services/timer-state.service';
 

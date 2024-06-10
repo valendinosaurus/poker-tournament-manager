@@ -15,9 +15,9 @@ import {
 } from '@angular/core';
 import { interval } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { BlindLevel } from 'src/app/shared/models/blind-level.interface';
+import { BlindLevel } from 'src/app/shared/interfaces/blind-level.interface';
 import { CountdownComponent, CountdownConfig, CountdownEvent, CountdownStatus } from 'ngx-countdown';
-import { Tournament } from '../../../../shared/models/tournament.interface';
+import { Tournament } from '../../../../shared/interfaces/tournament.interface';
 import KeenSlider, { KeenSliderInstance } from 'keen-slider';
 import { MatDialog } from '@angular/material/dialog';
 import { ChipsOverviewComponent } from './chips-overview/chips-overview.component';
@@ -35,7 +35,7 @@ import { BlindLevelTextPipe } from '../../../../shared/pipes/blind-level-text.pi
 import { TimePipe } from '../../../../shared/pipes/time.pipe';
 import { LeaderboardInfoComponent } from './leaderboard/leaderboard-info.component';
 import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
-import { SeriesMetadata } from '../../../../shared/models/series.interface';
+import { SeriesMetadata } from '../../../../shared/interfaces/series.interface';
 import { DEFAULT_DIALOG_POSITION } from '../../../../core/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { TableDrawService } from '../../../../core/services/table-draw.service';

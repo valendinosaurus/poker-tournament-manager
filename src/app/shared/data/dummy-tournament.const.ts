@@ -1,4 +1,4 @@
-import { Tournament } from '../models/tournament.interface';
+import { Tournament } from '../interfaces/tournament.interface';
 import { blindLevelsNoAnte } from './blind-levels.const';
 
 export const dummyTourney: Tournament = {

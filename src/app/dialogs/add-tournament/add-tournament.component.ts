@@ -8,7 +8,7 @@ import { SeriesApiService } from '../../core/services/api/series-api.service';
 import { take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { Series } from '../../shared/models/series.interface';
+import { Series } from '../../shared/interfaces/series.interface';
 
 @Component({
     selector: 'app-add-tournament',

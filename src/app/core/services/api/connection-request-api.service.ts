@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { ServerResponse } from '../../../shared/models/server-response';
-import { ConnectionRequest } from '../../../shared/models/util/connection-request.interface';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { ConnectionRequest } from '../../../shared/interfaces/util/connection-request.interface';
 import { filter, switchMap } from 'rxjs/operators';
 import { AuthUtilService } from '../auth-util.service';
 

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Tournament } from 'src/app/shared/models/tournament.interface';
+import { Tournament } from 'src/app/shared/interfaces/tournament.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
@@ -10,7 +10,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
-import { Player } from '../../../../shared/models/player.interface';
+import { Player } from '../../../../shared/interfaces/player.interface';
 import { TableDrawService } from '../../../../core/services/table-draw.service';
 import { AuthUtilService } from '../../../../core/services/auth-util.service';
 

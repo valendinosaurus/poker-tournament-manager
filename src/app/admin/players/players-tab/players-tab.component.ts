@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { Player } from '../../../shared/models/player.interface';
+import { Player } from '../../../shared/interfaces/player.interface';
 import { AuthUtilService } from '../../../core/services/auth-util.service';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';

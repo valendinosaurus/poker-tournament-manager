@@ -4,12 +4,12 @@ import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/
 import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
 import { SeriesApiService } from '../../../core/services/api/series-api.service';
 import { BrandingApiService } from '../../../core/services/api/branding-api.service';
-import { Branding } from '../../../shared/models/branding.interface';
+import { Branding } from '../../../shared/interfaces/branding.interface';
 import { take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../core/services/util/trigger.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { Series, SeriesModel } from '../../../shared/models/series.interface';
+import { Series, SeriesModel } from '../../../shared/interfaces/series.interface';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
 

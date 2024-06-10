@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, Signal } from '@angular/core';
-import { Player } from '../../../../../shared/models/player.interface';
+import { Player } from '../../../../../shared/interfaces/player.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';

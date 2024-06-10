@@ -1,4 +1,4 @@
-import { SimpleStat } from '../../shared/models/simple-stat.interface';
+import { SimpleStat } from '../../shared/interfaces/simple-stat.interface';
 
 export const DEFAULT_DIALOG_POSITION = {
     position: {

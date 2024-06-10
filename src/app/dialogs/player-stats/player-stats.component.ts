@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { SeriesS } from '../../shared/models/series.interface';
-import { CombinedEntriesFinishes } from '../../series/models/combined-entries-finishes.interface';
-import { SeriesTournament } from '../../series/models/combined-ranking.interface';
-import { LeaderboardRow } from '../../series/models/overall-ranking.interface';
-import { Player } from '../../shared/models/player.interface';
+import { SeriesS } from '../../shared/interfaces/series.interface';
+import { CombinedEntriesFinishes } from '../../series/interfaces/combined-entries-finishes.interface';
+import { SeriesTournament } from '../../series/interfaces/combined-ranking.interface';
+import { LeaderboardRow } from '../../series/interfaces/overall-ranking.interface';
+import { Player } from '../../shared/interfaces/player.interface';
 
 @Component({
     selector: 'app-player-stats',

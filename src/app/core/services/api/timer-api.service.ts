@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ServerResponse } from '../../../shared/models/server-response';
+import { ServerResponse } from '../../../shared/interfaces/server-response';
 import { HttpClient } from '@angular/common/http';
 import { BACKEND_URL } from '../../../app.const';
 import {
@@ -8,7 +8,7 @@ import {
     DeleteSeatOpenEvent,
     RebuyEvent,
     SeatOpenEvent
-} from '../../../shared/models/util/seat-open-event.interface';
+} from '../../../shared/interfaces/util/seat-open-event.interface';
 
 @Injectable({
     providedIn: 'root'

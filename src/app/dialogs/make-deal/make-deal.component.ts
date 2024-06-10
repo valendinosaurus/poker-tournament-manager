@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, WritableSignal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Tournament } from '../../shared/models/tournament.interface';
-import { SeriesMetadata } from '../../shared/models/series.interface';
-import { Player } from '../../shared/models/player.interface';
+import { Tournament } from '../../shared/interfaces/tournament.interface';
+import { SeriesMetadata } from '../../shared/interfaces/series.interface';
+import { Player } from '../../shared/interfaces/player.interface';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormGroup, FormsModule } from '@angular/forms';
 import { FormlyFieldService } from '../../core/services/util/formly-field.service';
 import { forkJoin, Observable, of } from 'rxjs';
-import { ServerResponse } from '../../shared/models/server-response';
+import { ServerResponse } from '../../shared/interfaces/server-response';
 import { FinishApiService } from '../../core/services/api/finish-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../core/services/fetch.service';

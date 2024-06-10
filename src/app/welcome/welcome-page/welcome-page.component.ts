@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { combineLatest, Observable, timer } from 'rxjs';
 import { User } from '@auth0/auth0-angular';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { ConnectionRequest } from '../../shared/models/util/connection-request.interface';
+import { ConnectionRequest } from '../../shared/interfaces/util/connection-request.interface';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 import {
     ConnectToOtherUserDialogComponent
@@ -11,7 +11,7 @@ import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConnectionRequestApiService } from '../../core/services/api/connection-request-api.service';
 import { FetchService } from '../../core/services/fetch.service';
-import { Player } from '../../shared/models/player.interface';
+import { Player } from '../../shared/interfaces/player.interface';
 import { PlayerApiService } from '../../core/services/api/player-api.service';
 import { ConnectionRequestComponent } from '../components/connection-request/connection-request.component';
 import { MatButtonModule } from '@angular/material/button';

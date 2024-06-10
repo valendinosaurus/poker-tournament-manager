@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { Branding } from '../../shared/models/branding.interface';
+import { Branding } from '../../shared/interfaces/branding.interface';
 import { BrandingApiService } from '../../core/services/api/branding-api.service';
 import { CreateBrandingComponent } from './create-branding/create-branding.component';
 import { AsyncPipe, NgForOf, NgIf } from '@angular/common';

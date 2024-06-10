@@ -1,4 +1,4 @@
-import { BlindLevelModel } from '../models/blind-level.interface';
+import { BlindLevelModel } from '../interfaces/blind-level.interface';
 
 export const blindLevelsNoAnte: (BlindLevelModel)[] = [ // TODO
     {

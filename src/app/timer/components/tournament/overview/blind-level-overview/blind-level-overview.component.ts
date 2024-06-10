@@ -9,7 +9,7 @@ import {
     Signal,
     WritableSignal
 } from '@angular/core';
-import { BlindLevel } from '../../../../../shared/models/blind-level.interface';
+import { BlindLevel } from '../../../../../shared/interfaces/blind-level.interface';
 import { BlindLevelTextPipe } from '../../../../../shared/pipes/blind-level-text.pipe';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
