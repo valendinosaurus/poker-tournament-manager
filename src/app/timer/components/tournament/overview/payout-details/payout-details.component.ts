@@ -99,18 +99,7 @@ export class PayoutDetailsComponent implements OnInit {
             }
         });
 
-        const adaptedPayouts: Signal<number[] | undefined> = computed(
-            () => this.localStorageService.getAdaptedPayoutById(this.tournament().id)
-        );
-
-        if (adaptedPayouts()) {
-            const adaptedSum = adaptedPayouts()?.reduce((p, c) => p + c, 0);
-            this.isAdaptedPayoutSumCorrect.set(this.totalPricePool() === adaptedSum);
-            this.isPayoutAdapted.set(true);
-        } else {
-            this.isAdaptedPayoutSumCorrect.set(true);
-            this.isPayoutAdapted.set(false);
-        }
+        this.determineIsAdapted();
     }
 
     private calculateRegularList(): Payout[] {
@@ -206,8 +195,26 @@ export class PayoutDetailsComponent implements OnInit {
 
         dialogRef.afterClosed().pipe(
             takeUntilDestroyed(this.destroyRef),
-            tap(() => this.fetchService.trigger()),
+            tap(() => {
+                this.fetchService.trigger();
+                this.determineIsAdapted();
+            }),
         ).subscribe();
+    }
+
+    private determineIsAdapted(): void {
+        const adaptedPayouts: Signal<number[] | undefined> = computed(
+            () => this.localStorageService.getAdaptedPayoutById(this.tournament().id)
+        );
+
+        if (adaptedPayouts()) {
+            const adaptedSum = adaptedPayouts()?.reduce((p, c) => p + c, 0);
+            this.isAdaptedPayoutSumCorrect.set(this.totalPricePool() === adaptedSum);
+            this.isPayoutAdapted.set(true);
+        } else {
+            this.isAdaptedPayoutSumCorrect.set(true);
+            this.isPayoutAdapted.set(false);
+        }
     }
 
     removeAdaptedPayouts(): void {
@@ -227,6 +234,7 @@ export class PayoutDetailsComponent implements OnInit {
                 if (result) {
                     this.localStorageService.deleteAdaptedPayout(this.tournament().id);
                     this.fetchService.trigger();
+                    this.determineIsAdapted();
                 }
             })
         ).subscribe();

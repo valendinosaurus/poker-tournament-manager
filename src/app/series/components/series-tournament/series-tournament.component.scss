@@ -61,3 +61,30 @@
 .time {
     margin-right: 12px;
 }
+
+.cd-title-info {
+    width: 430px;
+}
+
+.countdown {
+    width: 400px;
+    position: relative;
+    background: #ddd !important;
+    height: 6px;
+    border-radius: 6px;
+}
+
+.cd-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 6px;
+    border-radius: 6px;
+    background: #006dc7 !important;
+}
+
+.cd-title-info small {
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 8px;
+}

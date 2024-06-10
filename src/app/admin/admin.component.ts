@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '@auth0/auth0-angular';
+import { AuthService, User } from '@auth0/auth0-angular';
 import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { BlindLevelTabComponent } from './blind-level/blind-level-tab.component';
 import { SeriesTabComponent } from './series/series-tab.component';
@@ -61,6 +61,7 @@ export class AdminComponent implements OnInit {
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private state: TimerStateService = inject(TimerStateService);
+    private authService: AuthService = inject(AuthService);
 
     ngOnInit() {
         this.isAuthenticated$ = this.authUtilService.getIsAuthenticated$();
@@ -78,6 +79,12 @@ export class AdminComponent implements OnInit {
 
     toggleSidenav(): void {
         this.isOpen.set(!this.isOpen());
+    }
+
+    login(): void {
+        this.authService.loginWithRedirect({
+            appState: {target: window.location.href.split(window.location.origin).pop()},
+        });
     }
 
 }

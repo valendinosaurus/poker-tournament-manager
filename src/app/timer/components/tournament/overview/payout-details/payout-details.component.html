@@ -44,7 +44,7 @@
     </h2>
 </div>
 
-<div class="stats-container border-bottom-2 w-100">
+<div class="stats-container w-100">
     <h4>
         <span *ngIf="!isAdaptedPayoutSumCorrect()">
             <i class="fa fa-exclamation-triangle mr-1"></i>
@@ -75,7 +75,7 @@
             <button
                 mat-flat-button
                 class="ml-0-5 round"
-                matTooltip="Remove"
+                matTooltip="Remove custom payouts"
                 matTooltipPosition="above"
                 [matTooltipHideDelay]="600000"
                 (click)="removeAdaptedPayouts()"

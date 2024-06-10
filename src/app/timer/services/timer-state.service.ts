@@ -10,7 +10,6 @@ import { ConductedFinish } from '../../shared/models/util/conducted-finish.inter
 import { ConductedElimination } from '../../shared/models/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/models/util/conducted-entry.interface';
 import { LocalStorageService } from '../../core/services/util/local-storage.service';
-import { TableDraw } from '../../shared/models/table-draw.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -22,6 +21,8 @@ export class TimerStateService {
     tournament: WritableSignal<Tournament> = signal({} as Tournament);
     metadata: WritableSignal<SeriesMetadata | undefined> = signal(undefined);
     clientId: WritableSignal<number> = signal(-1);
+
+    isProOrAdmin: WritableSignal<boolean> = signal(false);
 
     autoSlide: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().autoSlide ?? true);
     showCondensedBlinds: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().showCondensedBlinds ?? true);
@@ -44,12 +45,12 @@ export class TimerStateService {
     currentLevelIndex: WritableSignal<number> = signal(0);
     isTournamentLocked = computed(() => Boolean(this.tournament().locked));
 
-    isSimpleTournament: Signal<boolean> = computed(() =>
-        this.tournament().players.length === 0
-        && !this.tournament().withRebuy
-        && !this.tournament().withAddon
-        && !this.tournament().withReEntry
-    );
+    // isSimpleTournament: Signal<boolean> = computed(() =>
+    //     this.tournament().players.length === 0
+    //     && !this.tournament().withRebuy
+    //     && !this.tournament().withAddon
+    //     && !this.tournament().withReEntry
+    // );
 
     isRebuyPhaseFinished: Signal<boolean> = computed(() =>
         (
@@ -147,19 +148,8 @@ export class TimerStateService {
     conductedEntries: Signal<ConductedEntry[]> = computed(() =>
         this.entries().filter(
             (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
-        ).map(
-            (entry: Entry) => ({
-                entryId: entry.id ?? -1,
-                time: entry.timestamp,
-                playerId: (this.players().filter(p => p.id === entry.playerId)[0]?.id) ?? -1,
-                name: (this.players().filter(p => p.id === entry.playerId)[0]?.name) ?? '',
-                image: (this.players().filter(p => p.id === entry.playerId)[0]?.image) ?? '',
-                isFinished: this.finishes().map(f => f.playerId).includes(entry.playerId),
-                type: entry.type,
-                isBlocked: this.entries().filter(e => e.type === EntryType.ADDON
-                    || e.type === EntryType.REBUY).map(e => e.playerId).includes(entry.playerId)
-            })
-        )
+        ).map((entry: Entry) => this.mapToConductedEntry(entry))
+            .sort((a, b) => b.time - a.time)
     );
 
     eligibleForSeatOpen: Signal<Player[]> = computed(() =>
@@ -219,17 +209,9 @@ export class TimerStateService {
         this.entries().filter(
             (entry: Entry) => entry.type === EntryType.REBUY
             // TODO extract duplicate
-        ).map(
-            (entry: Entry) => ({
-                entryId: entry.id ?? -1,
-                time: entry.timestamp,
-                playerId: (this.players().filter(p => p.id === entry.playerId)[0].id) ?? -1,
-                name: (this.players().filter(p => p.id === entry.playerId)[0].name) ?? '',
-                image: (this.players().filter(p => p.id === entry.playerId)[0].image) ?? '',
-                isFinished: this.finishes().map(f => f.playerId).includes(entry.playerId),
-                type: entry.type
-            })
         )
+            .map((entry: Entry) => this.mapToConductedEntry(entry))
+            .sort((a, b) => b.time - a.time)
     );
 
     eligibleForAddon: Signal<Player[]> = computed(() =>
@@ -257,17 +239,9 @@ export class TimerStateService {
         this.entries().filter(
             (entry: Entry) => entry.type === EntryType.ADDON
             // TODO extract duplicate
-        ).map(
-            (entry: Entry) => ({
-                entryId: entry.id ?? -1,
-                time: entry.timestamp,
-                playerId: (this.players().filter(p => p.id === entry.playerId)[0].id) ?? -1,
-                name: (this.players().filter(p => p.id === entry.playerId)[0].name) ?? '',
-                image: (this.players().filter(p => p.id === entry.playerId)[0].image) ?? '',
-                isFinished: this.finishes().map(f => f.playerId).includes(entry.playerId),
-                type: entry.type
-            })
         )
+            .map((entry: Entry) => this.mapToConductedEntry(entry))
+            .sort((a, b) => b.time - a.time)
     );
 
     conductedEliminations: Signal<ConductedElimination[]> = computed(() =>
@@ -285,6 +259,7 @@ export class TimerStateService {
                     eId: elimination.eId
                 })
             )
+            .sort((a, b) => b.time - a.time)
     );
 
     startTimer(): void {
@@ -304,9 +279,19 @@ export class TimerStateService {
         }
     }
 
-    // TABLE DRAW
-    tableDraw: Signal<TableDraw | undefined> = computed(() =>
-        undefined
-    );
+    private mapToConductedEntry(entry: Entry): ConductedEntry {
+        return {
+            entryId: entry.id ?? -1,
+            time: entry.timestamp,
+            playerId: (this.players().filter(p => p.id === entry.playerId)[0].id) ?? -1,
+            name: (this.players().filter(p => p.id === entry.playerId)[0].name) ?? '',
+            image: (this.players().filter(p => p.id === entry.playerId)[0].image) ?? '',
+            isFinished: this.finishes().map(f => f.playerId).includes(entry.playerId),
+            type: entry.type,
+            isBlocked: this.entries().filter(e => e.type === EntryType.ADDON
+                || e.type === EntryType.REBUY).map(e => e.playerId).includes(entry.playerId)
+
+        };
+    }
 
 }

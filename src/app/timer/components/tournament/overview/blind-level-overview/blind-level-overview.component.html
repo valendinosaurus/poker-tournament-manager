@@ -1,23 +1,10 @@
 <div
     id="allLevels"
     class="inner-container"
-    #allLevels
+    [class.fill]="fill()"
 >
     <h3>
         Blind Levels
-
-        <button
-            *ngIf="!isSimpleTournament()"
-            mat-flat-button
-            class="ml-0-5 round"
-            matTooltip="Add Blind Level"
-            (click)="addBlind.emit()"
-        >
-            <i
-                class="fa fa-plus-circle small"
-            ></i>
-        </button>
-
     </h3>
 
     <div class="overflow-y-auto background-panel">
@@ -82,12 +69,13 @@
                                             (ENDS REBUY)
                                         </ng-container>
                                     </div>
-
-                                    <div class="talign-center opac8">
-                                        {{ level.duration }} min
-                                    </div>
                                 </ng-template>
                             </div>
+                        </td>
+                        <td>
+                            <span class="l-duration">
+                                {{ level.duration }} min
+                            </span>
                         </td>
                     </tr>
                 </ng-container>

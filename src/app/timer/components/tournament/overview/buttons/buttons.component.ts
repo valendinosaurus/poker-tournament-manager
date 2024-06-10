@@ -60,7 +60,7 @@ export class ButtonsComponent implements OnInit {
 
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
-    isSimpleTournament: Signal<boolean>;
+    isProOrAdmin: Signal<boolean>;
     started: WritableSignal<Date | undefined>;
     isTournamentFinished: Signal<boolean>;
     isRebuyPhaseFinished: Signal<boolean>;
@@ -115,7 +115,7 @@ export class ButtonsComponent implements OnInit {
         this.metadata = this.state.metadata;
         this.started = this.state.started;
         this.isTournamentFinished = this.state.isTournamentFinished;
-        this.isSimpleTournament = this.state.isSimpleTournament;
+        this.isProOrAdmin = this.state.isProOrAdmin;
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
         this.isRunning = this.state.isRunning;
         this.isTournamentLocked = this.state.isTournamentLocked;

@@ -69,7 +69,7 @@
             <ng-container *ngFor="let e of conductedFinishes(); let i = index">
                 <tr>
                     <td class="small-gray w-120px">
-                        {{ e.time | date:'d.M.yy, hh:mm:ss' }}
+                        {{ e.time | date:'d.M.yy, HH:mm:ss' }}
                     </td>
                     <td class="w-5">
                         <span class="rank">
@@ -116,7 +116,7 @@
             <ng-container *ngFor="let e of conductedEliminations(); let i = index">
                 <tr>
                     <td class="small-gray w-120px">
-                        {{ e.time | date:'d.M.yy, hh:mm:ss' }}
+                        {{ e.time | date:'d.M.yy, HH:mm:ss' }}
                     </td>
                     <td>
                         <span class="flex-td">
@@ -126,7 +126,7 @@
                             <span>{{ e.eliminatorName }}</span>
                         </span>
                     </td>
-                    <td>
+                    <td class="small-gray">
                         eliminated
                     </td>
                     <td>

@@ -322,7 +322,7 @@ th, td {
     }
 }
 
-.live-ticker * {
+.live-ticker *:not(.countdown,.cd-content) {
     background: white !important;
 }
 

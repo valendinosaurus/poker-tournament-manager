@@ -21,7 +21,7 @@
         </span>
 
         <span *ngIf="isTournamentFinished()">
-            <i class="fa fa-check"></i> Tournament is finished
+            <i class="fa fa-flag-checkered "></i> Tournament is finished
         </span>
 
         <span *ngIf="canStartTournament() && !started() && !isTournamentFinished()">
@@ -38,71 +38,83 @@
         [disabled]="isTournamentFinished()"
         (click)="toggleRunning()"
     >
-        <i *ngIf="!isRunning()" class="fa fa-play"></i>
-        <i *ngIf="isRunning()" class="fa fa-pause"></i>
+        @if (isRunning()) {
+            <i class="fa fa-pause"></i>
+        } @else {
+            <i class="fa fa-play"></i>
+        }
     </button>
 
-    <button
-        *ngIf="!isSimpleTournament()"
-        mat-flat-button
-        matTooltip="Seat Open"
-        class="main"
-        [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked()"
-        (click)="seatOpen()"
-    >
-        <i class="fa fa-skull"></i>
-    </button>
 
-    <button
-        *ngIf="tournament().withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        mat-flat-button
-        matTooltip="Rebuy"
-        class="main"
-        [disabled]="isTournamentLocked() || isTournamentFinished()"
-        (click)="addRebuy()"
-    >
-        <i class="fa fa-refresh"></i>
-    </button>
+    @if (isProOrAdmin()) {
+        <button
+            mat-flat-button
+            matTooltip="Seat Open"
+            class="main"
+            [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked()"
+            (click)="seatOpen()"
+        >
+            <i class="fa fa-skull"></i>
+        </button>
+    }
 
-    <button
-        *ngIf="tournament().withRebuy && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        mat-flat-button
-        matTooltip="Addon"
-        class="main"
-        [disabled]="isTournamentLocked() || isTournamentFinished()"
-        (click)="addAddon()"
-    >
-        <i class="fa fa-database"></i>
-    </button>
 
-    <button
-        *ngIf="!isFullScreen()"
-        mat-flat-button
-        class="main"
-        matTooltip="Fullscreen"
-        (click)="fullScreen()"
-    >
-        <i class="fa fa-maximize"></i>
-    </button>
+    @if (tournament().withRebuy && isProOrAdmin() && !isRebuyPhaseFinished()) {
+        <button
+            mat-flat-button
+            matTooltip="Rebuy"
+            class="main"
+            [disabled]="isTournamentLocked() || isTournamentFinished()"
+            (click)="addRebuy()"
+        >
+            <i class="fa fa-refresh"></i>
+        </button>
+    }
 
-    <button
-        *ngIf="isFullScreen()"
-        mat-flat-button
-        class="main"
-        matTooltip="Exit Fullscreen"
-        (click)="cancelFullscreen()"
-    >
-        <i class="fa fa-minimize"></i>
-    </button>
+    @if (tournament().withRebuy && isProOrAdmin() && !isRebuyPhaseFinished()) {
+        <button
+            mat-flat-button
+            matTooltip="Addon"
+            class="main"
+            [disabled]="isTournamentLocked() || isTournamentFinished()"
+            (click)="addAddon()"
+        >
+            <i class="fa fa-database"></i>
+        </button>
+    }
 
-    <button
-        mat-flat-button
-        class="main mobile-only"
-        matTooltip="Table Draw"
-        (click)="openDrawDialog()"
-    >
-        <i class="fa fa-random"></i>
-    </button>
+    @if (!isFullScreen()) {
+        <button
+            mat-flat-button
+            class="main"
+            matTooltip="Fullscreen"
+            (click)="fullScreen()"
+        >
+            <i class="fa fa-maximize"></i>
+        </button>
+    }
+
+    @if (isFullScreen()) {
+        <button
+            mat-flat-button
+            class="main"
+            matTooltip="Exit Fullscreen"
+            (click)="cancelFullscreen()"
+        >
+            <i class="fa fa-minimize"></i>
+        </button>
+    }
+
+    @if (isProOrAdmin()) {
+        <button
+            mat-flat-button
+            class="main mobile-only"
+            matTooltip="Table Draw"
+            (click)="openDrawDialog()"
+        >
+            <i class="fa fa-random"></i>
+        </button>
+    }
 
     <button
         mat-flat-button

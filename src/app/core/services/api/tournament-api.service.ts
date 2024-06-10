@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { AdminTournament, Tournament, TournamentModel } from '../../../shared/models/tournament.interface';
-import { delay, filter, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../../shared/models/series.interface';
 import { TournamentSettings } from '../../../shared/models/tournament-settings.interface';
 import { Router } from '@angular/router';
 import { ServerResponseType } from '../../../shared/types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';
+import { TEvent } from '../../../shared/models/t-event.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -47,8 +48,14 @@ export class TournamentApiService {
                         this.router.navigate(['/home']);
                     }
                 }),
-                filter((res: Tournament | null): res is Tournament => res !== null)
+                filter((res: Tournament | null): res is Tournament => res !== null),
             ))
+        );
+    }
+
+    getLiveTickerByPassword(id: number, password: string): Observable<TEvent[]> {
+        return this.http.get<TEvent[]>(
+            `${BACKEND_URL}${this.ENDPOINT}/${id}/${password}/live-ticker`
         );
     }
 

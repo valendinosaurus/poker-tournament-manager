@@ -55,8 +55,8 @@
 }
 
 .overview .center.full {
-    width: 100% !important;
-    flex: 0 0 100% !important;
+    width: 70% !important;
+    flex: 0 0 70% !important;
 }
 
 .clock {
@@ -108,7 +108,7 @@ div.flex {
 div.flex .fa-clock {
     color: rgba($primary, 0.2);
     font-size: 48px;
-    margin-right: 20px;
+    margin-right: 32px;
 }
 
 div.now {

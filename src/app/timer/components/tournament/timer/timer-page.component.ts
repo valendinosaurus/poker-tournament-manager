@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Tournament } from 'src/app/shared/models/tournament.interface';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PlayerApiService } from '../../../../core/services/api/player-api.service';
 import { Player } from '../../../../shared/models/player.interface';
 import { TableDrawService } from '../../../../core/services/table-draw.service';
+import { AuthUtilService } from '../../../../core/services/auth-util.service';
 
 @Component({
     selector: 'app-timer-page',
@@ -35,16 +36,25 @@ export class TimerPageComponent implements OnInit {
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private route: ActivatedRoute = inject(ActivatedRoute);
     private tableDrawService: TableDrawService = inject(TableDrawService);
+    private authUtilService: AuthUtilService = inject(AuthUtilService);
 
     private fetchTrigger$: Observable<void>;
 
     ngOnInit(): void {
         this.fetchTrigger$ = this.fetchService.getFetchTrigger$();
         this.state.clientId.set(Math.ceil(Math.random() * 100000));
-
         const tournamentId = +this.route.snapshot.params['tId'];
-
         this.fetchService.trigger();
+
+        combineLatest([
+            this.authUtilService.isPro$(),
+            this.authUtilService.isAdmin$()
+        ]).pipe(
+            take(1),
+            tap(([isPro, isAdmin]: [boolean, boolean]) => {
+                this.state.isProOrAdmin.set(isPro || isAdmin);
+            })
+        ).subscribe();
 
         this.tournamentApiService.getSeriesMetadata$(tournamentId).pipe(
             take(1),

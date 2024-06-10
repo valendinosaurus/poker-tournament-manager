@@ -50,7 +50,7 @@ export class MenuDialogComponent implements OnInit {
 
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
-    isSimpleTournament: Signal<boolean>;
+    isProOrAdmin: WritableSignal<boolean>;
     isRebuyPhaseFinished: Signal<boolean>;
     isTournamentFinished: Signal<boolean>;
     isTournamentLocked: Signal<boolean>;
@@ -60,12 +60,6 @@ export class MenuDialogComponent implements OnInit {
     autoSlide: WritableSignal<boolean>;
     showCondensedBlinds: WritableSignal<boolean>;
     isRunning: WritableSignal<boolean>;
-
-    @Output() addMinute = new EventEmitter<void>();
-    @Output() nextLevel = new EventEmitter<void>();
-    @Output() prevLevel = new EventEmitter<void>();
-    @Output() previousLevel = new EventEmitter<void>();
-
     private dialogRef: MatDialogRef<MenuDialogComponent> = inject(MatDialogRef<MenuDialogComponent>);
 
     isFullScreen: WritableSignal<boolean>;
@@ -106,9 +100,14 @@ export class MenuDialogComponent implements OnInit {
         this.chkScreenMode();
     }
 
+    @Output() addMinute = new EventEmitter<void>();
+    @Output() nextLevel = new EventEmitter<void>();
+    @Output() prevLevel = new EventEmitter<void>();
+    @Output() previousLevel = new EventEmitter<void>();
+
     ngOnInit(): void {
         this.tournament = this.state.tournament;
-        this.isSimpleTournament = this.state.isSimpleTournament;
+        this.isProOrAdmin = this.state.isProOrAdmin;
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
         this.withRebuy = this.state.withRebuy;
         this.withAddon = this.state.withAddon;
@@ -155,16 +154,19 @@ export class MenuDialogComponent implements OnInit {
             label: `${e.length} places paid - ${e.label.slice(3)}`
         }));
 
-        this.fields = [
-            this.formlyFieldService.getDefaultSelectField(
+        this.fields = [];
+
+        if (this.isProOrAdmin()) {
+            this.fields.push(this.formlyFieldService.getDefaultSelectField(
                 'payout',
                 'Payout structure',
                 true,
                 payoutsForSelect,
                 payoutDone
-            ),
-            this.formlyFieldService.getDefaultTextField('name', 'Name', false)
-        ];
+            ));
+        }
+
+        this.fields.push(this.formlyFieldService.getDefaultTextField('name', 'Name', false));
     }
 
     // TODO include

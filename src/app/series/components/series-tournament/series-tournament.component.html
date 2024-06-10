@@ -124,14 +124,36 @@
             *ngIf="liveTicker().length > 0"
             class="live-ticker"
         >
-            <span class="flex">
-                <i
-                    class="fa fa-chevron-circle-down hoverable"
-                    [class.rotate-180]="!isLiveTickerExpanded()"
-                    (click)="isLiveTickerExpanded.set(!isLiveTickerExpanded())"
-                ></i>
+            <span class="flex justify-between align-center">
+                <span class="flex">
+                    <i
+                        class="fa fa-chevron-circle-down hoverable"
+                        [class.rotate-180]="!isLiveTickerExpanded()"
+                        (click)="isLiveTickerExpanded.set(!isLiveTickerExpanded())"
+                    ></i>
 
-                <h4>Live-Ticker</h4>
+                    <h4>Live-Ticker </h4>
+                </span>
+
+                <div
+                    *ngIf="fetchLiveTicker()"
+                    class="flex cd-title-info align-center"
+                >
+                    <ng-container *ngIf="countdown$ | async as cd">
+
+                    <div
+
+                        class="countdown"
+                    >
+                        <div
+                            class="cd-content"
+                            [style.width.%]="cd / 4"
+                        ></div>
+
+                    </div>
+                    <small>{{ (cd / 20) | number:'1.0-0' }}s</small>
+                    </ng-container>
+                </div>
             </span>
 
             <div

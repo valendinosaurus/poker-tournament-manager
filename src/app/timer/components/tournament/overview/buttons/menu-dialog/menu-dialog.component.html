@@ -1,120 +1,121 @@
 <h2><i class="fa fa-gears"></i> Menu</h2>
 
-<h4>
-    Player Actions
-</h4>
+@if (isProOrAdmin()) {
+    <h4>
+        Player Actions
+    </h4>
 
-<div class="button-group">
+    <div class="button-group">
 
-    <div
-        *ngIf="!isSimpleTournament() && !data.isAddPlayerBlocked"
-        class="action"
-    >
-        <h5><i class="fa fa-plus"></i> Player</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="addPlayer()"
+        <div
+            *ngIf="isProOrAdmin() && !data.isAddPlayerBlocked"
+            class="action"
         >
-            <i class="fa fa-user"></i>
-        </button>
-    </div>
+            <h5><i class="fa fa-plus"></i> Player</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="addPlayer()"
+            >
+                <i class="fa fa-user"></i>
+            </button>
+        </div>
 
-    <div
-        *ngIf="!isSimpleTournament()"
-        class="action"
-    >
-        <h5><i class="fa fa-plus"></i> Entry</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="addEntry(false)"
+        <div
+            *ngIf="isProOrAdmin()"
+            class="action"
         >
-            <i class="fa fa-money-bill-wave"></i>
-        </button>
-    </div>
+            <h5><i class="fa fa-plus"></i> Entry</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="addEntry(false)"
+            >
+                <i class="fa fa-money-bill-wave"></i>
+            </button>
+        </div>
 
-    <div
-        *ngIf="withRebuy() && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        class="action"
-    >
-        <h5><i class="fa fa-plus"></i> Rebuy</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="addRebuy()"
+        <div
+            *ngIf="withRebuy() && isProOrAdmin() && !isRebuyPhaseFinished()"
+            class="action"
         >
-            <i class="fa fa-refresh"></i>
-        </button>
-    </div>
+            <h5><i class="fa fa-plus"></i> Rebuy</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="addRebuy()"
+            >
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
 
-    <div
-        *ngIf="withReEntry() && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        class="action"
-    >
-        <h5><i class="fa fa-plus"></i> Re-Entry</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="addEntry(true)"
+        <div
+            *ngIf="withReEntry() && isProOrAdmin() && !isRebuyPhaseFinished()"
+            class="action"
         >
+            <h5><i class="fa fa-plus"></i> Re-Entry</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="addEntry(true)"
+            >
             <span class="relative-icon">
                 <i class="fa fa-money-bill-wave"></i>
                 <i class="fa fa-plus absolute-icon"></i>
             </span>
-        </button>
-    </div>
+            </button>
+        </div>
 
-    <div
-        *ngIf="withAddon() && !isSimpleTournament() && !isRebuyPhaseFinished()"
-        class="action"
-    >
-        <h5><i class="fa fa-plus"></i> Addon</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="addAddon()"
+        <div
+            *ngIf="withAddon() && isProOrAdmin() && !isRebuyPhaseFinished()"
+            class="action"
         >
-            <i class="fa fa-database"></i>
-        </button>
-    </div>
+            <h5><i class="fa fa-plus"></i> Addon</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="addAddon()"
+            >
+                <i class="fa fa-database"></i>
+            </button>
+        </div>
 
-    <div
-        *ngIf="!isSimpleTournament()"
-        class="action"
-    >
-        <h5>Seat Open</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="seatOpen()"
+        <div
+            *ngIf="isProOrAdmin()"
+            class="action"
         >
-            <i class="fa fa-skull"> </i>
-        </button>
-    </div>
+            <h5>Seat Open</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="seatOpen()"
+            >
+                <i class="fa fa-skull"> </i>
+            </button>
+        </div>
 
-    <div
-        *ngIf="!isSimpleTournament() && isRebuyPhaseFinished()"
-        class="action"
-    >
-        <h5>Make Deal</h5>
-        <button
-            mat-flat-button
-            class="main"
-            [disabled]="isTournamentFinished() || isTournamentLocked()"
-            (click)="makeDeal()"
+        <div
+            *ngIf="isProOrAdmin() && isRebuyPhaseFinished()"
+            class="action"
         >
-            <i class="fa fa-handshake"></i>
-        </button>
+            <h5>Make Deal</h5>
+            <button
+                mat-flat-button
+                class="main"
+                [disabled]="isTournamentFinished() || isTournamentLocked()"
+                (click)="makeDeal()"
+            >
+                <i class="fa fa-handshake"></i>
+            </button>
+        </div>
     </div>
-</div>
-
+}
 
 <h4>
     Timer Actions
@@ -185,17 +186,19 @@
         </button>
     </div>
 
-    <div
-        class="action"
-    >
-        <h5>Draw</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="drawTables()">
-            <i class="fa fa-random"></i>
-        </button>
-    </div>
+    @if (isProOrAdmin()) {
+        <div
+            class="action"
+        >
+            <h5>Draw</h5>
+            <button
+                mat-flat-button
+                class="main"
+                (click)="drawTables()">
+                <i class="fa fa-random"></i>
+            </button>
+        </div>
+    }
 </div>
 
 <h4>Other Actions</h4>

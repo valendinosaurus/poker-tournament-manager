@@ -17,7 +17,7 @@ export class TEventApiService {
     private http: HttpClient = inject(HttpClient);
 
     getAll$(tId: number): Observable<TEvent[]> {
-        return this.http.get<TEvent[]>(`${BACKEND_URL}${this.ENDPOINT}/${tId}`).pipe(map(e => e.reverse()));
+        return this.http.get<TEvent[]>(`${BACKEND_URL}${this.ENDPOINT}/${tId}?a=${Math.random()}`).pipe(map(e => e.reverse()));
     }
 
     post$(tId: number, message: string, type: TEventType): Observable<ServerResponse | null> {

@@ -6,8 +6,11 @@
 
     <div class="overview-wrapper">
         <div class="left">
-            <div class="info-panel">
-                @if (!isSimpleTournament()) {
+            <div
+                class="info-panel"
+                [class.simple]="!isProOrAdmin()"
+            >
+                @if (isProOrAdmin()) {
                     <div class="slider-wrapper">
                         <div class="keen-slider" #sliderRef>
                             <div class="keen-slider__slide number-slide1 slide-blinds">
@@ -56,18 +59,18 @@
                         </div>
                     </div>
                 } @else {
-                    <app-blind-level-overview [levels]="tournament().structure"></app-blind-level-overview>
+                    <app-blind-level-overview
+                        [levels]="tournament().structure"
+                        [fill]="true"
+                    ></app-blind-level-overview>
                 }
             </div>
         </div>
 
         <div
             class="center"
-            [class.full]="isSimpleTournament()"
+            [class.full]="!isProOrAdmin()"
         >
-            <h3 class="highlighted">
-                Levels
-            </h3>
             <div class="clock">
                 <span class="titles">
                     <div class="flex">
@@ -88,11 +91,11 @@
                                 </h2>
                             </div>
 
-                            @if (!isRebuyPhaseFinished()) {
+                            @if (!isRebuyPhaseFinished() && isProOrAdmin()) {
                                 <div class="now">
                                     <h3>Rebuy Phase </h3>
                                     <h2>
-                                        {{ timeForRebuy()  | date:'hh:mm:ss' }}
+                                        {{ timeForRebuy()  | date:'HH:mm:ss' }}
                                     </h2>
 
                                 </div>
@@ -157,7 +160,7 @@
         </div>
 
         <div
-            *ngIf="!isSimpleTournament()"
+            *ngIf="isProOrAdmin()"
             class="right"
         >
             <h3 class="highlighted">

@@ -55,7 +55,6 @@ h3.highlighted {
         width: 100%;
         text-align: center;
         text-transform: uppercase;
-        position: fixed;
         top: 0;
         left: 0;
         background: $primary;
@@ -69,6 +68,10 @@ h3.highlighted {
             margin-left: 12px;
         }
     }
+}
+
+.info-panel:not(.simple) h3 {
+    position: fixed;
 }
 
 .regular {
@@ -116,7 +119,7 @@ h4 .fa.adjusted {
 }
 
 h4 .fa.small {
-    font-size: 14px !important;
+    font-size: 18px !important;
 }
 
 h4 .fa-exclamation-triangle {

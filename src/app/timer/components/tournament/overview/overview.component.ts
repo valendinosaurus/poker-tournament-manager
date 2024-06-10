@@ -73,7 +73,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     isRunning: WritableSignal<boolean>;
     levels: Signal<BlindLevel[]>;
     isRebuyPhaseFinished: Signal<boolean>;
-    isSimpleTournament: Signal<boolean>;
+    isProOrAdmin: WritableSignal<boolean>;
 
     slider: KeenSliderInstance;
     currentSlide: WritableSignal<number> = signal(0);
@@ -117,7 +117,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     _runningEffect = effect(() => {
         if (this.state.isRunning()) {
             this.countdown.resume();
-        } else {
+        } else if (!this.state.isTournamentFinished()) {
             this.countdown.pause();
         }
     });
@@ -131,7 +131,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.levels = computed(() => this.tournament().structure);
         this.isTournamentPartOfSeries = computed(() => this.metadata() !== undefined);
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
-        this.isSimpleTournament = this.state.isSimpleTournament;
+        this.isProOrAdmin = this.state.isProOrAdmin;
 
         this.timeForRebuy = computed(() => {
             if (!this.tournament().withRebuy) {
@@ -139,7 +139,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             }
 
             const levelOfRebuyFinishedIndex: number = this.levels().findIndex((l: BlindLevel) => l.isPause && l.endsRebuy);
-            const fullBlindsLeft = this.levels().slice(this.currentLevelIndex() + 1, levelOfRebuyFinishedIndex);
+            const fullBlindsLeft = this.levels().slice(this.currentLevelIndex() + 1, levelOfRebuyFinishedIndex + 1);
             const fullBlindsLeftTime = fullBlindsLeft.reduce((acc, curr) => curr.duration + acc, 0);
 
             const date = new Date();
@@ -165,22 +165,25 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.slider = new KeenSlider(this.sliderRef.nativeElement, {
-            loop: true,
-            initial: this.currentSlide(),
-            slideChanged: (s: any) => {
-                this.currentSlide.set(s.track.details.rel);
-            }
-        });
-
-        interval(30000).pipe(
-            takeUntilDestroyed(this.destroyRef),
-            tap(() => {
-                if (this.state.autoSlide()) {
-                    this.slider.next();
+        if (this.state.isProOrAdmin()) {
+            console.log('setup slider');
+            this.slider = new KeenSlider(this.sliderRef.nativeElement, {
+                loop: true,
+                initial: this.currentSlide(),
+                slideChanged: (s: any) => {
+                    this.currentSlide.set(s.track.details.rel);
                 }
-            })
-        ).subscribe();
+            });
+
+            interval(30000).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap(() => {
+                    if (this.state.autoSlide()) {
+                        this.slider.next();
+                    }
+                })
+            ).subscribe();
+        }
     }
 
     private initTimeValues(): void {
@@ -285,14 +288,16 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
 
     goToPreviousLevel(): void {
-        this.currentLevelIndex.update(previous => previous - 2);
+        if (this.currentLevelIndex() > 1) {
+            this.currentLevelIndex.update(previous => previous - 2);
 
-        this.handleEvent({
-            status: CountdownStatus.done,
-            action: 'done',
-            left: 0,
-            text: ''
-        });
+            this.handleEvent({
+                status: CountdownStatus.done,
+                action: 'done',
+                left: 0,
+                text: ''
+            });
+        }
     }
 
     addBlind(): void {
