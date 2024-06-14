@@ -4,7 +4,7 @@
 
 <a [routerLink]="['/admin']">BACK</a>
 
-<ng-container *ngIf="tournament$ | async as tournament">
+@if (tournament$ | async; as tournament) {
     <div class="admin-header">
         <div class="flex flex-dir-column">
             <h4>Tournament</h4>
@@ -48,21 +48,21 @@
                 <i class="fa fa-share fa-ib"></i> OPEN
             </button>
 
-            <button
-                *ngIf="tournament.locked"
-                mat-raised-button
-                (click)="unlock(tournament)"
-            >
-                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
-            </button>
-
-            <button
-                *ngIf="!tournament.locked"
-                mat-raised-button
-                (click)="lock(tournament)"
-            >
-                <i class="fa fa-lock fa-ib"></i> LOCK
-            </button>
+            @if (tournament.locked) {
+                <button
+                    mat-raised-button
+                    (click)="unlock(tournament)"
+                >
+                    <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+                </button>
+            } @else {
+                <button
+                    mat-raised-button
+                    (click)="lock(tournament)"
+                >
+                    <i class="fa fa-lock fa-ib"></i> LOCK
+                </button>
+            }
         </span>
     </div>
 
@@ -163,11 +163,12 @@
                                     {{ player.name }}
                                 </td>
                                 <td>
-                                    <i
-                                        *ngIf="!tournament.locked"
-                                        class="fa fa-trash"
-                                        (click)="deletePlayerFromTournament(player.id)"
-                                    ></i>
+                                    @if (!tournament.locked) {
+                                        <i
+                                            class="fa fa-trash"
+                                            (click)="deletePlayerFromTournament(player.id)"
+                                        ></i>
+                                    }
                                 </td>
                             </tr>
                         </ng-container>
@@ -181,33 +182,33 @@
                 <h2>Blinds</h2>
 
                 <span class="admin-header-buttons">
-                            <button
-                                mat-raised-button
-                                color="primary"
-                                [disabled]="!!tournament.locked"
-                                (click)="addBlinds(tournament)"
-                            >
-                                <i class="fa fa-tasks fa-ib"></i> ADD BLINDS
-                            </button>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="!!tournament.locked"
+                        (click)="addBlinds(tournament)"
+                    >
+                        <i class="fa fa-tasks fa-ib"></i> ADD BLINDS
+                    </button>
 
-                            <button
-                                *ngIf="tournament.structure.length > 0"
-                                mat-raised-button
-                                color="accent"
-                                (click)="saveAsBlindStructure(tournament.structure)"
-                            >
-                                <i class="fa fa-save fa-ib"></i> SAVE AS BLIND STRUCTURE
-                            </button>
-
-                            <button
-                                *ngIf="tournament.structure.length === 0"
-                                mat-raised-button
-                                color="accent"
-                                (click)="assignBlindStructrue(tournament)"
-                            >
+                    @if (tournament.structure.length > 0) {
+                        <button
+                            mat-raised-button
+                            color="accent"
+                            (click)="saveAsBlindStructure(tournament.structure)"
+                        >
+                            <i class="fa fa-save fa-ib"></i> SAVE AS BLIND STRUCTURE
+                        </button>
+                    } @else {
+                        <button
+                            mat-raised-button
+                            color="accent"
+                            (click)="assignBlindStructrue(tournament)"
+                        >
                                 <i class="fa fa-cloud-arrow-up fa-ib"></i> ASSIGN EXISTING BLIND STRUCTURE
                             </button>
-                        </span>
+                    }
+                </span>
             </div>
 
             <div class="m-800">
@@ -221,5 +222,4 @@
             </div>
         </mat-tab>
     </mat-tab-group>
-</ng-container>
-
+}

@@ -8,7 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
 import { CreateBlindLevelComponent } from './create-blind-level/create-blind-level.component';
-import { AsyncPipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, DecimalPipe, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { RouterLink } from '@angular/router';
@@ -32,7 +32,8 @@ import { FormsModule } from '@angular/forms';
         RouterLink,
         DecimalPipe,
         MatRadioModule,
-        FormsModule
+        FormsModule,
+        NgTemplateOutlet
     ]
 })
 export class BlindLevelTabComponent implements OnInit {

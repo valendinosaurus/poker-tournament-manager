@@ -29,16 +29,14 @@
                             </div>
 
                             <div class="keen-slider__slide number-slide3 slide-stats">
-                                <app-ranking
-                                    *ngIf="tournament().finishes.length > tournament().players.length / 2; else blinds;"
-                                ></app-ranking>
-
-                                <ng-template #blinds>
+                                @if (tournament().finishes.length > tournament().players.length / 2) {
+                                    <app-ranking></app-ranking>
+                                } @else {
                                     <app-blind-level-overview
                                         [levels]="tournament().structure"
                                         (addBlind)="addBlind()"
                                     ></app-blind-level-overview>
-                                </ng-template>
+                                }
                             </div>
 
                             <div
@@ -118,7 +116,7 @@
                     </div>
                 }
 
-                @if (isFinished) {
+                @if (isFinished()) {
                     <div class="popup finished">
                         FINISHED
                     </div>
@@ -132,32 +130,28 @@
                 }
             </div>
 
-            <div
-                *ngIf="!isFinished() && tournament().structure.length > 0"
-                class="current-level"
-            >
-                <p class="level"
-                   [innerHTML]="levels()[currentLevelIndex()] | blindLevelText:true"
-                ></p>
-            </div>
+            @if (!isFinished() && tournament().structure.length > 0) {
+                <div class="current-level">
+                    <p class="level"
+                       [innerHTML]="levels()[currentLevelIndex()] | blindLevelText:true"
+                    ></p>
+                </div>
+            }
 
-            <div
-                *ngIf="!isFinished() && tournament().structure.length > 1 && currentLevelIndex() < tournament().structure.length"
-                class="next-level"
-            >
-                <p class="next-level-title">
-                    NEXT
-                </p>
+            @if (!isFinished() && tournament().structure.length > 1 && currentLevelIndex() < tournament().structure.length) {
+                <div class="next-level">
+                    <p class="next-level-title">
+                        NEXT
+                    </p>
 
-                <p
-                    class="next-level-text"
-                    [innerHTML]="levels()[currentLevelIndex() + 1] | blindLevelText:false"
-                ></p>
-            </div>
+                    <p
+                        class="next-level-text"
+                        [innerHTML]="levels()[currentLevelIndex() + 1] | blindLevelText:false"
+                    ></p>
+                </div>
+            }
 
-            <div
-                class="button-wrapper"
-            >
+            <div class="button-wrapper">
                 <app-buttons
                     (addMinute)="addMinute()"
                     (nextLevel)="goToNextLevel()"

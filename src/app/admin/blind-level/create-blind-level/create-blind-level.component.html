@@ -1,6 +1,9 @@
 <h2>
-    <ng-container *ngIf="!data?.blindLevel">Create</ng-container>
-    <ng-container *ngIf="data?.blindLevel">Edit</ng-container>
+    @if (!data?.blindLevel) {
+        Create
+    } @else {
+        Edit
+    }
     Blind Level
 </h2>
 

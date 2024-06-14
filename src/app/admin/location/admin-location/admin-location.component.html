@@ -4,7 +4,7 @@
 
 <a [routerLink]="['/admin/location']">BACK</a>
 
-<ng-container *ngIf="location$ | async as location">
+@if (location$ | async; as location) {
     <div class="admin-header">
         <div class="flex flex-dir-column">
             <h4>Location</h4>
@@ -32,21 +32,21 @@
                 <i class="fa fa-trash fa-ib"></i> DELETE
             </button>
 
-            <button
-                *ngIf="location.locked"
-                mat-raised-button
-                (click)="unlock(location)"
-            >
-                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
-            </button>
-
-            <button
-                *ngIf="!location.locked"
-                mat-raised-button
-                (click)="lock(location)"
-            >
-                <i class="fa fa-lock fa-ib"></i> LOCK
-            </button>
+            @if (location.locked) {
+                <button
+                    mat-raised-button
+                    (click)="unlock(location)"
+                >
+                    <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+                </button>
+            } @else {
+                <button
+                    mat-raised-button
+                    (click)="lock(location)"
+                >
+                    <i class="fa fa-lock fa-ib"></i> LOCK
+                </button>
+            }
         </div>
     </div>
 
@@ -56,6 +56,4 @@
         [src]="location.image"
         onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
     >
-
-</ng-container>
-
+}

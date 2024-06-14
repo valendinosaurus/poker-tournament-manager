@@ -20,7 +20,7 @@
             <th>Actions</th>
         </tr>
         <ng-container *ngFor="let blindStructure of blindStructures$ | async">
-            <a style="display: contents" [routerLink]="['/admin/blind-structure', blindStructure.id]">
+            <a class="contents" [routerLink]="['/admin/blind-structure', blindStructure.id]">
                 <tr>
                     <td>
                         {{ blindStructure.name }}
@@ -35,10 +35,9 @@
                                 (click)="deleteStructure(blindStructure, $event)"
                             ></i>
 
-                            <i
-                                *ngIf="blindStructure.locked"
-                                class="fa fa-lock"
-                            ></i>
+                            @if (blindStructure.locked) {
+                                <i class="fa fa-lock"></i>
+                            }
                         </div>
                     </td>
                 </tr>

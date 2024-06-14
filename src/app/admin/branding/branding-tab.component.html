@@ -35,16 +35,14 @@
                     </td>
                     <td>
                         <div class="table-actions">
-                            <i
-                                *ngIf="!branding.locked"
-                                class="fa fa-trash"
-                                (click)="deleteBranding(branding, $event)"
-                            ></i>
-
-                            <i
-                                *ngIf="branding.locked"
-                                class="fa fa-lock"
-                            ></i>
+                            @if (branding.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteBranding(branding, $event)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-lock"></i>
+                            }
                         </div>
                     </td>
                 </tr>
@@ -52,7 +50,3 @@
         </ng-container>
     </table>
 </div>
-
-<ng-template #times>
-    <i class="fa fa-times"></i>
-</ng-template>

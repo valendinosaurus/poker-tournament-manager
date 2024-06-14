@@ -4,8 +4,7 @@
 
 <a [routerLink]="['/admin/series']">BACK</a>
 
-
-<ng-container *ngIf="series$ | async as series">
+@if (series$ | async; as series) {
     <div class="admin-header">
         <div class="flex flex-dir-column">
             <h4>Series</h4>
@@ -128,11 +127,12 @@
                             {{ tournament.name }}
                         </td>
                         <td>
-                            <i
-                                *ngIf="!series.locked"
-                                class="fa fa-trash"
-                                (click)="deleteTournamentFromSeries(series, tournament.id)"
-                            ></i>
+                            @if (!series.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteTournamentFromSeries(series, tournament.id)"
+                                ></i>
+                            }
                         </td>
                     </tr>
                 }
@@ -181,7 +181,7 @@
             <hr>
 
             <table class="admin-table">
-                <ng-container *ngFor="let player of disqualifiedPlayers$ | async">
+                @for (player of disqualifiedPlayers$ | async; track player.id) {
                     <tr>
                         <td>
                             <app-user-image-round [imageUrl]="player.image"></app-user-image-round>
@@ -190,18 +190,17 @@
                             {{ player.name }}
                         </td>
                         <td>
-                            <i
-                                *ngIf="!series.locked"
-                                class="fa fa-trash"
-                                (click)="removeDisqualification(series.id, player.id)"
-                            ></i>
+                            @if (!series.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="removeDisqualification(series.id, player.id)"
+                                ></i>
+                            }
                         </td>
                     </tr>
-                </ng-container>
+                }
             </table>
         </mat-tab>
 
     </mat-tab-group>
-
-</ng-container>
-
+}

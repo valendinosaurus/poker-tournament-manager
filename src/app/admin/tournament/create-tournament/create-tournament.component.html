@@ -1,6 +1,9 @@
 <h2>
-    <ng-container *ngIf="!data?.tournament">Create</ng-container>
-    <ng-container *ngIf="data?.tournament">Edit</ng-container>
+    @if (data?.tournament) {
+        Edit
+    } @else {
+        Create
+    }
     Tournament
 </h2>
 
@@ -21,8 +24,11 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        <ng-container *ngIf="!data?.tournament">CREATE</ng-container>
-        <ng-container *ngIf="data?.tournament">EDIT</ng-container>
+        @if (data?.tournament) {
+            EDIT
+        } @else {
+            CREATE
+        }
     </button>
 </form>
 

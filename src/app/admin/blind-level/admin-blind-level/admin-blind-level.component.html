@@ -5,8 +5,7 @@
 <a [routerLink]="['/admin/blind-level']">BACK</a>
 
 
-<ng-container *ngIf="blindLevel$ | async as blindLevel">
-
+@if (blindLevel$ | async; as blindLevel) {
     <div class="admin-header">
         <div class="flex flex-dir-column">
             <h4>Blind Level</h4>
@@ -69,24 +68,27 @@
             <span>
                 <h4>is Chip-Up</h4>
                 <p>
-                    <ng-container *ngIf="blindLevel.isChipUp; else times;">
+                    @if (blindLevel.isChipUp) {
                         <i class="fa fa-check"></i>
-                    </ng-container>
+                    } @else {
+                        <ng-container *ngTemplateOutlet="times"></ng-container>
+                    }
                 </p>
             </span>
 
             <span>
                 <h4>ends Rebuy</h4>
                 <p>
-                    <ng-container *ngIf="blindLevel.endsRebuy; else times;">
+                    @if (blindLevel.endsRebuy) {
                         <i class="fa fa-check"></i>
-                    </ng-container>
+                    } @else {
+                        <ng-container *ngTemplateOutlet="times"></ng-container>
+                    }
                 </p>
             </span>
         }
     </div>
-</ng-container>
-
+}
 
 <ng-template #times>
     <i class="fa fa-times"></i>

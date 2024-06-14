@@ -1,9 +1,9 @@
 <h2>
     <i class="fa fa-money-bill-wave"></i>
     Add
-    <ng-container *ngIf="data.isReentry">
+    @if (data.isReentry) {
         Re-
-    </ng-container>
+    }
     Entry
 </h2>
 
@@ -27,9 +27,9 @@
         type="submit"
         [disabled]="!model.isValid() || isLoadingAdd"
     >
-        <ng-container *ngIf="data.isReentry">
+        @if (data.isReentry) {
             RE-
-        </ng-container>
+        }
         ENTER
     </button>
 
@@ -50,7 +50,8 @@
 </form>
 
 <h3>Conducted Entries</h3>
-<ng-container *ngIf="conductedEntries().length > 0; else noAddons;">
+
+@if (conductedEntries().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
             <ng-container *ngFor="let e of conductedEntries()">
@@ -94,7 +95,9 @@
             </ng-container>
         </table>
     </div>
-</ng-container>
+} @else {
+    <ng-container *ngTemplateOutlet="noAddons"></ng-container>
+}
 
 <ng-template #noAddons>
     No Entries yet

@@ -4,7 +4,7 @@
 
 <a [routerLink]="['/admin/branding']">BACK</a>
 
-<ng-container *ngIf="branding$ | async as branding">
+@if (branding$ | async; as branding) {
     <div class="admin-header">
         <div class="flex flex-dir-column">
             <h4>Branding</h4>
@@ -32,21 +32,21 @@
                 <i class="fa fa-trash fa-ib"></i> DELETE
             </button>
 
-            <button
-                *ngIf="branding.locked"
-                mat-raised-button
-                (click)="unlock(branding)"
-            >
-                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
-            </button>
-
-            <button
-                *ngIf="!branding.locked"
-                mat-raised-button
-                (click)="lock(branding)"
-            >
-                <i class="fa fa-lock fa-ib"></i> LOCK
-            </button>
+            @if (branding.locked) {
+                <button
+                    mat-raised-button
+                    (click)="unlock(branding)"
+                >
+                    <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+                </button>
+            } @else {
+                <button
+                    mat-raised-button
+                    (click)="lock(branding)"
+                >
+                    <i class="fa fa-lock fa-ib"></i> LOCK
+                </button>
+            }
         </div>
     </div>
 
@@ -59,7 +59,4 @@
         [src]="branding.logo"
         onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
     >
-
-
-</ng-container>
-
+}

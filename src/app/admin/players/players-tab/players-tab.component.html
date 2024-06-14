@@ -18,8 +18,9 @@
             <th>Email</th>
             <th>Actions</th>
         </tr>
-        <ng-container *ngFor="let player of players$ | async">
-            <a style="display: contents" [routerLink]="['/admin/player', player.id]">
+
+        @for (player of players$ | async; track player.id) {
+            <a class="contents" [routerLink]="['/admin/player', player.id]">
                 <tr>
                     <td>
                         <app-user-image-round
@@ -35,20 +36,18 @@
                     </td>
                     <td>
                         <div class="table-actions">
-                            <i
-                                *ngIf="!player.locked"
-                                class="fa fa-trash"
-                                (click)="deletePlayer(player, $event)"
-                            ></i>
-
-                            <i
-                                *ngIf="player.locked"
-                                class="fa fa-lock"
-                            ></i>
+                            @if (!player.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deletePlayer(player, $event)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-lock"></i>
+                            }
                         </div>
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>

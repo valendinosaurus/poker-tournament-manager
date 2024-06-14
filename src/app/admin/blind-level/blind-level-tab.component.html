@@ -57,8 +57,9 @@
             <th (click)="sortBy('endsRebuy')">ends Rebuy</th>
             <th>Actions</th>
         </tr>
-        <ng-container *ngFor="let blindLevel of sortedAndFilteredBlindLevels$ | async">
-            <a style="display: contents" [routerLink]="['/admin/blind-level', blindLevel.id]">
+
+        @for (blindLevel of sortedAndFilteredBlindLevels$ | async; track blindLevel.id) {
+            <a class="contents" [routerLink]="['/admin/blind-level', blindLevel.id]">
                 <tr [class.blind-pause]="blindLevel.isPause">
                     <td>
                         @if (!blindLevel.isPause) {
@@ -83,19 +84,25 @@
                         {{ blindLevel.duration | number:'1.0-0' }} min
                     </td>
                     <td>
-                        <ng-container *ngIf="blindLevel.isPause; else times;">
+                        @if (blindLevel.isPause) {
                             <i class="fa fa-check"></i>
-                        </ng-container>
+                        } @else {
+                            <ng-container *ngTemplateOutlet="times"></ng-container>
+                        }
                     </td>
                     <td>
-                        <ng-container *ngIf="blindLevel.isChipUp; else times;">
+                        @if (blindLevel.isChipUp) {
                             <i class="fa fa-check"></i>
-                        </ng-container>
+                        } @else {
+                            <ng-container *ngTemplateOutlet="times"></ng-container>
+                        }
                     </td>
                     <td>
-                        <ng-container *ngIf="blindLevel.endsRebuy; else times;">
+                        @if (blindLevel.endsRebuy) {
                             <i class="fa fa-check"></i>
-                        </ng-container>
+                        } @else {
+                            <ng-container *ngTemplateOutlet="times"></ng-container>
+                        }
                     </td>
                     <td>
                         <div class="table-actions">
@@ -107,7 +114,7 @@
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>
 

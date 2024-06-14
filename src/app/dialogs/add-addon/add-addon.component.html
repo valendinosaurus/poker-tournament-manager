@@ -36,14 +36,13 @@
             <i class="fa fa-spinner fa-spin"></i>
         </div>
     }
-
 </form>
 
 <h3>Conducted Addons</h3>
 
-<ng-container *ngIf="conductedAddons().length > 0; else noAddons;">
+@if (conductedAddons().length > 0) {
     <table class="dialog-table">
-        <ng-container *ngFor="let e of conductedAddons()">
+        @for (e of conductedAddons(); track e) {
             <tr>
                 <td class="small-gray">
                     {{ e.time | date:'d.M.yy, HH:mm:ss' }}
@@ -58,7 +57,7 @@
                     </span>
                 </td>
                 <td>
-                    <ng-container *ngIf="!e.isFinished; else skull">
+                    @if (!e.isFinished) {
                         @if (!isLoadingRemove) {
                             <i
                                 class="fa fa-trash"
@@ -67,15 +66,16 @@
                         } @else {
                             <i class="fa fa-spinner fa-spin"></i>
                         }
-                    </ng-container>
-                    <ng-template #skull>
+                    } @else {
                         <i class="fa fa-skull"></i>
-                    </ng-template>
+                    }
                 </td>
             </tr>
-        </ng-container>
+        }
     </table>
-</ng-container>
+} @else {
+    <ng-container *ngTemplateOutlet="noAddons"></ng-container>
+}
 
 <ng-template #noAddons>
     No Addons yet

@@ -20,14 +20,18 @@
             <th>Location</th>
             <th>Actions</th>
         </tr>
-        <ng-container *ngFor="let tournament of tournaments$ | async">
-            <a style="display: contents" [routerLink]="['/admin/tournament', tournament.id]">
+
+        @for (tournament of tournaments$ | async; track tournament.id) {
+            <a class="contents" [routerLink]="['/admin/tournament', tournament.id]">
                 <tr [class.temp]="tournament.temp">
                     <td>
                         {{ tournament.date | date:'dd.MM.YYYY' }}
                     </td>
                     <td>
-                        <i *ngIf="tournament.temp" class="fa fa-exclamation-triangle"></i> {{ tournament.name }}
+                        @if (tournament.temp) {
+                            <i class="fa fa-exclamation-triangle"></i>
+                        }
+                        {{ tournament.name }}
                     </td>
                     <td>
                         {{ tournament.players }}
@@ -45,20 +49,18 @@
                                 (click)="openTournament(tournament.id, $event)"
                             ></i>
 
-                            <i
-                                *ngIf="!tournament.locked"
-                                class="fa fa-trash"
-                                (click)="deleteTournament(tournament, $event)"
-                            ></i>
-
-                            <i
-                                *ngIf="tournament.locked"
-                                class="fa fa-lock"
-                            ></i>
+                            @if (!tournament.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteTournament(tournament, $event)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-lock"></i>
+                            }
                         </div>
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>
