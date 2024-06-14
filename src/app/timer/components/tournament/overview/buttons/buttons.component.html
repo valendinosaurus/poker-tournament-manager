@@ -1,32 +1,52 @@
 @if (canShowInfoPanel()) {
     <div class="info-panel">
-        <span *ngIf="isAddPlayerBlocked && !isTournamentFinished()">
-            <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
-        </span>
+        @if (isAddPlayerBlocked && !isTournamentFinished()) {
+            <span>
+                <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
+            </span>
+        }
 
-        <span *ngIf="tournament().withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()">
-            <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
-        </span>
+        @if (tournament().withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()) {
+            <span>
+                <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
+            </span>
+        }
 
-        <span *ngIf="playerHasToBeMoved() && !isTournamentFinished()" class="clickable" (click)="openDrawDialog()">
-            <i class="fa fa-exclamation-triangle"></i> Player has to be moved
-        </span>
+        @if (playerHasToBeMoved() && !isTournamentFinished()) {
+            <span
+                class="clickable"
+                (click)="openDrawDialog()"
+            >
+                <i class="fa fa-exclamation-triangle"></i> Player has to be moved
+            </span>
+        }
 
-        <span *ngIf="tableHasToBeEliminated() && !isTournamentFinished()" class="clickable" (click)="openDrawDialog()">
-            <i class="fa fa-exclamation-triangle"></i> Table can be eliminated
-        </span>
+        @if (tableHasToBeEliminated() && !isTournamentFinished()) {
+            <span
+                class="clickable"
+                (click)="openDrawDialog()"
+            >
+                <i class="fa fa-exclamation-triangle"></i> Table can be eliminated
+            </span>
+        }
 
-        <span *ngIf="!canStartTournament()">
-            <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
-        </span>
+        @if (!canStartTournament()) {
+            <span>
+                <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
+            </span>
+        }
 
-        <span *ngIf="isTournamentFinished()">
-            <i class="fa fa-flag-checkered "></i> Tournament is finished
-        </span>
+        @if (isTournamentFinished()) {
+            <span>
+                <i class="fa fa-flag-checkered "></i> Tournament is finished
+            </span>
+        }
 
-        <span *ngIf="canStartTournament() && !started() && !isTournamentFinished()">
-            <i class="fa fa-check"></i> Ready to start tournament
-        </span>
+        @if (canStartTournament() && !started() && !isTournamentFinished()) {
+            <span>
+                <i class="fa fa-check"></i> Ready to start tournament
+            </span>
+        }
     </div>
 }
 

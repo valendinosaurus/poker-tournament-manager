@@ -1,77 +1,76 @@
-<div
-    *ngIf="estimationVisible() && structure().length > 0"
-    class="duration"
->
-    <div
-        class="expandable-header flex justify-center clickable"
-        (click)="isExpanded.set(!isExpanded())"
-    >
-        <i
-            class="fa fa-chevron-circle-down"
-            [class.rotate-180]="isExpanded()"
-        ></i>
-        <h3>Estimated duration</h3>
+@if (estimationVisible() && structure().length > 0) {
+    <div class="duration">
+        <div
+            class="expandable-header flex justify-center clickable"
+            (click)="isExpanded.set(!isExpanded())"
+        >
+            <i
+                class="fa fa-chevron-circle-down"
+                [class.rotate-180]="isExpanded()"
+            ></i>
+            <h3>Estimated duration</h3>
+        </div>
+
+        <div
+            class="expandable"
+            [class.expanded]="isExpanded()"
+        >
+            <div>
+                <h4>players</h4>
+                <input
+                    type="number"
+                    name="noOfPlayers"
+                    [ngModel]="noOfPlayers()"
+                    (ngModelChange)="noOfPlayers.set($event)"
+                >
+                <h4>start stack</h4>
+                <input
+                    type="number"
+                    name="startStack"
+                    [ngModel]="startStack()"
+                    (ngModelChange)="startStack.set($event)"
+                >
+            </div>
+
+            <div>
+                <h4>rebuys</h4>
+                <input
+                    type="number"
+                    name="noOfRebuys"
+                    [ngModel]="noOfRebuys()"
+                    (ngModelChange)="noOfRebuys.set($event)"
+                >
+                <h4>rebuy stack</h4>
+                <input
+                    type="number"
+                    name="rebuyStack"
+                    [ngModel]="rebuyStack()"
+                    (ngModelChange)="rebuyStack.set($event)"
+                >
+            </div>
+
+            <div>
+                <h4>addons</h4>
+                <input
+                    type="number"
+                    name="noOfAddons"
+                    [ngModel]="noOfAddons()"
+                    (ngModelChange)="noOfAddons.set($event)"
+                >
+                <h4>addon stack</h4>
+                <input
+                    type="number"
+                    name="addonStack"
+                    [ngModel]="addonStack()"
+                    (ngModelChange)="addonStack.set($event)"
+                >
+            </div>
+            <p class="estimation">
+                {{ estimatedDurationInMinutes() | time }}
+                <small>
+                    (+/- 1 Level)
+                </small>
+            </p>
+        </div>
     </div>
-
-    <div
-        class="expandable"
-        [class.expanded]="isExpanded()"
-    >
-        <div>
-            <h4>players</h4>
-            <input
-                type="number"
-                name="noOfPlayers"
-                [ngModel]="noOfPlayers()"
-                (ngModelChange)="noOfPlayers.set($event)"
-            >
-            <h4>start stack</h4>
-            <input
-                type="number"
-                name="startStack"
-                [ngModel]="startStack()"
-                (ngModelChange)="startStack.set($event)"
-            >
-        </div>
-
-        <div>
-            <h4>rebuys</h4>
-            <input
-                type="number"
-                name="noOfRebuys"
-                [ngModel]="noOfRebuys()"
-                (ngModelChange)="noOfRebuys.set($event)"
-            >
-            <h4>rebuy stack</h4>
-            <input
-                type="number"
-                name="rebuyStack"
-                [ngModel]="rebuyStack()"
-                (ngModelChange)="rebuyStack.set($event)"
-            >
-        </div>
-
-        <div>
-            <h4>addons</h4>
-            <input
-                type="number"
-                name="noOfAddons"
-                [ngModel]="noOfAddons()"
-                (ngModelChange)="noOfAddons.set($event)"
-            >
-            <h4>addon stack</h4>
-            <input
-                type="number"
-                name="addonStack"
-                [ngModel]="addonStack()"
-                (ngModelChange)="addonStack.set($event)"
-            >
-        </div>
-        <p class="estimation">
-            {{ estimatedDurationInMinutes() | time }}
-            <small>
-                (+/- 1 Level)
-            </small>
-        </p>
-    </div>
-</div>
+}

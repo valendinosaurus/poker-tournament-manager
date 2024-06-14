@@ -55,10 +55,10 @@
 
 <h3>Conducted Rebuys</h3>
 
-<ng-container *ngIf="conductedRebuys().length > 0; else noRebuys;">
+@if (conductedRebuys().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedRebuys()">
+            @for (e of conductedRebuys(); track e) {
                 <tr>
                     <td class="small-gray">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}
@@ -87,11 +87,9 @@
                         }
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
     </div>
-</ng-container>
-
-<ng-template #noRebuys>
+} @else {
     No Rebuys yet
-</ng-template>
+}

@@ -88,7 +88,7 @@
     <div class="overflow-y-auto">
         <div id="topd"></div>
         <table cellspacing="0" cellpadding="0">
-            <ng-container *ngFor="let e of payouts()">
+            @for (e of payouts(); track e) {
                 <tr>
                     <td>
                         <span class="flex-td">
@@ -102,22 +102,21 @@
                         </span>
                     </td>
                     <td>
-                        <div
-                            *ngIf="e.name"
-                            class="flex align-center"
-                        >
-                            <app-user-image-round
-                                [imageUrl]="e.image ? e.image : ''"
-                            ></app-user-image-round>
-                            {{ e.name }}
-                        </div>
+                        @if (e.name) {
+                            <div class="flex align-center">
+                                <app-user-image-round
+                                    [imageUrl]="e.image ? e.image : ''"
+                                ></app-user-image-round>
+                                {{ e.name }}
+                            </div>
+                        }
                     </td>
                     <td class="bold text-align-right flex justify-end align-center">
                         <span class="green">{{ e.price | number:'':'de-CH' }} $</span>
                         <span class="regular"><small>{{ e.percentage }}</small></span>
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
         <div id="bottomd"></div>
     </div>

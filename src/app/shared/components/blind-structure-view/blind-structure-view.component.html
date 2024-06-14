@@ -55,11 +55,12 @@
                         <strong>{{ blind.btnAnte | number:'1.0-0' }}</strong>
                     </div>
                     <div class="b-action">
-                        <i
-                            *ngIf="!locked()"
-                            class="fa fa-trash"
-                            (click)="deleteBlind.emit(blind.id)"
-                        ></i>
+                        @if (!locked()) {
+                            <i
+                                class="fa fa-trash"
+                                (click)="deleteBlind.emit(blind.id)"
+                            ></i>
+                        }
                     </div>
                 </div>
             </ng-container>
@@ -71,38 +72,41 @@
                     </div>
                     <div class="b-long-name">
                         PAUSE
-                        <ng-container *ngIf="blind.isChipUp">
+
+                        @if (blind.isChipUp) {
                             - (CHIP UP)
-                        </ng-container>
-                        <ng-container *ngIf="blind.endsRebuy">
+                        }
+
+                        @if (blind.endsRebuy) {
                             - ENDS REBUY
-                        </ng-container>
+                        }
                     </div>
                     <div class="b-action">
-                        <i
-                            *ngIf="!locked()"
-                            class="fa fa-trash"
-                            (click)="deleteBlind.emit(blind.id)"
-                        ></i>
+                        @if (!locked()) {
+                            <i
+                                class="fa fa-trash"
+                                (click)="deleteBlind.emit(blind.id)"
+                            ></i>
+                        }
                     </div>
                 </div>
             </ng-template>
 
-
-            <div
-                *ngIf="blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()"
-                class="b-insert-pause"
-                (click)="addPause.emit(blind.position)"
-            >
-                <div>
-                    <i
-                        class="fa fa-plus-circle"
-                    ></i>
-                    <span>
-                    INSERT PAUSE
-                </span>
+            @if (blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()) {
+                <div
+                    class="b-insert-pause"
+                    (click)="addPause.emit(blind.position)"
+                >
+                    <div>
+                        <i
+                            class="fa fa-plus-circle"
+                        ></i>
+                        <span>
+                            INSERT PAUSE
+                        </span>
+                    </div>
                 </div>
-            </div>
+            }
         }
     </div>
 

@@ -63,10 +63,10 @@
 
 <h3>Eliminated players</h3>
 
-<ng-container *ngIf="conductedFinishes().length > 0; else noSeatOpens;">
+@if (conductedFinishes().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedFinishes(); let i = index">
+            @for (e of conductedFinishes(); track e; let i = $index) {
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}
@@ -98,22 +98,19 @@
 
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
     </div>
-</ng-container>
-
-<ng-template #noSeatOpens>
+} @else {
     No Seat Opens yet
-</ng-template>
-
+}
 
 <h3>Eliminations</h3>
 
-<ng-container *ngIf="conductedEliminations().length > 0; else noEliminations;">
+@if (conductedEliminations().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedEliminations(); let i = index">
+            @for (e of conductedEliminations(); track e; let i = $index) {
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}
@@ -138,12 +135,10 @@
                         </span>
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
     </div>
-</ng-container>
-
-<ng-template #noEliminations>
+} @else {
     No Eliminations yet
-</ng-template>
+}
 

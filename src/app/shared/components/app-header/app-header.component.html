@@ -1,27 +1,31 @@
 <header>
     <mat-toolbar>
         <span class="username">
-            <p *ngIf="user()">
-                Hello {{ user()?.name }}
-            </p>
+            @if (user()) {
+                <p>
+                    Hello {{ user()?.name }}
+                </p>
+            }
         </span>
 
         <span class="links">
             <a [routerLink]="['/home']" routerLinkActive="active">Home</a>
-            <a *ngIf="isAuthenticated$ | async" [routerLink]="['/admin']" routerLinkActive="active">Admin</a>
+
+            @if (isAuthenticated$ | async) {
+                <a [routerLink]="['/admin']" routerLinkActive="active">Admin</a>
+            }
         </span>
 
         <span>
-            <button
-                *ngIf="isAuthenticated$ | async; else loginButton"
-                mat-raised-button
-                color="accent"
-                (click)="logout()"
-            >
-                logout
-            </button>
-
-            <ng-template #loginButton>
+            @if (isAuthenticated$ | async) {
+                <button
+                    mat-raised-button
+                    color="accent"
+                    (click)="logout()"
+                >
+                    logout
+                </button>
+            } @else {
                 <button
                     mat-raised-button
                     color="accent"
@@ -29,7 +33,7 @@
                 >
                     login
                 </button>
-            </ng-template>
+            }
         </span>
     </mat-toolbar>
 

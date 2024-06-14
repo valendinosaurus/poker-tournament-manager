@@ -13,12 +13,10 @@
                 <th class="center"><small>Rebuys</small></th>
                 <th class="center"><small>Addons</small></th>
                 <th class="center"><small>Price</small></th>
-                <th
-                    *ngIf="formula"
-                    class="center"
-                >
-                    Points
-                </th>
+
+                @if (formula) {
+                    <th class="center"><small>Points</small></th>
+                }
             </tr>
             <ng-container *ngFor="let e of missingRanks()">
                 <tr class="opaque">
@@ -45,12 +43,12 @@
                     <td class="center">
                         -
                     </td>
-                    <td
-                        *ngIf="formula"
-                        class="center"
-                    >
-                        -
-                    </td>
+
+                    @if (formula) {
+                        <td class="center">
+                            -
+                        </td>
+                    }
                 </tr>
             </ng-container>
             <ng-container *ngFor="let e of combFinishes()">
@@ -79,12 +77,12 @@
                     <td class="center">
                         $ {{ e.price | number:'':'de-CH' }}
                     </td>
-                    <td
-                        *ngIf="formula"
-                        class="center"
-                    >
-                        {{ calcPoints(e) }}
-                    </td>
+
+                    @if (formula) {
+                        <td class="center">
+                            {{ calcPoints(e) }}
+                        </td>
+                    }
                 </tr>
             </ng-container>
         </table>

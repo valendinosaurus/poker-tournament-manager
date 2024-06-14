@@ -10,10 +10,12 @@
             [seriesHeader]="seriesHeader$ | async | nullsafePrimitive:{}"
         ></app-series-header>
 
-        <ng-container *ngIf="(userEmail$ | async) && (isUserConnectedHere$ | async) === false">
-            <ng-container *ngIf="ownerEmail$ | async as ownerEmail">
+        @if ((userEmail$ | async) && (isUserConnectedHere$ | async) === false) {
+            @if (ownerEmail$ | async; as ownerEmail) {
                 <div class="flex align-center" style="margin-top: 32px;">
-                    <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">Are you part of this series?</h4>
+                    <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">
+                        Are you part of this series?
+                    </h4>
 
                     <button
                         mat-raised-button
@@ -23,20 +25,21 @@
                         CONNECT NOW
                     </button>
                 </div>
-            </ng-container>
-        </ng-container>
+            }
+        }
 
         <h2>
             Current leaderboard
         </h2>
 
         <div class="leaderboard">
-            <app-leaderboard
-                *ngIf="series$ | async as series"
-                [leaderboard]="leaderboard$ | async | nullsafePrimitive:[]"
-                [series]="series"
-                [userEmail]="userEmail$ | async | nullsafePrimitive:''"
-            ></app-leaderboard>
+            @if (series$ | async; as series) {
+                <app-leaderboard
+                    [leaderboard]="leaderboard$ | async | nullsafePrimitive:[]"
+                    [series]="series"
+                    [userEmail]="userEmail$ | async | nullsafePrimitive:''"
+                ></app-leaderboard>
+            }
 
             <div class="legend-wrapper">
                 <div class="legend"></div>
@@ -45,30 +48,29 @@
         </div>
 
         <!-- TODO refactor -->
-        <app-series-stats
-            *ngIf="seriesStats$ | async as stats"
-            [bestAverageRank]="stats.bestAverageRank"
-            [mostPrices]="stats.mostPrices"
-            [mostEffPrices]="stats.mostEffPrices"
-            [mostRebuysAddons]="stats.mostRebuysAddons"
-            [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
-            [mostITM]="stats.mostITM"
-            [mostPercITM]="stats.mostPercITM"
-            [mostEliminations]="stats.mostEliminations"
-            [mostSpilled]="stats.mostSpilled"
-        ></app-series-stats>
+        @if (seriesStats$ | async; as stats) {
+            <app-series-stats
+                [bestAverageRank]="stats.bestAverageRank"
+                [mostPrices]="stats.mostPrices"
+                [mostEffPrices]="stats.mostEffPrices"
+                [mostRebuysAddons]="stats.mostRebuysAddons"
+                [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
+                [mostITM]="stats.mostITM"
+                [mostPercITM]="stats.mostPercITM"
+                [mostEliminations]="stats.mostEliminations"
+                [mostSpilled]="stats.mostSpilled"
+            ></app-series-stats>
+        }
 
         <h2>Tournaments</h2>
 
-        <ng-container *ngFor="let tournament of tournaments$ | async">
+        @for (tournament of tournaments$ | async; track tournament) {
             <app-series-tournament
                 [tournament]="tournament"
                 [myEmail]="userEmail$ | async"
                 [password]="password"
             ></app-series-tournament>
-        </ng-container>
-
+        }
     </div>
-
 }
 

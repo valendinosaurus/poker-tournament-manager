@@ -30,16 +30,23 @@
                         ></app-user-image-round>
                         {{ e.name }}
 
-                        <ng-container *ngIf="e.email && e.email.length > 0 && userEmail() === e.email">
-                            <i (click)="openEditPlayerDialog(e)" class="fa fa-edit hoverable"></i>
-                        </ng-container>
+                        @if (e.email && e.email.length > 0 && userEmail() === e.email) {
+
+                            <i
+                                class="fa fa-edit hoverable"
+                                (click)="openEditPlayerDialog(e)"
+                            ></i>
+                        }
                     </span>
                 </td>
                 <td class="t-right">
                     <div class="flex justify-end align-center">
                         <strong>
                             {{ e.points | number:'1.1-1' }}
-                            <ng-container *ngIf="e.isTemp">(+)</ng-container>
+
+                            @if (e.isTemp) {
+                                (+)
+                            }
                         </strong>
                     </div>
                 </td>

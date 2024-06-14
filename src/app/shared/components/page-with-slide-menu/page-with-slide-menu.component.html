@@ -4,8 +4,17 @@
     </div>
     <div class="side-menu">
         <div class="slider-button">
-            <i *ngIf="!isSideVisible" class="fa fa-plus-circle" (click)="isSideVisible = true"></i>
-            <i *ngIf="isSideVisible" class="fa fa-minus-circle" (click)="isSideVisible = false"></i>
+            @if (!isSideVisible) {
+                <i
+                    class="fa fa-plus-circle"
+                    (click)="isSideVisible = true"
+                ></i>
+            } @else {
+                <i
+                    class="fa fa-minus-circle"
+                    (click)="isSideVisible = false"
+                ></i>
+            }
         </div>
         <ng-content select="[side]"></ng-content>
     </div>

@@ -35,10 +35,10 @@
 
 <h3>Players in Tournament</h3>
 
-<ng-container *ngIf="data.tournament && data.tournament.structure.length > 0; else noBlinds;">
+@if (data.tournament && data.tournament.structure.length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of data.tournament.structure">
+            @for (e of data.tournament.structure; track e) {
                 <tr>
                     <td class="flex align-center">
                         <span
@@ -48,11 +48,9 @@
                         &nbsp;- {{ e.duration }}min
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
     </div>
-</ng-container>
-
-<ng-template #noBlinds>
+} @else {
     No players yet
-</ng-template>
+}
