@@ -98,6 +98,22 @@ export class RankingService {
             },
             desc: '$\\frac{pricepool}{\\frac{\\sqrt(players * (1 + rebuys + addons)}{1 + rank}}$',
             imageUrl: 'assets/formula_VPR_rebuy_addon.png'
+        },
+        {
+            name: 'adesso Poker Tour',
+            id: 2,
+            //points = number of participants * % of buyout
+            f: (input: FormulaInput) => {
+                const payout = [0.5, 0.3, 0.2];
+
+                if (input.rank > 3) {
+                    return 0;
+                }
+
+                return input.pricePool * payout[input.rank - 1];
+            },
+            desc: '',
+            imageUrl: ''
         }
     ];
 

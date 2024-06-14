@@ -62,6 +62,8 @@ export class TimerStateService {
 
     isTournamentFinished: Signal<boolean> = computed(() =>
         this.tournament().players.length === this.tournament().finishes.length
+        && this.tournament().finishes.length > 0
+        && this.tournament().players.length > 0
     );
 
     canStartTournament: Signal<boolean> = computed(() =>

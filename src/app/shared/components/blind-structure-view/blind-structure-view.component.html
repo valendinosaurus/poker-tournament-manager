@@ -1,80 +1,7 @@
-<div
-    *ngIf="estimationVisible() && structure().length > 0"
-    class="duration"
->
-    <div
-        class="expandable-header flex justify-center clickable"
-        (click)="isExpanded = !isExpanded"
-    >
-        <i
-            class="fa fa-chevron-circle-down"
-            [class.rotate-180]="isExpanded"
-        ></i>
-        <h3>Estimated duration</h3>
-    </div>
-
-    <div
-        class="expandable"
-        [class.expanded]="isExpanded"
-    >
-        <div>
-            <h4>players</h4>
-            <input
-                type="number"
-                name="noOfPlayers"
-                [ngModel]="noOfPlayers()"
-                (ngModelChange)="noOfPlayers.set($event)"
-            >
-            <h4>start stack</h4>
-            <input
-                type="number"
-                name="startStack"
-                [ngModel]="startStack()"
-                (ngModelChange)="startStack.set($event)"
-            >
-        </div>
-
-        <div>
-            <h4>rebuys</h4>
-            <input
-                type="number"
-                name="noOfRebuys"
-                [ngModel]="noOfRebuys()"
-                (ngModelChange)="noOfRebuys.set($event)"
-            >
-            <h4>rebuy stack</h4>
-            <input
-                type="number"
-                name="rebuyStack"
-                [ngModel]="rebuyStack()"
-                (ngModelChange)="rebuyStack.set($event)"
-            >
-        </div>
-
-        <div>
-            <h4>addons</h4>
-            <input
-                type="number"
-                name="noOfAddons"
-                [ngModel]="noOfAddons()"
-                (ngModelChange)="noOfAddons.set($event)"
-            >
-            <h4>addon stack</h4>
-            <input
-                type="number"
-                name="addonStack"
-                [ngModel]="addonStack()"
-                (ngModelChange)="addonStack.set($event)"
-            >
-        </div>
-        <p class="estimation">
-            {{ estimatedDurationInMinutes() | time }}
-            <small>
-                (+/- 1 Level)
-            </small>
-        </p>
-    </div>
-</div>
+<app-blind-structure-estimated-duration
+    [structure]="structure()"
+    [estimationVisible]="estimationVisible()"
+></app-blind-structure-estimated-duration>
 
 <div class="blind-structure">
     <div class="header">
@@ -95,77 +22,88 @@
         </div>
     </div>
 
-    <ng-container *ngFor="let blind of structure(); let i = index;">
-        <ng-container *ngIf="!blind.isPause; else pause;">
-            <div class="blind-element">
-                <div class="index">
-                    {{ blind.position / 2 }}
-                </div>
+    <div
+        class="blind-level-list"
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+    >
+        @for (blind of structure(); track blind; let i = $index; ) {
 
-                <div class="b-duration">
-                    {{ blind.duration }}min
-                </div>
+            <ng-container *ngIf="!blind.isPause; else pause;">
+                <div
+                    cdkDrag
+                    class="blind-element"
+                >
+                    <div class="index">
+                        {{ blind.position / 2 }}
+                    </div>
 
-                <div class="b-small">
-                    <strong>{{ blind.sb | number:'1.0-0' }}</strong>
+                    <div class="b-duration">
+                        {{ blind.duration }}min
+                    </div>
+
+                    <div class="b-small">
+                        <strong>{{ blind.sb | number:'1.0-0' }}</strong>
+                    </div>
+                    <div class="b-big">
+                        <strong>{{ blind.bb | number:'1.0-0' }}</strong>
+                    </div>
+                    <div class="b-ante">
+                        <strong>{{ blind.ante | number:'1.0-0' }}</strong>
+                    </div>
+                    <div class="b-btn-ante">
+                        <strong>{{ blind.btnAnte | number:'1.0-0' }}</strong>
+                    </div>
+                    <div class="b-action">
+                        <i
+                            *ngIf="!locked()"
+                            class="fa fa-trash"
+                            (click)="deleteBlind.emit(blind.id)"
+                        ></i>
+                    </div>
                 </div>
-                <div class="b-big">
-                    <strong>{{ blind.bb | number:'1.0-0' }}</strong>
+            </ng-container>
+
+            <ng-template #pause>
+                <div class="pause-element">
+                    <div class="b-name">
+                        {{ blind.duration }}min
+                    </div>
+                    <div class="b-long-name">
+                        PAUSE
+                        <ng-container *ngIf="blind.isChipUp">
+                            - (CHIP UP)
+                        </ng-container>
+                        <ng-container *ngIf="blind.endsRebuy">
+                            - ENDS REBUY
+                        </ng-container>
+                    </div>
+                    <div class="b-action">
+                        <i
+                            *ngIf="!locked()"
+                            class="fa fa-trash"
+                            (click)="deleteBlind.emit(blind.id)"
+                        ></i>
+                    </div>
                 </div>
-                <div class="b-ante">
-                    <strong>{{ blind.ante | number:'1.0-0' }}</strong>
-                </div>
-                <div class="b-btn-ante">
-                    <strong>{{ blind.btnAnte | number:'1.0-0' }}</strong>
-                </div>
-                <div class="b-action">
+            </ng-template>
+
+
+            <div
+                *ngIf="blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()"
+                class="b-insert-pause"
+                (click)="addPause.emit(blind.position)"
+            >
+                <div>
                     <i
-                        *ngIf="!locked()"
-                        class="fa fa-trash"
-                        (click)="deleteBlind.emit(blind.id)"
+                        class="fa fa-plus-circle"
                     ></i>
-                </div>
-            </div>
-        </ng-container>
-
-        <ng-template #pause>
-            <div class="pause-element">
-                <div class="b-name">
-                    {{ blind.duration }}min
-                </div>
-                <div class="b-long-name">
-                    PAUSE
-                    <ng-container *ngIf="blind.isChipUp">
-                        - (CHIP UP)
-                    </ng-container>
-                    <ng-container *ngIf="blind.endsRebuy">
-                        - ENDS REBUY
-                    </ng-container>
-                </div>
-                <div class="b-action">
-                    <i
-                        *ngIf="!locked()"
-                        class="fa fa-trash"
-                        (click)="deleteBlind.emit(blind.id)"
-                    ></i>
-                </div>
-            </div>
-        </ng-template>
-
-
-        <div
-            *ngIf="blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()"
-            class="b-insert-pause"
-            (click)="addPause.emit(blind.position)"
-        >
-            <div>
-                <i
-                    class="fa fa-plus-circle"
-                ></i>
-                <span>
+                    <span>
                     INSERT PAUSE
                 </span>
+                </div>
             </div>
-        </div>
-    </ng-container>
+        }
+    </div>
+
 </div>

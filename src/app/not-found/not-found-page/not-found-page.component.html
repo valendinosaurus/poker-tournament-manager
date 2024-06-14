@@ -1,19 +1,24 @@
-<h1>not found</h1>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
-<p>not found!</p>
+<app-app-header [user]="user$ | async"></app-app-header>
+
+<div class="page-with-header">
+    <h1 class="big">
+        404
+    </h1>
+
+    <h2 class="big">
+        This page could not be found...
+    </h2>
+
+    <hr>
+
+    <h3>Back to...</h3>
+    <div class="flex justify-center">
+        <a [routerLink]="['/home']">
+            Home
+        </a>
+
+        <a [routerLink]="['/home']">
+            Admin
+        </a>
+    </div>
+</div>

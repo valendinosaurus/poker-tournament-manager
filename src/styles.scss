@@ -219,4 +219,10 @@ form .mdc-button,
 
 .m-800 {
     max-width: 800px;
+    flex: 0 0 800px;
+}
+
+.m-400 {
+    max-width: 400px;
+    flex: 0 0 400px;
 }

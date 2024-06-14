@@ -75,11 +75,15 @@ export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponen
     private initSignals(): void {
         this.tournament = this.state.tournament;
 
-        this.playersToAdd = computed(() => this.state.playersNotInTournament().map(player => ({
-                label: player.name,
-                value: player.id
-            })
-        ));
+        this.playersToAdd = computed(() => this.state.playersNotInTournament()
+            .map(player => ({
+                    label: player.name,
+                    value: player.id
+                })
+            ).sort((a, b) =>
+                a.label.localeCompare(b.label)
+            )
+        );
     }
 
     isPlayerFinished(playerId: number): boolean {
