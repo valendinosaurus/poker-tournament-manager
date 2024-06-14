@@ -33,21 +33,21 @@
                 <i class="fa fa-trash fa-ib"></i> DELETE
             </button>
 
-            <button
-                *ngIf="series.locked"
-                mat-raised-button
-                (click)="unlock(series)"
-            >
-                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
-            </button>
-
-            <button
-                *ngIf="!series.locked"
-                mat-raised-button
-                (click)="lock(series)"
-            >
-                <i class="fa fa-lock fa-ib"></i> LOCK
-            </button>
+            @if (series.locked) {
+                <button
+                    mat-raised-button
+                    (click)="unlock(series)"
+                >
+                    <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+                </button>
+            } @else {
+                <button
+                    mat-raised-button
+                    (click)="lock(series)"
+                >
+                    <i class="fa fa-lock fa-ib"></i> LOCK
+                </button>
+            }
         </div>
     </div>
 
@@ -119,7 +119,7 @@
             </div>
 
             <table class="admin-table">
-                <ng-container *ngFor="let tournament of series.tournaments">
+                @for (tournament of series.tournaments; track tournament.id) {
                     <tr>
                         <td>
                             {{ tournament.date | date:'dd.MM.YYYY' }}
@@ -135,7 +135,7 @@
                             ></i>
                         </td>
                     </tr>
-                </ng-container>
+                }
             </table>
         </mat-tab>
 

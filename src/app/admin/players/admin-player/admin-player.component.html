@@ -4,8 +4,7 @@
 
 <a [routerLink]="['/admin/player']">BACK</a>
 
-
-<ng-container *ngIf="player$ | async as player">
+@if (player$ | async; as player) {
     <div class="admin-header">
         <div class="flex flex-dir-column">
             <h4>Player</h4>
@@ -33,41 +32,43 @@
                 <i class="fa fa-trash fa-ib"></i> DELETE
             </button>
 
-            <button
-                *ngIf="(email$ | async) !== player.email"
-                mat-raised-button
-                color="accent"
-                [disabled]="!!player.locked"
-                (click)="thatsMe(player)"
-            >
-                <i class="fa fa-user fa-ib"></i> THAT'S ME
-            </button>
+            @if ((email$ | async) !== player.email) {
+                <button
+                    mat-raised-button
+                    color="accent"
+                    [disabled]="!!player.locked"
+                    (click)="thatsMe(player)"
+                >
+                    <i class="fa fa-user fa-ib"></i> THAT'S ME
+                </button>
+            }
 
-            <button
-                *ngIf="(email$ | async) === player.email"
-                mat-raised-button
-                color="accent"
-                [disabled]="!!player.locked"
-                (click)="thatsNotMe(player)"
-            >
-                <i class="fa fa-user fa-ib"></i> THAT'S NOT ME
-            </button>
+            @if ((email$ | async) === player.email) {
+                <button
+                    mat-raised-button
+                    color="accent"
+                    [disabled]="!!player.locked"
+                    (click)="thatsNotMe(player)"
+                >
+                    <i class="fa fa-user fa-ib"></i> THAT'S NOT ME
+                </button>
+            }
 
-            <button
-                *ngIf="player.locked"
-                mat-raised-button
-                (click)="unlock(player)"
-            >
-                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
-            </button>
-
-            <button
-                *ngIf="!player.locked"
-                mat-raised-button
-                (click)="lock(player)"
-            >
-                <i class="fa fa-lock fa-ib"></i> LOCK
-            </button>
+            @if (player.locked) {
+                <button
+                    mat-raised-button
+                    (click)="unlock(player)"
+                >
+                    <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+                </button>
+            } @else {
+                <button
+                    mat-raised-button
+                    (click)="lock(player)"
+                >
+                    <i class="fa fa-lock fa-ib"></i> LOCK
+                </button>
+            }
         </div>
     </div>
 
@@ -79,6 +80,5 @@
 
     <h4>Email</h4>
     <p>{{ player.email ?? '-' }}</p>
-
-</ng-container>
+}
 

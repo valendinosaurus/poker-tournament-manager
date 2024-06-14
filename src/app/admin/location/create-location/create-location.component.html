@@ -1,6 +1,9 @@
 <h2>
-    <ng-container *ngIf="!data?.location">Create</ng-container>
-    <ng-container *ngIf="data?.location">Edit</ng-container>
+    @if (!data?.location) {
+        Create
+    } @else {
+        Edit
+    }
     Location
 </h2>
 
@@ -29,8 +32,11 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        <ng-container *ngIf="!data?.location">CREATE</ng-container>
-        <ng-container *ngIf="data?.location">EDIT</ng-container>
+        @if (!data?.location) {
+            CREATE
+        } @else {
+            EDIT
+        }
     </button>
 </form>
 

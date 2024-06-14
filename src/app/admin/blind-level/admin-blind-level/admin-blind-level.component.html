@@ -11,14 +11,12 @@
         <div class="flex flex-dir-column">
             <h4>Blind Level</h4>
             <h2>
-                <ng-container *ngIf="!blindLevel.isPause">
+                @if (blindLevel.isPause) {
                     {{ blindLevel.sb | number:'1.0-0' }} /
                     {{ blindLevel.bb | number:'1.0-0' }}
-                </ng-container>
-
-                <ng-container *ngIf="blindLevel.isPause">
+                } @else {
                     PAUSE
-                </ng-container>
+                }
 
                 - {{ blindLevel.duration | number:'1.0-0' }} min
             </h2>
@@ -44,37 +42,48 @@
     </div>
 
     <div class="admin-body admin-body-flexed">
-        <span *ngIf="!blindLevel.isPause">
-            <h4>Ante</h4>
-            <p>
-                {{ blindLevel.ante | number:'1.0-0' }}
-            </p>
-        </span>
+        @if (!blindLevel.isPause) {
+            <span>
+                <h4>Small Blind</h4>
+                <p>
+                    {{ blindLevel.sb | number:'1.0-0' }}
+                </p>
+            </span>
 
-        <span *ngIf="!blindLevel.isPause">
-            <h4>Button Ante</h4>
-            <p>
-                {{ blindLevel.btnAnte | number:'1.0-0' }}
-            </p>
-        </span>
+            <span>
+                <h4>Big Blind</h4>
+                <p>
+                    {{ blindLevel.bb | number:'1.0-0' }}
+                </p>
+            </span>
+        }
 
-        <span *ngIf="blindLevel.isPause">
-            <h4>is Chip-Up</h4>
-            <p>
-                <ng-container *ngIf="blindLevel.isChipUp; else times;">
-                    <i class="fa fa-check"></i>
-                </ng-container>
-            </p>
-        </span>
+        @if (blindLevel.isPause) {
+            <span>
+                <h4>Pause</h4>
+                <p>
+                    {{ blindLevel.duration | number:'1.0-0' }} min
+                </p>
+            </span>
 
-        <span *ngIf="blindLevel.isPause">
-            <h4>ends Rebuy</h4>
-            <p>
-                <ng-container *ngIf="blindLevel.endsRebuy; else times;">
-                    <i class="fa fa-check"></i>
-                </ng-container>
-            </p>
-        </span>
+            <span>
+                <h4>is Chip-Up</h4>
+                <p>
+                    <ng-container *ngIf="blindLevel.isChipUp; else times;">
+                        <i class="fa fa-check"></i>
+                    </ng-container>
+                </p>
+            </span>
+
+            <span>
+                <h4>ends Rebuy</h4>
+                <p>
+                    <ng-container *ngIf="blindLevel.endsRebuy; else times;">
+                        <i class="fa fa-check"></i>
+                    </ng-container>
+                </p>
+            </span>
+        }
     </div>
 </ng-container>
 

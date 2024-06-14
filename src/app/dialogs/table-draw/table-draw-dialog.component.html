@@ -164,22 +164,23 @@
                                     {{ player?.player?.name }}
                                 </p>
 
-                                <div
-                                    *ngIf="player.isButton"
-                                    class="button"
-                                >
-                                    B
-                                </div>
+                                @if (player.isButton) {
+                                    <div class="button">
+                                        B
+                                    </div>
+                                }
 
-                                <mat-form-field *ngIf="player.selectVisible && !player.eliminated">
-                                    <mat-select>
-                                        <ng-container *ngFor="let p of tableDraw().availablePlayers">
-                                            <mat-option [value]="p" (click)="addFixedSeat(i, j, p)">
-                                                {{ p.name }}
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-select>
-                                </mat-form-field>
+                                @if (player.selectVisible && !player.eliminated) {
+                                    <mat-form-field>
+                                        <mat-select>
+                                            @for (p of tableDraw().availablePlayers; track p) {
+                                                <mat-option [value]="p" (click)="addFixedSeat(i, j, p)">
+                                                    {{ p.name }}
+                                                </mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                }
                             </div>
                         </ng-container>
                     </div>

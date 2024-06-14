@@ -2,7 +2,7 @@
     [user]="user$ | async"
 ></app-app-header>
 
-<ng-container *ngIf="isAuthenticated$ | async; else pleaseLogin;">
+@if (isAuthenticated$ | async) {
     <div class="page-with-header wide">
         <div class="page-header flex align-center">
             <i
@@ -26,45 +26,54 @@
                     >
                         Tournaments
                     </a>
-                    <a
-                        *ngIf="(isAdmin$ | async) || (isPro$ | async)"
-                        [routerLink]="['series']"
-                        mat-menu-item
-                    >
-                        Series
-                    </a>
-                    <a
-                        *ngIf="(isAdmin$ | async) || (isPro$ | async)"
-                        [routerLink]="['player']"
-                        mat-menu-item
-                    >
-                        Players
-                    </a>
+
+                    @if ((isAdmin$ | async) || (isPro$ | async)) {
+                        <a
+                            [routerLink]="['series']"
+                            mat-menu-item
+                        >
+                            Series
+                        </a>
+                    }
+
+                    @if ((isAdmin$ | async) || (isPro$ | async)) {
+                        <a
+                            [routerLink]="['player']"
+                            mat-menu-item
+                        >
+                            Players
+                        </a>
+                    }
+
                     <a
                         [routerLink]="['blind-level']"
                         mat-menu-item
                     >
                         Blind Levels
                     </a>
+
                     <a
                         [routerLink]="['blind-structure']"
                         mat-menu-item
                     >
                         Blind Structures
                     </a>
+
                     <a
                         [routerLink]="['location']"
                         mat-menu-item
                     >
                         Locations
                     </a>
-                    <a
-                        *ngIf="(isAdmin$ | async) || (isPro$ | async)"
-                        [routerLink]="['branding']"
-                        mat-menu-item
-                    >
-                        Branding
-                    </a>
+
+                    @if ((isAdmin$ | async) || (isPro$ | async)) {
+                        <a
+                            [routerLink]="['branding']"
+                            mat-menu-item
+                        >
+                            Branding
+                        </a>
+                    }
                 </div>
             </mat-sidenav>
             <mat-sidenav-content>
@@ -73,9 +82,10 @@
                 </div>
             </mat-sidenav-content>
         </mat-sidenav-container>
-
     </div>
-</ng-container>
+} @else {
+    <ng-container *ngTemplateOutlet="pleaseLogin"></ng-container>
+}
 
 <ng-template #pleaseLogin>
     <div class="login-hint">
@@ -85,7 +95,7 @@
             mat-flat-button
             color="primary"
             (click)="login()"
-            >
+        >
             <i class="fa fa-user fa-ib"></i> LOGIN NOW
         </button>
     </div>

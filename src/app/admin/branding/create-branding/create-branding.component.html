@@ -1,6 +1,9 @@
 <h2>
-    <ng-container *ngIf="!data?.branding">Create</ng-container>
-    <ng-container *ngIf="data?.branding">Edit</ng-container>
+    @if (!data?.branding) {
+        Create
+    } @else {
+        Edit
+    }
     Create Branding
 </h2>
 
@@ -27,8 +30,11 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        <ng-container *ngIf="!data?.branding">CREATE</ng-container>
-        <ng-container *ngIf="data?.branding">EDIT</ng-container>
+        @if (!data?.branding) {
+            CREATE
+        } @else {
+            EDIT
+        }
     </button>
 </form>
 

@@ -1,6 +1,9 @@
 <h2>
-    <ng-container *ngIf="!data?.blindLevel">Create</ng-container>
-    <ng-container *ngIf="data?.blindLevel">Edit</ng-container>
+    @if (!data?.blindLevel) {
+        Create
+    } @else {
+        Edit
+    }
     Pause
 </h2>
 
@@ -20,8 +23,11 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        <ng-container *ngIf="!data?.blindLevel">CREATE</ng-container>
-        <ng-container *ngIf="data?.blindLevel">EDIT</ng-container>
+        @if (data?.blindLevel) {
+            EDIT
+        } @else {
+            CREATE
+        }
     </button>
 </form>
 

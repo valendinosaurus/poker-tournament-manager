@@ -1,11 +1,11 @@
 <h2>
-    <ng-container *ngIf="data?.structure">
+    @if (data?.structure) {
         <i class="fa fa-edit"></i>
         Edit
-    </ng-container>
-    <ng-container *ngIf="!data?.structure">
+    } @else {
+        <i class="fa fa-plus"></i>
         Create
-    </ng-container>
+    }
 
     Blind Structure
 </h2>
@@ -28,12 +28,11 @@
         type="submit"
         [disabled]="!model.isValid()"
     >
-        <ng-container *ngIf="data?.structure">
+        @if (data?.structure) {
             EDIT
-        </ng-container>
-        <ng-container *ngIf="!data?.structure">
+        } @else {
             CREATE
-        </ng-container>
+        }
     </button>
 
     <button

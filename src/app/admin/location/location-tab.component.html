@@ -17,13 +17,13 @@
             <th>Name</th>
         </tr>
         <ng-container *ngFor="let location of locations$ | async">
-            <a style="display: contents" [routerLink]="['/admin/location', location.id]">
+            <a class="contents" [routerLink]="['/admin/location', location.id]">
                 <tr>
                     <td>
                         <img
+                            class="mh-40px"
                             [src]="location.image"
                             onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
-                            style="max-height: 40px;"
                         />
                     </td>
                     <td>
@@ -31,16 +31,17 @@
                     </td>
                     <td>
                         <div class="table-actions">
-                            <i
-                                *ngIf="!location.locked"
-                                class="fa fa-trash"
-                                (click)="deleteLocation(location, $event)"
-                            ></i>
 
-                            <i
-                                *ngIf="location.locked"
-                                class="fa fa-lock"
-                            ></i>
+                            @if (!location.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteLocation(location, $event)"
+                                ></i>
+                            }
+
+                            @if (location.locked) {
+                                <i class="fa fa-lock"></i>
+                            }
                         </div>
                     </td>
                 </tr>

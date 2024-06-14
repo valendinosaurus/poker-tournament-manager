@@ -1,7 +1,11 @@
 <div class="overview">
     <div class="overview-header">
-        <span style="font-weight: bold">{{ today() | date:'dd.MM.YYYY HH:mm' }}</span>
-        <span style="font-weight: bold">{{ tournament().name }} &#64; {{ tournament().locationName }}</span>
+        <span>
+            {{ today() | date:'dd.MM.YYYY HH:mm' }}
+        </span>
+        <span>
+            {{ tournament().name }} &#64; {{ tournament().locationName }}
+        </span>
     </div>
 
     <div class="overview-wrapper">
@@ -108,21 +112,24 @@
                     {{ currentLevelTimeLeft() | time }}
                 </h1>
 
-                <div *ngIf="!isRunning() && !isFinished()" class="popup paused">
-                    PAUSED
-                </div>
+                @if (!isRunning() && !isFinished()) {
+                    <div class="popup paused">
+                        PAUSED
+                    </div>
+                }
 
-                <div *ngIf="isFinished()" class="popup finished">
-                    FINISHED
-                </div>
-
-                <countdown
-                    *ngIf="!isFinished()"
-                    class="countdown"
-                    #cd
-                    (event)="handleEvent($event)"
-                    [config]="countdownConfig()"
-                ></countdown>
+                @if (isFinished) {
+                    <div class="popup finished">
+                        FINISHED
+                    </div>
+                } @else {
+                    <countdown
+                        class="countdown"
+                        #cd
+                        (event)="handleEvent($event)"
+                        [config]="countdownConfig()"
+                    ></countdown>
+                }
             </div>
 
             <div
@@ -159,19 +166,18 @@
             </div>
         </div>
 
-        <div
-            *ngIf="isProOrAdmin()"
-            class="right"
-        >
-            <h3 class="highlighted">
-                Tournament Info
-            </h3>
+        @if (isProOrAdmin()) {
+            <div class="right">
+                <h3 class="highlighted">
+                    Tournament Info
+                </h3>
 
-            <app-payout-details></app-payout-details>
-            <app-player-overview></app-player-overview>
-            <app-buyin-overview></app-buyin-overview>
-            <app-chips-overview></app-chips-overview>
-        </div>
+                <app-payout-details></app-payout-details>
+                <app-player-overview></app-player-overview>
+                <app-buyin-overview></app-buyin-overview>
+                <app-chips-overview></app-chips-overview>
+            </div>
+        }
     </div>
 </div>
 

@@ -17,14 +17,18 @@
             <th>Owner's Email</th>
             <th>Actions</th>
         </tr>
-        <ng-container *ngFor="let series of series$ | async">
-            <a style="display: contents" [routerLink]="['/admin/series', series.id]">
+
+        @for (series of series$ | async; track series.id) {
+            <a class="contents" [routerLink]="['/admin/series', series.id]">
                 <tr
                     [class.temp]="series.temp"
 
                 >
                     <td>
-                        <i *ngIf="series.temp" class="fa fa-exclamation-triangle"></i> {{ series.name }}
+                        @if (series.temp) {
+                            <i class="fa fa-exclamation-triangle"></i>
+                        }
+                        {{ series.name }}
                     </td>
                     <td>
                         {{ series.ownerEmail }}
@@ -36,20 +40,18 @@
                                 (click)="openSeries(series.id, series.password)"
                             ></i>
 
-                            <i
-                                *ngIf="!series.locked"
-                                class="fa fa-trash"
-                                (click)="deleteSeries(series, $event)"
-                            ></i>
-
-                            <i
-                                *ngIf="series.locked"
-                                class="fa fa-lock"
-                            ></i>
+                            @if (!series.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteSeries(series, $event)"
+                                ></i>
+                            } @else {
+                                <i class="fa fa-lock"></i>
+                            }
                         </div>
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService, User } from '@auth0/auth0-angular';
-import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 import { BlindLevelTabComponent } from './blind-level/blind-level-tab.component';
 import { SeriesTabComponent } from './series/series-tab.component';
 import { TournamentTabComponent } from './tournament/tournament-tab.component';
@@ -46,7 +46,8 @@ import { TimerStateService } from '../timer/services/timer-state.service';
         RouterOutlet,
         RouterLink,
         JsonPipe,
-        NgIf
+        NgIf,
+        NgTemplateOutlet
     ]
 })
 export class AdminComponent implements OnInit {

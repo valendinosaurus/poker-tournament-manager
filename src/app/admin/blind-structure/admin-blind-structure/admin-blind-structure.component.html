@@ -42,39 +42,35 @@
                 <i class="fa fa-trash fa-ib"></i> DELETE
             </button>
 
-            <button
-                *ngIf="!!blindStructure.locked"
-                mat-raised-button
-                (click)="unlock(blindStructure)"
-            >
-                <i class="fa fa-lock-open fa-ib"></i> UNLOCK
-            </button>
+            @if (!!blindStructure.locked) {
+                <button
+                    mat-raised-button
+                    (click)="unlock(blindStructure)"
+                >
+                    <i class="fa fa-lock-open fa-ib"></i> UNLOCK
+                </button>
+            } @else {
+                <button
+                    mat-raised-button
+                    (click)="lock(blindStructure)"
+                >
+                    <i class="fa fa-lock fa-ib"></i> LOCK
+                </button>
+            }
 
-            <button
-                *ngIf="!blindStructure.locked"
-                mat-raised-button
-                (click)="lock(blindStructure)"
-            >
-                <i class="fa fa-lock fa-ib"></i> LOCK
-            </button>
         </div>
     </div>
 
     <div class="admin-body">
-
         <div class="m-800">
-            <app-blind-structure-view
-                *ngIf="blindStructure.structure"
-                [structure]="blindStructure.structure"
-                [locked]="blindStructure.locked"
-                (deleteBlind)="deleteBlindFromStructure(blindStructure, $event)"
-                (addPause)="addPauseToStructure(blindStructure, $event)"
-            ></app-blind-structure-view>
+            @if (blindStructure.structure) {
+                <app-blind-structure-view
+                    [structure]="blindStructure.structure"
+                    [locked]="blindStructure.locked"
+                    (deleteBlind)="deleteBlindFromStructure(blindStructure, $event)"
+                    (addPause)="addPauseToStructure(blindStructure, $event)"
+                ></app-blind-structure-view>
+            }
         </div>
     </div>
 </ng-container>
-
-
-<ng-template #times>
-    <i class="fa fa-times"></i>
-</ng-template>
