@@ -122,37 +122,31 @@
 </h4>
 <div class="button-group">
 
-    <div
-        *ngIf="isRunning()"
-        class="action"
-    >
-        <h5>Pause</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="onPause()"
-        >
-            <i class="fa fa-pause"></i>
-        </button>
-    </div>
+    @if (isRunning()) {
+        <div class="action">
+            <h5>Pause</h5>
+            <button
+                mat-flat-button
+                class="main"
+                (click)="onPause()"
+            >
+                <i class="fa fa-pause"></i>
+            </button>
+        </div>
+    } @else {
+        <div class="action">
+            <h5>Start</h5>
+            <button
+                mat-flat-button
+                class="main"
+                (click)="onStart()"
+            >
+                <i class="fa fa-play"></i>
+            </button>
+        </div>
+    }
 
-    <div
-        *ngIf="!isRunning()"
-        class="action"
-    >
-        <h5>Start</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="onStart()"
-        >
-            <i class="fa fa-play"></i>
-        </button>
-    </div>
-
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5><i class="fa fa-plus"></i> 1min</h5>
         <button
             mat-flat-button
@@ -162,9 +156,7 @@
         </button>
     </div>
 
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5><i class="fa fa-chevron-circle-left"></i> Level</h5>
         <button
             mat-flat-button
@@ -174,9 +166,7 @@
         </button>
     </div>
 
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5><i class="fa fa-chevron-circle-right"></i> Level</h5>
         <button
             mat-flat-button
@@ -187,9 +177,7 @@
     </div>
 
     @if (isProOrAdmin()) {
-        <div
-            class="action"
-        >
+        <div class="action">
             <h5>Draw</h5>
             <button
                 mat-flat-button
@@ -204,9 +192,7 @@
 <h4>Other Actions</h4>
 <div class="button-group">
 
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5>Autoslide</h5>
         <button
             mat-flat-button
@@ -217,9 +203,7 @@
         </button>
     </div>
 
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5>Condense</h5>
         <button
             mat-flat-button
@@ -230,37 +214,31 @@
         </button>
     </div>
 
-    <div
-        *ngIf="!isFullScreen()"
-        class="action"
-    >
-        <h5>Fullscreen</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="fullScreen()"
-        >
-            <i class="fa fa-maximize"></i>
-        </button>
-    </div>
+    @if (!isFullScreen()) {
+        <div class="action">
+            <h5>Fullscreen</h5>
+            <button
+                mat-flat-button
+                class="main"
+                (click)="fullScreen()"
+            >
+                <i class="fa fa-maximize"></i>
+            </button>
+        </div>
+    } @else {
+        <div class="action">
+            <h5>Normal Screen</h5>
+            <button
+                mat-flat-button
+                class="main"
+                (click)="cancelFullscreen()"
+            >
+                <i class="fa fa-minimize"></i>
+            </button>
+        </div>
+    }
 
-    <div
-        *ngIf="isFullScreen()"
-        class="action"
-    >
-        <h5>Normal Screen</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="cancelFullscreen()"
-        >
-            <i class="fa fa-minimize"></i>
-        </button>
-    </div>
-
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5>Cursor</h5>
         <button
             mat-flat-button
@@ -271,9 +249,7 @@
         </button>
     </div>
 
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5>- Started</h5>
         <button
             mat-flat-button
@@ -284,9 +260,7 @@
         </button>
     </div>
 
-    <div
-        class="action"
-    >
+    <div class="action">
         <h5>Admin</h5>
         <button
             mat-flat-button
@@ -300,7 +274,9 @@
 
 @if (!isTournamentLocked()) {
     <h4>Tournament settings</h4>
+
     <br>
+
     <form
         [formGroup]="form"
     >

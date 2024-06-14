@@ -4,12 +4,15 @@
             <th class="t-rank">Rank</th>
             <th>Name</th>
             <th class="t-right">Points</th>
-            <th *ngIf="full" class="t-center">&#x2205; Rank</th>
-            <th *ngIf="full" class="t-center">Played</th>
-            <th *ngIf="full" class="t-center">ITM (%)</th>
-            <th *ngIf="full" class="t-center">Rebuys / Addons</th>
-            <th *ngIf="full" class="t-center">Eliminations</th>
-            <th *ngIf="full" class="t-right">Price</th>
+
+            @if (full()) {
+                <th class="t-center">&#x2205; Rank</th>
+                <th class="t-center">Played</th>
+                <th class="t-center">ITM (%)</th>
+                <th class="t-center">Rebuys / Addons</th>
+                <th class="t-center">Eliminations</th>
+                <th class="t-right">Price</th>
+            }
         </tr>
         <ng-container *ngFor="let e of leaderboard(); let i = index">
             <tr
@@ -40,33 +43,36 @@
                         </strong>
                     </div>
                 </td>
-                <td *ngIf="full" class="t-center">
-                    @if (e.rank > 999999999) {
-                        <i class="fa fa-hourglass-2"></i>
-                    } @else {
-                        {{ e.rank / e.tournaments | number:'1.1-1' }}
-                    }
-                </td>
-                <td *ngIf="full" class="t-center">
-                    {{ e.tournaments }}
-                </td>
-                <td *ngIf="full" class="t-center">
-                    {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)
-                </td>
-                <td *ngIf="full" class="t-center">
-                    {{ e.rebuysAddons }}
-                </td>
-                <td *ngIf="full" class="t-center">
-                    {{ e.eliminations }}
-                </td>
-                <td *ngIf="full" class="t-right">
+
+                @if (full()) {
+                    <td class="t-center">
+                        @if (e.rank > 999999999) {
+                            <i class="fa fa-hourglass-2"></i>
+                        } @else {
+                            {{ e.rank / e.tournaments | number:'1.1-1' }}
+                        }
+                    </td>
+                    <td class="t-center">
+                        {{ e.tournaments }}
+                    </td>
+                    <td class="t-center">
+                        {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)
+                    </td>
+                    <td class="t-center">
+                        {{ e.rebuysAddons }}
+                    </td>
+                    <td class="t-center">
+                        {{ e.eliminations }}
+                    </td>
+                    <td class="t-right">
                     <span
                         [class.green]="e.price > 0"
                         [class.bold]="e.price > 0"
                     >
                         $ {{ e.price | number:'':'de-CH' }}
                     </span>
-                </td>
+                    </td>
+                }
             </tr>
         </ng-container>
     </table>

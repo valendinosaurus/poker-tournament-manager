@@ -23,12 +23,11 @@
         color="primary"
         type="submit"
     >
-        <ng-container *ngIf="data.itsMe">
+        @if (data.itsMe) {
             YES, that's me!
-        </ng-container>
-        <ng-container *ngIf="!data.itsMe">
+        } @else {
             No, that's not me!
-        </ng-container>
+        }
     </button>
 
     <button
@@ -36,11 +35,10 @@
         color="warn"
         (click)="closeDialog($event)"
     >
-        <ng-container *ngIf="data.itsMe">
+        @if (data.itsMe) {
             No
-        </ng-container>
-        <ng-container *ngIf="!data.itsMe">
+        } @else {
             Cancel
-        </ng-container>
+        }
     </button>
 </form>

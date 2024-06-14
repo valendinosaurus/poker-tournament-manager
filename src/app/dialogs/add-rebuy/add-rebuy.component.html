@@ -73,7 +73,7 @@
                     </span>
                     </td>
                     <td>
-                        <ng-container *ngIf="!e.isFinished; else skull">
+                        @if (!e.isFinished) {
                             @if (!isLoadingRemove) {
                                 <i
                                     class="fa fa-trash"
@@ -82,10 +82,9 @@
                             } @else {
                                 <i class="fa fa-spinner fa-spin"></i>
                             }
-                        </ng-container>
-                        <ng-template #skull>
+                        } @else {
                             <i class="fa fa-skull"></i>
-                        </ng-template>
+                        }
                     </td>
                 </tr>
             </ng-container>

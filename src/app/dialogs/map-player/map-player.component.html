@@ -15,21 +15,22 @@
 <form
     (ngSubmit)="confirm()"
 >
-
-    <mat-form-field *ngIf="model">
-        <mat-label>Player</mat-label>
-        <mat-select
-            [ngModel]="model()"
-            (selectionChange)="selectPlayer($event.value)"
-            name="model"
-        >
-            <ng-container *ngFor="let p of allMappablePlayers">
-                <mat-option [value]="p">
-                    {{ p.name }}
-                </mat-option>
-            </ng-container>
-        </mat-select>
-    </mat-form-field>
+    @if (model !== undefined && model !== null) {
+        <mat-form-field>
+            <mat-label>Player</mat-label>
+            <mat-select
+                [ngModel]="model()"
+                (selectionChange)="selectPlayer($event.value)"
+                name="model"
+            >
+                <ng-container *ngFor="let p of allMappablePlayers">
+                    <mat-option [value]="p">
+                        {{ p.name }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    }
 
     <button
         mat-raised-button color="primary"

@@ -14,32 +14,26 @@
                 <th class="center"><small>Addons</small></th>
                 <th class="center"><small>Eliminations</small></th>
             </tr>
-            <ng-container *ngFor="let e of combination()">
+
+            @for (e of combination(); track e) {
                 <tr [class.finished]="e.isFinished">
                     <td>
                     <span class="flex-td">
-
-                        <ng-container *ngIf="e.rank; else tbd">
+                        @if (e.rank) {
                             <span class="tbd">({{ e.rank | number }})</span>
-                        </ng-container>
-                        <ng-template #tbd>
+                        } @else {
                             <span class="tbd">(TBD)</span>
-                        </ng-template>
+                        }
 
-                        <app-user-image-round
-                            *ngIf="!e.isFinished"
-                            [imageUrl]="e.image"
-                        ></app-user-image-round>
-
-                        <ng-container *ngIf="e.isFinished">
-                            <i
-                                *ngIf="e.isLastFinished; else skull"
-                                class="fa fa-skull clickable w-32 mr-1"
-                            ></i>
-                        </ng-container>
-                        <ng-template #skull>
-                            <i class="fa fa-skull w-32 mr-1"></i>
-                        </ng-template>
+                        @if (!e.isFinished) {
+                            <app-user-image-round [imageUrl]="e.image"></app-user-image-round>
+                        } @else {
+                            @if (e.isLastFinished) {
+                                <i class="fa fa-skull clickable w-32 mr-1"></i>
+                            } @else {
+                                <i class="fa fa-skull w-32 mr-1"></i>
+                            }
+                        }
 
                         <span>{{ e.name }}</span>
                     </span>
@@ -60,7 +54,7 @@
                         ></app-bullets>
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
         <div id="bottomp"></div>
     </div>

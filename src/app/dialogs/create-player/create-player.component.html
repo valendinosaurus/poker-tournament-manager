@@ -1,9 +1,10 @@
 <h2>
-    <ng-container *ngIf="data?.player">
+    @if (data?.player) {
         <i class="fa fa-edit"></i>
         Edit
-    </ng-container>
-    <ng-container *ngIf="!data?.player">Create</ng-container>
+    } @else {
+        Create
+    }
     Player
 </h2>
 
@@ -43,12 +44,11 @@
         type="submit"
         [disabled]="!model.isValid()"
     >
-        <ng-container *ngIf="data?.player">
+        @if (data?.player) {
             EDIT
-        </ng-container>
-        <ng-container *ngIf="!data?.player">
+        } @else {
             CREATE
-        </ng-container>
+        }
     </button>
 
     <button

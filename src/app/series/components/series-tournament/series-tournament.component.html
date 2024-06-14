@@ -1,177 +1,174 @@
-<div class="tournament" *ngIf="tournament()">
-    <div class="header">
-        <h5>
-            {{ tournament().tournament.date | date }}
-        </h5>
-        <h4>
-            {{ tournament().tournament.name }}
-        </h4>
-        <h5
-            *ngIf="tournament().playersAlive.length > 0"
-            class="flex justify-center align-center"
-        >
-            <span class="running"></span>
-            RUNNING!
-        </h5>
+@if (tournament()) {
+    <div class="tournament">
+        <div class="header">
+            <h5>
+                {{ tournament().tournament.date | date }}
+            </h5>
+            <h4>
+                {{ tournament().tournament.name }}
+            </h4>
 
-        <div>
-            <span>
-                <p>
-                    <strong class="green">
-                        $ {{ tournament().pricePool - tournament().contribution | number:'1.0-0' }}
-                    </strong>
-                </p>
-                <h5>
-                    Effective price pool
+            @if (tournament().playersAlive.length > 0) {
+                <h5 class="flex justify-center align-center">
+                    <span class="running"></span>
+                    RUNNING!
                 </h5>
-            </span>
+            }
 
-            <span>
-                <p>
-                    $ {{ tournament().pricePool | number:'1.0-0' }}
-                </p>
-                <h5>
-                    Total price pool
-                </h5>
-            </span>
+            <div>
+                <span>
+                    <p>
+                        <strong class="green">
+                            $ {{ tournament().pricePool - tournament().contribution | number:'1.0-0' }}
+                        </strong>
+                    </p>
+                    <h5>
+                        Effective price pool
+                    </h5>
+                </span>
 
-            <span>
-                <p>
-                    $ {{ tournament().contribution | number:'1.0-0' }}
-                </p>
-                <h5>
-                    Goes to final pot
-                </h5>
-            </span>
+                <span>
+                    <p>
+                        $ {{ tournament().pricePool | number:'1.0-0' }}
+                    </p>
+                    <h5>
+                        Total price pool
+                    </h5>
+                </span>
+
+                <span>
+                    <p>
+                        $ {{ tournament().contribution | number:'1.0-0' }}
+                    </p>
+                    <h5>
+                        Goes to final pot
+                    </h5>
+                </span>
+            </div>
         </div>
-    </div>
 
-    <div class="table-wrapper">
-        <table>
-            <tr>
-                <th>Name</th>
-                <th class="t-center">
-                    Points (Rank)
-                </th>
-                <th class="t-center">Rebuys</th>
-                <th class="t-center">Addons</th>
-
-                @if (showEliminations()) {
-                    <th class="t-center">Eliminations</th>
-                }
-
-                <th class="t-right">Price</th>
-            </tr>
-            <ng-container *ngFor="let e of tournament().combFinishes">
+        <div class="table-wrapper">
+            <table>
                 <tr>
-                    <td>
-                        <span class="flex-td">
-                           <app-user-image-round
-                               [imageUrl]="e.image"
-                               [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && myEmail() === e.email) ? 'b-my-user' : 'b-regular'"
-                           ></app-user-image-round>
-                            {{ e.name }}
-                        </span>
-                    </td>
-                    <td class="t-center">
-                        <span class="t-flex" *ngIf="!e.isTemp; else temp">
-                            <strong>
-                                {{ e.points | number:'1.1-1' }}
-                            </strong>
-                            &nbsp;
-                            ({{ e.rank | number:'1.0-1' }})
-                            <ng-container *ngIf="e.dealMade">
-                                <i class="fa fa-handshake"></i>
-                            </ng-container>
-                        </span>
-                        <ng-template #temp>
-                            <span class="t-flex justify-center align-center">
-                                {{ e.points | number:'1.1-1' }} (+)
-                            </span>
-                        </ng-template>
-                    </td>
-                    <td class="t-center">
-                        <app-bullets [number]="e.rebuys"></app-bullets>
-                    </td>
-                    <td class="t-center">
-                        <app-bullets [number]="e.addons"></app-bullets>
-                    </td>
+                    <th>Name</th>
+                    <th class="t-center">
+                        Points (Rank)
+                    </th>
+                    <th class="t-center">Rebuys</th>
+                    <th class="t-center">Addons</th>
 
                     @if (showEliminations()) {
-                        <td class="t-center">
-                            <app-bullets
-                                [number]="e.eliminations"
-                                bulletClass="fa-skull"
-                            ></app-bullets>
-                        </td>
+                        <th class="t-center">Eliminations</th>
                     }
 
-                    <td class="t-right">
-                        <span
-                            [class.green]="e.price > 0"
-                            [class.bold]="e.price > 0"
-                        >
-                            $ {{ e.price | number:'':'de-CH' }}
-                        </span>
-                    </td>
+                    <th class="t-right">Price</th>
                 </tr>
-            </ng-container>
-        </table>
-    </div>
+                @for (e of tournament().combFinishes; track e) {
+                    <tr>
+                        <td>
+                            <span class="flex-td">
+                               <app-user-image-round
+                                   [imageUrl]="e.image"
+                                   [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && myEmail() === e.email) ? 'b-my-user' : 'b-regular'"
+                               ></app-user-image-round>
+                                {{ e.name }}
+                            </span>
+                        </td>
+                        <td class="t-center">
+                            @if (!e.isTemp) {
+                                <span>
+                                    <strong>
+                                        {{ e.points | number:'1.1-1' }}
+                                    </strong>
+                                    &nbsp;
+                                    ({{ e.rank | number:'1.0-1' }})
 
-    <ng-container *ngIf="liveTicker()">
-        <div
-            *ngIf="liveTicker().length > 0"
-            class="live-ticker"
-        >
-            <span class="flex justify-between align-center">
-                <span class="flex">
-                    <i
-                        class="fa fa-chevron-circle-down hoverable"
-                        [class.rotate-180]="!isLiveTickerExpanded()"
-                        (click)="isLiveTickerExpanded.set(!isLiveTickerExpanded())"
-                    ></i>
+                                    @if (e.dealMade) {
+                                        <i class="fa fa-handshake"></i>
+                                    }
+                                </span>
+                            } @else {
+                                <span class="t-flex justify-center align-center">
+                                    {{ e.points | number:'1.1-1' }} (+)
+                                </span>
+                            }
 
-                    <h4>Live-Ticker </h4>
+                        </td>
+                        <td class="t-center">
+                            <app-bullets [number]="e.rebuys"></app-bullets>
+                        </td>
+                        <td class="t-center">
+                            <app-bullets [number]="e.addons"></app-bullets>
+                        </td>
+
+                        @if (showEliminations()) {
+                            <td class="t-center">
+                                <app-bullets
+                                    [number]="e.eliminations"
+                                    bulletClass="fa-skull"
+                                ></app-bullets>
+                            </td>
+                        }
+
+                        <td class="t-right">
+                            <span
+                                [class.green]="e.price > 0"
+                                [class.bold]="e.price > 0"
+                            >
+                                $ {{ e.price | number:'':'de-CH' }}
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+        @if (liveTicker() && liveTicker().length > 0) {
+            <div class="live-ticker">
+                <span class="flex justify-between align-center">
+                    <span class="flex">
+                        <i
+                            class="fa fa-chevron-circle-down hoverable"
+                            [class.rotate-180]="!isLiveTickerExpanded()"
+                            (click)="isLiveTickerExpanded.set(!isLiveTickerExpanded())"
+                        ></i>
+
+                        <h4>Live-Ticker </h4>
+                    </span>
+
+                    @if (fetchLiveTicker()) {
+                        <div class="flex cd-title-info align-center">
+                            @if (countdown$ | async; as cd) {
+                                <div class="countdown">
+                                    <div
+                                        class="cd-content"
+                                        [style.width.%]="cd / 4"
+                                    ></div>
+
+                                </div>
+                                <small>{{ (cd / 20) | number:'1.0-0' }}s</small>
+                            }
+                        </div>
+                    }
                 </span>
 
                 <div
-                    *ngIf="fetchLiveTicker()"
-                    class="flex cd-title-info align-center"
+                    class="expandable"
+                    [class.expanded]="isLiveTickerExpanded()"
                 >
-                    <ng-container *ngIf="countdown$ | async as cd">
-
-                    <div
-
-                        class="countdown"
-                    >
-                        <div
-                            class="cd-content"
-                            [style.width.%]="cd / 4"
-                        ></div>
-
-                    </div>
-                    <small>{{ (cd / 20) | number:'1.0-0' }}s</small>
-                    </ng-container>
+                    @for (e of liveTicker(); track e) {
+                        <div class="live-ticker-item">
+                            <span class="fa-wrapper">
+                                <i class="fa" [class]="e | tEventTypeIcon"></i>
+                            </span>
+                            <span class="time">
+                                {{ e.timestamp | date:'HH:mm' }}
+                            </span>
+                            <span [innerHTML]="e.message"></span>
+                        </div>
+                    }
                 </div>
-            </span>
-
-            <div
-                class="expandable"
-                [class.expanded]="isLiveTickerExpanded()"
-            >
-                <ng-container *ngFor="let e of liveTicker()">
-                    <div class="live-ticker-item">
-                        <span class="fa-wrapper">
-                            <i class="fa" [class]="e | tEventTypeIcon"></i>
-                        </span>
-                        <span class="time">
-                            {{ e.timestamp | date:'HH:mm' }}
-                        </span>
-                        <span [innerHTML]="e.message"></span>
-                    </div>
-                </ng-container>
             </div>
-        </div>
-    </ng-container>
-</div>
+        }
+    </div>
+}

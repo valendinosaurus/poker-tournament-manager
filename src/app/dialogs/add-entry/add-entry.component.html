@@ -54,7 +54,7 @@
 @if (conductedEntries().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            <ng-container *ngFor="let e of conductedEntries()">
+            @for (e of conductedEntries(); track e) {
                 <tr>
                     <td class="small-gray">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}
@@ -72,15 +72,16 @@
                         {{ e.type }}
                     </td>
                     <td>
-                        <ng-container *ngIf="e.isBlocked && !e.isFinished">
+                        @if (e.isBlocked && !e.isFinished) {
                             <i class="fa fa-money-bill-wave"></i>
-                        </ng-container>
-                        <ng-container *ngIf="e.isFinished">
+                        }
+
+                        @if (e.isFinished) {
                             <i class="fa fa-skull"></i>
-                        </ng-container>
+                        }
                     </td>
                     <td>
-                        <ng-container *ngIf="!e.isFinished && !e.isBlocked;">
+                        @if (!e.isFinished && !e.isBlocked) {
                             @if (!isLoadingRemove) {
                                 <i
                                     class="fa fa-trash"
@@ -89,10 +90,10 @@
                             } @else {
                                 <i class="fa fa-spinner fa-spin"></i>
                             }
-                        </ng-container>
+                        }
                     </td>
                 </tr>
-            </ng-container>
+            }
         </table>
     </div>
 } @else {
