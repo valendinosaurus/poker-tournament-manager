@@ -6,8 +6,8 @@ import {
     BlindStructureEstimatedDurationComponent
 } from './blind-structure-estimated-duration/blind-structure-estimated-duration.component';
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
-import { FetchService } from '../../../core/services/fetch.service';
+import { BlindStructureApiService } from '../../services/api/blind-structure-api.service';
+import { FetchService } from '../../services/fetch.service';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({

@@ -3,10 +3,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { RankingService } from '../../core/services/util/ranking.service';
-import { LocalStorageService } from '../../core/services/util/local-storage.service';
+import { RankingService } from '../../shared/services/util/ranking.service';
+import { LocalStorageService } from '../../shared/services/util/local-storage.service';
 import { defer, iif, of } from 'rxjs';
-import { NotificationService } from '../../core/services/notification.service';
+import { NotificationService } from '../../shared/services/notification.service';
 import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ConductedElimination } from '../../shared/interfaces/util/conducted-elimination.interface';
@@ -17,11 +17,11 @@ import { AddFinishModel } from './add-finish-model.interface';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { FetchService } from '../../core/services/fetch.service';
+import { FetchService } from '../../shared/services/fetch.service';
 import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 import { DeleteSeatOpenEvent } from '../../shared/interfaces/util/seat-open-event.interface';
-import { TimerApiService } from '../../core/services/api/timer-api.service';
-import { TournamentService } from '../../core/services/util/tournament.service';
+import { TimerApiService } from '../../shared/services/api/timer-api.service';
+import { TournamentService } from '../../shared/services/util/tournament.service';
 
 @Component({
     selector: 'app-add-finish',

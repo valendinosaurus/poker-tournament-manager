@@ -2,14 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { AdminTournament, Tournament, TournamentModel } from '../../../shared/interfaces/tournament.interface';
+import { AdminTournament, Tournament, TournamentModel } from '../../interfaces/tournament.interface';
 import { filter, switchMap, tap } from 'rxjs/operators';
-import { SeriesMetadata } from '../../../shared/interfaces/series.interface';
-import { TournamentSettings } from '../../../shared/interfaces/tournament-settings.interface';
+import { SeriesMetadata } from '../../interfaces/series.interface';
+import { TournamentSettings } from '../../interfaces/tournament-settings.interface';
 import { Router } from '@angular/router';
-import { ServerResponseType } from '../../../shared/types/server-response.type';
+import { ServerResponseType } from '../../types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';
-import { TEvent } from '../../../shared/interfaces/t-event.interface';
+import { TEvent } from '../../interfaces/t-event.interface';
 
 @Injectable({
     providedIn: 'root'

@@ -1,5 +1,5 @@
 <h2>
-    @if (!data?.location) {
+    @if (data.location === null) {
         Create
     } @else {
         Edit
@@ -32,7 +32,7 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        @if (!data?.location) {
+        @if (data.location === null) {
             CREATE
         } @else {
             EDIT

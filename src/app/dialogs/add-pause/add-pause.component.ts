@@ -2,9 +2,9 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormlyFieldService } from '../../core/services/util/formly-field.service';
-import { BlindLevelApiService } from '../../core/services/api/blind-level-api.service';
-import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { FormlyFieldService } from '../../shared/services/util/formly-field.service';
+import { BlindLevelApiService } from '../../shared/services/api/blind-level-api.service';
+import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
 import { AuthService } from '@auth0/auth0-angular';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { shareReplay, take, tap } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlindLevel } from '../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
-import { BlindStructureApiService } from '../../core/services/api/blind-structure-api.service';
+import { BlindStructureApiService } from '../../shared/services/api/blind-structure-api.service';
 
 @Component({
     selector: 'app-add-pause',

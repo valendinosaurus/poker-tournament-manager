@@ -4,9 +4,9 @@ import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
 import { User } from '@auth0/auth0-angular';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
-import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
+import { BlindStructureApiService } from '../../../shared/services/api/blind-structure-api.service';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddBlindsComponent } from '../../../dialogs/add-blinds/add-blinds.component';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { CreateBlindStructureComponent } from '../create-blind-structure/create-blind-structure.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
 
 @Component({

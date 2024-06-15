@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
-import { BlindLevelApiService } from '../../../core/services/api/blind-level-api.service';
+import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { BlindLevelApiService } from '../../../shared/services/api/blind-level-api.service';
 import { take, tap } from 'rxjs/operators';
 import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ export class CreateBlindLevelComponent implements OnInit {
     private dialogRef: MatDialogRef<CreateBlindLevelComponent> = inject(MatDialogRef<CreateBlindLevelComponent>);
 
     data: {
-        blindLevel?: BlindLevel;
+        blindLevel: BlindLevel | null;
     } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});

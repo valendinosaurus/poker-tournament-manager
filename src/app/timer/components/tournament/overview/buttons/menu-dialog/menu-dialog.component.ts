@@ -20,21 +20,20 @@ import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
 import { AddAddonComponent } from '../../../../../../dialogs/add-addon/add-addon.component';
 import { AddFinishComponent } from '../../../../../../dialogs/add-finish/add-finish.component';
-import { FormlyFieldService } from '../../../../../../core/services/util/formly-field.service';
-import { RankingService } from '../../../../../../core/services/util/ranking.service';
+import { FormlyFieldService } from '../../../../../../shared/services/util/formly-field.service';
+import { RankingService } from '../../../../../../shared/services/util/ranking.service';
 import { AddPlayerComponent } from '../../../../../../dialogs/add-player/add-player.component';
 import { take, tap } from 'rxjs/operators';
-import { TournamentApiService } from '../../../../../../core/services/api/tournament-api.service';
-import { FetchService } from '../../../../../../core/services/fetch.service';
+import { TournamentApiService } from '../../../../../../shared/services/api/tournament-api.service';
+import { FetchService } from '../../../../../../shared/services/fetch.service';
 import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
-import { LocalStorageService } from '../../../../../../core/services/util/local-storage.service';
+import { LocalStorageService } from '../../../../../../shared/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../shared/const/app.const';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { CreatePlayerComponent } from '../../../../../../dialogs/create-player/create-player.component';
-import { AuthUtilService } from '../../../../../../core/services/auth-util.service';
-import { TournamentService } from '../../../../../../core/services/util/tournament.service';
+import { AuthUtilService } from '../../../../../../shared/services/auth-util.service';
+import { TournamentService } from '../../../../../../shared/services/util/tournament.service';
 import { TimerStateService } from '../../../../../services/timer-state.service';
 import { Tournament } from '../../../../../../shared/interfaces/tournament.interface';
 import { SeriesMetadata } from '../../../../../../shared/interfaces/series.interface';
@@ -167,11 +166,6 @@ export class MenuDialogComponent implements OnInit {
         }
 
         this.fields.push(this.formlyFieldService.getDefaultTextField('name', 'Name', false));
-    }
-
-    // TODO include
-    createPlayer(): void {
-        this.dialog.open(CreatePlayerComponent);
     }
 
     addRebuy(): void {

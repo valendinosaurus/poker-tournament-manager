@@ -3,12 +3,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { FetchService } from '../../core/services/fetch.service';
+import { FetchService } from '../../shared/services/fetch.service';
 import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.interface';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
-import { NotificationService } from '../../core/services/notification.service';
-import { TournamentService } from '../../core/services/util/tournament.service';
+import { NotificationService } from '../../shared/services/notification.service';
+import { TournamentService } from '../../shared/services/util/tournament.service';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { DatePipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
-import { TimerApiService } from '../../core/services/api/timer-api.service';
+import { TimerApiService } from '../../shared/services/api/timer-api.service';
 
 @Component({
     selector: 'app-add-rebuy',

@@ -5,18 +5,18 @@ import { SeriesMetadata } from '../../shared/interfaces/series.interface';
 import { Player } from '../../shared/interfaces/player.interface';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormGroup, FormsModule } from '@angular/forms';
-import { FormlyFieldService } from '../../core/services/util/formly-field.service';
+import { FormlyFieldService } from '../../shared/services/util/formly-field.service';
 import { forkJoin, Observable, of } from 'rxjs';
 import { ServerResponse } from '../../shared/interfaces/server-response';
-import { FinishApiService } from '../../core/services/api/finish-api.service';
+import { FinishApiService } from '../../shared/services/api/finish-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { FetchService } from '../../core/services/fetch.service';
-import { RankingService } from '../../core/services/util/ranking.service';
-import { NotificationService } from '../../core/services/notification.service';
-import { TEventApiService } from '../../core/services/api/t-event-api.service';
+import { FetchService } from '../../shared/services/fetch.service';
+import { RankingService } from '../../shared/services/util/ranking.service';
+import { NotificationService } from '../../shared/services/notification.service';
+import { TEventApiService } from '../../shared/services/api/t-event-api.service';
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { MatButtonModule } from '@angular/material/button';
-import { TournamentService } from '../../core/services/util/tournament.service';
+import { TournamentService } from '../../shared/services/util/tournament.service';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { Entry } from '../../../../../shared/interfaces/entry.interface';
 import { Finish } from '../../../../../shared/interfaces/finish.interface';
-import { Formula, RankingService } from '../../../../../core/services/util/ranking.service';
+import { Formula, RankingService } from '../../../../../shared/services/util/ranking.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';

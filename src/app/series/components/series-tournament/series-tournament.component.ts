@@ -9,7 +9,7 @@ import { interval, Observable } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimePipe } from '../../../shared/pipes/time.pipe';
-import { TEventApiService } from '../../../core/services/api/t-event-api.service';
+import { TEventApiService } from '../../../shared/services/api/t-event-api.service';
 
 @Component({
     selector: 'app-series-tournament',

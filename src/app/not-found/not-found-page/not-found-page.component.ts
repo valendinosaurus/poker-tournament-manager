@@ -3,7 +3,7 @@ import { AppHeaderComponent } from '../../shared/components/app-header/app-heade
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { User } from '@auth0/auth0-angular';
-import { AuthUtilService } from '../../core/services/auth-util.service';
+import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { RouterLink } from '@angular/router';
 
 @Component({

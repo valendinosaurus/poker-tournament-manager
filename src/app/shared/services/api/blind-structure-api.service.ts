@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BlindStructure, BlindStructureModel } from '../../../shared/interfaces/blind-structure.interface';
+import { BlindStructure, BlindStructureModel } from '../../interfaces/blind-structure.interface';
 import { BACKEND_URL } from '../../../app.const';
-import { ServerResponseType } from '../../../shared/types/server-response.type';
+import { ServerResponseType } from '../../types/server-response.type';
 import { switchMap } from 'rxjs/operators';
 import { AuthUtilService } from '../auth-util.service';
 

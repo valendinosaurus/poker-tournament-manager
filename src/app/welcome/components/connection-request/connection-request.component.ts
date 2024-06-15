@@ -1,14 +1,14 @@
 import { Component, inject, input } from '@angular/core';
 import { ConnectionRequest } from '../../../shared/interfaces/util/connection-request.interface';
-import { ConnectionRequestApiService } from '../../../core/services/api/connection-request-api.service';
+import { ConnectionRequestApiService } from '../../../shared/services/api/connection-request-api.service';
 import { take, tap } from 'rxjs/operators';
-import { FetchService } from '../../../core/services/fetch.service';
+import { FetchService } from '../../../shared/services/fetch.service';
 import { ConnectionRequestState } from '../../../shared/enums/connection-request-state.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { MapPlayerComponent } from '../../../dialogs/map-player/map-player.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
-import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
     selector: 'app-connection-request',

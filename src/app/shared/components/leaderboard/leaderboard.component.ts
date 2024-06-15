@@ -3,7 +3,7 @@ import { LeaderboardRow } from '../../../series/interfaces/overall-ranking.inter
 import { Series, SeriesS } from '../../interfaces/series.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { CreatePlayerComponent } from '../../../dialogs/create-player/create-player.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { Player } from '../../interfaces/player.interface';
 import { UserImageRoundComponent } from '../user-image-round/user-image-round.component';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';

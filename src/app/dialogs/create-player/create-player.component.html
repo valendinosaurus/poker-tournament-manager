@@ -1,5 +1,5 @@
 <h2>
-    @if (data?.player) {
+    @if (data.player !== null) {
         <i class="fa fa-edit"></i>
         Edit
     } @else {
@@ -44,7 +44,7 @@
         type="submit"
         [disabled]="!model.isValid()"
     >
-        @if (data?.player) {
+        @if (data.player) {
             EDIT
         } @else {
             CREATE

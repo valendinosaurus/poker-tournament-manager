@@ -2,16 +2,16 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { Player } from '../../../shared/interfaces/player.interface';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { PlayerApiService } from '../../../core/services/api/player-api.service';
+import { PlayerApiService } from '../../../shared/services/api/player-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { CreatePlayerComponent } from '../../../dialogs/create-player/create-player.component';
 
 @Component({
@@ -47,7 +47,8 @@ export class PlayersTabComponent implements OnInit {
             ...DEFAULT_DIALOG_POSITION,
             height: '80vh',
             data: {
-                blockName: false
+                blockName: false,
+                player: null
             }
         });
 

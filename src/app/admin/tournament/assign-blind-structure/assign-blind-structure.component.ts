@@ -1,18 +1,18 @@
 import { Component, computed, inject, signal, Signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
+import { BlindStructureApiService } from '../../../shared/services/api/blind-structure-api.service';
 import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
 import { Tournament } from '../../../shared/interfaces/tournament.interface';
 import { Observable } from 'rxjs';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { map, shareReplay, take, tap } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
+import { TournamentApiService } from '../../../shared/services/api/tournament-api.service';
 import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
 
 @Component({

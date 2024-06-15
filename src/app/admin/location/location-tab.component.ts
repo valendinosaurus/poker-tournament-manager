@@ -2,12 +2,12 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CreateLocationComponent } from './create-location/create-location.component';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { Location } from '../../shared/interfaces/location.interface';
-import { LocationApiService } from '../../core/services/api/location-api.service';
-import { AuthUtilService } from '../../core/services/auth-util.service';
+import { LocationApiService } from '../../shared/services/api/location-api.service';
+import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { AsyncPipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,7 +45,10 @@ export class LocationTabComponent implements OnInit {
     createLocation(): void {
         const ref = this.dialog.open(CreateLocationComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                location: null
+            }
         });
 
         ref.afterClosed().pipe(

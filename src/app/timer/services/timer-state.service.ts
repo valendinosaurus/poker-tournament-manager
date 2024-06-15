@@ -9,7 +9,7 @@ import { Elimination } from '../../shared/interfaces/elimination.interface';
 import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.interface';
 import { ConductedElimination } from '../../shared/interfaces/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.interface';
-import { LocalStorageService } from '../../core/services/util/local-storage.service';
+import { LocalStorageService } from '../../shared/services/util/local-storage.service';
 
 @Injectable({
     providedIn: 'root'

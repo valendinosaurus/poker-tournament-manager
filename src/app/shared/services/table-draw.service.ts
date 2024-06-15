@@ -1,10 +1,10 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { LocalStorageService } from './util/local-storage.service';
-import { TableDrawSeat } from '../../shared/interfaces/table-draw-seat.interface';
-import { Player } from '../../shared/interfaces/player.interface';
-import { TableDraw } from '../../shared/interfaces/table-draw.interface';
-import { Tournament } from '../../shared/interfaces/tournament.interface';
-import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
+import { TableDrawSeat } from '../interfaces/table-draw-seat.interface';
+import { Player } from '../interfaces/player.interface';
+import { TableDraw } from '../interfaces/table-draw.interface';
+import { Tournament } from '../interfaces/tournament.interface';
+import { TableDrawState } from '../enums/table-draw-state.enum';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Injectable({

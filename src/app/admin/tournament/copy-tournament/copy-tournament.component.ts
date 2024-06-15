@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
+import { TournamentApiService } from '../../../shared/services/api/tournament-api.service';
 import { take, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 

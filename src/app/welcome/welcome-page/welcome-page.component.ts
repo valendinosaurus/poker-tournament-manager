@@ -7,18 +7,18 @@ import { ConnectionRequestState } from '../../shared/enums/connection-request-st
 import {
     ConnectToOtherUserDialogComponent
 } from '../components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
-import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ConnectionRequestApiService } from '../../core/services/api/connection-request-api.service';
-import { FetchService } from '../../core/services/fetch.service';
+import { ConnectionRequestApiService } from '../../shared/services/api/connection-request-api.service';
+import { FetchService } from '../../shared/services/fetch.service';
 import { Player } from '../../shared/interfaces/player.interface';
-import { PlayerApiService } from '../../core/services/api/player-api.service';
+import { PlayerApiService } from '../../shared/services/api/player-api.service';
 import { ConnectionRequestComponent } from '../components/connection-request/connection-request.component';
 import { MatButtonModule } from '@angular/material/button';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
-import { AuthUtilService } from '../../core/services/auth-util.service';
+import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { IPayPalConfig, NgxPayPalModule } from 'ngx-paypal';
 import { UserListComponent } from './components/user-list/user-list.component';
 

@@ -3,20 +3,20 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
-import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
 import { Tournament } from '../../shared/interfaces/tournament.interface';
-import { EntryApiService } from '../../core/services/api/entry-api.service';
-import { FetchService } from '../../core/services/fetch.service';
+import { EntryApiService } from '../../shared/services/api/entry-api.service';
+import { FetchService } from '../../shared/services/fetch.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { defer, iif, of } from 'rxjs';
-import { NotificationService } from '../../core/services/notification.service';
+import { NotificationService } from '../../shared/services/notification.service';
 import { EntryType } from '../../shared/enums/entry-type.enum';
-import { FinishApiService } from '../../core/services/api/finish-api.service';
+import { FinishApiService } from '../../shared/services/api/finish-api.service';
 import { Finish } from '../../shared/interfaces/finish.interface';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor, NgIf } from '@angular/common';
-import { TournamentService } from '../../core/services/util/tournament.service';
+import { TournamentService } from '../../shared/services/util/tournament.service';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 import { AddPlayerModel } from './add-player-model.interface';
 import { AddPlayerMultiModel } from './add-player-multi-model.interface';
@@ -147,7 +147,7 @@ export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponen
         }
     }
 
-    onSubmitMulti(withEntry: boolean): void {
+    onSubmitMulti(_withEntry: boolean): void {
         this.isLoadingAdd = true;
 
         if (this.modelMulti.playerIds().length > 0) {

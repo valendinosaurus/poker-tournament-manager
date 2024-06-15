@@ -1,11 +1,11 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
-import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { TournamentApiService } from '../../../shared/services/api/tournament-api.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { Tournament } from '../../../shared/interfaces/tournament.interface';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { CreateTournamentComponent } from '../create-tournament/create-tournament.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AsyncPipe, DatePipe, DecimalPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';

@@ -18,22 +18,22 @@ import { AddRebuyComponent } from '../../../../../dialogs/add-rebuy/add-rebuy.co
 import { AddAddonComponent } from '../../../../../dialogs/add-addon/add-addon.component';
 import { AddFinishComponent } from '../../../../../dialogs/add-finish/add-finish.component';
 import { MatDialog } from '@angular/material/dialog';
-import { RankingService } from '../../../../../core/services/util/ranking.service';
-import { LocalStorageService } from '../../../../../core/services/util/local-storage.service';
+import { RankingService } from '../../../../../shared/services/util/ranking.service';
+import { LocalStorageService } from '../../../../../shared/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { AsyncPipe, DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
-import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../shared/const/app.const';
 import {
     AnimationBubbleBoyComponent
 } from '../../../../../animation/animation-bubble-boy/animation-bubble-boy.component';
 import { AnimationSeatOpenComponent } from '../../../../../animation/animation-seat-open/animation-seat-open.component';
 import { AnimationWinnerComponent } from '../../../../../animation/animation-winner/animation-winner.component';
 import { TimerStateService } from '../../../../services/timer-state.service';
-import { TableDrawService } from '../../../../../core/services/table-draw.service';
+import { TableDrawService } from '../../../../../shared/services/table-draw.service';
 
 declare var anime: any;
 

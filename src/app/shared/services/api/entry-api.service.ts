@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Entry } from '../../../shared/interfaces/entry.interface';
-import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { Entry } from '../../interfaces/entry.interface';
+import { ServerResponse } from '../../interfaces/server-response';
 
 @Injectable({
     providedIn: 'root'

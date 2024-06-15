@@ -1,18 +1,18 @@
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { ConnectionRequestApiService } from '../../core/services/api/connection-request-api.service';
+import { ConnectionRequestApiService } from '../../shared/services/api/connection-request-api.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ConnectionRequest } from '../../shared/interfaces/util/connection-request.interface';
-import { PlayerApiService } from '../../core/services/api/player-api.service';
+import { PlayerApiService } from '../../shared/services/api/player-api.service';
 import { Player } from '../../shared/interfaces/player.interface';
 import { map, switchMap, take, tap } from 'rxjs/operators';
-import { FetchService } from '../../core/services/fetch.service';
+import { FetchService } from '../../shared/services/fetch.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NotificationService } from '../../core/services/notification.service';
+import { NotificationService } from '../../shared/services/notification.service';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
 
 @Component({

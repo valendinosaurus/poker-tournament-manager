@@ -1,8 +1,8 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
-import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { BlindStructureApiService } from '../../../shared/services/api/blind-structure-api.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { CreateBlindStructureComponent } from '../create-blind-structure/create-blind-structure.component';
 
 @Component({
@@ -50,7 +50,10 @@ export class BlindStructureTabComponent implements OnInit {
     createBlindStructure(): void {
         const ref = this.dialog.open(CreateBlindStructureComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                structure: null
+            }
         });
 
         ref.afterClosed().pipe(

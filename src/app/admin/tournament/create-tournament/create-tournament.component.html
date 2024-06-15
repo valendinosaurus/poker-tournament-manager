@@ -1,5 +1,5 @@
 <h2>
-    @if (data?.tournament) {
+    @if (data.tournament !== null) {
         Edit
     } @else {
         Create
@@ -24,7 +24,7 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        @if (data?.tournament) {
+        @if (data.tournament !== null) {
             EDIT
         } @else {
             CREATE

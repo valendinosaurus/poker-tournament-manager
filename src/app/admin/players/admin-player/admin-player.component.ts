@@ -5,12 +5,12 @@ import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialo
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PlayerApiService } from '../../../core/services/api/player-api.service';
+import { PlayerApiService } from '../../../shared/services/api/player-api.service';
 import { User } from '@auth0/auth0-angular';
 import { CreatePlayerComponent } from '../../../dialogs/create-player/create-player.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';

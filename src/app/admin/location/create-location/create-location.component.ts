@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
-import { LocationApiService } from '../../../core/services/api/location-api.service';
+import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { LocationApiService } from '../../../shared/services/api/location-api.service';
 import { Location, LocationModel } from '../../../shared/interfaces/location.interface';
 import { take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ export class CreateLocationComponent implements OnInit {
     private dialogRef: MatDialogRef<CreateLocationComponent> = inject(MatDialogRef<CreateLocationComponent>);
 
     data: {
-        location?: Location;
+        location: Location | null;
     } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});

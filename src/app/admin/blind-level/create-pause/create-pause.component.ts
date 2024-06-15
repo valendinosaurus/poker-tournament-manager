@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
-import { BlindLevelApiService } from '../../../core/services/api/blind-level-api.service';
+import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { BlindLevelApiService } from '../../../shared/services/api/blind-level-api.service';
 import { take, tap } from 'rxjs/operators';
-import { TriggerService } from '../../../core/services/util/trigger.service';
+import { TriggerService } from '../../../shared/services/util/trigger.service';
 import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -21,7 +21,7 @@ export class CreatePauseComponent implements OnInit {
     private dialogRef: MatDialogRef<CreatePauseComponent> = inject(MatDialogRef<CreatePauseComponent>);
 
     data: {
-        blindLevel?: BlindLevel;
+        blindLevel: BlindLevel | null;
     } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});

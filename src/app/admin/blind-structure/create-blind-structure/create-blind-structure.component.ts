@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
+import { BlindStructureApiService } from '../../../shared/services/api/blind-structure-api.service';
 import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,10 +20,10 @@ import { take, tap } from 'rxjs/operators';
 export class CreateBlindStructureComponent implements OnInit {
 
     private dialogRef: MatDialogRef<CreateBlindStructureComponent> = inject(MatDialogRef<CreateBlindStructureComponent>);
-    private blindStructrueApiService: BlindStructureApiService = inject(BlindStructureApiService);
+    private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
 
     data: {
-        structure?: BlindStructure;
+        structure: BlindStructure| null;
     } = inject(MAT_DIALOG_DATA);
 
     model: {
@@ -44,7 +44,7 @@ export class CreateBlindStructureComponent implements OnInit {
 
     onSubmit(): void {
         if (this.data?.structure) {
-            this.blindStructrueApiService.put$({
+            this.blindStructureApiService.put$({
                 ...this.data.structure,
                 name: this.model.name()
             }).pipe(
@@ -52,7 +52,7 @@ export class CreateBlindStructureComponent implements OnInit {
                 tap(() => this.dialogRef.close(true))
             ).subscribe();
         } else {
-            this.blindStructrueApiService.post$({
+            this.blindStructureApiService.post$({
                 name: this.model.name(),
                 locked: false,
                 id: -1,

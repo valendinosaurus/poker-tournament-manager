@@ -1,5 +1,5 @@
 <h2>
-    @if (data?.structure) {
+    @if (data.structure !== null) {
         <i class="fa fa-edit"></i>
         Edit
     } @else {
@@ -28,7 +28,7 @@
         type="submit"
         [disabled]="!model.isValid()"
     >
-        @if (data?.structure) {
+        @if (data.structure !== null) {
             EDIT
         } @else {
             CREATE

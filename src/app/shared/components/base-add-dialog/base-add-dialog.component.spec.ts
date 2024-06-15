@@ -11,7 +11,7 @@ describe('BaseAddDialogComponent', () => {
       imports: [BaseAddDialogComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(BaseAddDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -2,17 +2,17 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Tournament } from 'src/app/shared/interfaces/tournament.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { TournamentApiService } from '../../../../core/services/api/tournament-api.service';
+import { TournamentApiService } from '../../../../shared/services/api/tournament-api.service';
 import { ActivatedRoute } from '@angular/router';
-import { FetchService } from '../../../../core/services/fetch.service';
+import { FetchService } from '../../../../shared/services/fetch.service';
 import { OverviewComponent } from '../overview/overview.component';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { MatDialogModule } from '@angular/material/dialog';
-import { PlayerApiService } from '../../../../core/services/api/player-api.service';
+import { PlayerApiService } from '../../../../shared/services/api/player-api.service';
 import { Player } from '../../../../shared/interfaces/player.interface';
-import { TableDrawService } from '../../../../core/services/table-draw.service';
-import { AuthUtilService } from '../../../../core/services/auth-util.service';
+import { TableDrawService } from '../../../../shared/services/table-draw.service';
+import { AuthUtilService } from '../../../../shared/services/auth-util.service';
 
 @Component({
     selector: 'app-timer-page',

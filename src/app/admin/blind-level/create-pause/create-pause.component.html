@@ -1,5 +1,6 @@
 <h2>
-    @if (!data?.blindLevel) {
+    <i class="fa fa-pause"></i>
+    @if (data.blindLevel === null) {
         Create
     } @else {
         Edit
@@ -23,7 +24,7 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        @if (data?.blindLevel) {
+        @if (data.blindLevel !== null) {
             EDIT
         } @else {
             CREATE

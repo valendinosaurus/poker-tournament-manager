@@ -2,63 +2,63 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Location, LocationModel } from '../../../shared/interfaces/location.interface';
+import { BlindLevel, BlindLevelModel } from '../../interfaces/blind-level.interface';
 import { switchMap } from 'rxjs/operators';
-import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { ServerResponseType } from '../../types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class LocationApiService {
+export class BlindLevelApiService {
 
-    private readonly ENDPOINT = 'location';
+    private readonly ENDPOINT = 'blind-level';
 
     private http: HttpClient = inject(HttpClient);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
 
-    getAll$(): Observable<Location[]> {
+    getAll$(): Observable<BlindLevel[]> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.get<Location[]>(
+            switchMap((sub: string) => this.http.get<BlindLevel[]>(
                 `${BACKEND_URL}${this.ENDPOINT}/${sub}`
             ))
         );
     }
 
-    get$(id: number): Observable<Location> {
+    get$(id: number): Observable<BlindLevel> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.get<Location>(
+            switchMap((sub: string) => this.http.get<BlindLevel>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ))
         );
     }
 
-    post$(location: LocationModel): Observable<ServerResponse> {
+    post$(blindLevel: BlindLevelModel): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.post<ServerResponse>(
+            switchMap((sub: string) => this.http.post<ServerResponseType>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
-                    ...location,
+                    ...blindLevel,
                     sub
                 })
             ))
         );
     }
 
-    put$(location: LocationModel): Observable<ServerResponse> {
+    put$(blindLevel: BlindLevelModel): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
+            switchMap((sub: string) => this.http.put<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
-                    ...location,
+                    ...blindLevel,
                     sub
                 })
             ))
         );
     }
 
-    delete$(id: number): Observable<any> {
+    delete$(id: number, sub: string): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.delete(
+            switchMap((sub: string) => this.http.delete<ServerResponseType>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ))
         );

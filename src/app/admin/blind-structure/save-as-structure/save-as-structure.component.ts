@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
-import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
+import { BlindStructureApiService } from '../../../shared/services/api/blind-structure-api.service';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';

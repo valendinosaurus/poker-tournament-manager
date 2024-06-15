@@ -1,15 +1,15 @@
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ConnectionRequestApiService } from '../../../../core/services/api/connection-request-api.service';
+import { ConnectionRequestApiService } from '../../../../shared/services/api/connection-request-api.service';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { ConnectionRequestState } from '../../../../shared/enums/connection-request-state.enum';
-import { FetchService } from '../../../../core/services/fetch.service';
+import { FetchService } from '../../../../shared/services/fetch.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { AuthUtilService } from '../../../../core/services/auth-util.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { AuthUtilService } from '../../../../shared/services/auth-util.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
     selector: 'app-connect-to-other-user-dialog',

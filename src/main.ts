@@ -27,8 +27,8 @@ import { AdminLocationComponent } from './app/admin/location/admin-location/admi
 import { AdminBrandingComponent } from './app/admin/branding/admin-branding/admin-branding.component';
 import { BrandingTabComponent } from './app/admin/branding/branding-tab.component';
 import { LocationTabComponent } from './app/admin/location/location-tab.component';
-import { AuthInterceptorService } from './app/core/interceptors/auth-interceptor.service';
-import { AuthUtilService } from './app/core/services/auth-util.service';
+import { AuthInterceptorService } from './app/shared/interceptors/auth-interceptor.service';
+import { AuthUtilService } from './app/shared/services/auth-util.service';
 import { combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';

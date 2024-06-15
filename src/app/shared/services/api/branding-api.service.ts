@@ -1,66 +1,59 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Player, PlayerModel } from '../../../shared/interfaces/player.interface';
 import { BACKEND_URL } from '../../../app.const';
+import { Branding, BrandingModel } from '../../interfaces/branding.interface';
+import { AuthService } from '@auth0/auth0-angular';
 import { switchMap } from 'rxjs/operators';
-import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { ServerResponse } from '../../interfaces/server-response';
 import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class PlayerApiService {
+export class BrandingApiService {
 
-    private readonly ENDPOINT = 'player';
+    private readonly ENDPOINT = 'branding';
 
     private http: HttpClient = inject(HttpClient);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
 
-    getAll$(): Observable<Player[]> {
+    getAll$(): Observable<Branding[]> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.get<Player[]>(
+            switchMap((sub: string) => this.http.get<Branding[]>(
                 `${BACKEND_URL}${this.ENDPOINT}/${sub}`
             ))
         );
     }
 
-    get$(id: number): Observable<Player> {
+    get$(id: number): Observable<Branding> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.get<Player>(
+            switchMap((sub: string) => this.http.get<Branding>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ))
         );
     }
 
-    post$(player: PlayerModel): Observable<ServerResponse> {
+    post$(branding: BrandingModel): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
-                    ...player,
+                    ...branding,
                     sub
                 })
             ))
         );
     }
 
-    put$(player: Player): Observable<ServerResponse> {
+    put$(branding: BrandingModel): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.put<ServerResponse>(
-                `${BACKEND_URL}${this.ENDPOINT}`,
+            switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
-                    ...player,
+                    ...branding,
                     sub
                 })
             ))
-        );
-    }
-
-    putAndKeepSub$(player: Player): Observable<ServerResponse> {
-        return this.http.put<ServerResponse>(
-            `${BACKEND_URL}${this.ENDPOINT}-external`,
-            JSON.stringify(player)
         );
     }
 

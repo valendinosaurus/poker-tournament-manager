@@ -1,5 +1,5 @@
 <h2>
-    @if (!data?.branding) {
+    @if (data.branding === null) {
         Create
     } @else {
         Edit
@@ -30,7 +30,7 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        @if (!data?.branding) {
+        @if (data.branding === null) {
             CREATE
         } @else {
             EDIT

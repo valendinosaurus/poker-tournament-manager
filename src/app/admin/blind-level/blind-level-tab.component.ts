@@ -1,12 +1,12 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { BlindLevel } from '../../shared/interfaces/blind-level.interface';
-import { AuthUtilService } from '../../core/services/auth-util.service';
+import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { MatDialog } from '@angular/material/dialog';
-import { BlindLevelApiService } from '../../core/services/api/blind-level-api.service';
+import { BlindLevelApiService } from '../../shared/services/api/blind-level-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { CreateBlindLevelComponent } from './create-blind-level/create-blind-level.component';
 import { AsyncPipe, DecimalPipe, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -137,7 +137,10 @@ export class BlindLevelTabComponent implements OnInit {
     createBlindLevel(): void {
         const ref = this.dialog.open(CreateBlindLevelComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                blindLevel: null
+            }
         });
 
         ref.afterClosed().pipe(
@@ -153,7 +156,10 @@ export class BlindLevelTabComponent implements OnInit {
     createPause(): void {
         const ref = this.dialog.open(CreatePauseComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                blindLevel: null
+            }
         });
 
         ref.afterClosed().pipe(

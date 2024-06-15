@@ -11,15 +11,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule } from '@angular/forms';
-import { NullsafePrimitivePipe } from '../core/pipes/nullsafe-primitive.pipe';
+import { NullsafePrimitivePipe } from '../shared/pipes/nullsafe-primitive.pipe';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { AuthUtilService } from '../core/services/auth-util.service';
+import { AuthUtilService } from '../shared/services/auth-util.service';
 import { take, tap } from 'rxjs/operators';
 import { Player } from '../shared/interfaces/player.interface';
-import { PlayerApiService } from '../core/services/api/player-api.service';
+import { PlayerApiService } from '../shared/services/api/player-api.service';
 import { TimerStateService } from '../timer/services/timer-state.service';
 
 @Component({

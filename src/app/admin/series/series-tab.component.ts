@@ -6,11 +6,11 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { AdminSeries } from '../../shared/interfaces/admin-series.interface';
-import { SeriesApiService } from '../../core/services/api/series-api.service';
-import { AuthUtilService } from '../../core/services/auth-util.service';
+import { SeriesApiService } from '../../shared/services/api/series-api.service';
+import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -91,7 +91,10 @@ export class SeriesTabComponent implements OnInit {
     createSeries(): void {
         const dialogRef = this.dialog.open(CreateSeriesComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                series: null
+            }
         });
 
         dialogRef.afterClosed().pipe(

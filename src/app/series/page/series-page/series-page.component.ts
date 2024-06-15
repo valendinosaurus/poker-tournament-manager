@@ -1,13 +1,13 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SeriesApiService } from '../../../core/services/api/series-api.service';
+import { SeriesApiService } from '../../../shared/services/api/series-api.service';
 import { combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
 import { SeriesMetadata, SeriesS } from '../../../shared/interfaces/series.interface';
 import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SeriesTournament } from '../../interfaces/combined-ranking.interface';
 import { LeaderboardRow } from '../../interfaces/overall-ranking.interface';
-import { SeriesService } from '../../../core/services/series.service';
-import { RankingService } from '../../../core/services/util/ranking.service';
+import { SeriesService } from '../../../shared/services/series.service';
+import { RankingService } from '../../../shared/services/util/ranking.service';
 import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
 import { SeriesStatsComponent } from '../../components/series-stats/series-stats.component';
@@ -17,13 +17,13 @@ import { SeriesHeaderComponent } from '../../components/series-header/series-hea
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthUtilService } from '../../../core/services/auth-util.service';
+import { AuthUtilService } from '../../../shared/services/auth-util.service';
 import { MatButtonModule } from '@angular/material/button';
 import {
     ConnectToOtherUserDialogComponent
 } from '../../../welcome/components/dialogs/connect-to-other-user-dialog/connect-to-other-user-dialog.component';
-import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
-import { NullsafePrimitivePipe } from '../../../core/pipes/nullsafe-primitive.pipe';
+import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
+import { NullsafePrimitivePipe } from '../../../shared/pipes/nullsafe-primitive.pipe';
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 import { SeriesStats } from '../../interfaces/series-stats.interface';
 

@@ -29,16 +29,16 @@ import { BlindLevelOverviewComponent } from './blind-level-overview/blind-level-
 import { AddBlindsComponent } from '../../../../dialogs/add-blinds/add-blinds.component';
 import { RankingComponent } from './ranking/ranking.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { LocalStorageService } from '../../../../core/services/util/local-storage.service';
+import { LocalStorageService } from '../../../../shared/services/util/local-storage.service';
 import { ButtonsComponent } from './buttons/buttons.component';
 import { BlindLevelTextPipe } from '../../../../shared/pipes/blind-level-text.pipe';
 import { TimePipe } from '../../../../shared/pipes/time.pipe';
 import { LeaderboardInfoComponent } from './leaderboard/leaderboard-info.component';
 import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
 import { SeriesMetadata } from '../../../../shared/interfaces/series.interface';
-import { DEFAULT_DIALOG_POSITION } from '../../../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../../../shared/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
-import { TableDrawService } from '../../../../core/services/table-draw.service';
+import { TableDrawService } from '../../../../shared/services/table-draw.service';
 
 @Component({
     selector: 'app-overview',

@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Finish } from '../../../shared/interfaces/finish.interface';
-import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { Finish } from '../../interfaces/finish.interface';
+import { ServerResponse } from '../../interfaces/server-response';
 import { delay } from 'rxjs/operators';
 
 @Injectable({

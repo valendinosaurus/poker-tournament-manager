@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Entry } from '../../../shared/interfaces/entry.interface';
-import { Tournament } from '../../../shared/interfaces/tournament.interface';
-import { EntryType } from '../../../shared/enums/entry-type.enum';
+import { Entry } from '../../interfaces/entry.interface';
+import { Tournament } from '../../interfaces/tournament.interface';
+import { EntryType } from '../../enums/entry-type.enum';
 import { TimerStateService } from '../../../timer/services/timer-state.service';
 
 export type FormulaInput = {

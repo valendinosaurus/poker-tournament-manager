@@ -2,55 +2,54 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Branding, BrandingModel } from '../../../shared/interfaces/branding.interface';
-import { AuthService } from '@auth0/auth0-angular';
+import { Location, LocationModel } from '../../interfaces/location.interface';
 import { switchMap } from 'rxjs/operators';
-import { ServerResponse } from '../../../shared/interfaces/server-response';
+import { ServerResponse } from '../../interfaces/server-response';
 import { AuthUtilService } from '../auth-util.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class BrandingApiService {
+export class LocationApiService {
 
-    private readonly ENDPOINT = 'branding';
+    private readonly ENDPOINT = 'location';
 
     private http: HttpClient = inject(HttpClient);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
 
-    getAll$(): Observable<Branding[]> {
+    getAll$(): Observable<Location[]> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.get<Branding[]>(
+            switchMap((sub: string) => this.http.get<Location[]>(
                 `${BACKEND_URL}${this.ENDPOINT}/${sub}`
             ))
         );
     }
 
-    get$(id: number): Observable<Branding> {
+    get$(id: number): Observable<Location> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.get<Branding>(
+            switchMap((sub: string) => this.http.get<Location>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ))
         );
     }
 
-    post$(branding: BrandingModel): Observable<ServerResponse> {
+    post$(location: LocationModel): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
-                    ...branding,
+                    ...location,
                     sub
                 })
             ))
         );
     }
 
-    put$(branding: BrandingModel): Observable<ServerResponse> {
+    put$(location: LocationModel): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
-                    ...branding,
+                    ...location,
                     sub
                 })
             ))
@@ -59,7 +58,7 @@ export class BrandingApiService {
 
     delete$(id: number): Observable<any> {
         return this.authUtilService.getSub$().pipe(
-            switchMap((sub: string) => this.http.delete<any>(
+            switchMap((sub: string) => this.http.delete(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
             ))
         );

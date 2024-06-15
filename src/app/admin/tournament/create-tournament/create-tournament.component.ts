@@ -1,18 +1,18 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../core/services/util/formly-field.service';
-import { TournamentApiService } from '../../../core/services/api/tournament-api.service';
-import { RankingService } from '../../../core/services/util/ranking.service';
+import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { TournamentApiService } from '../../../shared/services/api/tournament-api.service';
+import { RankingService } from '../../../shared/services/util/ranking.service';
 import { take, tap } from 'rxjs/operators';
-import { LocationApiService } from '../../../core/services/api/location-api.service';
+import { LocationApiService } from '../../../shared/services/api/location-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { Tournament, TournamentModel } from '../../../shared/interfaces/tournament.interface';
-import { TriggerService } from '../../../core/services/util/trigger.service';
+import { TriggerService } from '../../../shared/services/util/trigger.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
@@ -35,7 +35,7 @@ export class CreateTournamentComponent implements OnInit {
     private dialogRef: MatDialogRef<CreateTournamentComponent> = inject(MatDialogRef<CreateTournamentComponent>);
 
     data: {
-        tournament?: Tournament;
+        tournament: Tournament | null;
     } = inject(MAT_DIALOG_DATA);
 
     form = new FormGroup({});

@@ -1,5 +1,5 @@
 <h2>
-    @if (!data?.series) {
+    @if (data.series === null) {
         Create
     } @else {
         Edit
@@ -23,7 +23,7 @@
         type="submit"
         [disabled]="!form.valid"
     >
-        @if (!data?.series) {
+        @if (data.series === null) {
             CREATE
         } @else {
             EDIT

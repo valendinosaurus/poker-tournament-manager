@@ -1,12 +1,12 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
-import { TournamentApiService } from '../../core/services/api/tournament-api.service';
+import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { AuthUtilService } from '../../core/services/auth-util.service';
+import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
-import { DEFAULT_DIALOG_POSITION } from '../../core/const/app.const';
+import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AdminTournament } from '../../shared/interfaces/tournament.interface';
@@ -80,7 +80,10 @@ export class TournamentTabComponent implements OnInit {
     createTournament(): void {
         const ref = this.dialog.open(CreateTournamentComponent, {
             ...DEFAULT_DIALOG_POSITION,
-            height: '80vh'
+            height: '80vh',
+            data: {
+                tournament: null
+            }
         });
 
         ref.afterClosed().pipe(

@@ -1,8 +1,8 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Player } from '../../shared/interfaces/player.interface';
-import { PlayerApiService } from '../../core/services/api/player-api.service';
-import { FetchService } from '../../core/services/fetch.service';
+import { PlayerApiService } from '../../shared/services/api/player-api.service';
+import { FetchService } from '../../shared/services/fetch.service';
 import { take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -27,7 +27,7 @@ export class CreatePlayerComponent implements OnInit {
     readonly WINDOW = window;
 
     data: {
-        player?: Player | null;
+        player: Player | null;
         blockName: boolean,
         external: boolean
     } = inject(MAT_DIALOG_DATA);
