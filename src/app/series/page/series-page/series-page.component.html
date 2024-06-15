@@ -12,8 +12,8 @@
 
         @if ((userEmail$ | async) && (isUserConnectedHere$ | async) === false) {
             @if (ownerEmail$ | async; as ownerEmail) {
-                <div class="flex align-center" style="margin-top: 32px;">
-                    <h4 style="margin-top: 0; margin-bottom: 0; margin-right: 20px;">
+                <div class="flex align-center mt-32px">
+                    <h4 class="are-you-part">
                         Are you part of this series?
                     </h4>
 

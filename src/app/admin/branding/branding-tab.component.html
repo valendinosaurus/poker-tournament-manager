@@ -18,13 +18,12 @@
             <th>Description</th>
         </tr>
         <ng-container *ngFor="let branding of brandings$ | async">
-            <a style="display: contents" [routerLink]="['/admin/branding', branding.id]">
+            <a class="contents" [routerLink]="['/admin/branding', branding.id]">
                 <tr>
                     <td>
                         <img
                             [src]="branding.logo"
                             onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
-                            style="max-height: 40px;"
                         />
                     </td>
                     <td>
