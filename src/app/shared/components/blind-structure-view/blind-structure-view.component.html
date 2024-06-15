@@ -29,7 +29,7 @@
     >
         @for (blind of structure(); track blind; let i = $index; ) {
 
-            <ng-container *ngIf="!blind.isPause; else pause;">
+            @if (!blind.isPause) {
                 <div
                     cdkDrag
                     class="blind-element"
@@ -63,9 +63,7 @@
                         }
                     </div>
                 </div>
-            </ng-container>
-
-            <ng-template #pause>
+            } @else {
                 <div class="pause-element">
                     <div class="b-name">
                         {{ blind.duration }}min
@@ -90,7 +88,7 @@
                         }
                     </div>
                 </div>
-            </ng-template>
+            }
 
             @if (blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()) {
                 <div

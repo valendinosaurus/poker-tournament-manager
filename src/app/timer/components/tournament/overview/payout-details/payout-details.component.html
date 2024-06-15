@@ -6,83 +6,88 @@
         {{ totalPricePool() | number:'':'de-CH' }} $
     </h1>
 
-    <h2
-        *ngIf="deduction() > 0"
-        class="no-mb border-bottom-1-dark"
-    >
-        <span>
-            total price pool
-        </span>
-        <span>
-            {{ +deduction() + +totalPricePool()  | number:'':'de-CH' }} $
-        </span>
-    </h2>
+    @if (deduction() > 0) {
+        <h2 class="no-mb border-bottom-1-dark">
+            <span>
+                total price pool
+            </span>
+            <span>
+                {{ +deduction() + +totalPricePool()  | number:'':'de-CH' }} $
+            </span>
+        </h2>
+    }
 
-    <h2
-        *ngIf="initialPricePool() > 0"
-        [class.no-mb]="initialPricePool() > 0 && deduction() > 0"
-        class="no-mb border-bottom-1-dark"
-    >
-        <span>
-            initial pricepool
-        </span>
-        <span class="opaque">
-            {{ initialPricePool() | number:'':'de-CH' }} $
-        </span>
-    </h2>
+    @if (initialPricePool() > 0) {
+        <h2
+            [class.no-mb]="initialPricePool() > 0 && deduction() > 0"
+            class="no-mb border-bottom-1-dark"
+        >
+            <span>
+                initial pricepool
+            </span>
+            <span class="opaque">
+                {{ initialPricePool() | number:'':'de-CH' }} $
+            </span>
+        </h2>
+    }
 
-    <h2
-        *ngIf="deduction() > 0"
-        class="border-bottom-1-dark"
-    >
-        <span>
-            added to final pot
-        </span>
-        <span class="dark-red-opaque">
-            {{ deduction() | number:'':'de-CH' }} $
-        </span>
-    </h2>
+    @if (deduction() > 0) {
+        <h2 class="border-bottom-1-dark">
+            <span>
+                added to final pot
+            </span>
+            <span class="dark-red-opaque">
+                {{ deduction() | number:'':'de-CH' }} $
+            </span>
+        </h2>
+    }
 </div>
 
 <div class="stats-container w-100">
     <h4>
-        <span *ngIf="!isAdaptedPayoutSumCorrect()">
-            <i class="fa fa-exclamation-triangle mr-1"></i>
-        </span>
+        @if (!isAdaptedPayoutSumCorrect()) {
+            <span>
+                <i class="fa fa-exclamation-triangle mr-1"></i>
+            </span>
+        }
 
         Payout structure
-        <ng-container *ngIf="wasDealMade()">
+        @if (wasDealMade()) {
             <span>
                 <i class="fa fa-handshake"></i>
                 DEAL WAS MADE
             </span>
-        </ng-container>
+        }
 
-        <span *ngIf="playersLeft() >= 2">
-            <button
-                mat-flat-button
-                class="ml-0-5 round"
-                matTooltip="Edit"
-                matTooltipPosition="above"
-                [matTooltipHideDelay]="600000"
-                (click)="editPayouts()"
-            >
-                <i class="fa fa-edit small"></i>
-            </button>
-        </span>
+        @if (playersLeft() >= 2) {
+            <span>
+                <button
+                    mat-flat-button
+                    class="ml-0-5 round"
+                    matTooltip="Edit"
+                    matTooltipPosition="above"
+                    [matTooltipHideDelay]="600000"
+                    (click)="editPayouts()"
+                >
+                    <i class="fa fa-edit small"></i>
+                </button>
+            </span>
+        }
 
-        <span *ngIf="isPayoutAdapted()">
-            <button
-                mat-flat-button
-                class="ml-0-5 round"
-                matTooltip="Remove custom payouts"
-                matTooltipPosition="above"
-                [matTooltipHideDelay]="600000"
-                (click)="removeAdaptedPayouts()"
-            >
-                <i class="fa fa-magic small"></i>
-            </button>
-        </span>
+        @if (isPayoutAdapted()) {
+            <span>
+                <button
+                    mat-flat-button
+                    class="ml-0-5 round"
+                    matTooltip="Remove custom payouts"
+                    matTooltipPosition="above"
+                    [matTooltipHideDelay]="600000"
+                    (click)="removeAdaptedPayouts()"
+                >
+                    <i class="fa fa-magic small"></i>
+                </button>
+            </span>
+        }
     </h4>
 
     <div class="overflow-y-auto">
@@ -96,9 +101,9 @@
                                 {{ e.rank | number:'1.0-1' }}
                             </span>
 
-                            <ng-container *ngIf="e.dealMade">
+                            @if (e.dealMade) {
                                 <i class="fa fa-handshake"></i>
-                            </ng-container>
+                            }
                         </span>
                     </td>
                     <td>

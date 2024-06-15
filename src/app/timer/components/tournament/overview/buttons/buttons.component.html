@@ -147,26 +147,29 @@
     </button>
 </div>
 
-<app-animation-bubble-boy
-    *ngIf="isAnimatingBubbleBoy$ | async as a"
-    [isAnimating]="a"
-    [name]="lastSeatOpenName"
-    [rank]="lastRank"
-></app-animation-bubble-boy>
+@if (isAnimatingBubbleBoy$ | async; as a) {
+    <app-animation-bubble-boy
+        [isAnimating]="a"
+        [name]="lastSeatOpenName"
+        [rank]="lastRank"
+    ></app-animation-bubble-boy>
+}
 
-<app-animation-seat-open
-    *ngIf="isAnimatingSeatOpen$ | async as a"
-    [isAnimating]="a"
-    [price]="lastPrice"
-    [name]="lastSeatOpenName"
-    [rank]="lastRank"
-></app-animation-seat-open>
+@if (isAnimatingSeatOpen$ | async; as a) {
+    <app-animation-seat-open
+        [isAnimating]="a"
+        [price]="lastPrice"
+        [name]="lastSeatOpenName"
+        [rank]="lastRank"
+    ></app-animation-seat-open>
+}
 
-<app-animation-winner
-    [trigger]="winnerTrigger$ | async"
-    [name]="winnerName"
-    [price]="winnerPrice"
-></app-animation-winner>
+@if (winnerTrigger$ | async) {
+    <app-animation-winner
+        [name]="winnerName"
+        [price]="winnerPrice"
+    ></app-animation-winner>
+}
 
 <div
     class="menu"

@@ -102,7 +102,6 @@ export class RankingService {
         {
             name: 'adesso Poker Tour',
             id: 2,
-            //points = number of participants * % of buyout
             f: (input: FormulaInput) => {
                 const payout = [0.5, 0.3, 0.2];
 
@@ -110,7 +109,7 @@ export class RankingService {
                     return 0;
                 }
 
-                return input.pricePool * payout[input.rank - 1];
+                return input.players * payout[input.rank - 1];
             },
             desc: '',
             imageUrl: ''

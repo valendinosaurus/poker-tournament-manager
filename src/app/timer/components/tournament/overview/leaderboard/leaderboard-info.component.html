@@ -3,10 +3,11 @@
         Leaderboard
     </h3>
 
-    <app-leaderboard
-        *ngIf="series$ | async as series"
-        [series]="series"
-        [leaderboard]="leaderboard$ | async"
-        [full]="false"
-    ></app-leaderboard>
+    @if (series$ | async; as series) {
+        <app-leaderboard
+            [series]="series"
+            [leaderboard]="leaderboard$ | async"
+            [full]="false"
+        ></app-leaderboard>
+    }
 </div>

@@ -14,7 +14,7 @@
                 <th class="center"><small>Addons</small></th>
                 <th class="center"><small>Price</small></th>
 
-                @if (formula) {
+                @if (formula !== undefined && formula !== null) {
                     <th class="center"><small>Points</small></th>
                 }
             </tr>
@@ -44,7 +44,7 @@
                         -
                     </td>
 
-                    @if (formula) {
+                    @if (formula !== undefined && formula !== null) {
                         <td class="center">
                             -
                         </td>
@@ -78,7 +78,7 @@
                         $ {{ e.price | number:'':'de-CH' }}
                     </td>
 
-                    @if (formula) {
+                    @if (formula !== undefined && formula !== null) {
                         <td class="center">
                             {{ calcPoints(e) }}
                         </td>
