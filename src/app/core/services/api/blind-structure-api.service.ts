@@ -41,7 +41,7 @@ export class BlindStructureApiService {
         );
     }
 
-    put$(blindStructure: BlindStructureModel): Observable<ServerResponseType> {
+    put$(blindStructure: BlindStructure): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.put<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({
@@ -85,6 +85,12 @@ export class BlindStructureApiService {
     removeBlind$(blindId: number, structureId: number): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.delete<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}/${structureId}/blind/${blindId}/${sub}`))
+        );
+    }
+
+    deleteAllBlinds(structureId: number): Observable<ServerResponseType> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.delete<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}/${structureId}/all/${sub}`))
         );
     }
 

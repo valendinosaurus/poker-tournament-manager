@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, input, model, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, input, model, Output } from '@angular/core';
 import { BlindLevel } from '../../interfaces/blind-level.interface';
 import { DecimalPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { TimePipe } from '../../pipes/time.pipe';
@@ -6,6 +6,9 @@ import {
     BlindStructureEstimatedDurationComponent
 } from './blind-structure-estimated-duration/blind-structure-estimated-duration.component';
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { BlindStructureApiService } from '../../../core/services/api/blind-structure-api.service';
+import { FetchService } from '../../../core/services/fetch.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-blind-structure-view',
@@ -20,7 +23,8 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk
         BlindStructureEstimatedDurationComponent,
         JsonPipe,
         CdkDropList,
-        CdkDrag
+        CdkDrag,
+        MatButtonModule
     ]
 })
 export class BlindStructureViewComponent {
@@ -31,12 +35,41 @@ export class BlindStructureViewComponent {
 
     blindPositions = computed(() => this.structure().map(e => e.position));
 
+    private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
+    private fetchService: FetchService = inject(FetchService);
+
     @Output() addPause = new EventEmitter<number>();
     @Output() deleteBlind = new EventEmitter<number>();
+    @Output() update = new EventEmitter<BlindLevel[]>();
 
     drop(event: CdkDragDrop<BlindLevel[]>) {
         moveItemInArray(this.structure(), event.previousIndex, event.currentIndex);
+        this.updateWithPositions();
+    }
 
+    sort(): void {
+        this.structure.update((structure: BlindLevel[]) => {
+            const blinds = structure.filter(b => !b.isPause);
+            const pauses = structure.filter(b => b.isPause);
+            const pauseIndexes: number[] = [];
+
+            pauses.forEach(pause => {
+                pauseIndexes.push(structure.indexOf(pause));
+            });
+
+            const sortedBlinds = blinds.sort((a: BlindLevel, b: BlindLevel) => +a.bb - +b.bb);
+
+            pauseIndexes.forEach((index, i) => {
+                sortedBlinds.splice(index, 0, pauses[i]);
+            });
+
+            return sortedBlinds;
+        });
+
+        this.updateWithPositions();
+    }
+
+    private updateWithPositions(): void {
         let pos = 0;
 
         this.structure.update((structure: BlindLevel[]) =>
@@ -56,7 +89,7 @@ export class BlindStructureViewComponent {
             )
         );
 
-        // TODO save
+        this.update.emit(this.structure());
     }
 
 }

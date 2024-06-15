@@ -68,6 +68,7 @@
                     [locked]="blindStructure.locked"
                     (deleteBlind)="deleteBlindFromStructure(blindStructure, $event)"
                     (addPause)="addPauseToStructure(blindStructure, $event)"
+                    (update)="updateStructure($event, blindStructure)"
                 ></app-blind-structure-view>
             }
         </div>

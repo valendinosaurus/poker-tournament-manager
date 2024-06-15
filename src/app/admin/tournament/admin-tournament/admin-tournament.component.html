@@ -205,8 +205,8 @@
                             color="accent"
                             (click)="assignBlindStructrue(tournament)"
                         >
-                                <i class="fa fa-cloud-arrow-up fa-ib"></i> ASSIGN EXISTING BLIND STRUCTURE
-                            </button>
+                            <i class="fa fa-cloud-arrow-up fa-ib"></i> ASSIGN EXISTING BLIND STRUCTURE
+                        </button>
                     }
                 </span>
             </div>
@@ -217,6 +217,7 @@
                     [locked]="tournament.locked"
                     (addPause)="addPause(tournament, $event)"
                     (deleteBlind)="deleteBlindFromTournament($event)"
+                    (update)="updateBlindStructure($event, tournament.id)"
                 ></app-blind-structure-view>
 
             </div>

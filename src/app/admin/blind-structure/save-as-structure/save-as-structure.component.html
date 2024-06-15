@@ -23,6 +23,7 @@
         <app-blind-structure-view
             [structure]="structureToSave"
             [estimationVisible]="false"
+            (update)="structureToSave = $event"
         ></app-blind-structure-view>
     </div>
 

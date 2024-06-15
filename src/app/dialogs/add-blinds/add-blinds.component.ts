@@ -69,7 +69,7 @@ export class AddBlindsComponent implements OnInit {
                     .filter(b => !b.isPause)
                     .sort((a, b) => a.bb - b.bb)
                     .filter(blind => !base.filter(p => !p.isPause).map(p => p.id).includes(blind.id))
-                    .filter(blind => blind.sb > Math.max(...base.map(b => b.sb)))
+                    //   .filter(blind => blind.sb > Math.max(...base.map(b => b.sb)))
                     .filter(
                         (level) => {
                             if (+duration === 0) {

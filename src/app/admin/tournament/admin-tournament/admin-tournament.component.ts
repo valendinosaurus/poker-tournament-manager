@@ -104,6 +104,21 @@ export class AdminTournamentComponent implements OnInit {
         ).subscribe();
     }
 
+    updateBlindStructure(levels: BlindLevel[], tournamentId: number): void {
+        const blindIds: number[] = levels.map((e) => e.id);
+        const positions: number[] = levels.map((e) => e.position);
+
+        this.tournamentApiService.removeAllBlinds$(tournamentId).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.addBlinds$(
+                blindIds,
+                tournamentId,
+                positions
+            )),
+            tap(() => this.trigger$.next())
+        ).subscribe();
+    }
+
     editTournament(tournament: Tournament): void {
         const ref = this.dialog.open(CreateTournamentComponent, {
             ...DEFAULT_DIALOG_POSITION,

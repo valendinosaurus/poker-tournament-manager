@@ -19,6 +19,7 @@ import { AddBlindsComponent } from '../../../dialogs/add-blinds/add-blinds.compo
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { CreateBlindStructureComponent } from '../create-blind-structure/create-blind-structure.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../core/const/app.const';
+import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
 
 @Component({
     selector: 'app-admin-blind-structure',
@@ -171,6 +172,21 @@ export class AdminBlindStructureComponent implements OnInit {
                 )),
                 of(null)
             ))
+        ).subscribe();
+    }
+
+    updateStructure(levels: BlindLevel[], structure: BlindStructure): void {
+        const blindIds: number[] = levels.map((e) => e.id);
+        const positions: number[] = levels.map((e) => e.position);
+
+        this.blindStructureApiService.deleteAllBlinds(structure.id).pipe(
+            take(1),
+            switchMap(() => this.blindStructureApiService.addBlinds$(
+                blindIds,
+                structure.id,
+                positions
+            )),
+            tap(() => this.trigger$.next())
         ).subscribe();
     }
 

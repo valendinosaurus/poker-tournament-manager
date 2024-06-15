@@ -167,6 +167,15 @@ export class TournamentApiService {
         );
     }
 
+    removeAllBlinds$(tournamentId: number): Observable<ServerResponseType> {
+        return this.authUtilService.getSub$().pipe(
+            switchMap((sub: string) => this.http.delete<ServerResponseType>(
+                `${BACKEND_URL}${this.ENDPOINT}/${tournamentId}/all-blinds/${sub}`
+            ))
+                );
+
+    }
+
     copyTournament$(
         tournament: Tournament,
         newName: string,
