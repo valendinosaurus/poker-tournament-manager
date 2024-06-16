@@ -131,16 +131,9 @@ export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponen
                     this.tournament().id,
                     this.tournament().finishes.map((finish: Finish) => finish.playerId)
                 )),
-                tap((result: any) => {
+                tap(() => {
                     this.fetchService.trigger();
                     this.isLoadingAdd = false;
-
-                    if (this.dialogRef) {
-                        this.dialogRef.close({
-                            entryId: result.id,
-                            playerId: playerId
-                        });
-                    }
                 })
             ).subscribe();
 
@@ -195,6 +188,7 @@ export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponen
                             this.tournament().finishes.map((finish: Finish) => finish.playerId)
                         )),
                         tap(() => {
+                            console.log('fetching now');
                             this.fetchService.trigger();
                             this.isLoadingRemove = false;
                         }),
