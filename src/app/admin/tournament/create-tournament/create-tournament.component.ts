@@ -87,7 +87,8 @@ export class CreateTournamentComponent implements OnInit {
             location: this.data?.tournament?.location ?? this.allLocations[0].value,
             temp: this.data?.tournament?.temp ?? false,
             password: '',
-            locked: false
+            locked: false,
+            adaptedPayout: undefined
         };
     }
 

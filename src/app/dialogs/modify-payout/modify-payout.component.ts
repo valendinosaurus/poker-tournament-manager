@@ -10,6 +10,8 @@ import { NotificationService } from '../../shared/services/notification.service'
 import { Player } from '../../shared/interfaces/player.interface';
 import { DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
+import { switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-modify-payout',
@@ -21,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class ModifyPayoutComponent implements OnInit {
 
     private dialogRef: MatDialogRef<ModifyPayoutComponent> = inject(MatDialogRef<ModifyPayoutComponent>);
+    // TODO remove
     data: {
         pricepool: number,
         payouts: number[],
@@ -43,6 +46,7 @@ export class ModifyPayoutComponent implements OnInit {
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private notificationService: NotificationService = inject(NotificationService);
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
     ngOnInit(): void {
         this.fields = [];
@@ -101,11 +105,22 @@ export class ModifyPayoutComponent implements OnInit {
         };
 
         if (!this.isAdaptedPayoutSameLikeInitial(adaptedPayoutObject)) {
-            this.localStorageService.storeAdaptedPayout(adaptedPayoutObject);
-            this.notificationService.success('Payouts modified');
+            this.tournamentApiService.deleteAdaptedPayout(this.data.tId).pipe(
+                take(1),
+                switchMap(() => this.tournamentApiService.addAdaptedPayout(
+                    adaptedPayoutObject.tournamentId,
+                    adaptedPayoutObject.payouts
+                )),
+                tap(() => {
+                    this.notificationService.success('Payouts modified');
+                    this.dialogRef.close();
+                })
+            ).subscribe();
+
+//            this.localStorageService.storeAdaptedPayout(adaptedPayoutObject);
+
         }
 
-        this.dialogRef.close();
     }
 
     private isAdaptedPayoutSameLikeInitial(adaptedPayoutObject: AdaptedPayout): boolean {

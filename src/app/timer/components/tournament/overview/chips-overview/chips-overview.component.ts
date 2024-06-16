@@ -15,6 +15,7 @@ export class ChipsOverviewComponent implements OnInit {
 
     totalChips: Signal<number>;
     averageStack: Signal<number>;
+    isWithRebuyOrAddon = computed(() => this.state.tournament().withRebuy || this.state.tournament().withAddon);
 
     private state: TimerStateService = inject(TimerStateService);
 

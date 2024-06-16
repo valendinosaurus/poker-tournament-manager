@@ -1,5 +1,6 @@
 import {
     Component,
+    computed,
     DestroyRef,
     EventEmitter,
     HostListener,
@@ -15,7 +16,7 @@ import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { TournamentSettings } from '../../../../../../shared/interfaces/tournament-settings.interface';
-import { Observable } from 'rxjs';
+import { defer, iif, Observable, of } from 'rxjs';
 import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal.component';
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
 import { AddAddonComponent } from '../../../../../../dialogs/add-addon/add-addon.component';
@@ -23,7 +24,7 @@ import { AddFinishComponent } from '../../../../../../dialogs/add-finish/add-fin
 import { FormlyFieldService } from '../../../../../../shared/services/util/formly-field.service';
 import { RankingService } from '../../../../../../shared/services/util/ranking.service';
 import { AddPlayerComponent } from '../../../../../../dialogs/add-player/add-player.component';
-import { take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../../../shared/services/api/tournament-api.service';
 import { FetchService } from '../../../../../../shared/services/fetch.service';
 import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
@@ -59,10 +60,11 @@ export class MenuDialogComponent implements OnInit {
     autoSlide: WritableSignal<boolean>;
     showCondensedBlinds: WritableSignal<boolean>;
     isRunning: WritableSignal<boolean>;
-    private dialogRef: MatDialogRef<MenuDialogComponent> = inject(MatDialogRef<MenuDialogComponent>);
+    isITM: Signal<boolean>;
 
     isFullScreen: WritableSignal<boolean>;
     isBigCursor: WritableSignal<boolean>;
+    isPayoutAdapted = computed(() => this.tournament().adaptedPayout !== undefined);
     elem: HTMLElement;
 
     data: {
@@ -77,6 +79,7 @@ export class MenuDialogComponent implements OnInit {
 
     fields: FormlyFieldConfig[];
 
+    private dialogRef: MatDialogRef<MenuDialogComponent> = inject(MatDialogRef<MenuDialogComponent>);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
@@ -118,6 +121,7 @@ export class MenuDialogComponent implements OnInit {
         this.isTournamentFinished = this.state.isTournamentFinished;
         this.isFullScreen = this.state.isFullScreen;
         this.isBigCursor = this.state.isBigCursor;
+        this.isITM = this.state.isITM;
 
         this.elem = this.document.documentElement;
         this.initModel();
@@ -161,7 +165,7 @@ export class MenuDialogComponent implements OnInit {
                 'Payout structure',
                 true,
                 payoutsForSelect,
-                payoutDone
+                payoutDone || this.isPayoutAdapted()
             ));
         }
 
@@ -300,6 +304,7 @@ export class MenuDialogComponent implements OnInit {
     }
 
     resetStarted(): void {
+        this.localStorageService.deleteTournamentState(this.tournament().id);
         this.localStorageService.resetTournamentStarted(this.tournament().id);
         this.state.started.set(undefined);
     }
@@ -307,11 +312,11 @@ export class MenuDialogComponent implements OnInit {
     applySettings(model: TournamentSettings): void {
         this.tournamentApiService.putSettings$(model).pipe(
             take(1),
-            tap(() => {
-                if (model.payout !== this.payoutCache) {
-                    this.localStorageService.deleteAdaptedPayout(this.tournament().id);
-                }
-            }),
+            switchMap(() => iif(
+                () => model.payout !== this.payoutCache,
+                defer(() => this.tournamentApiService.deleteAdaptedPayout(this.tournament().id)),
+                of(null)
+            )),
             tap(() => this.fetchService.trigger()),
             this.tournamentService.postActionEvent$,
             tap(() => this.closeMenu())

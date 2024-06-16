@@ -1,4 +1,8 @@
-<div class="stats-container flex justify-around align-center">
+<div
+    class="stats-container flex justify-center align-center gap-20"
+    [class.flex-dir-column]="!isWithRebuyOrAddon()"
+    [class.gap-20]="!isWithRebuyOrAddon()"
+>
     <div class="flex flex-dir-column justify-center align-center">
         <h4>Total Chips</h4>
         <p class="big">

@@ -85,13 +85,13 @@ export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponen
         const payoutRaw = this.rankingService.getPayoutById(this.state.tournament().payout);
         const payoutPercentage = payoutRaw[this.rank() - 1];
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
-        const placesPaid = payoutRaw.length;
+        const adaptedPayouts: number[] | undefined = this.state.tournament().adaptedPayout;// this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
+        const placesPaid = adaptedPayouts ? adaptedPayouts.length : payoutRaw.length;
 
         if (this.rank() > placesPaid) {
             this.price.set(0);
         } else {
-            if (adaptedPayouts && adaptedPayouts.length === payoutRaw.length) {
+            if (adaptedPayouts) {
                 this.price.set(adaptedPayouts[this.rank() - 1]);
                 this.winnerPrice.set(adaptedPayouts[0]);
             } else {
@@ -102,7 +102,12 @@ export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponen
     }
 
     onSubmit(): void {
-        const placesPaid = this.rankingService.getPayoutById(this.state.tournament().payout).length;
+        const adaptedPayout = this.state.tournament().adaptedPayout;
+
+        const placesPaid = adaptedPayout !== undefined
+            ? adaptedPayout.length
+            : this.rankingService.getPayoutById(this.state.tournament().payout).length;
+
         const isBubble = this.rank() - placesPaid === 1;
         this.isLoadingAdd = true;
 

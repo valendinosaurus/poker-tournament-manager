@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, Signal } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal, WritableSignal } from '@angular/core';
 import { Entry } from '../../../../../shared/interfaces/entry.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { DecimalPipe } from '@angular/common';
@@ -14,24 +14,20 @@ import { Tournament } from '../../../../../shared/interfaces/tournament.interfac
 })
 export class BuyinOverviewComponent implements OnInit {
 
-    tournament: Signal<Tournament>;
-    textEntries: Signal<string>;
+    tournament: WritableSignal<Tournament>;
     textRebuys: Signal<string>;
     textAddons: Signal<string>;
+    isWithRebuy = computed(() => this.tournament().withRebuy);
+    isWithAddon = computed(() => this.tournament().withAddon);
 
     private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
-        this.tournament = computed(() => this.state.tournament());
-        const entries = computed(() =>
-            this.tournament().entries.filter((e: Entry) => e.type === EntryType.ENTRY).length
-        );
+        this.tournament = this.state.tournament;
 
-        const reEntries = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.RE_ENTRY).length);
         const rebuys = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.REBUY).length);
         const addons = computed(() => this.tournament().entries.filter((e: Entry) => e.type === EntryType.ADDON).length);
 
-        this.textEntries = computed(() => `${entries() + reEntries()}`);
         this.textRebuys = computed(() => `${rebuys()}`);
         this.textAddons = computed(() => `${addons()}`);
     }

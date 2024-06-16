@@ -1,37 +1,31 @@
-<div class="stats-container flex justify-around align-center buyin-overview gap-20">
-    <div class="flex flex-dir-column justify-center align-center">
-        <h4>
-            Entries
-        </h4>
-        <p class="big">
-            {{ textEntries() }}
-        </p>
-        <span class="small">
-            x {{ tournament().startStack | number:'':'de-CH' }}
-        </span>
-    </div>
-
-    <div class="flex flex-dir-column justify-center align-center">
-        <h4
-        >Rebuys
-        </h4>
-        <p class="big">
-            {{ textRebuys() }}
-        </p>
-        <span class="small">
+<div class="stats-container flex justify-center align-center gap-20">
+    @if (isWithRebuy()) {
+        <div class="flex flex-dir-column justify-center align-center">
+            <h4
+            >Rebuys
+            </h4>
+            <p class="big">
+                {{ textRebuys() }}
+            </p>
+            <span class="small">
             x {{ tournament().rebuyStack | number:'':'de-CH' }}
         </span>
-    </div>
+        </div>
+    }
 
-    <div class="flex flex-dir-column justify-center align-center">
-        <h4>
-            Addons
-        </h4>
-        <p class="big">
-            {{ textAddons() }}
-        </p>
-        <span class="small">
+    @if (isWithAddon()) {
+        <div class="flex flex-dir-column justify-center align-center">
+            <h4>
+                Addons
+            </h4>
+            <p class="big">
+                {{ textAddons() }}
+            </p>
+            <span class="small">
             x {{ tournament().addonStack | number:'':'de-CH' }}
         </span>
-    </div>
+        </div>
+    }
+
+    <!-- TODO add bounties -->
 </div>

@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { Entry } from '../../interfaces/entry.interface';
 import { Tournament } from '../../interfaces/tournament.interface';
 import { EntryType } from '../../enums/entry-type.enum';
-import { TimerStateService } from '../../../timer/services/timer-state.service';
 
 export type FormulaInput = {
     players: number,
@@ -21,8 +20,6 @@ export type Formula = (input: FormulaInput) => number;
     providedIn: 'root'
 })
 export class RankingService {
-
-    private state: TimerStateService = inject(TimerStateService);
 
     defaultFormula: Formula = (input: FormulaInput) => 0;
 

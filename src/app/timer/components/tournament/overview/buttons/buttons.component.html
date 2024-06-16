@@ -84,7 +84,7 @@
             mat-flat-button
             matTooltip="Rebuy"
             class="main"
-            [disabled]="isTournamentLocked() || isTournamentFinished()"
+            [disabled]="isTournamentLocked() || isTournamentFinished() || isITM()"
             (click)="addRebuy()"
         >
             <i class="fa fa-refresh"></i>
@@ -164,8 +164,9 @@
     ></app-animation-seat-open>
 }
 
-@if (winnerTrigger$ | async) {
+@if (winnerTrigger$ | async; as a) {
     <app-animation-winner
+        [trigger]="a"
         [name]="winnerName"
         [price]="winnerPrice"
     ></app-animation-winner>

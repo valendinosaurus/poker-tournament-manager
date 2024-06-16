@@ -2,6 +2,7 @@
     [ngStyle]="{ 'background-image': 'url(' + imageUrl() + ')', 'border-width': borderWidth() + 'px'}"
     [style.width.px]="size()"
     [style.height.px]="size()"
+    [style.flex]="'0 0 ' + size() + 'px'"
     [style.border-radius.px]="size()"
     [class]="border()"
 ></div>

@@ -99,7 +99,6 @@
                                     <h2>
                                         {{ timeForRebuy()  | date:'HH:mm:ss' }}
                                     </h2>
-
                                 </div>
                             }
                         }
@@ -167,9 +166,16 @@
                 </h3>
 
                 <app-payout-details></app-payout-details>
-                <app-player-overview></app-player-overview>
-                <app-buyin-overview></app-buyin-overview>
-                <app-chips-overview></app-chips-overview>
+
+                <div class="info-wrapper">
+                    <app-player-overview></app-player-overview>
+
+                    @if (isWithRebuyOrAddon()) {
+                        <app-buyin-overview></app-buyin-overview>
+                    }
+
+                    <app-chips-overview></app-chips-overview>
+                </div>
             </div>
         }
     </div>

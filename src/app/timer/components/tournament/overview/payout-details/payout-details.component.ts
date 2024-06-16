@@ -1,13 +1,12 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, Signal } from '@angular/core';
 import { Entry } from '../../../../../shared/interfaces/entry.interface';
 import { Finish } from '../../../../../shared/interfaces/finish.interface';
 import { Player } from '../../../../../shared/interfaces/player.interface';
 import { RankingService } from '../../../../../shared/services/util/ranking.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ModifyPayoutComponent } from '../../../../../dialogs/modify-payout/modify-payout.component';
-import { LocalStorageService } from '../../../../../shared/services/util/local-storage.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
@@ -18,6 +17,8 @@ import { FetchService } from '../../../../../shared/services/fetch.service';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { Tournament } from '../../../../../shared/interfaces/tournament.interface';
 import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
+import { defer, iif, of } from 'rxjs';
+import { TournamentApiService } from '../../../../../shared/services/api/tournament-api.service';
 
 interface Payout {
     rank: number,
@@ -52,8 +53,13 @@ export class PayoutDetailsComponent implements OnInit {
     totalPricePool: Signal<number>;
     deduction: Signal<number>;
 
-    isPayoutAdapted = signal(false);
-    isAdaptedPayoutSumCorrect = signal(true);
+    isAdaptedPayoutSumCorrect = computed(() =>
+        this.tournament().adaptedPayout === undefined
+            ? true
+            : this.totalPricePool() === this.tournament().adaptedPayout?.reduce((p, c) => p + c, 0)
+    );
+
+    isPayoutAdapted = computed(() => this.tournament().adaptedPayout !== undefined);
 
     payouts: Signal<Payout[]>;
     wasDealMade: Signal<boolean>;
@@ -63,9 +69,9 @@ export class PayoutDetailsComponent implements OnInit {
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private fetchService: FetchService = inject(FetchService);
     private state: TimerStateService = inject(TimerStateService);
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
     ngOnInit(): void {
         this.totalPricePool = this.state.totalPricePool;
@@ -83,7 +89,10 @@ export class PayoutDetailsComponent implements OnInit {
         this.maxCap = computed(() => this.metadata()?.maxAmountPerTournament);
         this.payout = computed(() => this.tournament().payout);
         const ranks = computed(() => this.finishes().map(f => f.rank));
-        this.wasDealMade = computed(() => ranks().length !== new Set(ranks()).size);
+        this.wasDealMade = computed(() =>
+            this.finishes().filter(e => e.price > 0).length > 0
+            && ranks().length !== new Set(ranks()).size
+        );
         this.playersLeft = computed(() => this.entries().filter(e => e.type === EntryType.ENTRY).length - this.finishes().length);
         this.placesPaid = computed(() => this.rankingService.getPayoutById(this.payout()).length);
 
@@ -98,8 +107,6 @@ export class PayoutDetailsComponent implements OnInit {
                 return this.calculateRegularList();
             }
         });
-
-        this.determineIsAdapted();
     }
 
     private calculateRegularList(): Payout[] {
@@ -115,7 +122,7 @@ export class PayoutDetailsComponent implements OnInit {
             })
         );
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout; // this.localStorageService.getAdaptedPayoutById(this.tournament().id);
 
         if (adaptedPayouts) {
             adaptedPayouts.forEach((payout: number) => {
@@ -197,24 +204,8 @@ export class PayoutDetailsComponent implements OnInit {
             takeUntilDestroyed(this.destroyRef),
             tap(() => {
                 this.fetchService.trigger();
-                this.determineIsAdapted();
             }),
         ).subscribe();
-    }
-
-    private determineIsAdapted(): void {
-        const adaptedPayouts: Signal<number[] | undefined> = computed(
-            () => this.localStorageService.getAdaptedPayoutById(this.tournament().id)
-        );
-
-        if (adaptedPayouts()) {
-            const adaptedSum = adaptedPayouts()?.reduce((p, c) => p + c, 0);
-            this.isAdaptedPayoutSumCorrect.set(this.totalPricePool() === adaptedSum);
-            this.isPayoutAdapted.set(true);
-        } else {
-            this.isAdaptedPayoutSumCorrect.set(true);
-            this.isPayoutAdapted.set(false);
-        }
     }
 
     removeAdaptedPayouts(): void {
@@ -230,13 +221,15 @@ export class PayoutDetailsComponent implements OnInit {
 
         dialogRef.afterClosed().pipe(
             take(1),
-            tap((result: boolean) => {
-                if (result) {
-                    this.localStorageService.deleteAdaptedPayout(this.tournament().id);
-                    this.fetchService.trigger();
-                    this.determineIsAdapted();
-                }
-            })
+            switchMap((result: boolean) => iif(
+                () => result,
+                defer(() => this.tournamentApiService.deleteAdaptedPayout(this.tournament().id).pipe(
+                    tap(() => {
+                        this.fetchService.trigger();
+                    })
+                )),
+                of(null)
+            )),
         ).subscribe();
     }
 

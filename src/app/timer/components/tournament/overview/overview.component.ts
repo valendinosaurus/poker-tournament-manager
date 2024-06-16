@@ -74,6 +74,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     levels: Signal<BlindLevel[]>;
     isRebuyPhaseFinished: Signal<boolean>;
     isProOrAdmin: WritableSignal<boolean>;
+    isITM: Signal<boolean>;
+    isWithRebuyOrAddon = computed(() => this.tournament().withRebuy || this.tournament().withAddon);
 
     slider: KeenSliderInstance;
     currentSlide: WritableSignal<number> = signal(0);
@@ -88,6 +90,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     timeForRebuy: Signal<Date>;
 
     countdownConfig: WritableSignal<CountdownConfig>;
+
+    blockNotifications = false;
 
     @ViewChild('warning') warning!: ElementRef;
     @ViewChild('bleepNext') bleepNext!: ElementRef;
@@ -104,13 +108,26 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private tableDrawService: TableDrawService = inject(TableDrawService);
 
     @HostListener('window:keyup.space', ['$event'])
-    onKeydownHandler(event: Event) {
+    onKeydownSpaceHandler(event: Event) {
         event.preventDefault();
 
         if (this.state.isRunning()) {
             this.state.pauseTimer();
         } else {
             this.state.startTimer();
+        }
+    }
+
+    @HostListener('window:keyup', ['$event'])
+    onKeydownHandler(event: KeyboardEvent) {
+        event.preventDefault();
+
+        if (event.key === '+') {
+            this.goToNextLevel();
+        }
+
+        if (event.key === '-') {
+            this.goToPreviousLevel();
         }
     }
 
@@ -132,6 +149,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.isTournamentPartOfSeries = computed(() => this.metadata() !== undefined);
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
         this.isProOrAdmin = this.state.isProOrAdmin;
+        this.isITM = this.state.isITM;
 
         this.timeForRebuy = computed(() => {
             if (!this.tournament().withRebuy) {
@@ -166,7 +184,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         if (this.state.isProOrAdmin()) {
-            console.log('setup slider');
             this.slider = new KeenSlider(this.sliderRef.nativeElement, {
                 loop: true,
                 initial: this.currentSlide(),
@@ -212,9 +229,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     handleEvent(e: CountdownEvent) {
         if (e.action === 'done') {
+            this.blockNotifications = true;
             this.state.currentLevelIndex.update(previous => previous + 1);
 
-            if (this.currentLevelIndex() < this.levels.length) {
+            if (this.currentLevelIndex() < this.levels().length) {
                 setTimeout(() => {
                     this.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
                     this.blindDuration.set(this.currentLevelTimeLeft());
@@ -234,6 +252,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                     if (this.state.isRunning()) {
                         setTimeout(() => {
                             this.countdown.begin();
+                            this.blockNotifications = false;
                         }, 20);
                     }
 
@@ -241,22 +260,24 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             }
         }
 
-        if (e.action === 'notify') {
-            this.currentLevelTimeLeft.set(e.left / 1000);
+        if (!this.blockNotifications) {
+            if (e.action === 'notify') {
+                this.currentLevelTimeLeft.set(e.left / 1000);
 
-            if (this.currentLevelTimeLeft() === 60 && this.warning) {
-                this.warning.nativeElement.play();
+                if (this.currentLevelTimeLeft() === 60 && this.warning) {
+                    this.warning.nativeElement.play();
+                }
+
+                if (this.currentLevelTimeLeft() === 0 && this.bleepNext) {
+                    this.bleepNext.nativeElement.play();
+                }
+
+                this.localStorageService.storeTournamentState(
+                    this.tournament().id,
+                    this.currentLevelIndex(),
+                    this.currentLevelTimeLeft()
+                );
             }
-
-            if (this.currentLevelTimeLeft() === 0 && this.bleepNext) {
-                this.bleepNext.nativeElement.play();
-            }
-
-            this.localStorageService.storeTournamentState(
-                this.tournament().id,
-                this.currentLevelIndex(),
-                this.currentLevelTimeLeft()
-            );
         }
     }
 

@@ -13,7 +13,7 @@
                 <button
                     mat-flat-button
                     class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
+                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
                     (click)="addPlayer()"
                 >
                     <i class="fa fa-user"></i>
@@ -27,7 +27,7 @@
                 <button
                     mat-flat-button
                     class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
+                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
                     (click)="addEntry(false)"
                 >
                     <i class="fa fa-money-bill-wave"></i>
@@ -41,7 +41,7 @@
                 <button
                     mat-flat-button
                     class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
+                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
                     (click)="addRebuy()"
                 >
                     <i class="fa fa-refresh"></i>
@@ -55,7 +55,7 @@
                 <button
                     mat-flat-button
                     class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
+                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
                     (click)="addEntry(true)"
                 >
             <span class="relative-icon">
@@ -100,7 +100,7 @@
                 <button
                     mat-flat-button
                     class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
+                    [disabled]="isTournamentFinished() || isTournamentLocked() || !isITM()"
                     (click)="makeDeal()"
                 >
                     <i class="fa fa-handshake"></i>

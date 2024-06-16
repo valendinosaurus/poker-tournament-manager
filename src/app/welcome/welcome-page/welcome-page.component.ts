@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { combineLatest, Observable, timer } from 'rxjs';
-import { User } from '@auth0/auth0-angular';
+import { AuthService, User } from '@auth0/auth0-angular';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ConnectionRequest } from '../../shared/interfaces/util/connection-request.interface';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
@@ -68,6 +68,7 @@ export class WelcomePageComponent implements OnInit {
     private connectionRequestApiService: ConnectionRequestApiService = inject(ConnectionRequestApiService);
     private playerApiService: PlayerApiService = inject(PlayerApiService);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
+    private authService: AuthService = inject(AuthService);
 
     trigger(): void {
         this.fetchService.trigger();
@@ -194,6 +195,12 @@ export class WelcomePageComponent implements OnInit {
         this.dialog.open(ConnectToOtherUserDialogComponent, {
             ...DEFAULT_DIALOG_POSITION,
             data: {}
+        });
+    }
+
+    login(): void {
+        this.authService.loginWithRedirect({
+            appState: {target: window.location.href.split(window.location.origin).pop()},
         });
     }
 

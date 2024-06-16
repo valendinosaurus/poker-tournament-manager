@@ -67,6 +67,7 @@ export class ButtonsComponent implements OnInit {
     canStartTournament: Signal<boolean>;
     isRunning: WritableSignal<boolean>;
     isTournamentLocked: Signal<boolean>;
+    isITM: Signal<boolean>;
 
     canShowInfoPanel: Signal<boolean>;
     isFullScreen: WritableSignal<boolean>;
@@ -120,9 +121,10 @@ export class ButtonsComponent implements OnInit {
         this.isRunning = this.state.isRunning;
         this.isTournamentLocked = this.state.isTournamentLocked;
         this.isFullScreen = this.state.isFullScreen;
+        this.isITM = this.state.isITM;
         this.elem = this.document.documentElement;
 
-        const adaptedPayouts: number[] | undefined = this.localStorageService.getAdaptedPayoutById(this.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout;// this.localStorageService.getAdaptedPayoutById(this.tournament().id);
 
         if (adaptedPayouts) {
             const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
@@ -218,6 +220,8 @@ export class ButtonsComponent implements OnInit {
                             this.isAnimatingSeatOpen$.next(false);
                         }, 6000);
                     }
+
+                    console.log('e.rank', e.rank, e.rank === 2);
 
                     if (e.rank === 2) {
                         setTimeout(

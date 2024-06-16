@@ -34,6 +34,7 @@ export interface TournamentBase {
     temp: boolean;
     password: string;
     locked: boolean;
+    adaptedPayout: number[] | undefined;
 }
 
 export interface AdminTournament {

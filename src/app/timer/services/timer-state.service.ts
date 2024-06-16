@@ -10,6 +10,7 @@ import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.i
 import { ConductedElimination } from '../../shared/interfaces/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.interface';
 import { LocalStorageService } from '../../shared/services/util/local-storage.service';
+import { RankingService } from '../../shared/services/util/ranking.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +18,7 @@ import { LocalStorageService } from '../../shared/services/util/local-storage.se
 export class TimerStateService {
 
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private rankingService: RankingService = inject(RankingService);
 
     tournament: WritableSignal<Tournament> = signal({} as Tournament);
     metadata: WritableSignal<SeriesMetadata | undefined> = signal(undefined);
@@ -44,13 +46,12 @@ export class TimerStateService {
     isRunning: WritableSignal<boolean> = signal(false);
     currentLevelIndex: WritableSignal<number> = signal(0);
     isTournamentLocked = computed(() => Boolean(this.tournament().locked));
+    isITM = computed(() => {
+        const remaining = this.tournament().players.length - this.tournament().finishes.length;
+        const paidPlaces = this.rankingService.getPayoutById(this.tournament().payout).length;
 
-    // isSimpleTournament: Signal<boolean> = computed(() =>
-    //     this.tournament().players.length === 0
-    //     && !this.tournament().withRebuy
-    //     && !this.tournament().withAddon
-    //     && !this.tournament().withReEntry
-    // );
+        return remaining <= paidPlaces;
+    });
 
     isRebuyPhaseFinished: Signal<boolean> = computed(() =>
         (

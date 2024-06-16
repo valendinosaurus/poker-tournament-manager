@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AdaptedPayout } from '../../interfaces/util/adapted-payout.interface';
 import { TableDraw } from '../../interfaces/table-draw.interface';
 
 export interface LocalSettings {
@@ -48,6 +47,10 @@ export class LocalStorageService {
         }
     }
 
+    deleteTournamentState(tId: number): void {
+        localStorage.removeItem(tId.toString());
+    }
+
     getTournamentStateById(id: number): { levelIndex: number, timeLeft: number } | undefined {
         const item = localStorage.getItem(id.toString());
 
@@ -58,28 +61,6 @@ export class LocalStorageService {
         }
 
         return undefined;
-    }
-
-    storeAdaptedPayout(adaptedPayout: AdaptedPayout): void {
-        if (adaptedPayout.tournamentId && adaptedPayout.tournamentId > -1) {
-            localStorage.setItem(`ADAPTED_FINISH_${adaptedPayout.tournamentId}`, JSON.stringify(adaptedPayout.payouts));
-        }
-    }
-
-    getAdaptedPayoutById(tId: number): number[] | undefined {
-        const item = localStorage.getItem(`ADAPTED_FINISH_${tId}`);
-
-        if (item) {
-            const parsed: number[] = JSON.parse(item);
-
-            return parsed;
-        }
-
-        return undefined;
-    }
-
-    deleteAdaptedPayout(tId: number): void {
-        localStorage.removeItem(`ADAPTED_FINISH_${tId}`);
     }
 
     getLocalSettings(): LocalSettings {
@@ -109,7 +90,6 @@ export class LocalStorageService {
             ...settings,
             showCondensedBlinds
         }));
-
     }
 
     saveTableDraw(tableDraw: TableDraw): void {
