@@ -25,6 +25,14 @@
 
             <button
                 mat-raised-button
+                color="accent"
+                (click)="openSeries(series.id, series.password)"
+            >
+                <i class="fa fa-share fa-ib"></i> OPEN
+            </button>
+
+            <button
+                mat-raised-button
                 color="warn"
                 [disabled]="!!series.locked"
                 (click)="deleteSeries(series)"
@@ -97,6 +105,65 @@
                 <span>
                     <h4>Owner's Email</h4>
                     <p>{{ series.ownerEmail }}</p>
+                </span>
+            </div>
+
+
+            <div class="admin-body admin-body-flexed">
+                <span>
+                     <h4>Settings</h4>
+
+                    <span class="mini-item flex align-center">
+                        @if (series.showPrices) {
+                            <i class="fa fa-check"></i>
+                        } @else {
+                            <i class="fa fa-times"></i>
+                        }
+
+                        <p>Show Prices {{ series.showPrices }}</p>
+                    </span>
+
+                    <span class="mini-item flex align-center">
+
+                        @if (series.showNonItmPlaces) {
+                            <i class="fa fa-check"></i>
+                        } @else {
+                            <i class="fa fa-times"></i>
+                        }
+
+                        <p>Show Places not ITM {{ series.showNonItmPlaces === true }}</p>
+                    </span>
+
+                    <span class="mini-item flex align-center">
+                        @if (series.showEliminations) {
+                            <i class="fa fa-check"></i>
+                        } @else {
+                            <i class="fa fa-times"></i>
+                        }
+
+                        <p>Show Eliminations</p>
+                    </span>
+
+                    <span class="mini-item flex align-center">
+                        @if (series.showLiveTicker) {
+                            <i class="fa fa-check"></i>
+                        } @else {
+                            <i class="fa fa-times"></i>
+                        }
+
+                        <p>Show Live Ticker</p>
+                    </span>
+
+                    <span class="mini-item flex align-center">
+                        @if (series.showAverageRank) {
+                            <i class="fa fa-check"></i>
+                        } @else {
+                            <i class="fa fa-times"></i>
+                        }
+
+                        <p>Show Average Rank</p>
+                    </span>
+
                 </span>
             </div>
         </mat-tab>

@@ -152,8 +152,9 @@ export class AdminSeriesComponent implements OnInit {
         ).subscribe();
     }
 
-    openSeries(series: Series): void {
-        this.router.navigate(['series', series.id, series.password]);
+    openSeries(sId: number, password: string): void {
+        const link = this.router.serializeUrl(this.router.createUrlTree(['series', sId, password]));
+        window.open(link, '_blank');
     }
 
     lock(series: Series): void {

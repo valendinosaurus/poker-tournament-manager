@@ -95,10 +95,12 @@ export class FormlyFieldService {
     getDefaultCheckboxField(
         key: string,
         label: string,
+        defaultValue = false
     ): FormlyFieldConfig {
         return {
             key,
             type: 'checkbox',
+            defaultValue,
             props: {
                 label,
             }

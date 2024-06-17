@@ -73,24 +73,34 @@ export class CreateSeriesComponent implements OnInit {
             password: this.data?.series?.password ?? '',
             temp: this.data?.series?.temp ?? false,
             locked: false,
-            ownerEmail: this.data?.series?.ownerEmail ?? ''
+            ownerEmail: this.data?.series?.ownerEmail ?? '',
+            showPrices: this.data?.series?.showPrices ?? true,
+            showNonItmPlaces: this.data?.series?.showNonItmPlaces ?? true,
+            showEliminations: this.data?.series?.showEliminations ?? true,
+            showLiveTicker: this.data?.series?.showLiveTicker ?? true,
+            showAverageRank: this.data?.series?.showAverageRank ?? true,
         };
     }
 
     private initFields(): void {
         this.fields = [
             this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
-            this.formlyFieldService.getDefaultTextField('shortDesc', 'shortDesc', true, 200),
-            this.formlyFieldService.getDefaultTextField('longDesc', 'longDesc', true, 1000),
-            this.formlyFieldService.getDefaultSelectField('branding', 'branding', true, this.allBrandings),
-            this.formlyFieldService.getDefaultNumberField('rankFormula', 'rankFormula', true),
-            this.formlyFieldService.getDefaultNumberField('ftFormula', 'final table formula', true),
-            this.formlyFieldService.getDefaultNumberField('percentage', '% of pot into final tournament', true),
+            this.formlyFieldService.getDefaultTextField('shortDesc', 'Short Description', true, 200),
+            this.formlyFieldService.getDefaultTextField('longDesc', 'Long Description', true, 1000),
+            this.formlyFieldService.getDefaultSelectField('branding', 'Branding', true, this.allBrandings),
+            this.formlyFieldService.getDefaultNumberField('rankFormula', 'Formula: Rank', true),
+            this.formlyFieldService.getDefaultNumberField('ftFormula', 'Formula: Final Table', true),
+            this.formlyFieldService.getDefaultNumberField('percentage', '% of Pot into Final Tournament', true),
             this.formlyFieldService.getDefaultNumberField('maxAmountPerTournament', 'Cap per Tournament', true),
-            this.formlyFieldService.getDefaultNumberField('noOfTournaments', 'Number of tournaments', true),
-            this.formlyFieldService.getDefaultNumberField('finalists', 'Number of finalists', true),
-            this.formlyFieldService.getDefaultTextField('password', 'password', false, 1000),
+            this.formlyFieldService.getDefaultNumberField('noOfTournaments', 'Number of Tournaments', true),
+            this.formlyFieldService.getDefaultNumberField('finalists', 'Number of Finalists', true),
+            this.formlyFieldService.getDefaultTextField('password', 'Password', false, 1000),
             this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Series?'),
+            this.formlyFieldService.getDefaultCheckboxField('showPrices', 'Show Prices in Leaderboard?', true),
+            this.formlyFieldService.getDefaultCheckboxField('showNonItmPlaces', 'Show Places not ITM?', true),
+            this.formlyFieldService.getDefaultCheckboxField('showEliminations', 'Show Eliminations?', true),
+            this.formlyFieldService.getDefaultCheckboxField('showLiveTicker', 'Show Live Ticker?', true),
+            this.formlyFieldService.getDefaultCheckboxField('showAverageRank', 'Show Average Rank?', true),
             this.formlyFieldService.getDefaultTextField('ownerEmail', 'Owner\'s Email', false, 200),
         ];
     }

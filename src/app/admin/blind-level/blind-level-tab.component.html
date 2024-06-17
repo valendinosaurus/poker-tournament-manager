@@ -87,21 +87,21 @@
                         @if (blindLevel.isPause) {
                             <i class="fa fa-check"></i>
                         } @else {
-                            <ng-container *ngTemplateOutlet="times"></ng-container>
+                            <i class="fa fa-times"></i>
                         }
                     </td>
                     <td>
                         @if (blindLevel.isChipUp) {
                             <i class="fa fa-check"></i>
                         } @else {
-                            <ng-container *ngTemplateOutlet="times"></ng-container>
+                            <i class="fa fa-times"></i>
                         }
                     </td>
                     <td>
                         @if (blindLevel.endsRebuy) {
                             <i class="fa fa-check"></i>
                         } @else {
-                            <ng-container *ngTemplateOutlet="times"></ng-container>
+                            <i class="fa fa-times"></i>
                         }
                     </td>
                     <td>
@@ -118,7 +118,3 @@
     </table>
 </div>
 
-
-<ng-template #times>
-    <i class="fa fa-times"></i>
-</ng-template>

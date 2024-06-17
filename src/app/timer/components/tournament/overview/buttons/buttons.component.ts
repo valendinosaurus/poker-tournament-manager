@@ -61,7 +61,7 @@ export class ButtonsComponent implements OnInit {
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
     isProOrAdmin: Signal<boolean>;
-    started: WritableSignal<Date | undefined>;
+    started: Signal<Date | undefined>;
     isTournamentFinished: Signal<boolean>;
     isRebuyPhaseFinished: Signal<boolean>;
     canStartTournament: Signal<boolean>;
@@ -220,8 +220,6 @@ export class ButtonsComponent implements OnInit {
                             this.isAnimatingSeatOpen$.next(false);
                         }, 6000);
                     }
-
-                    console.log('e.rank', e.rank, e.rank === 2);
 
                     if (e.rank === 2) {
                         setTimeout(

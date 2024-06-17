@@ -155,3 +155,9 @@ h4 .fa-exclamation-triangle {
     width: 24px !important;
     height: 24px !important;
 }
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

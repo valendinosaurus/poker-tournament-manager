@@ -6,14 +6,14 @@ import { CreatePlayerComponent } from '../../../dialogs/create-player/create-pla
 import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { Player } from '../../interfaces/player.interface';
 import { UserImageRoundComponent } from '../user-image-round/user-image-round.component';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-leaderboard',
     templateUrl: './leaderboard.component.html',
     styleUrls: ['./leaderboard.component.scss'],
     standalone: true,
-    imports: [NgIf, NgFor, UserImageRoundComponent, DecimalPipe]
+    imports: [NgIf, NgFor, UserImageRoundComponent, DecimalPipe, JsonPipe]
 })
 export class LeaderboardComponent {
 
@@ -21,6 +21,8 @@ export class LeaderboardComponent {
     series = input.required<Series | SeriesS>();
     userEmail = input<string>();
     full = input<boolean>(true);
+    hasRebuy = input.required<boolean>();
+    hasAddon = input.required<boolean>();
 
     numberOfDisqualifiedPlayers = computed(() =>
         this.leaderboard().filter(e => e.disqualified).length

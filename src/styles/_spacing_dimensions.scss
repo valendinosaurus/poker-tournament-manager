@@ -181,12 +181,22 @@
 
 .flex-50 {
     width: 50%;
-    flex: 0 0 50;
+    flex: 0 0 50%;
 
     @media (max-width: 600px) {
         width: 100%;
-        flex: 0 0 100;
+        flex: 0 0 100%;
     }
+}
+
+.flex-40 {
+    width: 40%;
+    flex: 0 0 40%;
+}
+
+.flex-57 {
+    width: 57%;
+    flex: 0 0 57%;
 }
 
 .grid-2 {
@@ -209,4 +219,13 @@
 .gap-20 {
     gap: 20px;
     flex-gap: 20px;
+}
+
+.flex-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mini-item .fa {
+    margin-right: 12px;
 }

@@ -6,82 +6,109 @@
             <th class="t-right">Points</th>
 
             @if (full()) {
-                <th class="t-center">&#x2205; Rank</th>
-                <th class="t-center">Played</th>
-                <th class="t-center">ITM (%)</th>
-                <th class="t-center">Rebuys / Addons</th>
-                <th class="t-center">Eliminations</th>
-                <th class="t-right">Price</th>
+                @if (series().showAverageRank) {
+                    <th class="t-right">&#x2205; Rank</th>
+                }
+
+                <th class="t-right">Played</th>
+                <th class="t-right">ITM (%)</th>
+
+                @if (hasRebuy() || hasAddon()) {
+                    <th class="t-right">Rebuys / Addons</th>
+                }
+
+                @if (series().showEliminations) {
+                    <th class="t-right">Eliminations</th>
+                }
+
+                @if (series().showPrices) {
+                    <th class="t-right">Price</th>
+                }
             }
         </tr>
-        <ng-container *ngFor="let e of leaderboard(); let i = index">
-            <tr
-                [class.finalist]="i < (series().finalists + numberOfDisqualifiedPlayers()) && !e.disqualified"
-                [class.disqualified]="e.disqualified"
-            >
-                <td class="t-rank">
-                    {{ i + 1 }}.
-                </td>
-                <td>
+
+        @for (e of leaderboard(); track e; let i = $index) {
+            @if (series().showNonItmPlaces || (!series().showNonItmPlaces && e.points > 0)) {
+                <tr
+                    [class.finalist]="series().finalists > 0 && i < (series().finalists + numberOfDisqualifiedPlayers()) && !e.disqualified"
+                    [class.disqualified]="e.disqualified"
+                >
+                    <td class="t-rank">
+                        {{ i + 1 }}.
+                    </td>
+                    <td>
                     <span class="flex-td align-center">
                         <app-user-image-round
                             [imageUrl]="e.image"
                             [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && userEmail() === e.email) ? 'b-my-user' : 'b-regular'"
                         ></app-user-image-round>
+
                         {{ e.name }}
 
                         @if (e.email && e.email.length > 0 && userEmail() === e.email) {
-
                             <i
                                 class="fa fa-edit hoverable"
                                 (click)="openEditPlayerDialog(e)"
                             ></i>
                         }
                     </span>
-                </td>
-                <td class="t-right">
-                    <div class="flex justify-end align-center">
-                        <strong>
-                            {{ e.points | number:'1.1-1' }}
-
-                            @if (e.isTemp) {
-                                (+)
-                            }
-                        </strong>
-                    </div>
-                </td>
-
-                @if (full()) {
-                    <td class="t-center">
-                        @if (e.rank > 999999999) {
-                            <i class="fa fa-hourglass-2"></i>
-                        } @else {
-                            {{ e.rank / e.tournaments | number:'1.1-1' }}
-                        }
-                    </td>
-                    <td class="t-center">
-                        {{ e.tournaments }}
-                    </td>
-                    <td class="t-center">
-                        {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)
-                    </td>
-                    <td class="t-center">
-                        {{ e.rebuysAddons }}
-                    </td>
-                    <td class="t-center">
-                        {{ e.eliminations }}
                     </td>
                     <td class="t-right">
-                    <span
-                        [class.green]="e.price > 0"
-                        [class.bold]="e.price > 0"
-                    >
-                        $ {{ e.price | number:'':'de-CH' }}
-                    </span>
+                        <div class="flex justify-end align-center">
+                            <strong>
+                                {{ e.points | number:'1.1-1' }}
+
+                                @if (e.isTemp) {
+                                    (+)
+                                }
+                            </strong>
+                        </div>
                     </td>
-                }
-            </tr>
-        </ng-container>
+
+                    @if (full()) {
+                        @if (series().showAverageRank) {
+                            <td class="t-right">
+                                @if (e.rank > 999999999) {
+                                    <i class="fa fa-hourglass-2"></i>
+                                } @else {
+                                    {{ e.rank / e.tournaments | number:'1.1-1' }}
+                                }
+                            </td>
+                        }
+
+                        <td class="t-right">
+                            {{ e.tournaments }}
+                        </td>
+                        <td class="t-right">
+                            {{ e.itm }} ({{ e.itm / e.tournaments * 100 | number:'1.0-0' }}%)
+                        </td>
+
+                        @if (hasRebuy() || hasAddon()) {
+                            <td class="t-right">
+                                {{ e.rebuysAddons }}
+                            </td>
+                        }
+
+                        @if (series().showEliminations) {
+                            <td class="t-right">
+                                {{ e.eliminations }}
+                            </td>
+                        }
+
+                        @if (series().showPrices) {
+                            <td class="t-right">
+                                <span
+                                    [class.green]="e.price > 0"
+                                    [class.bold]="e.price > 0"
+                                >
+                                    $ {{ e.price | number:'':'de-CH' }}
+                                </span>
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
     </table>
 
 </div>
