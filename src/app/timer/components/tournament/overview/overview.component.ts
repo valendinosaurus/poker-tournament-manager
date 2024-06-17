@@ -14,7 +14,7 @@ import {
     WritableSignal
 } from '@angular/core';
 import { interval } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { BlindLevel } from 'src/app/shared/interfaces/blind-level.interface';
 import { CountdownComponent, CountdownConfig, CountdownEvent, CountdownStatus } from 'ngx-countdown';
 import { Tournament } from '../../../../shared/interfaces/tournament.interface';
@@ -38,7 +38,7 @@ import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
 import { SeriesMetadata } from '../../../../shared/interfaces/series.interface';
 import { DEFAULT_DIALOG_POSITION } from '../../../../shared/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
-import { TableDrawService } from '../../../../shared/services/table-draw.service';
+import { TournamentApiService } from '../../../../shared/services/api/tournament-api.service';
 
 @Component({
     selector: 'app-overview',
@@ -85,12 +85,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     blindDurationFixed: WritableSignal<number> = signal(0);
 
     today: Signal<number> = signal(Date.now());
-    started: WritableSignal<Date | undefined>;
+    started: Signal<Date | undefined>;
     elapsed: Signal<number>;
     timeForRebuy: Signal<Date>;
 
     countdownConfig: WritableSignal<CountdownConfig>;
 
+    firstDonePassed = false;
     blockNotifications = false;
 
     @ViewChild('warning') warning!: ElementRef;
@@ -105,7 +106,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
     private state: TimerStateService = inject(TimerStateService);
-    private tableDrawService: TableDrawService = inject(TableDrawService);
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownSpaceHandler(event: Event) {
@@ -171,15 +172,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.initTimeValues();
         this.initCountdownConfig();
 
-        this.state.started.set(this.localStorageService.getTournamentStarted(this.tournament().id));
-        this.started = this.state.started;
+        this.started = computed(() => this.state.settings().started);
         this.elapsed = this.state.elapsed;
 
         setInterval(() => {
             this.today = computed(() => Date.now());
         }, 100);
-
-        this.tableDrawService.update();
     }
 
     ngAfterViewInit(): void {
@@ -204,12 +202,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
 
     private initTimeValues(): void {
-        const fromLocalStorage = this.localStorageService.getTournamentStateById(this.tournament().id);
+        const fromSettings = this.state.settings();
 
-        if (fromLocalStorage) {
-            this.currentLevelTimeLeft.set(fromLocalStorage.timeLeft);
-            this.blindDuration.set(fromLocalStorage.timeLeft);
-            this.currentLevelIndex.set(fromLocalStorage.levelIndex);
+        if (fromSettings) {
+            this.currentLevelTimeLeft.set(fromSettings.timeLeft);
+            this.blindDuration.set(fromSettings.timeLeft);
+            this.currentLevelIndex.set(fromSettings.levelIndex);
         } else {
             this.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
             this.blindDuration.set(this.levels()[this.currentLevelIndex()].duration * 60);
@@ -229,7 +227,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     handleEvent(e: CountdownEvent) {
         if (e.action === 'done') {
-            this.blockNotifications = true;
+            if (!this.firstDonePassed) {
+                this.firstDonePassed = true;
+            } else {
+                this.blockNotifications = true;
+            }
+
             this.state.currentLevelIndex.update(previous => previous + 1);
 
             if (this.currentLevelIndex() < this.levels().length) {
@@ -243,11 +246,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                         leftTime: this.currentLevelTimeLeft()
                     }));
 
-                    this.localStorageService.storeTournamentState(
-                        this.tournament().id,
-                        this.currentLevelIndex(),
-                        this.currentLevelTimeLeft()
-                    );
+                    this.tournamentApiService.putTournamentSettings$({
+                        ...this.state.settings(),
+                        levelIndex: this.currentLevelIndex(),
+                        timeLeft: this.currentLevelTimeLeft()
+                    }).pipe(take(1)).subscribe();
 
                     if (this.state.isRunning()) {
                         setTimeout(() => {
@@ -272,11 +275,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                     this.bleepNext.nativeElement.play();
                 }
 
-                this.localStorageService.storeTournamentState(
-                    this.tournament().id,
-                    this.currentLevelIndex(),
-                    this.currentLevelTimeLeft()
-                );
+                this.tournamentApiService.putTournamentSettings$({
+                    ...this.state.settings(),
+                    levelIndex: this.currentLevelIndex(),
+                    timeLeft: this.currentLevelTimeLeft()
+                }).pipe(take(1)).subscribe();
             }
         }
     }
@@ -309,7 +312,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
 
     goToPreviousLevel(): void {
-        if (this.currentLevelIndex() > 1) {
+        if (this.currentLevelIndex() > 0) {
             this.currentLevelIndex.update(previous => previous - 2);
 
             this.handleEvent({

@@ -223,7 +223,7 @@ export class PayoutDetailsComponent implements OnInit {
             take(1),
             switchMap((result: boolean) => iif(
                 () => result,
-                defer(() => this.tournamentApiService.deleteAdaptedPayout(this.tournament().id).pipe(
+                defer(() => this.tournamentApiService.deleteAdaptedPayout$(this.tournament().id).pipe(
                     tap(() => {
                         this.fetchService.trigger();
                     })

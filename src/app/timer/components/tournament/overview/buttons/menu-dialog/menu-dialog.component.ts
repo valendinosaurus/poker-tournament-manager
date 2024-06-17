@@ -15,7 +15,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { TournamentSettings } from '../../../../../../shared/interfaces/tournament-settings.interface';
+import { LocalTournamentSettings } from '../../../../../../shared/interfaces/local-tournament-settings.interface';
 import { defer, iif, Observable, of } from 'rxjs';
 import { MakeDealComponent } from '../../../../../../dialogs/make-deal/make-deal.component';
 import { AddRebuyComponent } from '../../../../../../dialogs/add-rebuy/add-rebuy.component';
@@ -57,8 +57,8 @@ export class MenuDialogComponent implements OnInit {
     withRebuy: Signal<boolean>;
     withAddon: Signal<boolean>;
     withReEntry: Signal<boolean>;
-    autoSlide: WritableSignal<boolean>;
-    showCondensedBlinds: WritableSignal<boolean>;
+    autoSlide: Signal<boolean>;
+    showCondensedBlinds: Signal<boolean>;
     isRunning: WritableSignal<boolean>;
     isITM: Signal<boolean>;
 
@@ -75,7 +75,7 @@ export class MenuDialogComponent implements OnInit {
 
     form = new FormGroup({});
     options: FormlyFormOptions = {};
-    model: TournamentSettings;
+    model: LocalTournamentSettings;
 
     fields: FormlyFieldConfig[];
 
@@ -285,12 +285,23 @@ export class MenuDialogComponent implements OnInit {
     }
 
     onToggleAutoSlide(): void {
-        this.state.autoSlide.set(!this.state.autoSlide());
+        this.tournamentApiService.putTournamentSettings$({
+            ...this.state.settings(),
+            autoSlide: !this.state.autoSlide()
+        }).pipe(
+            take(1),
+            tap(() => this.fetchService.trigger())
+        ).subscribe();
     }
 
     onToggleShowCondensedBlinds(): void {
-        this.state.showCondensedBlinds.update((previous: boolean) => !previous);
-        this.localStorageService.saveShowCondensedBlinds(this.state.showCondensedBlinds());
+        this.tournamentApiService.putTournamentSettings$({
+            ...this.state.settings(),
+            showCondensedBlinds: !this.state.showCondensedBlinds()
+        }).pipe(
+            take(1),
+            tap(() => this.fetchService.trigger())
+        ).subscribe();
     }
 
     onToggleIsBigCursor(): void {
@@ -303,18 +314,24 @@ export class MenuDialogComponent implements OnInit {
         }
     }
 
-    resetStarted(): void {
-        this.localStorageService.deleteTournamentState(this.tournament().id);
-        this.localStorageService.resetTournamentStarted(this.tournament().id);
-        this.state.started.set(undefined);
+    resetState(): void {
+        this.tournamentApiService.putTournamentSettings$({
+            ...this.state.settings(),
+            levelIndex: 0,
+            timeLeft: this.tournament().structure[0].duration,
+            started: undefined
+        }).pipe(
+            take(1),
+            tap(() => this.fetchService.trigger()),
+        ).subscribe();
     }
 
-    applySettings(model: TournamentSettings): void {
-        this.tournamentApiService.putSettings$(model).pipe(
+    applySettings(model: LocalTournamentSettings): void {
+        this.tournamentApiService.putLocalTournamentSettings$(model).pipe(
             take(1),
             switchMap(() => iif(
                 () => model.payout !== this.payoutCache,
-                defer(() => this.tournamentApiService.deleteAdaptedPayout(this.tournament().id)),
+                defer(() => this.tournamentApiService.deleteAdaptedPayout$(this.tournament().id)),
                 of(null)
             )),
             tap(() => this.fetchService.trigger()),

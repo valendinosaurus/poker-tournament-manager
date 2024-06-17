@@ -4,7 +4,7 @@
             {{ today() | date:'dd.MM.YYYY HH:mm' }}
         </span>
         <span>
-            {{ tournament().name }} &#64; {{ tournament().locationName }}
+            {{ tournament().name }} &#64; {{ tournament().locationName }} {{ isRunning() }}
         </span>
     </div>
 

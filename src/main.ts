@@ -41,7 +41,6 @@ import {
 } from './app/admin/blind-structure/admin-blind-structure/admin-blind-structure.component';
 import { PlaygroundPageComponent } from './app/playground/playground-page/playground-page.component';
 import { TimerPageComponent } from './app/timer/components/tournament/timer/timer-page.component';
-import { MathjaxModule } from 'mathjax-angular';
 
 if (environment.production) {
     enableProdMode();
@@ -209,8 +208,7 @@ bootstrapApplication(AppComponent, {
                     },
                     cacheLocation: 'localstorage'
                 }
-            ),
-            MathjaxModule.forRoot()
+            )
         ),
         {provide: LOCALE_ID, useValue: 'de-ch'},
         provideAnimations(),

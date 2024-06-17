@@ -105,9 +105,9 @@ export class ModifyPayoutComponent implements OnInit {
         };
 
         if (!this.isAdaptedPayoutSameLikeInitial(adaptedPayoutObject)) {
-            this.tournamentApiService.deleteAdaptedPayout(this.data.tId).pipe(
+            this.tournamentApiService.deleteAdaptedPayout$(this.data.tId).pipe(
                 take(1),
-                switchMap(() => this.tournamentApiService.addAdaptedPayout(
+                switchMap(() => this.tournamentApiService.addAdaptedPayout$(
                     adaptedPayoutObject.tournamentId,
                     adaptedPayoutObject.payouts
                 )),
