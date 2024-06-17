@@ -1,7 +1,6 @@
-import { Component, ElementRef, input, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, input, ViewChild } from '@angular/core';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { JsonPipe } from '@angular/common';
-import { MathjaxModule } from 'mathjax-angular';
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 
 @Component({
@@ -12,11 +11,15 @@ import { SeriesHeader } from '../../interfaces/series-header.interface';
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [UserImageRoundComponent, MathjaxModule, JsonPipe]
+    imports: [UserImageRoundComponent, JsonPipe]
 })
 export class SeriesHeaderComponent {
 
     seriesHeader = input.required<SeriesHeader>();
+
+    enocdedFormulaUri = computed(() =>
+        this.seriesHeader().formulaLatexString.replace(/ /g, '%20')
+    );
 
     @ViewChild('mathParagraph') paragraphElement: ElementRef;
 

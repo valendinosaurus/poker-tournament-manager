@@ -1,8 +1,9 @@
-import { Component, input, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { SimpleStat } from '../../../shared/interfaces/simple-stat.interface';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgFor } from '@angular/common';
 import { SeriesStatComponent } from './series-stat/series-stat.component';
+import { Series } from '../../../shared/interfaces/series.interface';
 
 @Component({
     selector: 'app-series-stats',
@@ -16,6 +17,7 @@ import { SeriesStatComponent } from './series-stat/series-stat.component';
 })
 export class SeriesStatsComponent {
 
+    series = input.required<Series>();
     bestAverageRank = input.required<SimpleStat[]>();
     mostPrices = input.required<SimpleStat[]>();
     mostEffPrices = input.required<SimpleStat[]>();
@@ -25,5 +27,7 @@ export class SeriesStatsComponent {
     mostPercITM = input.required<SimpleStat[]>();
     mostEliminations = input.required<SimpleStat[]>();
     mostSpilled = input.required<SimpleStat[]>();
+    hasRebuy = input.required<boolean>();
+    hasAddon = input.required<boolean>();
 
 }

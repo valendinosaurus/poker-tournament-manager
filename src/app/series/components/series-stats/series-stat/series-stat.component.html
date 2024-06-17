@@ -5,13 +5,13 @@
 
     @for (e of stat(); track e.playerName; let i = $index; ) {
         <span class="smaller">
-            <span>
+            <span class="truncate flex-57">
                 {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
                 {{ e.playerName }}
             </span>
-            <span>
+            <span class="flex-40 flex-right">
                 @if (useNumberPipe()) {
-                    <strong>{{ e.value | number:'1.1-1' }} $</strong> ({{ e.played }})
+                    <strong>{{ e.value | number:'1.1-1' }} </strong> ({{ e.played }})
                 } @else {
                     <strong>{{ e.value }}</strong> ({{ e.played }})
                 }

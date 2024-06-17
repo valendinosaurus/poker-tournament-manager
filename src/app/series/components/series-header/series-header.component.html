@@ -25,50 +25,58 @@
     <div class="series-content-block">
         <div class="li-pair">
                 <span>
-                    {{ seriesHeader().tournamentsPlayed }} / {{ seriesHeader().totalTournaments }}
+                    {{ seriesHeader().tournamentsPlayed }}
+
+                    @if (seriesHeader().totalTournaments > 0) {
+                        / {{ seriesHeader().totalTournaments }}
+                    }
                 </span>
             <h4>
                 Tournaments played
             </h4>
         </div>
 
-        <div class="li-pair">
+        @if (seriesHeader().percentageToFinalPot > 0) {
+            <div class="li-pair">
                 <span>
                     {{ seriesHeader().percentageToFinalPot }}%
                 </span>
-            <h4>
-                % to final pot
-            </h4>
-        </div>
+                <h4>
+                    % to final pot
+                </h4>
+            </div>
+        }
 
-        <div class="li-pair">
+        @if (seriesHeader().maxAmountPerTournament > 0) {
+            <div class="li-pair">
                 <span>
                     ${{ seriesHeader().maxAmountPerTournament }}
                 </span>
-            <h4>
-                Max. to final pot
-            </h4>
-        </div>
+                <h4>
+                    Max. to final pot
+                </h4>
+            </div>
+        }
 
-        <div class="li-pair">
+        @if (seriesHeader().guaranteed > 0) {
+            <div class="li-pair">
                 <span>
                     ${{ seriesHeader().guaranteed }}
                 </span>
-            <h4>
-                Guaranteed
-            </h4>
-        </div>
+                <h4>
+                    Guaranteed
+                </h4>
+            </div>
+        }
     </div>
 
-    @if (seriesHeader().formulaMathContent.latex) {
-        <div class="series-content-block">
-            <div class="li-wide">
-                <h4>
-                    Formula
-                </h4>
-                <img [src]="seriesHeader().formulaImageUrl"/>
-            </div>
+    <div class="series-content-block">
+        <div class="li-wide">
+            <h4>
+                Formula
+            </h4>
+            <img [src]="'https://math.vercel.app/?inline=' + enocdedFormulaUri()"/>
         </div>
-    }
+    </div>
 
 </div>

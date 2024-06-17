@@ -9,16 +9,20 @@ import { Elimination } from '../../shared/interfaces/elimination.interface';
 import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.interface';
 import { ConductedElimination } from '../../shared/interfaces/util/conducted-elimination.interface';
 import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.interface';
-import { LocalStorageService } from '../../shared/services/util/local-storage.service';
 import { RankingService } from '../../shared/services/util/ranking.service';
+import { TournamentSettings } from '../../shared/interfaces/tournament-settings.interface';
+import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
+import { take } from 'rxjs/operators';
+import { FetchService } from '../../shared/services/fetch.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TimerStateService {
 
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private rankingService: RankingService = inject(RankingService);
+    private fetchService: FetchService = inject(FetchService);
 
     tournament: WritableSignal<Tournament> = signal({} as Tournament);
     metadata: WritableSignal<SeriesMetadata | undefined> = signal(undefined);
@@ -26,10 +30,29 @@ export class TimerStateService {
 
     isProOrAdmin: WritableSignal<boolean> = signal(false);
 
-    autoSlide: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().autoSlide ?? true);
-    showCondensedBlinds: WritableSignal<boolean> = signal(this.localStorageService.getLocalSettings().showCondensedBlinds ?? true);
+    settings: Signal<TournamentSettings> = computed(() => ({
+        id: this.tournament().id,
+        autoSlide: this.tournament()?.settings?.autoSlide ?? true,
+        showCondensedBlinds: this.tournament()?.settings?.showCondensedBlinds ?? false,
+        started: this.tournament()?.settings?.started
+            ? new Date(this.tournament()?.settings?.started!)
+            : undefined,
+        levelIndex: this.tournament()?.settings?.levelIndex ?? 0,
+        timeLeft: this.tournament()?.settings?.timeLeft ?? 0
+    }));
+
+    autoSlide: Signal<boolean> = computed(() => this.settings().autoSlide);
+    showCondensedBlinds: Signal<boolean> = computed(() => this.settings().showCondensedBlinds);
+    started: Signal<Date | undefined> = computed(() => this.settings().started);
+
     isFullScreen: WritableSignal<boolean> = signal(false);
     isBigCursor: WritableSignal<boolean> = signal(false);
+    //  started: Signal<Date> | undefined> = computed(() => this.settings().started);
+
+    elapsed: Signal<number> = computed(() => {
+        const started = this.started();
+        return started ? new Date().getTime() - started.getTime() : 0;
+    });
 
     players: Signal<Player[]> = computed(() => this.tournament().players);
     entries: Signal<Entry[]> = computed(() => this.tournament().entries);
@@ -44,13 +67,13 @@ export class TimerStateService {
     );
 
     isRunning: WritableSignal<boolean> = signal(false);
-    currentLevelIndex: WritableSignal<number> = signal(0);
+    currentLevelIndex: WritableSignal<number> = signal(this.settings().levelIndex ?? 0);
     isTournamentLocked = computed(() => Boolean(this.tournament().locked));
     isITM = computed(() => {
         const remaining = this.tournament().players.length - this.tournament().finishes.length;
         const paidPlaces = this.rankingService.getPayoutById(this.tournament().payout).length;
 
-        return remaining <= paidPlaces;
+        return remaining <= paidPlaces && this.tournament().players.length > 0;
     });
 
     isRebuyPhaseFinished: Signal<boolean> = computed(() =>
@@ -76,13 +99,6 @@ export class TimerStateService {
             )
         ).length === this.players().length
     );
-
-    started: WritableSignal<Date | undefined> = signal(undefined);
-
-    elapsed: Signal<number> = computed(() => {
-        const started = this.started();
-        return started ? new Date().getTime() - started.getTime() : 0;
-    });
 
     totalPricePoolWithoutDeduction = computed(() =>
         this.entries().filter(
@@ -269,9 +285,13 @@ export class TimerStateService {
         if (!this.isRunning() && this.canStartTournament() && !this.isTournamentFinished()) {
             this.isRunning.set(true);
 
-            if (!this.localStorageService.getTournamentStarted(this.tournament().id)) {
-                this.started.set(new Date());
-                this.localStorageService.storeTournamentStarted(this.tournament().id, new Date());
+            if (!this.settings().started) {
+                this.tournamentApiService.putTournamentSettings$({
+                    ...this.settings(),
+                    started: new Date()
+                }).pipe(
+                    take(1),
+                ).subscribe();
             }
         }
     }

@@ -6,6 +6,8 @@ import { TableDraw } from '../interfaces/table-draw.interface';
 import { Tournament } from '../interfaces/tournament.interface';
 import { TableDrawState } from '../enums/table-draw-state.enum';
 import { TimerStateService } from '../../timer/services/timer-state.service';
+import { switchMap, take, tap } from 'rxjs/operators';
+import { TournamentApiService } from './api/tournament-api.service';
 
 @Injectable({
     providedIn: 'root'
@@ -35,19 +37,26 @@ export class TableDrawService {
 
     private state: TimerStateService = inject(TimerStateService);
     private localStorageService: LocalStorageService = inject(LocalStorageService);
+    private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
     update(): void {
         this.tournament = this.state.tournament;
 
-        const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
+        //  const draw: TableDraw | undefined = this.localStorageService.getTableDraw(this.tournament().id);
 
-        if (draw) {
-            this.tableDraw.set(draw);
-            draw.tournament.finishes = [...this.tournament().finishes];
-            this.loadExistingDrawAndCheck(draw);
-        } else {
-            this.setupEmptyTables();
-        }
+        this.tournamentApiService.getTableDraw$(this.tournament().id).pipe(
+            take(1),
+            tap((draw: TableDraw | undefined | null) => {
+                    if (draw) {
+                        this.tableDraw.set(draw);
+                        draw.tournament.finishes = [...this.tournament().finishes];
+                        this.loadExistingDrawAndCheck(draw);
+                    } else {
+                        this.setupEmptyTables();
+                    }
+                }
+            )
+        ).subscribe();
     }
 
     setupEmptyTables(): void {
@@ -152,7 +161,11 @@ export class TableDrawService {
         );
 
         this.tableDraw.set(tableDraw);
-        this.localStorageService.saveTableDraw(tableDraw);
+
+        this.tournamentApiService.deleteTableDraw$(tableDraw.tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(tableDraw))
+        ).subscribe();
     }
 
     confirmSetup(): void {
@@ -163,7 +176,10 @@ export class TableDrawService {
             })
         );
 
-        this.localStorageService.saveTableDraw(this.tableDraw());
+        this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(this.tableDraw()))
+        ).subscribe();
     }
 
     loadExistingDrawAndCheck(tableDraw: TableDraw): void {
@@ -224,7 +240,10 @@ export class TableDrawService {
             tableDraw.playerHasToBeMoved = false;
         }
 
-        this.localStorageService.saveTableDraw(tableDraw);
+        this.tournamentApiService.deleteTableDraw$(tableDraw.tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(tableDraw))
+        ).subscribe();
     }
 
     addFixedSeat(table: number, seat: number, player: Player): void {
@@ -237,7 +256,10 @@ export class TableDrawService {
             return tableDraw;
         });
 
-        this.localStorageService.saveTableDraw(this.tableDraw());
+        this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(this.tableDraw()))
+        ).subscribe();
     }
 
     drawPlayers(): void {
@@ -259,7 +281,10 @@ export class TableDrawService {
             return tableDraw;
         });
 
-        this.localStorageService.saveTableDraw(this.tableDraw());
+        this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(this.tableDraw()))
+        ).subscribe();
     }
 
     movePlayer(): void {
@@ -325,7 +350,10 @@ export class TableDrawService {
             return tableDraw;
         });
 
-        this.localStorageService.saveTableDraw(this.tableDraw());
+        this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(this.tableDraw()))
+        ).subscribe();
     }
 
     getRandomFreeSeatIndexes(tableDraw: TableDraw, noOfSeats: number): number[] {
@@ -370,7 +398,10 @@ export class TableDrawService {
             return tableDraw;
         });
 
-        this.localStorageService.saveTableDraw(this.tableDraw());
+        this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(this.tableDraw()))
+        ).subscribe();
     }
 
     shuffle<T>(array: T[]): T[] {
@@ -390,17 +421,18 @@ export class TableDrawService {
     }
 
     resetTableDraw(): void {
-        this.localStorageService.resetTableDraw(this.tournament().id);
+        this.tournamentApiService.deleteTableDraw$(this.tournament().id).pipe(
+            take(1),
+            tap(() => this.tableDraw.update((tableDraw: TableDraw) => {
+                tableDraw.tables = [];
+                tableDraw.state = TableDrawState.BLANK;
+                tableDraw.tableHasToBeEliminated = false;
+                tableDraw.playerHasToBeMoved = false;
+                tableDraw.playersToMove = undefined;
 
-        this.tableDraw.update((tableDraw: TableDraw) => {
-            tableDraw.tables = [];
-            tableDraw.state = TableDrawState.BLANK;
-            tableDraw.tableHasToBeEliminated = false;
-            tableDraw.playerHasToBeMoved = false;
-            tableDraw.playersToMove = undefined;
-
-            return tableDraw;
-        });
+                return tableDraw;
+            }))
+        ).subscribe();
     }
 
     playerMoved(): void {
@@ -409,6 +441,9 @@ export class TableDrawService {
             playersToMove: undefined
         }));
 
-        this.localStorageService.saveTableDraw(this.tableDraw());
+        this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
+            take(1),
+            switchMap(() => this.tournamentApiService.postTableDraw$(this.tableDraw()))
+        ).subscribe();
     }
 }

@@ -10,32 +10,49 @@
 </p>
 
 <div class="series-content-block spaced">
-    <app-series-stat
-        [stat]="bestAverageRank()"
-        [useNumberPipe]="true"
-        statTitle="Best &#x2205; rank (p > 1)"
-    ></app-series-stat>
+    @if (series().showAverageRank) {
+        <app-series-stat
+            [stat]="bestAverageRank()"
+            [useNumberPipe]="true"
+            statTitle="Best &#x2205; rank"
+        ></app-series-stat>
 
-    <app-series-stat
-        [stat]="mostPrices()"
-        statTitle="Most prices"
-    ></app-series-stat>
+        <app-series-stat
+            [stat]="bestAverageRank()"
+            [useNumberPipe]="true"
+            statTitle="Best &#x2205; rank (p > 1)"
+        ></app-series-stat>
+    }
 
-    <app-series-stat
-        [stat]="mostEffPrices()"
-        statTitle="Most effective prices"
-    ></app-series-stat>
+    @if (series().showPrices) {
+        <app-series-stat
+            [stat]="mostPrices()"
+            [useNumberPipe]="true"
+            statTitle="Most prices"
+        ></app-series-stat>
+    }
 
-    <app-series-stat
-        [stat]="mostRebuysAddons()"
-        statTitle="Most RB & A"
-    ></app-series-stat>
+    @if (series().showPrices) {
+        <app-series-stat
+            [stat]="mostEffPrices()"
+            statTitle="Most effective prices"
+        ></app-series-stat>
+    }
 
-    <app-series-stat
-        [stat]="mostRebuysAddonsPerT()"
-        [useNumberPipe]="true"
-        statTitle="Most &#x2205; RB & A (p > 1)"
-    ></app-series-stat>
+    @if (hasRebuy() || hasAddon()) {
+        <app-series-stat
+            [stat]="mostRebuysAddons()"
+            statTitle="Most RB & A"
+        ></app-series-stat>
+    }
+
+    @if (hasRebuy() || hasAddon()) {
+        <app-series-stat
+            [stat]="mostRebuysAddonsPerT()"
+            [useNumberPipe]="true"
+            statTitle="Most &#x2205; RB & A (p > 1)"
+        ></app-series-stat>
+    }
 
     <app-series-stat
         [stat]="mostITM()"
@@ -45,15 +62,20 @@
     <app-series-stat
         [stat]="mostPercITM()"
         statTitle="Most % ITM"
+        [useNumberPipe]="true"
     ></app-series-stat>
 
-    <app-series-stat
-        [stat]="mostEliminations()"
-        statTitle="Most Eliminations"
-    ></app-series-stat>
+    @if (series().showEliminations) {
+        <app-series-stat
+            [stat]="mostEliminations()"
+            statTitle="Most Eliminations"
+        ></app-series-stat>
+    }
 
-    <app-series-stat
-        [stat]="mostSpilled()"
-        statTitle="Spilled & Broken"
-    ></app-series-stat>
+    @if (series().id === 1 || series().id === 3) {
+        <app-series-stat
+            [stat]="mostSpilled()"
+            statTitle="Spilled & Broken"
+        ></app-series-stat>
+    }
 </div>

@@ -28,10 +28,7 @@ export class TableDrawDialogComponent implements OnInit {
     maxPlayersPerTable = 9;
     readonly TABLE_DRAW_STATE = TableDrawState;
 
-    private dialogRef: MatDialogRef<TableDrawDialogComponent> = inject(MatDialogRef<TableDrawDialogComponent>);
     private tableDrawService: TableDrawService = inject(TableDrawService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
-    private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit() {
         this.tableDrawService.update();

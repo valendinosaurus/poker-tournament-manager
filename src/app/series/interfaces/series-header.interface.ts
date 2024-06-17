@@ -1,5 +1,3 @@
-import { MathContent } from '../../shared/interfaces/math-content.interface';
-
 export interface SeriesHeader {
     logo: string;
     name: string;
@@ -8,6 +6,5 @@ export interface SeriesHeader {
     percentageToFinalPot: number;
     maxAmountPerTournament: number;
     guaranteed: number;
-    formulaMathContent: MathContent;
-    formulaImageUrl: string | undefined;
+    formulaLatexString: string;
 }

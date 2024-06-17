@@ -45,8 +45,9 @@ h1 {
 
 .series-content-block {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
+    gap: 12px;
 
     div.li-wide {
         width: 100%;
@@ -361,5 +362,11 @@ th, td {
 
     .fa-spinner {
         font-size: 100px;
+    }
+
+    @media (max-width: 800px) {
+        .fa-spinner {
+            font-size: 50px;
+        }
     }
 }

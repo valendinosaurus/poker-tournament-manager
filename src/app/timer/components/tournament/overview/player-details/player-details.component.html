@@ -10,8 +10,15 @@
             <tr>
                 <th><small>Name</small></th>
                 <th class="center"><small>Entries</small></th>
-                <th class="center"><small>Rebuys</small></th>
-                <th class="center"><small>Addons</small></th>
+
+                @if (withRebuy()) {
+                    <th class="center"><small>Rebuys</small></th>
+                }
+
+                @if (withAddon()) {
+                    <th class="center"><small>Addons</small></th>
+                }
+
                 <th class="center"><small>Eliminations</small></th>
             </tr>
 
@@ -41,12 +48,19 @@
                     <td class="center">
                         <app-bullets [number]="e.reEntries"></app-bullets>
                     </td>
-                    <td class="center">
-                        <app-bullets [number]="e.rebuys"></app-bullets>
-                    </td>
-                    <td class="center">
-                        <app-bullets [number]="e.addons"></app-bullets>
-                    </td>
+
+                    @if (withRebuy()) {
+                        <td class="center">
+                            <app-bullets [number]="e.rebuys"></app-bullets>
+                        </td>
+                    }
+
+                    @if (withAddon()) {
+                        <td class="center">
+                            <app-bullets [number]="e.addons"></app-bullets>
+                        </td>
+                    }
+
                     <td class="center">
                         <app-bullets
                             [number]="e.eliminations"

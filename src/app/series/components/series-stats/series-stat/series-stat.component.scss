@@ -6,7 +6,7 @@
 div.li-pair {
     width: 24%;
     flex: 0 0 24%;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     background: aliceblue;
     padding: 12px;
     box-sizing: border-box;
@@ -26,16 +26,16 @@ div.li-pair {
     span {
         text-align: center;
         font-size: 32px;
-        margin-bottom: 0;
+        margin-bottom: 4px;
         color: #222;
         font-weight: bold;
 
         &.smaller {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: normal;
 
             span {
-                font-size: 18px;
+                font-size: 14px;
                 font-weight: normal;
             }
         }

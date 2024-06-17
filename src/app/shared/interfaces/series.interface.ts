@@ -19,6 +19,11 @@ export interface SeriesBase {
     sub: string;
     locked: boolean;
     ownerEmail: string | null;
+    showPrices: boolean;
+    showNonItmPlaces: boolean;
+    showEliminations: boolean;
+    showLiveTicker: boolean;
+    showAverageRank: boolean;
 }
 
 export interface Series extends SeriesBase {

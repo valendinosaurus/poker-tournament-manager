@@ -22,9 +22,6 @@
             "es2018",
             "dom"
         ],
-        "types": [
-            "dom-screen-wake-lock"
-        ],
         "useDefineForClassFields": false
     },
     "angularCompilerOptions": {

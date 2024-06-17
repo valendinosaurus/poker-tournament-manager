@@ -5,11 +5,13 @@ import { BACKEND_URL } from '../../../app.const';
 import { AdminTournament, Tournament, TournamentModel } from '../../interfaces/tournament.interface';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../interfaces/series.interface';
-import { TournamentSettings } from '../../interfaces/tournament-settings.interface';
+import { LocalTournamentSettings } from '../../interfaces/local-tournament-settings.interface';
 import { Router } from '@angular/router';
 import { ServerResponseType } from '../../types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';
 import { TEvent } from '../../interfaces/t-event.interface';
+import { TableDraw } from '../../interfaces/table-draw.interface';
+import { TournamentSettings } from '../../interfaces/tournament-settings.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -94,7 +96,7 @@ export class TournamentApiService {
         );
     }
 
-    putSettings$(settings: TournamentSettings): Observable<ServerResponseType> {
+    putLocalTournamentSettings$(settings: LocalTournamentSettings): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.put<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}/settings`,
                 JSON.stringify({
@@ -204,7 +206,7 @@ export class TournamentApiService {
         );
     }
 
-    addAdaptedPayout(tId: number, payout: number[]): Observable<ServerResponseType> {
+    addAdaptedPayout$(tId: number, payout: number[]): Observable<ServerResponseType> {
         return this.http.post<ServerResponseType>(
             `${BACKEND_URL}${this.ENDPOINT}/adapted-payout`,
             JSON.stringify({
@@ -214,7 +216,42 @@ export class TournamentApiService {
         );
     }
 
-    deleteAdaptedPayout(tId: number): Observable<ServerResponseType> {
+    deleteAdaptedPayout$(tId: number): Observable<ServerResponseType> {
         return this.http.delete<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}/${tId}/adapted-payout`);
     }
+
+    getTableDraw$(tId: number): Observable<TableDraw | null> {
+        return this.http.get<{ tableDraw: string } | null>(`${BACKEND_URL}${this.ENDPOINT}-draw/${tId}`).pipe(
+            map((res: { tableDraw: string } | null) => res
+                ? JSON.parse(res.tableDraw) as TableDraw
+                : null
+            )
+        );
+    }
+
+    postTableDraw$(tableDraw: TableDraw): Observable<ServerResponseType> {
+        return this.http.post<ServerResponseType>(
+            `${BACKEND_URL}${this.ENDPOINT}-draw`,
+            JSON.stringify({
+                tId: tableDraw.tournament.id,
+                tableDraw: JSON.stringify(tableDraw)
+            })
+        );
+    }
+
+    deleteTableDraw$(tId: number): Observable<ServerResponseType> {
+        return this.http.delete<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}-draw/${tId}`);
+    }
+
+    putTournamentSettings$(settings: TournamentSettings): Observable<ServerResponseType> {
+        return this.http.put<ServerResponseType>(
+            `${BACKEND_URL}${this.ENDPOINT}-settings`,
+            JSON.stringify(settings)
+        );
+    }
+
+    deleteTournamentSettings$(tId: number): Observable<ServerResponseType> {
+        return this.http.delete<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}-settings/${tId}`);
+    }
+
 }

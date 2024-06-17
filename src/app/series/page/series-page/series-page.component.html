@@ -32,44 +32,52 @@
             Current leaderboard
         </h2>
 
-        <div class="leaderboard">
-            @if (series$ | async; as series) {
+        @if (series$ | async; as series) {
+            <div class="leaderboard">
                 <app-leaderboard
                     [leaderboard]="leaderboard$ | async | nullsafePrimitive:[]"
                     [series]="series"
                     [userEmail]="userEmail$ | async | nullsafePrimitive:''"
+                    [hasRebuy]="hasRebuy$ | async | nullsafePrimitive:false"
+                    [hasAddon]="hasAddon$ | async | nullsafePrimitive:false"
                 ></app-leaderboard>
+
+                @if (series.finalists > 0) {
+                    <div class="legend-wrapper">
+                        <div class="legend"></div>
+                        Current Finalist
+                    </div>
+                }
+            </div>
+
+            <!-- TODO refactor -->
+            @if (seriesStats$ | async; as stats) {
+                <app-series-stats
+                    [series]="series"
+                    [bestAverageRank]="stats.bestAverageRank"
+                    [mostPrices]="stats.mostPrices"
+                    [mostEffPrices]="stats.mostEffPrices"
+                    [mostRebuysAddons]="stats.mostRebuysAddons"
+                    [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
+                    [mostITM]="stats.mostITM"
+                    [mostPercITM]="stats.mostPercITM"
+                    [mostEliminations]="stats.mostEliminations"
+                    [mostSpilled]="stats.mostSpilled"
+                    [hasRebuy]="hasRebuy$ | async | nullsafePrimitive:false"
+                    [hasAddon]="hasAddon$ | async | nullsafePrimitive:false"
+                ></app-series-stats>
             }
 
-            <div class="legend-wrapper">
-                <div class="legend"></div>
-                Current Finalist
-            </div>
-        </div>
+            <h2>Tournaments</h2>
 
-        <!-- TODO refactor -->
-        @if (seriesStats$ | async; as stats) {
-            <app-series-stats
-                [bestAverageRank]="stats.bestAverageRank"
-                [mostPrices]="stats.mostPrices"
-                [mostEffPrices]="stats.mostEffPrices"
-                [mostRebuysAddons]="stats.mostRebuysAddons"
-                [mostRebuysAddonsPerT]="stats.mostRebuysAddonsPerT"
-                [mostITM]="stats.mostITM"
-                [mostPercITM]="stats.mostPercITM"
-                [mostEliminations]="stats.mostEliminations"
-                [mostSpilled]="stats.mostSpilled"
-            ></app-series-stats>
-        }
-
-        <h2>Tournaments</h2>
-
-        @for (tournament of tournaments$ | async; track tournament) {
-            <app-series-tournament
-                [tournament]="tournament"
-                [myEmail]="userEmail$ | async"
-                [password]="password"
-            ></app-series-tournament>
+            @for (tournament of tournaments$ | async; track tournament) {
+                <app-series-tournament
+                    [series]="series"
+                    [tournament]="tournament"
+                    [myEmail]="userEmail$ | async"
+                    [password]="password"
+                ></app-series-tournament>
+            }
         }
     </div>
 }

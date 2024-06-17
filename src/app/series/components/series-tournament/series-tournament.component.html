@@ -27,23 +27,25 @@
                     </h5>
                 </span>
 
-                <span>
-                    <p>
-                        $ {{ tournament().pricePool | number:'1.0-0' }}
-                    </p>
-                    <h5>
-                        Total price pool
-                    </h5>
-                </span>
+                @if (tournament().contribution > 0) {
+                    <span>
+                        <p>
+                            $ {{ tournament().pricePool | number:'1.0-0' }}
+                        </p>
+                        <h5>
+                            Total price pool
+                        </h5>
+                    </span>
 
-                <span>
-                    <p>
-                        $ {{ tournament().contribution | number:'1.0-0' }}
-                    </p>
-                    <h5>
-                        Goes to final pot
-                    </h5>
-                </span>
+                    <span>
+                        <p>
+                            $ {{ tournament().contribution | number:'1.0-0' }}
+                        </p>
+                        <h5>
+                            Goes to final pot
+                        </h5>
+                    </span>
+                }
             </div>
         </div>
 
@@ -54,16 +56,23 @@
                     <th class="t-center">
                         Points (Rank)
                     </th>
-                    <th class="t-center">Rebuys</th>
-                    <th class="t-center">Addons</th>
 
-                    @if (showEliminations()) {
+                    @if (tournament().withRebuy) {
+                        <th class="t-center">Rebuys</th>
+                    }
+
+                    @if (tournament().withAddon) {
+                        <th class="t-center">Addons</th>
+                    }
+
+                    @if (series().showEliminations) {
                         <th class="t-center">Eliminations</th>
                     }
 
                     <th class="t-right">Price</th>
                 </tr>
-                @for (e of tournament().combFinishes; track e) {
+
+                @for (e of finishesToShow(); track e) {
                     <tr>
                         <td>
                             <span class="flex-td">
@@ -94,14 +103,20 @@
                             }
 
                         </td>
-                        <td class="t-center">
-                            <app-bullets [number]="e.rebuys"></app-bullets>
-                        </td>
-                        <td class="t-center">
-                            <app-bullets [number]="e.addons"></app-bullets>
-                        </td>
 
-                        @if (showEliminations()) {
+                        @if (tournament().withRebuy) {
+                            <td class="t-center">
+                                <app-bullets [number]="e.rebuys"></app-bullets>
+                            </td>
+                        }
+
+                        @if (tournament().withAddon) {
+                            <td class="t-center">
+                                <app-bullets [number]="e.addons"></app-bullets>
+                            </td>
+                        }
+
+                        @if (series().showEliminations) {
                             <td class="t-center">
                                 <app-bullets
                                     [number]="e.eliminations"
@@ -123,7 +138,7 @@
             </table>
         </div>
 
-        @if (liveTicker() && liveTicker().length > 0) {
+        @if (series().showLiveTicker && liveTicker() && liveTicker().length > 0) {
             <div class="live-ticker">
                 <span class="flex justify-between align-center">
                     <span class="flex">

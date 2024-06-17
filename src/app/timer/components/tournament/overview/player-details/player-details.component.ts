@@ -36,6 +36,9 @@ export class PlayerDetailsComponent implements OnInit {
 
     combination: Signal<Combination[]>;
 
+    withRebuy = computed(() => this.state.tournament().withRebuy);
+    withAddon = computed(() => this.state.tournament().withAddon);
+
     private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {

@@ -1,5 +1,8 @@
 export interface TournamentSettings {
     id: number;
-    payout: number;
-    name: string;
+    autoSlide: boolean;
+    showCondensedBlinds: boolean;
+    started: Date | undefined;
+    levelIndex: number;
+    timeLeft: number;
 }

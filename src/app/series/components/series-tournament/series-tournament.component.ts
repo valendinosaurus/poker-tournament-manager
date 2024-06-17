@@ -1,5 +1,5 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, signal, Signal, WritableSignal } from '@angular/core';
-import { SeriesTournament } from '../../interfaces/combined-ranking.interface';
+import { Component, computed, DestroyRef, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
+import { SeriesTournament } from '../../interfaces/series-tournament.interface';
 import { TEventTypeIconPipe } from '../../../shared/pipes/t-event-type-icon.pipe';
 import { BulletsComponent } from '../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
@@ -10,6 +10,7 @@ import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimePipe } from '../../../shared/pipes/time.pipe';
 import { TEventApiService } from '../../../shared/services/api/t-event-api.service';
+import { Series } from '../../../shared/interfaces/series.interface';
 
 @Component({
     selector: 'app-series-tournament',
@@ -23,12 +24,15 @@ import { TEventApiService } from '../../../shared/services/api/t-event-api.servi
 })
 export class SeriesTournamentComponent implements OnInit {
 
+    series = input.required<Series>();
     tournament = input.required<SeriesTournament>();
     myEmail = input.required<string | undefined | null>();
     password = input.required<string>();
 
-    showEliminations: Signal<boolean> = computed(() =>
-        this.tournament()?.combFinishes.filter((f) => f.eliminations > 0).length > 0
+    finishesToShow = computed(() =>
+        this.series().showNonItmPlaces
+            ? this.tournament().rows
+            : this.tournament().rows.filter(finish => finish.price > 0)
     );
 
     liveTicker: WritableSignal<TEvent[]> = signal([]);
@@ -50,7 +54,7 @@ export class SeriesTournamentComponent implements OnInit {
 
         this.liveTicker.set(this.tournament().tournament.liveTicker);
 
-        if (this.fetchLiveTicker()) {
+        if (this.fetchLiveTicker() && this.series().showLiveTicker) {
             this.refreshTrigger$ = interval(50).pipe(shareReplay(1));
 
             this.countdown$ = this.refreshTrigger$.pipe(

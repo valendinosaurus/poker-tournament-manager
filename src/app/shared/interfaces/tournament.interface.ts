@@ -4,6 +4,7 @@ import { Finish } from './finish.interface';
 import { Entry } from './entry.interface';
 import { Elimination } from './elimination.interface';
 import { TEvent } from './t-event.interface';
+import { TournamentSettings } from './tournament-settings.interface';
 
 export interface TournamentBase {
     id: number;
@@ -35,6 +36,7 @@ export interface TournamentBase {
     password: string;
     locked: boolean;
     adaptedPayout: number[] | undefined;
+    settings: TournamentSettings;
 }
 
 export interface AdminTournament {
