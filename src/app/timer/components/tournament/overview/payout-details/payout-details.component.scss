@@ -41,7 +41,7 @@ h1 > span,
 h2 > span {
     font-size: 16px;
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1280px) {
         font-size: 12px;
     }
 }
@@ -90,4 +90,10 @@ span.regular {
     margin-left: 12px;
     opacity: 0.2;
     font-weight: bold !important;
+}
+
+p {
+    font-size: 2vh;
+    color: #00437b;
+    margin-left: 1vh;
 }

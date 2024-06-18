@@ -41,6 +41,7 @@ export class TimerStateService {
         timeLeft: this.tournament()?.settings?.timeLeft ?? 0
     }));
 
+    forceStopSlide: WritableSignal<boolean> = signal(false);
     autoSlide: Signal<boolean> = computed(() => this.settings().autoSlide);
     showCondensedBlinds: Signal<boolean> = computed(() => this.settings().showCondensedBlinds);
     started: Signal<Date | undefined> = computed(() => this.settings().started);
@@ -91,13 +92,14 @@ export class TimerStateService {
     );
 
     canStartTournament: Signal<boolean> = computed(() =>
-        Array.from(
-            new Set(
-                this.entries()
-                    .filter((entry: Entry) => entry.type === EntryType.ENTRY)
-                    .map((entry: Entry) => entry.playerId)
-            )
-        ).length === this.players().length
+            this.tournament().structure.length > 0
+            && Array.from(
+                new Set(
+                    this.entries()
+                        .filter((entry: Entry) => entry.type === EntryType.ENTRY)
+                        .map((entry: Entry) => entry.playerId)
+                )
+            ).length === this.players().length
     );
 
     totalPricePoolWithoutDeduction = computed(() =>

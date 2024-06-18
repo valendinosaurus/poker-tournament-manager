@@ -18,7 +18,7 @@ export class SeriesHeaderComponent {
     seriesHeader = input.required<SeriesHeader>();
 
     enocdedFormulaUri = computed(() =>
-        this.seriesHeader().formulaLatexString.replace(/ /g, '%20')
+        this.seriesHeader().formulaLatexString?.replace(/ /g, '%20')
     );
 
     @ViewChild('mathParagraph') paragraphElement: ElementRef;

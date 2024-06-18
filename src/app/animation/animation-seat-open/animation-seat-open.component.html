@@ -24,7 +24,7 @@
 
     @if (price() > 0) {
         <span class="word green">
-            $ {{ price() }}
+            $ {{ price() | number:'1.0-0' }}
         </span>
     }
 </div>

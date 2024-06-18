@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldService } from '../../shared/services/util/formly-field.service';
-import { LocalStorageService } from '../../shared/services/util/local-storage.service';
 import { AdaptedPayout } from '../../shared/interfaces/util/adapted-payout.interface';
 import { Finish } from '../../shared/interfaces/finish.interface';
 import { NotificationService } from '../../shared/services/notification.service';
@@ -44,7 +43,6 @@ export class ModifyPayoutComponent implements OnInit {
     playersLeft: number;
 
     private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private notificationService: NotificationService = inject(NotificationService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 

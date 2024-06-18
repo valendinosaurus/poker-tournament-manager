@@ -162,7 +162,8 @@ export class AdminSeriesComponent implements OnInit {
             ...series,
             locked: true,
             branding: series.branding.id,
-            finalTournament: series.finalTournament?.id ?? -1
+            finalTournament: series.finalTournament?.id ?? -1,
+            rankFormula: series.rankFormula.id ?? null
         }).pipe(
             take(1),
             tap(() => this.trigger$.next()),
@@ -174,7 +175,8 @@ export class AdminSeriesComponent implements OnInit {
             ...series,
             locked: false,
             branding: series.branding.id,
-            finalTournament: series.finalTournament?.id ?? -1
+            finalTournament: series.finalTournament?.id ?? -1,
+            rankFormula: series.rankFormula.id
         }).pipe(
             take(1),
             tap(() => this.trigger$.next()),

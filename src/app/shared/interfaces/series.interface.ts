@@ -1,5 +1,6 @@
 import { Branding } from './branding.interface';
 import { Tournament, TournamentS } from './tournament.interface';
+import { RankFormula } from './rank-formula.interface';
 
 export interface SeriesBase {
     id: number;
@@ -8,7 +9,7 @@ export interface SeriesBase {
     longDesc: string;
     branding: Branding;
     finalTournament: Tournament;
-    rankFormula: number;
+    rankFormula: RankFormula;
     ftFormula: number;
     percentage: number;
     maxAmountPerTournament: number;
@@ -34,15 +35,16 @@ export interface SeriesS extends SeriesBase {
     tournaments: TournamentS[];
 }
 
-export interface SeriesModel extends Omit<Series, 'id' | 'branding' | 'finalTournament' | 'tournaments' | 'sub'> {
+export interface SeriesModel extends Omit<Series, 'id' | 'rankFormula' | 'branding' | 'finalTournament' | 'tournaments' | 'sub'> {
     id: number | undefined;
     branding: number;
     finalTournament: number;
+    rankFormula: number;
 }
 
 export interface SeriesMetadata {
     id: number;
-    rankFormula: number;
+    rankFormula: RankFormula;
     percentage: number;
     maxAmountPerTournament: number;
     password: string;

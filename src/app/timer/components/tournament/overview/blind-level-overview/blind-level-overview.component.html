@@ -7,84 +7,94 @@
         Blind Levels
     </h3>
 
-    <div class="overflow-y-auto background-panel">
-        <div id="top"></div>
+    @if (levelsToShow().length > 0) {
+        <div class="overflow-y-auto background-panel">
+            <div id="top"></div>
 
-        <table class="blinds-table">
-            <tbody>
-                @for (level of levelsToShow(); track level; let i = $index) {
-                    @if (i > currentLevelIndex() - 3 && i < currentLevelIndex() + 4) {
-                        <tr
-                            [class.bold]="i === currentLevelIndex()"
-                            [class.opaque]="i < currentLevelIndex()"
-                        >
-                            <td class="m-40">
-                                <div class="indicator">
-                                    @if (i === currentLevelIndex()) {
-                                        ►
-                                    }
-                                </div>
-                            </td>
-                            <td class="m-40">
-                                @if (!level.isPause) {
-                                    <div class="w-5 position position-big">
-                                        <div>
+            <table class="blinds-table">
+                <tbody>
+                    @for (level of levelsToShow(); track level; let i = $index) {
+                        @if (i > currentLevelIndex() - 3 && i < currentLevelIndex() + 4) {
+                            <tr
+                                [class.bold]="i === currentLevelIndex()"
+                                [class.opaque]="i < currentLevelIndex()"
+                            >
+                                <td class="m-40 no-p-l">
+                                    <div class="indicator">
+                                        @if (i === currentLevelIndex()) {
+                                            ►
+                                        }
+                                    </div>
+                                </td>
+                                <td class="m-40">
+                                    @if (!level.isPause) {
+                                        <div class="w-5 position position-big">
+                                            <div>
                                             <span>
                                                 {{ level.id }}
                                             </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                } @else {
-                                    <i class="fa fa-pause-circle position-big"></i>
-                                }
-                            </td>
-                            <td>
-                                <div>
-                                    @if (!level.isPause) {
-                                        <div class="talign-center talign-center-big">
-                                            <span [innerHTML]="level | blindLevelText:false"></span>
+                                    } @else {
+                                        <i class="fa fa-pause-circle position-big"></i>
+                                    }
+                                </td>
+                                <td>
+                                    <div>
+                                        @if (!level.isPause) {
+                                            <div class="talign-center talign-center-big">
+                                                <span [innerHTML]="level | blindLevelText:false"></span>
 
-                                            @if (level.ante > 0) {
-                                                / {{ level.ante | number }}
+                                                @if (level.ante > 0) {
+                                                    / {{ level.ante | number }}
+                                                }
+
+                                                @if (level.btnAnte > 0) {
+                                                    / {{ level.ante | number }} (BA)
+                                                }
+                                            </div>
+
+                                            @if (level.isPause) {
+                                                <div class="talign-center opac8">
+                                                    {{ level.duration }} min
+                                                </div>
                                             }
+                                        } @else {
+                                            <div class="talign-center pause">
+                                                PAUSE - {{ level.isChipUp ? 'CHIP UP' : '' }}
 
-                                            @if (level.btnAnte > 0) {
-                                                / {{ level.ante | number }} (BA)
-                                            }
-                                        </div>
+                                                @if (level.endsRebuy) {
+                                                    (ENDS REBUY)
+                                                }
 
-                                        @if (level.isPause) {
-                                            <div class="talign-center opac8">
-                                                {{ level.duration }} min
+                                                @if (level.isChipUp) {
+                                                    (CHIP-UP)
+                                                }
                                             </div>
                                         }
-                                    } @else {
-                                        <div class="talign-center pause">
-                                            PAUSE - {{ level.isChipUp ? 'CHIP UP' : '' }}
-
-                                            @if (level.endsRebuy) {
-                                                (ENDS REBUY)
-                                            }
-
-                                            @if (level.isChipUp) {
-                                                (CHIP-UP)
-                                            }
-                                        </div>
-                                    }
-                                </div>
-                            </td>
-                            <td>
-                                <span class="l-duration">
-                                    {{ level.duration }} min
-                                </span>
-                            </td>
-                        </tr>
+                                    </div>
+                                </td>
+                                <td class="no-p-r text-align-right">
+                                    <span class="l-duration">
+                                        {{ level.duration }} min
+                                    </span>
+                                </td>
+                            </tr>
+                        }
                     }
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <div id="bottom"></div>
-    </div>
+            <div id="bottom"></div>
+        </div>
+    } @else {
+        <div class="no-blinds">
+            <i class="fa fa-exclamation-triangle"></i>
+
+            <h4>No blind levels available</h4>
+
+            <a [routerLink]="['/admin/tournament', tournamentId()]">Add now</a>
+        </div>
+    }
 </div>
 

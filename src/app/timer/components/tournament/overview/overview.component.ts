@@ -29,7 +29,6 @@ import { BlindLevelOverviewComponent } from './blind-level-overview/blind-level-
 import { AddBlindsComponent } from '../../../../dialogs/add-blinds/add-blinds.component';
 import { RankingComponent } from './ranking/ranking.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { LocalStorageService } from '../../../../shared/services/util/local-storage.service';
 import { ButtonsComponent } from './buttons/buttons.component';
 import { BlindLevelTextPipe } from '../../../../shared/pipes/blind-level-text.pipe';
 import { TimePipe } from '../../../../shared/pipes/time.pipe';
@@ -104,7 +103,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     private dialog: MatDialog = inject(MatDialog);
     private destroyRef: DestroyRef = inject(DestroyRef);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private state: TimerStateService = inject(TimerStateService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
@@ -193,7 +191,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             interval(30000).pipe(
                 takeUntilDestroyed(this.destroyRef),
                 tap(() => {
-                    if (this.state.autoSlide()) {
+                    if (this.state.autoSlide() && !this.state.forceStopSlide()) {
                         this.slider.next();
                     }
                 })
@@ -213,7 +211,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             this.blindDuration.set(this.levels()[this.currentLevelIndex()].duration * 60);
         }
 
-        this.blindDurationFixed.set(this.levels()[this.currentLevelIndex()].duration * 60);
+        if (this.levels()[this.currentLevelIndex()]) {
+            this.blindDurationFixed.set(this.levels()[this.currentLevelIndex()].duration * 60);
+        } else {
+            this.blindDurationFixed.set(0);
+        }
     }
 
     private initCountdownConfig(): void {

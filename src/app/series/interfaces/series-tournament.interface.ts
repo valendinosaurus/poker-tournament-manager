@@ -2,14 +2,13 @@ import { TournamentS } from '../../shared/interfaces/tournament.interface';
 import { SeriesMetadata } from '../../shared/interfaces/series.interface';
 import { SeriesTournamentRow } from './series-tournament-row';
 import { Player } from '../../shared/interfaces/player.interface';
-import { Observable } from 'rxjs';
 
 export interface SeriesTournament {
     rows: SeriesTournamentRow[];
     playersAlive: (Player & { rebuys: number, addons: number })[];
     tournament: TournamentS;
     seriesMetadata: SeriesMetadata;
-    formulaText$: Observable<string>;
+    formulaText: string;
     pricePool: number;
     contribution: number;
     withRebuy: boolean;

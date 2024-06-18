@@ -4,7 +4,7 @@ import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/
 import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
 import { TournamentApiService } from '../../../shared/services/api/tournament-api.service';
 import { RankingService } from '../../../shared/services/util/ranking.service';
-import { take, tap } from 'rxjs/operators';
+import { catchError, take, tap } from 'rxjs/operators';
 import { LocationApiService } from '../../../shared/services/api/location-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -14,6 +14,8 @@ import { NgIf } from '@angular/common';
 import { Tournament, TournamentModel } from '../../../shared/interfaces/tournament.interface';
 import { TriggerService } from '../../../shared/services/util/trigger.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { of } from 'rxjs';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
     selector: 'app-create-tournament',
@@ -51,6 +53,7 @@ export class CreateTournamentComponent implements OnInit {
     private locationService: LocationApiService = inject(LocationApiService);
     private destroyRef = inject(DestroyRef);
     private triggerService: TriggerService = inject(TriggerService);
+    private notificationService: NotificationService = inject(NotificationService);
 
     ngOnInit(): void {
         this.locationService.getAll$().pipe(
@@ -83,12 +86,20 @@ export class CreateTournamentComponent implements OnInit {
             withReEntry: this.data?.tournament?.withReEntry ?? false,
             rebuyStack: this.data?.tournament?.rebuyStack ?? 0,
             payout: this.data?.tournament?.payout ?? 0,
-            rankFormula: this.data?.tournament?.rankFormula ?? null,
+            rankFormula: this.data?.tournament?.rankFormula?.id ?? null,
             location: this.data?.tournament?.location ?? this.allLocations[0].value,
             temp: this.data?.tournament?.temp ?? false,
             password: '',
             locked: false,
-            adaptedPayout: undefined
+            adaptedPayout: undefined,
+            settings: {
+                started: undefined,
+                autoSlide: true,
+                timeLeft: 0,
+                levelIndex: 0,
+                id: -1,
+                showCondensedBlinds: false
+            }
         };
     }
 
@@ -134,7 +145,7 @@ export class CreateTournamentComponent implements OnInit {
             },
             this.formlyFieldService.getDefaultNumberField('initialPricePool', 'initial pricepool', true),
             this.formlyFieldService.getDefaultSelectField('payout', 'payout structure', true, this.rankingService.getAllPayoutsForSelect()),
-            this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect()),
+            this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect$()),
             this.formlyFieldService.getDefaultSelectField('location', 'location', true, this.allLocations),
             this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Tournament?'),
             this.formlyFieldService.getDefaultTextField('password', 'Password', false, 100),
@@ -146,13 +157,21 @@ export class CreateTournamentComponent implements OnInit {
             this.tournamentApiService.put$(model).pipe(
                 take(1),
                 tap(() => this.triggerService.triggerTournaments()),
-                tap(() => this.dialogRef.close(true))
+                tap(() => this.dialogRef.close(true)),
+                catchError(() => {
+                    this.notificationService.error('ERROR EDITING TOURNAMENT');
+                    return of(null);
+                }),
             ).subscribe();
         } else {
             this.tournamentApiService.post$(model).pipe(
                 take(1),
                 tap(() => this.triggerService.triggerTournaments()),
-                tap(() => this.dialogRef.close(true))
+                tap(() => this.dialogRef.close(true)),
+                catchError(() => {
+                    this.notificationService.error('ERROR CREATING TOURNAMENT');
+                    return of(null);
+                })
             ).subscribe();
         }
     }

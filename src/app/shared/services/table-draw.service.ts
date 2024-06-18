@@ -1,5 +1,4 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { LocalStorageService } from './util/local-storage.service';
 import { TableDrawSeat } from '../interfaces/table-draw-seat.interface';
 import { Player } from '../interfaces/player.interface';
 import { TableDraw } from '../interfaces/table-draw.interface';
@@ -36,7 +35,6 @@ export class TableDrawService {
     };
 
     private state: TimerStateService = inject(TimerStateService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
     update(): void {

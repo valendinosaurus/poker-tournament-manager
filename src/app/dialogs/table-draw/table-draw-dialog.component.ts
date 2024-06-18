@@ -1,9 +1,7 @@
 import { Component, inject, OnInit, WritableSignal } from '@angular/core';
 import { TableDraw } from '../../shared/interfaces/table-draw.interface';
 import { Player } from '../../shared/interfaces/player.interface';
-import { MatDialogRef } from '@angular/material/dialog';
 import { TableDrawService } from '../../shared/services/table-draw.service';
-import { LocalStorageService } from '../../shared/services/util/local-storage.service';
 import { TableDrawState } from '../../shared/enums/table-draw-state.enum';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -13,7 +11,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TableDrawStateComponent } from '../../shared/components/table-draw-state/table-draw-state.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor, NgIf } from '@angular/common';
-import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Component({
     selector: 'app-table-draw-dialog',

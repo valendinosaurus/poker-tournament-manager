@@ -5,6 +5,7 @@ import { Entry } from './entry.interface';
 import { Elimination } from './elimination.interface';
 import { TEvent } from './t-event.interface';
 import { TournamentSettings } from './tournament-settings.interface';
+import { RankFormula } from './rank-formula.interface';
 
 export interface TournamentBase {
     id: number;
@@ -24,7 +25,7 @@ export interface TournamentBase {
     addonAmount: number;
     payout: number;
     initialPricePool: number;
-    rankFormula: number | null;
+    rankFormula: RankFormula | null;
     location: number;
     locationName: string;
     structure: BlindLevel[];
@@ -67,9 +68,11 @@ type omitted =
     | 'finishes'
     | 'entries'
     | 'structure'
-    | 'players';
+    | 'players'
+    | 'rankFormula';
 
 export interface TournamentModel extends Omit<Tournament, omitted> {
     id: number | undefined;
     date: string;
+    rankFormula: number | null;
 }

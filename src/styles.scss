@@ -255,3 +255,25 @@ a.contents {
 .transparent {
     opacity: 0;
 }
+
+.no-blinds {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-blinds .fa {
+    font-size: 40px;
+    color: darkred;
+    margin-top: 32px;
+}
+
+.no-blinds h4 {
+    color: darkred;
+    margin-top: 20px;
+}
+
+.no-blinds a {
+    font-weight: bold;
+}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -59,7 +60,7 @@ export class FormlyFieldService {
         key: string,
         label: string,
         required: boolean,
-        options: { label: string, value: any }[],
+        options: { label: string, value: any }[] | Observable<{ label: string, value: any }[]>,
         disabled = false
     ): FormlyFieldConfig {
         return {

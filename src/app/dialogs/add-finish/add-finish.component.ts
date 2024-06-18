@@ -4,7 +4,6 @@ import { FormlyModule } from '@ngx-formly/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { RankingService } from '../../shared/services/util/ranking.service';
-import { LocalStorageService } from '../../shared/services/util/local-storage.service';
 import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../shared/services/notification.service';
 import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.interface';
@@ -43,7 +42,6 @@ export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponen
     winnerPrice: WritableSignal<number> = signal(0);
 
     private rankingService: RankingService = inject(RankingService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private notificationService: NotificationService = inject(NotificationService);
     private dialog: MatDialog = inject(MatDialog);
     private state: TimerStateService = inject(TimerStateService);

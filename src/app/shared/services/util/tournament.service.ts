@@ -12,7 +12,6 @@ import { EntryType } from '../../enums/entry-type.enum';
 import { TEventType } from '../../enums/t-event-type.enum';
 import { Finish } from '../../interfaces/finish.interface';
 import { RankingService } from './ranking.service';
-import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +21,6 @@ export class TournamentService {
     private actionEventApiService: ActionEventApiService = inject(ActionEventApiService);
     private state: TimerStateService = inject(TimerStateService);
     private rankingService: RankingService = inject(RankingService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
 
     postActionEvent$ =
         switchMap(() => this.actionEventApiService.post$({

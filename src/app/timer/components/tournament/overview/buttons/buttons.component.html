@@ -31,9 +31,15 @@
         }
 
         @if (!canStartTournament()) {
-            <span>
-                <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
-            </span>
+            @if (hasLevels()) {
+                <span>
+                    <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
+                </span>
+            } @else {
+                <span>
+                    <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament without blind levels
+                </span>
+            }
         }
 
         @if (isTournamentFinished()) {
@@ -55,7 +61,7 @@
         mat-flat-button
         matTooltip="Play / Pause"
         class="main"
-        [disabled]="isTournamentFinished()"
+        [disabled]="isTournamentFinished() || !canStartTournament()"
         (click)="toggleRunning()"
     >
         @if (isRunning()) {
@@ -71,7 +77,7 @@
             mat-flat-button
             matTooltip="Seat Open"
             class="main"
-            [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked()"
+            [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked() || !hasPlayersToSeatOpen()"
             (click)="seatOpen()"
         >
             <i class="fa fa-skull"></i>

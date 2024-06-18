@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Player, PlayerInSeries } from '../interfaces/player.interface';
 import { LeaderboardRow } from '../../series/interfaces/overall-ranking.interface';
-import { SeriesTournament } from '../../series/interfaces/combined-ranking.interface';
-import { SeriesTournamentRow } from '../../series/interfaces/combined-finish.interface';
+import { SeriesTournament } from '../../series/interfaces/series-tournament.interface';
+import { SeriesTournamentRow } from '../../series/interfaces/series-tournament-row';
 import { Tournament, TournamentS } from '../interfaces/tournament.interface';
-import { Formula, RankingService } from './util/ranking.service';
+import { RankingService } from './util/ranking.service';
 import { Finish } from '../interfaces/finish.interface';
 import { Entry } from '../interfaces/entry.interface';
 import { EntryType } from '../enums/entry-type.enum';
@@ -13,13 +13,12 @@ import { SimpleStat } from '../interfaces/simple-stat.interface';
 import { mostSpilled } from '../const/app.const';
 import { Elimination } from '../interfaces/elimination.interface';
 import { SeriesStats } from '../../series/interfaces/series-stats.interface';
+import { Formula } from '../interfaces/formula-input.type';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SeriesService {
-
-    formula: Formula;
 
     private rankingService: RankingService = inject(RankingService);
 
@@ -28,7 +27,7 @@ export class SeriesService {
         seriesMetadata: SeriesMetadata
     ): SeriesTournament[] {
         const tIds = series.tournaments.map((t: TournamentS) => t.id).reverse();
-        const combinedRankings: SeriesTournament[] = [];
+        const seriesTournaments: SeriesTournament[] = [];
 
         tIds.forEach(
             (id: number) => {
@@ -48,13 +47,14 @@ export class SeriesService {
                     locked: false,
                     disqualified: p.disqualified
                 }));
+
                 localTournament.entries = localEntries;
                 localTournament.finishes = localFinished;
 
                 const wasDealMade = localFinished.length !== new Set(localFinished.map(e => e.rank)).size;
                 const rankOfDeal = Math.min(...localFinished.map(e => e.rank));
 
-                let combFinishes: SeriesTournamentRow[] = localFinished.map(
+                let seriesTournamentRows: SeriesTournamentRow[] = localFinished.map(
                     (finish: Finish) => ({
                         image: localPlayers.filter(p => p.id === finish.playerId)[0]?.image,
                         name: localPlayers.filter(p => p.id === finish.playerId)[0]?.name,
@@ -79,7 +79,7 @@ export class SeriesService {
                     e => !booked.includes(e.playerId)
                 );
 
-                missing.forEach(finish => combFinishes.push({
+                missing.forEach(finish => seriesTournamentRows.push({
                     rank: nextRank - 1,
                     image: localPlayers.filter(p => p.id === finish.playerId)[0]?.image,
                     name: localPlayers.filter(p => p.id === finish.playerId)[0]?.name,
@@ -96,30 +96,16 @@ export class SeriesService {
                     disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified
                 }));
 
-                combFinishes = combFinishes.sort(
+                seriesTournamentRows = seriesTournamentRows.sort(
                     (a, b) => (b.isTemp ? nextRank : b.rank) - (a.isTemp ? nextRank : a.rank));
-
-                let formula = undefined;
-
-                if (localTournament.rankFormula) {
-                    formula = localTournament.rankFormula;
-                } else {
-                    if (seriesMetadata?.rankFormula !== undefined && seriesMetadata?.rankFormula !== null) {
-                        formula = seriesMetadata.rankFormula;
-                    }
-                }
-
-                if (formula !== undefined) {
-                    this.formula = this.rankingService.getFormulaById(formula);
-                }
 
                 const pricePool = this.rankingService.getSimplePricePool(localTournament);
                 const contribution = pricePool * seriesMetadata.percentage / 100;
 
-                combinedRankings.push({
-                    combFinishes: combFinishes.map((c, i) => ({
+                seriesTournaments.push({
+                    rows: seriesTournamentRows.map((c, i) => ({
                         ...c,
-                        points: this.calcPoints(c, localTournament, this.formula),
+                        points: this.calcPoints(c, localTournament, eval(series.rankFormula.formula)),
                     })).sort((a: SeriesTournamentRow, b: SeriesTournamentRow) =>
                         (a.isTemp ? (nextRank - 1) : a.rank) - (b.isTemp ? (nextRank - 1) : b.rank)
                     ),
@@ -127,30 +113,34 @@ export class SeriesService {
                     seriesMetadata,
                     pricePool: pricePool,
                     contribution: contribution > seriesMetadata.maxAmountPerTournament ? seriesMetadata.maxAmountPerTournament : contribution,
-                    formulaText: this.rankingService.getFormulaDesc(localTournament.rankFormula),
+                    formulaText: series.rankFormula.description,
                     playersAlive: localPlayers.filter(p => !localFinished.map(f => f.playerId).includes(p.id)).map(
                         (player: Player) => ({
                             ...player,
                             rebuys: localEntries.filter(e => e.playerId === player.id && e.type === EntryType.REBUY).length,
                             addons: localEntries.filter(e => e.playerId === player.id && e.type === EntryType.ADDON).length
                         })
-                    )
+                    ),
+                    withAddon: tournament.withAddon,
+                    withRebuy: tournament.withRebuy,
+                    withReEntry: tournament.withReEntry,
+                    placesPaid: tournament.adaptedPayout?.length ?? this.rankingService.getPayoutById(tournament.payout).length
                 });
             }
         );
 
-        return combinedRankings;
+        return seriesTournaments;
     }
 
-    merge(combinedRankings: SeriesTournament[]): LeaderboardRow[] {
+    merge(seriesTournaments: SeriesTournament[]): LeaderboardRow[] {
         const overallRanking: LeaderboardRow[] = [];
 
-        const allPlayers: Player[] = combinedRankings.map(
-            (c) => c.tournament.players
+        const allPlayers: Player[] = seriesTournaments.map(
+            (seriesTournament: SeriesTournament) => seriesTournament.tournament.players
         ).reduce((a, b) => a.concat(b), []);
 
-        combinedRankings.forEach(
-            c => c.combFinishes.forEach((f: SeriesTournamentRow) => {
+        seriesTournaments.forEach(
+            (seriesTournament: SeriesTournament) => seriesTournament.rows.forEach((f: SeriesTournamentRow) => {
                 if (overallRanking.filter(e => e.name === f.name).length > 0) {
                     const index = overallRanking.findIndex(o => o.name === f.name);
 
@@ -165,7 +155,7 @@ export class SeriesService {
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
                         rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons,
                         eliminations: +f.eliminations + +element.eliminations,
-                        itm: +element.itm + ((+f.rank <= 4) ? 1 : 0),
+                        itm: +element.itm + ((+f.rank <= seriesTournament.placesPaid) ? 1 : 0),
                         isTemp: f.isTemp ? true : element.isTemp,
                         email: f.email,
                         playerId: f.playerId,
@@ -182,7 +172,7 @@ export class SeriesService {
                         tournaments: allPlayers.filter(e => e.name === f.name).length,
                         rebuysAddons: +f.rebuys + +f.addons,
                         eliminations: f.eliminations,
-                        itm: (+f.rank <= 4) ? 1 : 0,
+                        itm: (+f.rank <= seriesTournament.placesPaid) ? 1 : 0,
                         isTemp: f.isTemp,
                         email: f.email,
                         playerId: f.playerId,
@@ -332,15 +322,16 @@ export class SeriesService {
     }
 
     calcPoints(
-        combFinish: SeriesTournamentRow,
+        seriesTournamentRow: SeriesTournamentRow,
         tournament: Tournament,
         formula: Formula | undefined
     ): number {
         return formula ? formula({
-            rank: +combFinish.rank,
-            reEntries: +combFinish.reEntries,
-            addons: +combFinish.addons,
-            rebuys: +combFinish.rebuys,
+            rank: +seriesTournamentRow.rank,
+            price: +seriesTournamentRow.price,
+            reEntries: +seriesTournamentRow.reEntries,
+            addons: +seriesTournamentRow.addons,
+            rebuys: +seriesTournamentRow.rebuys,
             players: tournament.players.length,
             buyIn: tournament.buyInAmount,
             pricePool: +this.rankingService.getSimplePricePool(tournament),

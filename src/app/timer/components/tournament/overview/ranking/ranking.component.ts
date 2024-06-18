@@ -1,22 +1,14 @@
 import { Component, computed, inject, OnInit, Signal } from '@angular/core';
-import { Entry } from '../../../../../shared/interfaces/entry.interface';
 import { Finish } from '../../../../../shared/interfaces/finish.interface';
-import { Formula, RankingService } from '../../../../../shared/services/util/ranking.service';
+import { RankingService } from '../../../../../shared/services/util/ranking.service';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { TimerStateService } from '../../../../services/timer-state.service';
-
-interface Ranking {
-    image: string;
-    name: string;
-    rank: number;
-    price: number;
-    rebuys: number;
-    addons: number;
-    reEntries: number;
-};
+import { FormulaPointsPipe } from '../../../../../shared/pipes/formula-points.pipe';
+import { Ranking } from '../../../../../series/interfaces/ranking.interface';
+import { Formula } from '../../../../../shared/interfaces/formula-input.type';
 
 @Component({
     selector: 'app-ranking',
@@ -29,14 +21,19 @@ interface Ranking {
         UserImageRoundComponent,
         BulletsComponent,
         DecimalPipe,
+        FormulaPointsPipe,
     ],
 })
 export class RankingComponent implements OnInit {
 
     formula: Formula;
 
-    combFinishes: Signal<Ranking[]>;
+    ranking: Signal<Ranking[]>;
     missingRanks: Signal<Ranking[]>;
+
+    withRebuy = computed(() => this.state.tournament().withRebuy);
+    withAddon = computed(() => this.state.tournament().withAddon);
+    withReEntry = computed(() => this.state.tournament().withReEntry);
 
     private rankingService: RankingService = inject(RankingService);
     private state: TimerStateService = inject(TimerStateService);
@@ -48,7 +45,7 @@ export class RankingComponent implements OnInit {
         const entries = computed(() => this.state.tournament().entries);
         const finishes = computed(() => this.state.tournament().finishes);
 
-        this.combFinishes = computed(() => finishes().map(
+        this.ranking = computed(() => finishes().map(
             (finish: Finish) => ({
                 image: players().filter(p => p.id === finish.playerId)[0]?.image,
                 name: players().filter(p => p.id === finish.playerId)[0]?.name,
@@ -80,48 +77,17 @@ export class RankingComponent implements OnInit {
             return missingRanks;
         });
 
-        let formula = undefined;
+        const metaFormula = metadata()?.rankFormula.formula;
 
-        if (tournament().rankFormula) {
-            formula = tournament().rankFormula;
+        if (metaFormula) {
+            this.formula = eval(metaFormula);
         } else {
-            if (metadata()?.rankFormula !== undefined && metadata()?.rankFormula !== null) {
-                formula = metadata()?.rankFormula;
+            const tournamentFormula = tournament().rankFormula?.formula;
+
+            if (tournamentFormula) {
+                this.formula = eval(tournamentFormula);
             }
         }
-
-        if (formula) {
-            this.formula = this.rankingService.getFormulaById(formula);
-        }
     }
 
-    calcPoints(combFinishe: {
-        image: string;
-        name: string;
-        rank: number;
-        price: number;
-        rebuys: number;
-        reEntries: number;
-        addons: number;
-    }): number {
-        return this.formula ? this.formula({
-            rank: +combFinishe.rank,
-            reEntries: +combFinishe.reEntries,
-            addons: +combFinishe.addons,
-            rebuys: +combFinishe.rebuys,
-            players: this.state.tournament().players.length,
-            buyIn: +this.state.tournament().buyInAmount,
-            pricePool: +this.getPricePool(),
-            addonCost: +this.state.tournament().addonAmount
-        }) : 0;
-    }
-
-    private getPricePool(): number {
-        return this.state.tournament().entries.filter(
-                (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
-            ).length * +this.state.tournament().buyInAmount
-            + this.state.tournament().entries.filter(e => e.type === EntryType.REBUY).length * +this.state.tournament().rebuyAmount
-            + this.state.tournament().entries.filter(e => e.type === EntryType.ADDON).length * +this.state.tournament().addonAmount
-            + +this.state.tournament().initialPricePool;
-    }
 }

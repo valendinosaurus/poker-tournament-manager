@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Series, SeriesModel } from '../../../shared/interfaces/series.interface';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
+import { RankingService } from '../../../shared/services/util/ranking.service';
 
 @Component({
     selector: 'app-create-series',
@@ -38,6 +39,7 @@ export class CreateSeriesComponent implements OnInit {
     private brandingApiService: BrandingApiService = inject(BrandingApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private destroyRef: DestroyRef = inject(DestroyRef);
+    private rankingService: RankingService = inject(RankingService);
 
     allBrandings: { label: string, value: number }[];
 
@@ -64,7 +66,7 @@ export class CreateSeriesComponent implements OnInit {
             longDesc: this.data?.series?.longDesc ?? '',
             branding: this.data?.series?.branding.id ?? 0,
             finalTournament: this.data?.series?.finalTournament.id ?? 0,
-            rankFormula: this.data?.series?.rankFormula ?? 0,
+            rankFormula: this.data?.series?.rankFormula.id ?? 0,
             ftFormula: this.data?.series?.ftFormula ?? 0,
             percentage: this.data?.series?.percentage ?? 0,
             maxAmountPerTournament: this.data?.series?.maxAmountPerTournament ?? 0,
@@ -88,7 +90,7 @@ export class CreateSeriesComponent implements OnInit {
             this.formlyFieldService.getDefaultTextField('shortDesc', 'Short Description', true, 200),
             this.formlyFieldService.getDefaultTextField('longDesc', 'Long Description', true, 1000),
             this.formlyFieldService.getDefaultSelectField('branding', 'Branding', true, this.allBrandings),
-            this.formlyFieldService.getDefaultNumberField('rankFormula', 'Formula: Rank', true),
+            this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect$()),
             this.formlyFieldService.getDefaultNumberField('ftFormula', 'Formula: Final Table', true),
             this.formlyFieldService.getDefaultNumberField('percentage', '% of Pot into Final Tournament', true),
             this.formlyFieldService.getDefaultNumberField('maxAmountPerTournament', 'Cap per Tournament', true),

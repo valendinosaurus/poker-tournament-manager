@@ -4,14 +4,14 @@ import { SeriesApiService } from '../../../shared/services/api/series-api.servic
 import { combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
 import { SeriesMetadata, SeriesS } from '../../../shared/interfaces/series.interface';
 import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { SeriesTournament } from '../../interfaces/combined-ranking.interface';
+import { SeriesTournament } from '../../interfaces/series-tournament.interface';
 import { LeaderboardRow } from '../../interfaces/overall-ranking.interface';
 import { SeriesService } from '../../../shared/services/series.service';
 import { RankingService } from '../../../shared/services/util/ranking.service';
 import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
 import { SeriesStatsComponent } from '../../components/series-stats/series-stats.component';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
 import { LeaderboardComponent } from '../../../shared/components/leaderboard/leaderboard.component';
 import { SeriesHeaderComponent } from '../../components/series-header/series-header.component';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
@@ -26,6 +26,8 @@ import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { NullsafePrimitivePipe } from '../../../shared/pipes/nullsafe-primitive.pipe';
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 import { SeriesStats } from '../../interfaces/series-stats.interface';
+import { TournamentS } from '../../../shared/interfaces/tournament.interface';
+import { RankFormulaApiService } from '../../../shared/services/api/rank-formula-api.service';
 
 @Component({
     selector: 'app-series-page',
@@ -43,7 +45,8 @@ import { SeriesStats } from '../../interfaces/series-stats.interface';
         AsyncPipe,
         MatDialogModule,
         MatButtonModule,
-        NullsafePrimitivePipe
+        NullsafePrimitivePipe,
+        JsonPipe
     ]
 })
 export class SeriesPageComponent implements OnInit {
@@ -59,6 +62,8 @@ export class SeriesPageComponent implements OnInit {
     ownerEmail$: Observable<string | null>;
     isUserConnectedHere$: Observable<boolean>;
     isLoadingSeries$: Observable<boolean>;
+    hasRebuy$: Observable<boolean>;
+    hasAddon$: Observable<boolean>;
 
     seriesId: number;
     password: string;
@@ -71,6 +76,7 @@ export class SeriesPageComponent implements OnInit {
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
+    private rankFormulaApiService: RankFormulaApiService = inject(RankFormulaApiService);
 
     private trigger$ = new ReplaySubject<void>();
 
@@ -113,19 +119,33 @@ export class SeriesPageComponent implements OnInit {
 
         this.seriesHeader$ = nonNullSeries$.pipe(
             map((series: SeriesS) => ({
+                    formulaMathContent: {
+                        latex: series.rankFormula.description
+                    },
+                    formulaLatexString: series.rankFormula.description,
+                    guaranteed: this.seriesService.getGuaranteedFromSeries(series),
                     logo: series.branding.logo,
                     name: series.name,
                     tournamentsPlayed: series.tournaments.length,
                     totalTournaments: series.noOfTournaments,
                     percentageToFinalPot: series.percentage,
                     maxAmountPerTournament: series.maxAmountPerTournament,
-                    guaranteed: this.seriesService.getGuaranteedFromSeries(series),
-                    formulaMathContent: {
-                        latex: this.rankingService.getFormulaDesc(series.rankFormula)
-                    },
-                    formulaImageUrl: this.rankingService.formulas.find(s => s.id === series.ftFormula)?.imageUrl ?? ''
                 })
-            )
+            ),
+            // map((series: SeriesS) => ({
+            //         logo: series.branding.logo,
+            //         name: series.name,
+            //         tournamentsPlayed: series.tournaments.length,
+            //         totalTournaments: series.noOfTournaments,
+            //         percentageToFinalPot: series.percentage,
+            //         maxAmountPerTournament: series.maxAmountPerTournament,
+            //         guaranteed: this.seriesService.getGuaranteedFromSeries(series),
+            //         formulaMathContent: {
+            //             latex: this.rankingService.getFormulaDesc$(series.rankFormula)
+            //         },
+            //         formulaLatexString: this.rankingService.getFormulaDesc$(series.rankFormula)
+            //     })
+            // )
         );
 
         const metadata$ = this.seriesApiService.getSeriesMetadata$(this.seriesId, this.password).pipe(
@@ -138,7 +158,10 @@ export class SeriesPageComponent implements OnInit {
         ]).pipe(
             map(([series, metadata]: [SeriesS, SeriesMetadata]) =>
                 this.seriesService.calculateSeriesTournaments(series, metadata)
-            )
+            ),
+            map((tournaments: SeriesTournament[]) => tournaments.sort(
+                (a: SeriesTournament, b: SeriesTournament) => new Date(b.tournament.date).getTime() - new Date(a.tournament.date).getTime()
+            ))
         );
 
         this.leaderboard$ = this.tournaments$.pipe(
@@ -163,6 +186,18 @@ export class SeriesPageComponent implements OnInit {
                         (leaderboardRow: LeaderboardRow) => leaderboardRow.email === userEmail
                     )
             )
+        );
+
+        this.hasRebuy$ = this.series$.pipe(
+            filter((series: SeriesS | null): series is SeriesS => series !== null),
+            map((series: SeriesS) => series.tournaments),
+            map((tournaments: TournamentS[]) => tournaments.some((tournament: TournamentS) => tournament.withRebuy))
+        );
+
+        this.hasAddon$ = this.series$.pipe(
+            filter((series: SeriesS | null): series is SeriesS => series !== null),
+            map((series: SeriesS) => series.tournaments),
+            map((tournaments: TournamentS[]) => tournaments.some((tournament: TournamentS) => tournament.withAddon))
         );
 
         this.trigger$.next();

@@ -68,8 +68,9 @@ h4 {
 
 div.admin-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+
     margin-top: 12px;
 
     @media (max-width: 800px) {
@@ -92,6 +93,8 @@ div.admin-header {
 }
 
 .admin-header-buttons {
+    align-self: flex-end;
+
     button {
         margin-left: 8px;
 

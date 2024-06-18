@@ -2,28 +2,19 @@ import { inject, Injectable } from '@angular/core';
 import { Entry } from '../../interfaces/entry.interface';
 import { Tournament } from '../../interfaces/tournament.interface';
 import { EntryType } from '../../enums/entry-type.enum';
-
-export type FormulaInput = {
-    players: number,
-    pricePool: number,
-    rank: number,
-    buyIn: number,
-    reEntries: number,
-    addons: number,
-    rebuys: number,
-    addonCost: number
-}
-
-export type Formula = (input: FormulaInput) => number;
+import { RankFormulaApiService } from '../api/rank-formula-api.service';
+import { Observable } from 'rxjs';
+import { RankFormula } from '../../interfaces/rank-formula.interface';
+import { map, shareReplay } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RankingService {
 
-    defaultFormula: Formula = (input: FormulaInput) => 0;
-
     defaultPayout = [50, 30, 20];
+
+    private rankFormulaApiService: RankFormulaApiService = inject(RankFormulaApiService);
 
     payouts: { id: number, prices: number[] }[] = [
         {
@@ -74,72 +65,20 @@ export class RankingService {
         }
     ];
 
-    formulas: { id: number, f: Formula, name: string, desc: string, imageUrl: string }[] = [
-        {
-            name: 'Very Simple',
-            id: 1,
-            f: (input: FormulaInput) => {
-                return input.players - input.rank + 1;
-            },
-            desc: '#players - rank + 1',
-            imageUrl: ''
-        },
-        {
-            name: 'VPR with rebuy and addon',
-            id: 0,
-            f: (input: FormulaInput) => {
-                const points = +input.pricePool
-                    / Math.sqrt(+input.players * (1 + +input.reEntries + +input.rebuys + +input.addons)) / (1 + +input.rank);
-
-                return points;
-            },
-            desc: '$\\frac{pricepool}{\\frac{\\sqrt(players * (1 + rebuys + addons)}{1 + rank}}$',
-            imageUrl: 'assets/formula_VPR_rebuy_addon.png'
-        },
-        {
-            name: 'adesso Poker Tour',
-            id: 2,
-            f: (input: FormulaInput) => {
-                const payout = [0.5, 0.3, 0.2];
-
-                if (input.rank > 3) {
-                    return 0;
-                }
-
-                return input.players * payout[input.rank - 1];
-            },
-            desc: '',
-            imageUrl: ''
-        }
-    ];
-
-    getFormulaById(id: number): Formula {
-        const formula: { id: number, f: Formula } | undefined = this.formulas.find(ff => ff.id === id);
-
-        return formula ? formula.f : this.defaultFormula;
-    }
-
-    getFormulasForSelect(): { label: string, value: number | null }[] {
-        const formulas: { label: string, value: number | null }[] | undefined = this.formulas.map(ff => ({
-            label: ff.name,
-            value: ff.id
-        }));
-
-        return [
-            {
-                label: 'No Formula',
-                value: null
-            },
-            ...formulas
-        ];
-    }
-
-    getFormulaDesc(id: number | null | undefined): string {
-        if (id === null || id === undefined) {
-            return 'no description';
-        }
-
-        return this.formulas.find(f => f.id === id)?.desc ?? 'no description';
+    getFormulasForSelect$(): Observable<{ label: string, value: number | null }[]> {
+        return this.rankFormulaApiService.getAll$().pipe(
+            map((formulas: RankFormula[]) => [
+                {
+                    label: 'No Formula',
+                    value: null
+                },
+                ...formulas.map(f => ({
+                    label: f.name,
+                    value: f.id
+                }))
+            ]),
+            shareReplay(1)
+        );
     }
 
     getPayoutById(id: number): number[] {

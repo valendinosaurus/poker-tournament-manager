@@ -4,13 +4,16 @@ import { SeriesMetadata, SeriesS } from '../../../../../shared/interfaces/series
 import { SeriesService } from '../../../../../shared/services/series.service';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { SeriesTournament } from '../../../../../series/interfaces/combined-ranking.interface';
+import { SeriesTournament } from '../../../../../series/interfaces/series-tournament.interface';
 import { SeriesApiService } from '../../../../../shared/services/api/series-api.service';
 import { FetchService } from '../../../../../shared/services/fetch.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { LeaderboardComponent } from '../../../../../shared/components/leaderboard/leaderboard.component';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { NullsafePrimitivePipe } from '../../../../../shared/pipes/nullsafe-primitive.pipe';
+import { fakeAsync } from '@angular/core/testing';
+import { RankFormulaApiService } from '../../../../../shared/services/api/rank-formula-api.service';
+import { RankFormula } from '../../../../../shared/interfaces/rank-formula.interface';
 
 @Component({
     selector: 'app-leaderboard-info',
@@ -30,6 +33,7 @@ export class LeaderboardInfoComponent implements OnInit {
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private fetchService: FetchService = inject(FetchService);
     private state: TimerStateService = inject(TimerStateService);
+    private rankFormulaApiService: RankFormulaApiService = inject(RankFormulaApiService);
 
     ngOnInit(): void {
         this.metadata = this.state.metadata;
@@ -58,8 +62,8 @@ export class LeaderboardInfoComponent implements OnInit {
                 metadata$
             ]).pipe(
                 map(([series, metadata]: [SeriesS, SeriesMetadata]) =>
-                    this.seriesService.calculateSeriesTournaments(series, metadata)
-                )
+                            this.seriesService.calculateSeriesTournaments(series, metadata)
+                        )
             );
 
             this.leaderboard$ = tournaments$.pipe(
@@ -71,4 +75,5 @@ export class LeaderboardInfoComponent implements OnInit {
         }
     }
 
+    protected readonly fakeAsync = fakeAsync;
 }

@@ -19,7 +19,6 @@ import { AddAddonComponent } from '../../../../../dialogs/add-addon/add-addon.co
 import { AddFinishComponent } from '../../../../../dialogs/add-finish/add-finish.component';
 import { MatDialog } from '@angular/material/dialog';
 import { RankingService } from '../../../../../shared/services/util/ranking.service';
-import { LocalStorageService } from '../../../../../shared/services/util/local-storage.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { AsyncPipe, DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
@@ -68,6 +67,8 @@ export class ButtonsComponent implements OnInit {
     isRunning: WritableSignal<boolean>;
     isTournamentLocked: Signal<boolean>;
     isITM: Signal<boolean>;
+    hasLevels: Signal<boolean>;
+    hasPlayersToSeatOpen: Signal<boolean>;
 
     canShowInfoPanel: Signal<boolean>;
     isFullScreen: WritableSignal<boolean>;
@@ -93,7 +94,6 @@ export class ButtonsComponent implements OnInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private rankingService: RankingService = inject(RankingService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private document: Document = inject(DOCUMENT);
     private state: TimerStateService = inject(TimerStateService);
     private tableDrawService: TableDrawService = inject(TableDrawService);
@@ -123,6 +123,14 @@ export class ButtonsComponent implements OnInit {
         this.isFullScreen = this.state.isFullScreen;
         this.isITM = this.state.isITM;
         this.elem = this.document.documentElement;
+
+        this.hasLevels = computed(() =>
+            this.state.tournament().structure.length > 0
+        );
+
+        this.hasPlayersToSeatOpen = computed(() =>
+            this.state.players().length > 0
+        );
 
         const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout;// this.localStorageService.getAdaptedPayoutById(this.tournament().id);
 

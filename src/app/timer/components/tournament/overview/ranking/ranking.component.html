@@ -9,9 +9,19 @@
             <tr>
                 <th><small>Name</small></th>
                 <th class="center"><small>Rank</small></th>
-                <!--                <th class="center"><small>Re-Entries</small></th>-->
-                <th class="center"><small>Rebuys</small></th>
-                <th class="center"><small>Addons</small></th>
+
+                @if (withReEntry()) {
+                    <th class="center"><small>Re-Entries</small></th>
+                }
+
+                @if (withRebuy()) {
+                    <th class="center"><small>Rebuys</small></th>
+                }
+
+                @if (withAddon()) {
+                    <th class="center"><small>Addons</small></th>
+                }
+
                 <th class="center"><small>Price</small></th>
 
                 @if (formula !== undefined && formula !== null) {
@@ -31,18 +41,20 @@
                     <td class="center">
                         {{ e.rank | number }}
                     </td>
-                    <!--                    <td class="center">-->
-                    <!--                        - -->
-                    <!--                    </td>-->
-                    <td class="center">
-                        -
-                    </td>
-                    <td class="center">
-                        -
-                    </td>
-                    <td class="center">
-                        -
-                    </td>
+
+                    <td class="center">-</td>
+
+                    @if (withReEntry()) {
+                        <td class="center">-</td>
+                    }
+
+                    @if (withRebuy()) {
+                        <td class="center">-</td>
+                    }
+
+                    @if (withAddon()) {
+                        <td class="center">-</td>
+                    }
 
                     @if (formula !== undefined && formula !== null) {
                         <td class="center">
@@ -51,7 +63,7 @@
                     }
                 </tr>
             </ng-container>
-            <ng-container *ngFor="let e of combFinishes()">
+            <ng-container *ngFor="let e of ranking()">
                 <tr>
                     <td>
                 <span class="flex-td">
@@ -64,23 +76,34 @@
                     <td class="center">
                         {{ e.rank | number }}
                     </td>
-                    <!-- TODO condiiton -->
-                    <!--                    <td class="center">-->
-                    <!--                        <app-bullets [number]="e.reEntries"></app-bullets>-->
-                    <!--                    </td>-->
-                    <td class="center">
-                        <app-bullets [number]="e.rebuys"></app-bullets>
-                    </td>
-                    <td class="center">
-                        <app-bullets [number]="e.addons"></app-bullets>
-                    </td>
-                    <td class="center">
-                        $ {{ e.price | number:'':'de-CH' }}
+
+                    @if (withReEntry()) {
+                        <td class="center">
+                            <app-bullets [number]="e.reEntries"></app-bullets>
+                        </td>
+                    }
+
+                    @if (withRebuy()) {
+                        <td class="center">
+                            <app-bullets [number]="e.rebuys"></app-bullets>
+                        </td>
+                    }
+
+                    @if (withAddon()) {
+                        <td class="center">
+                            <app-bullets [number]="e.addons"></app-bullets>
+                        </td>
+                    }
+
+                    <td class="text-align-right">
+                        <span [class.green]="e.price > 0">
+                            $ {{ e.price | number:'':'de-CH' }}
+                        </span>
                     </td>
 
                     @if (formula !== undefined && formula !== null) {
                         <td class="center">
-                            {{ calcPoints(e) }}
+                            {{ e | formulaPoints:formula | number:'1.1-1' }}
                         </td>
                     }
                 </tr>

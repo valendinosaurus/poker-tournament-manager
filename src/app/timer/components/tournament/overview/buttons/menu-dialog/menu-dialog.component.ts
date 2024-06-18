@@ -28,7 +28,6 @@ import { switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../../../shared/services/api/tournament-api.service';
 import { FetchService } from '../../../../../../shared/services/fetch.service';
 import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
-import { LocalStorageService } from '../../../../../../shared/services/util/local-storage.service';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../shared/const/app.const';
 import { RouterLink } from '@angular/router';
@@ -89,7 +88,6 @@ export class MenuDialogComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private document: Document = inject(DOCUMENT);
     private tournamentService: TournamentService = inject(TournamentService);
-    private localStorageService: LocalStorageService = inject(LocalStorageService);
     private state: TimerStateService = inject(TimerStateService);
 
     isAuthenticated$: Observable<boolean> = this.authUtilService.getIsAuthenticated$();

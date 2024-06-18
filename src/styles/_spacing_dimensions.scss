@@ -5,7 +5,7 @@
     padding: 0 24px;
     box-sizing: border-box;
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1280px) {
         padding: 0 8px;
     }
 }
@@ -20,7 +20,7 @@
     box-sizing: border-box;
     border-radius: 24px;
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1280px) {
         padding: 8px;
     }
 }
@@ -33,11 +33,11 @@
     width: fit-content;
     height: fit-content;
     background: rgba(#006dc7, 0.05);
-    padding: 8px 36px;
+    padding: 8px 16px;
     box-sizing: border-box;
     border-radius: 24px;
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1280px) {
         padding: 8px 20px;
     }
 }
@@ -51,8 +51,6 @@
 }
 
 .background-panel {
-    background: rgba(#006dc7, 0.05);
-    padding: 8px 12px;
     box-sizing: border-box;
     border-radius: 24px;
 }

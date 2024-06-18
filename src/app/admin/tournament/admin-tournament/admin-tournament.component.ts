@@ -249,7 +249,8 @@ export class AdminTournamentComponent implements OnInit {
         this.tournamentApiService.put$({
             ...tournament,
             locked: true,
-            date: new Date(tournament.date).toISOString()
+            date: new Date(tournament.date).toISOString(),
+            rankFormula: tournament.rankFormula?.id ?? null
         }).pipe(
             take(1),
             tap(() => this.trigger$.next()),
@@ -260,7 +261,8 @@ export class AdminTournamentComponent implements OnInit {
         this.tournamentApiService.put$({
             ...tournament,
             locked: false,
-            date: new Date(tournament.date).toISOString()
+            date: new Date(tournament.date).toISOString(),
+            rankFormula: tournament.rankFormula?.id ?? null
         }).pipe(
             take(1),
             tap(() => this.trigger$.next()),
