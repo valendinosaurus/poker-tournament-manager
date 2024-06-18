@@ -1,0 +1,19 @@
+<app-app-header [user]="user$ | async"></app-app-header>
+
+<div class="page-with-header">
+    <h1>Rank Formulas</h1>
+
+    <div class="page-content">
+        <div class="page-content-block flex-dir-column align-center">
+            @for (formula of formulas$ | async; track formula.id) {
+                <div class="li-pair w-100">
+                    <h2>
+                        {{ formula.name }}
+                    </h2>
+
+                    <img [src]="formula.description | formulaToImage">
+                </div>
+            }
+        </div>
+    </div>
+</div>

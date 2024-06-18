@@ -11,6 +11,13 @@
     [formGroup]="form"
     (ngSubmit)="onSubmit(model)"
 >
+    <a
+        [routerLink]="['rank-formula']"
+        (click)="cancel()"
+    >
+        <i class="fa fa-info-circle"></i> Learn more about formulas
+    </a>
+
     <formly-form
         [form]="form"
         [fields]="fields"

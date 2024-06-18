@@ -41,6 +41,7 @@ import {
 } from './app/admin/blind-structure/admin-blind-structure/admin-blind-structure.component';
 import { PlaygroundPageComponent } from './app/playground/playground-page/playground-page.component';
 import { TimerPageComponent } from './app/timer/components/tournament/timer/timer-page.component';
+import { RankFormulaPageComponent } from './app/shared/components/rank-formula-page/rank-formula-page.component';
 
 if (environment.production) {
     enableProdMode();
@@ -174,6 +175,10 @@ const routes: Routes = [
                 pathMatch: 'full'
             }
         ]
+    },
+    {
+        path: `rank-formula`,
+        loadComponent: () => RankFormulaPageComponent,
     },
     {
         path: 'not-found',

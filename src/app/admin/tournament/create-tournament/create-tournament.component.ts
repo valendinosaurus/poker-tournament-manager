@@ -16,6 +16,7 @@ import { TriggerService } from '../../../shared/services/util/trigger.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { of } from 'rxjs';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-create-tournament',
@@ -29,7 +30,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
         FormlyModule,
         MatButtonModule,
         MatStepperModule,
-        MatDatepickerModule
+        MatDatepickerModule,
+        RouterLink
     ],
 })
 export class CreateTournamentComponent implements OnInit {

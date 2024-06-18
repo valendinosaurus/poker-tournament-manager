@@ -61,7 +61,7 @@ export class FormlyFieldService {
         label: string,
         required: boolean,
         options: { label: string, value: any }[] | Observable<{ label: string, value: any }[]>,
-        disabled = false
+        disabled = false,
     ): FormlyFieldConfig {
         return {
             key,

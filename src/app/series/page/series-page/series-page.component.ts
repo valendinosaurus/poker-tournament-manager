@@ -7,7 +7,6 @@ import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs
 import { SeriesTournament } from '../../interfaces/series-tournament.interface';
 import { LeaderboardRow } from '../../interfaces/overall-ranking.interface';
 import { SeriesService } from '../../../shared/services/series.service';
-import { RankingService } from '../../../shared/services/util/ranking.service';
 import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
 import { SeriesStatsComponent } from '../../components/series-stats/series-stats.component';
@@ -27,7 +26,6 @@ import { NullsafePrimitivePipe } from '../../../shared/pipes/nullsafe-primitive.
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 import { SeriesStats } from '../../interfaces/series-stats.interface';
 import { TournamentS } from '../../../shared/interfaces/tournament.interface';
-import { RankFormulaApiService } from '../../../shared/services/api/rank-formula-api.service';
 
 @Component({
     selector: 'app-series-page',
@@ -71,12 +69,10 @@ export class SeriesPageComponent implements OnInit {
     private route: ActivatedRoute = inject(ActivatedRoute);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private seriesService: SeriesService = inject(SeriesService);
-    private rankingService: RankingService = inject(RankingService);
     private router: Router = inject(Router);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
-    private rankFormulaApiService: RankFormulaApiService = inject(RankFormulaApiService);
 
     private trigger$ = new ReplaySubject<void>();
 

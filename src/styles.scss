@@ -277,3 +277,15 @@ a.contents {
 .no-blinds a {
     font-weight: bold;
 }
+
+form a {
+    display: flex;
+    margin-top: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+    text-decoration: none !important;
+
+    .fa {
+        margin-right: 8px;
+    }
+}

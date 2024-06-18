@@ -153,7 +153,8 @@
 }
 
 .w-100 {
-    width: 100%;
+    width: 100% !important;
+    flex: 0 0 100% !important;
 }
 
 .w-32 {
@@ -226,4 +227,101 @@
 
 .mini-item .fa {
     margin-right: 12px;
+}
+
+
+.page-content {
+    max-width: 1000px;
+    margin: auto;
+    padding-top: 32px;
+
+    @media (max-width: 800px) {
+        padding-top: 10px;
+    }
+}
+
+.page-content-block {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    div.li-wide {
+        width: 100%;
+        flex: 0 0 100%;
+        background: aliceblue;
+        padding: 12px;
+        box-sizing: border-box;
+
+        * {
+            display: block;
+            width: 100%;
+            text-align: center;
+            color: #222;
+        }
+
+        h4 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        span {
+            margin-bottom: 0;
+            color: #222;
+            font-weight: bold;
+        }
+    }
+
+    div.li-pair {
+        width: 24%;
+        flex: 0 0 24%;
+        margin-bottom: 40px;
+        background: aliceblue;
+        padding: 12px;
+        box-sizing: border-box;
+        border: solid 2px darkslategray;
+        border-radius: 12px;
+
+        h4 {
+            display: block;
+            text-align: center;
+            width: 100%;
+            font-size: 18px;
+            margin-top: 0;
+            color: #222;
+            font-weight: normal;
+        }
+
+        span {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 0;
+            color: #222;
+            font-weight: bold;
+
+            &.smaller {
+                font-size: 20px;
+                font-weight: normal;
+
+                span {
+                    font-size: 18px;
+                    font-weight: normal;
+                }
+            }
+        }
+
+        @media (max-width: 800px) {
+            width: 48%;
+            flex: 0 0 48%;
+            margin-bottom: 2%;
+
+            h4 {
+                font-size: 12px;
+            }
+
+            span {
+                font-size: 20px;
+            }
+        }
+    }
 }

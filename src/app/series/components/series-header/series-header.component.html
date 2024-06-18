@@ -21,8 +21,8 @@
 
 <hr>
 
-<div class="series-content">
-    <div class="series-content-block">
+<div class="page-content">
+    <div class="page-content-block">
         <div class="li-pair">
                 <span>
                     {{ seriesHeader().tournamentsPlayed }}
@@ -70,12 +70,12 @@
         }
     </div>
 
-    <div class="series-content-block">
+    <div class="page-content-block">
         <div class="li-wide">
             <h4>
                 Formula
             </h4>
-            <img [src]="'https://math.vercel.app/?inline=' + enocdedFormulaUri()"/>
+            <img [src]="seriesHeader().formulaLatexString | formulaToImage"/>
         </div>
     </div>
 

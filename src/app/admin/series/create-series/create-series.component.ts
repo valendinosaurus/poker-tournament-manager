@@ -13,12 +13,13 @@ import { Series, SeriesModel } from '../../../shared/interfaces/series.interface
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
 import { RankingService } from '../../../shared/services/util/ranking.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-create-series',
     templateUrl: './create-series.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, RouterLink]
 })
 export class CreateSeriesComponent implements OnInit {
 
