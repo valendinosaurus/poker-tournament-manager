@@ -67,6 +67,7 @@ export class TimerPageComponent implements OnInit {
                 this.state.tournament.set(tournament);
                 this.tableDrawService.update();
                 this.canShow = true;
+                console.log(this.state.settings());
                 this.state.blockPut.set(false);
             }),
             shareReplay(1)

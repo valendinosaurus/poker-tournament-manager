@@ -248,7 +248,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                     }));
 
                     if (!this.state.blockPut()) {
-                        console.log('pput on dne');
                         this.tournamentApiService.putTournamentSettings$({
                             ...this.state.settings(),
                             levelIndex: this.currentLevelIndex(),
@@ -280,7 +279,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 }
 
                 if (!this.state.blockPut()) {
-                    console.log('pput on notify');
                     this.tournamentApiService.putTournamentSettings$({
                         ...this.state.settings(),
                         levelIndex: this.currentLevelIndex(),

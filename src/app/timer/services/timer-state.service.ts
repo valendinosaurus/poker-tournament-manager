@@ -294,10 +294,8 @@ export class TimerStateService {
         if (!this.isRunning() && this.canStartTournament() && !this.isTournamentFinished()) {
             this.isRunning.set(true);
 
-            console.log('check', this.settings().started);
             if (!this.settings().started) {
                 this.blockPut.set(true);
-                console.log('pput in state after start');
                 this.tournamentApiService.putTournamentSettings$({
                     ...this.settings(),
                     started: new Date()

@@ -6,11 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class TimePipe implements PipeTransform {
     transform(value: number): string {
-        console.log('value 1', value);
-
         const hours = Math.floor(value / 3600);
         value = value - hours * 3600;
-        console.log('value 2', value);
         const secondsLeft = value % 60;
         const minutes = (value - secondsLeft) / 60;
 
