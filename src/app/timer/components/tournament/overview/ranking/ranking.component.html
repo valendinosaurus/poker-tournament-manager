@@ -22,7 +22,7 @@
                     <th class="center"><small>Addons</small></th>
                 }
 
-                <th class="center"><small>Price</small></th>
+                <th class="flex justify-end"><small>Price</small></th>
 
                 @if (formula !== undefined && formula !== null) {
                     <th class="center"><small>Points</small></th>
@@ -31,18 +31,16 @@
             <ng-container *ngFor="let e of missingRanks()">
                 <tr class="opaque">
                     <td>
-                <span class="flex-td">
-                    <app-user-image-round
-                        [imageUrl]="e.image"
-                    ></app-user-image-round>
-                    {{ e.name }}
-                </span>
+                        <span class="flex-td">
+                            <app-user-image-round
+                                [imageUrl]="e.image"
+                            ></app-user-image-round>
+                            {{ e.name }}
+                        </span>
                     </td>
                     <td class="center">
                         {{ e.rank | number }}
                     </td>
-
-                    <td class="center">-</td>
 
                     @if (withReEntry()) {
                         <td class="center">-</td>
@@ -56,6 +54,8 @@
                         <td class="center">-</td>
                     }
 
+                    <td class="text-align-right">-</td>
+
                     @if (formula !== undefined && formula !== null) {
                         <td class="center">
                             -
@@ -66,12 +66,12 @@
             <ng-container *ngFor="let e of ranking()">
                 <tr>
                     <td>
-                <span class="flex-td">
-                    <app-user-image-round
-                        [imageUrl]="e.image"
-                    ></app-user-image-round>
-                    {{ e.name }}
-                </span>
+                        <span class="flex-td">
+                            <app-user-image-round
+                                [imageUrl]="e.image"
+                            ></app-user-image-round>
+                            {{ e.name }}
+                        </span>
                     </td>
                     <td class="center">
                         {{ e.rank | number }}

@@ -5,9 +5,9 @@
 }
 
 h1 {
-    font-size: 4.37vh;
+    font-size: calc(100vw / 40);
     font-weight: bold;
-    padding: 10px 20px;
+    padding: 0 calc(100vw / 100);
     margin-bottom: 0;
     text-align: right;
     display: flex;
@@ -22,14 +22,16 @@ h1 {
 
 h2 {
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: calc(100vw / 100);
     display: flex;
     justify-content: space-between;
-    padding: 8px 20px;
+    align-items: center;
+    padding: calc(100vw / 250) calc(100vw / 100);
     color: $primary;
 
     span:nth-child(2) {
         color: $primaryDark;
+        font-size: calc(100vw / 60);
     }
 }
 
@@ -39,17 +41,14 @@ h2.no-mb {
 
 h1 > span,
 h2 > span {
-    font-size: 16px;
-
-    @media (max-width: 1280px) {
-        font-size: 12px;
-    }
+    font-size: calc(100vw / 100);
 }
 
 h4 {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1vw;
 
     span {
         display: flex;
@@ -58,8 +57,14 @@ h4 {
 }
 
 th, td {
-    font-size: 24px;
+    font-size: 1.2vw;
     text-align: center;
+    height: calc(100vw / 54); // 1922 / 32 =
+}
+
+p {
+    font-size: 1.2vw !important;
+    margin-left: 0 !important;
 }
 
 * {
@@ -73,17 +78,17 @@ th, td {
 
 .fa-handshake {
     color: #555;
-    font-size: 18px;
+    font-size: 0.8vh;
     margin-left: 20px;
     margin-right: 12px;
 }
 
 .fa-magic {
-    font-size: 12px;
+    font-size: calc(100vw / 166);
 }
 
 .fe-edit {
-    font-size: 14px !important;
+    font-size: calc(100vw / 142) !important;
 }
 
 span.regular {

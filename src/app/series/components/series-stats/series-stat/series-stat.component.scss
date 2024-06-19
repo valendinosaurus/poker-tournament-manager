@@ -4,8 +4,8 @@
 
 // TODO dupliacate
 div.li-pair {
-    width: 24%;
-    flex: 0 0 24%;
+    width: 32%;
+    flex: 0 0 32%;
     margin-bottom: 0;
     background: aliceblue;
     padding: 12px;
@@ -87,4 +87,8 @@ div.li-pair {
         flex: 0 0 100% !important;
         margin-bottom: 2%;
     }
+}
+
+span.smaller.inactive {
+    color: #BBB;
 }

@@ -12,7 +12,7 @@ import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.int
 import { RankingService } from '../../shared/services/util/ranking.service';
 import { TournamentSettings } from '../../shared/interfaces/tournament-settings.interface';
 import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
-import { take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { FetchService } from '../../shared/services/fetch.service';
 
 @Injectable({
@@ -30,25 +30,30 @@ export class TimerStateService {
 
     isProOrAdmin: WritableSignal<boolean> = signal(false);
 
-    settings: Signal<TournamentSettings> = computed(() => ({
-        id: this.tournament().id,
-        autoSlide: this.tournament()?.settings?.autoSlide ?? true,
-        showCondensedBlinds: this.tournament()?.settings?.showCondensedBlinds ?? false,
-        started: this.tournament()?.settings?.started
-            ? new Date(this.tournament()?.settings?.started!)
-            : undefined,
-        levelIndex: this.tournament()?.settings?.levelIndex ?? 0,
-        timeLeft: this.tournament()?.settings?.timeLeft ?? 0
-    }));
+    settings: Signal<TournamentSettings> = computed(() => {
+        const structure = this.tournament().structure;
+        const firstDuration = (structure !== undefined && structure?.length > 0) ? structure[0].duration * 60 : 0;
 
-    forceStopSlide: WritableSignal<boolean> = signal(false);
+        return {
+            id: this.tournament().id,
+            autoSlide: this.tournament()?.settings?.autoSlide ?? true,
+            showCondensedBlinds: this.tournament()?.settings?.showCondensedBlinds ?? false,
+            started: this.tournament()?.settings?.started
+                ? new Date(this.tournament()?.settings?.started!)
+                : undefined,
+            levelIndex: this.tournament()?.settings?.levelIndex ?? 0,
+            timeLeft: this.tournament()?.settings?.timeLeft ?? firstDuration
+        };
+    });
+
+    forceStopSlide: Signal<boolean> = computed(() => this.tournament().structure.length === 0);
+
     autoSlide: Signal<boolean> = computed(() => this.settings().autoSlide);
     showCondensedBlinds: Signal<boolean> = computed(() => this.settings().showCondensedBlinds);
     started: Signal<Date | undefined> = computed(() => this.settings().started);
 
     isFullScreen: WritableSignal<boolean> = signal(false);
     isBigCursor: WritableSignal<boolean> = signal(false);
-    //  started: Signal<Date> | undefined> = computed(() => this.settings().started);
 
     elapsed: Signal<number> = computed(() => {
         const started = this.started();
@@ -74,7 +79,7 @@ export class TimerStateService {
         const remaining = this.tournament().players.length - this.tournament().finishes.length;
         const paidPlaces = this.rankingService.getPayoutById(this.tournament().payout).length;
 
-        return remaining <= paidPlaces && this.tournament().players.length > 0;
+        return remaining < paidPlaces && this.tournament().players.length > 0;
     });
 
     isRebuyPhaseFinished: Signal<boolean> = computed(() =>
@@ -283,16 +288,22 @@ export class TimerStateService {
             .sort((a, b) => b.time - a.time)
     );
 
+    blockPut = signal(false);
+
     startTimer(): void {
         if (!this.isRunning() && this.canStartTournament() && !this.isTournamentFinished()) {
             this.isRunning.set(true);
 
+            console.log('check', this.settings().started);
             if (!this.settings().started) {
+                this.blockPut.set(true);
+                console.log('pput in state after start');
                 this.tournamentApiService.putTournamentSettings$({
                     ...this.settings(),
                     started: new Date()
                 }).pipe(
                     take(1),
+                    tap(() => this.fetchService.trigger())
                 ).subscribe();
             }
         }

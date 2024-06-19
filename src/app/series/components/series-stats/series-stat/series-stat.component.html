@@ -4,7 +4,10 @@
     </h4>
 
     @for (e of stat(); track e.playerName; let i = $index; ) {
-        <span class="smaller">
+        <span
+            class="smaller"
+            [class.inactive]="e.inactive"
+        >
             <span class="truncate flex-57">
                 {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
                 {{ e.playerName }}

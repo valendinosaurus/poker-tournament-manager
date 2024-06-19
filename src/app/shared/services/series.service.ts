@@ -69,7 +69,11 @@ export class SeriesService {
                         isTemp: false,
                         email: localPlayers.filter(p => p.id === finish.playerId)[0]?.email,
                         playerId: finish.playerId,
-                        disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified
+                        disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified,
+                        eliminatedPlayers: localTournament.eliminations.filter(e => e.eliminator === finish.playerId).map(e => ({
+                            id: e.eliminated,
+                            name: localPlayers.filter(p => p.id === e.eliminated)[0]?.name
+                        }))
                     } as SeriesTournamentRow)
                 );
 
@@ -93,7 +97,11 @@ export class SeriesService {
                     isTemp: true,
                     email: localPlayers.filter(p => p.id === finish.playerId)[0]?.email,
                     playerId: finish.playerId,
-                    disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified
+                    disqualified: localPlayers.filter(p => p.id === finish.playerId)[0]?.disqualified,
+                    eliminatedPlayers: localTournament.eliminations.filter(e => e.eliminator === finish.playerId).map(e => ({
+                        id: e.eliminated,
+                        name: localPlayers.filter(p => p.id === e.eliminated)[0]?.name
+                    }))
                 }));
 
                 seriesTournamentRows = seriesTournamentRows.sort(
@@ -124,7 +132,7 @@ export class SeriesService {
                     withAddon: tournament.withAddon,
                     withRebuy: tournament.withRebuy,
                     withReEntry: tournament.withReEntry,
-                    placesPaid: tournament.adaptedPayout?.length ?? this.rankingService.getPayoutById(tournament.payout).length
+                    placesPaid: tournament.adaptedPayout?.toString().split(',').length ?? this.rankingService.getPayoutById(tournament.payout).length
                 });
             }
         );
@@ -159,7 +167,9 @@ export class SeriesService {
                         isTemp: f.isTemp ? true : element.isTemp,
                         email: f.email,
                         playerId: f.playerId,
-                        disqualified: f.disqualified
+                        disqualified: f.disqualified,
+                        bubbles: +element.bubbles + ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
+                        eliminatedPlayers: (element.eliminatedPlayers ?? []).concat(f.eliminatedPlayers ?? [])
                     };
 
                 } else {
@@ -173,10 +183,12 @@ export class SeriesService {
                         rebuysAddons: +f.rebuys + +f.addons,
                         eliminations: f.eliminations,
                         itm: (+f.rank <= seriesTournament.placesPaid) ? 1 : 0,
+                        bubbles: ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
                         isTemp: f.isTemp,
                         email: f.email,
                         playerId: f.playerId,
-                        disqualified: f.disqualified
+                        disqualified: f.disqualified,
+                        eliminatedPlayers: f.eliminatedPlayers
                     });
                 }
             })
@@ -195,7 +207,8 @@ export class SeriesService {
             playerName: e.name,
             value: e.rank / e.tournaments,
             played: e.tournaments,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -209,7 +222,8 @@ export class SeriesService {
             playerName: e.name,
             value: e.price,
             played: e.tournaments,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -228,7 +242,8 @@ export class SeriesService {
             playerName: e.name,
             value: e.price - ((e.tournaments + e.rebuysAddons) * 50),
             played: e.tournaments,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -242,7 +257,8 @@ export class SeriesService {
             played: e.tournaments,
             value: e.rebuysAddons,
             playerName: e.name,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -256,7 +272,8 @@ export class SeriesService {
             played: e.tournaments,
             value: e.rebuysAddons / e.tournaments,
             playerName: e.name,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -270,7 +287,8 @@ export class SeriesService {
             played: e.tournaments,
             value: e.eliminations,
             playerName: e.name,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -283,7 +301,8 @@ export class SeriesService {
             played: e.tournaments,
             value: e.itm,
             playerName: e.name,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
@@ -296,14 +315,68 @@ export class SeriesService {
             played: e.tournaments,
             value: e.itm / e.tournaments * 100,
             playerName: e.name,
-            image: e.image
+            image: e.image,
+            inactive: e.disqualified
         }));
     }
 
-    getSoretedOverallRanking(overallRanking: LeaderboardRow[]): LeaderboardRow[] {
-        return overallRanking.sort(
-            (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
+    getMostBubbles(overallRanking: LeaderboardRow[]): SimpleStat[] {
+        const mb = overallRanking.sort(
+            (a, b) => b.bubbles - a.bubbles || a.tournaments - b.tournaments
         );
+
+        return mb.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.bubbles,
+            playerName: e.name,
+            image: e.image,
+            inactive: e.disqualified
+        })).filter(s => s.value > 0);
+    }
+
+    getBiggestRivals(overallRanking: LeaderboardRow[]): SimpleStat[] {
+        let rivals: {
+            id: number;
+            name: string;
+            eliminated: string;
+            amount: number;
+            image: string;
+            played: number;
+            inactive: boolean;
+        }[] = [];
+
+        overallRanking.forEach((player: LeaderboardRow) => {
+            (player.eliminatedPlayers ?? []).forEach((eliminated: { name: string; id: number; }) => {
+                if (rivals.find(r => r.id === player.playerId && r.eliminated === eliminated.name)) {
+                    const index = rivals.findIndex(r => r.name === player.name && r.eliminated === eliminated.name);
+                    rivals[index].amount++;
+                } else {
+                    rivals.push({
+                        id: player.playerId,
+                        name: player.name,
+                        eliminated: eliminated.name,
+                        amount: 1,
+                        played: player.tournaments,
+                        image: player.image,
+                        inactive: player.disqualified
+                    });
+                }
+            });
+        });
+
+        rivals = rivals.sort((a, b) => b.amount - a.amount);
+
+        return rivals
+            .slice(0, 7)
+            .map(e => ({
+                played: e.played,
+                value: e.amount,
+                playerName: `${e.name} > ${e.eliminated}`,
+                image: e.image,
+                inactive: e.inactive
+            }))
+            .filter(s => s.value > 0)
+            .sort((a, b) => b.value - a.value || a.played - b.played);
     }
 
     getGuaranteedFromSeries(series: SeriesS): number {
@@ -349,6 +422,8 @@ export class SeriesService {
             mostITM: this.getMostITM([...leaderboard]),
             mostPercITM: this.getMostPercentualITM([...leaderboard]),
             mostEliminations: this.getMostEliminations([...leaderboard]),
+            mostBubbles: this.getMostBubbles([...leaderboard]),
+            biggestRivals: this.getBiggestRivals([...leaderboard]),
             mostSpilled: mostSpilled
         };
     }

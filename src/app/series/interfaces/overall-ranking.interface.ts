@@ -8,8 +8,10 @@ export interface LeaderboardRow {
     rebuysAddons: number;
     tournaments: number;
     eliminations: number;
+    eliminatedPlayers: { name: string; id: number; }[];
     itm: number;
     isTemp: boolean;
     email: string | undefined | null;
     disqualified: boolean;
+    bubbles: number;
 }

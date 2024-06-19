@@ -13,4 +13,5 @@ export interface SeriesTournamentRow {
     isTemp: boolean;
     email: string | undefined | null;
     disqualified: boolean;
+    eliminatedPlayers: { name: string; id: number; }[];
 }

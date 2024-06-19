@@ -5,13 +5,25 @@ import { Pipe, PipeTransform } from '@angular/core';
     standalone: true,
 })
 export class TimePipe implements PipeTransform {
-  transform(value: number): string {
-    const secondsLeft = value % 60;
-    const minutes = (value - secondsLeft) / 60;
+    transform(value: number): string {
+        console.log('value 1', value);
 
-    const secondsLeftString =
-      secondsLeft < 10 ? `0${secondsLeft}` : `${secondsLeft}`;
+        const hours = Math.floor(value / 3600);
+        value = value - hours * 3600;
+        console.log('value 2', value);
+        const secondsLeft = value % 60;
+        const minutes = (value - secondsLeft) / 60;
 
-    return `${minutes}:${secondsLeftString}`;
-  }
+        const secondsLeftString =
+            secondsLeft < 10 ? `0${secondsLeft}` : `${secondsLeft}`;
+
+        const minutesLeftString =
+            hours > 0 && minutes < 10 ? `0${minutes}` : `${minutes}`;
+
+        if (hours > 0) {
+            return `${hours}:${minutesLeftString}:${secondsLeftString}`;
+        }
+
+        return `${minutes}:${secondsLeftString}`;
+    }
 }

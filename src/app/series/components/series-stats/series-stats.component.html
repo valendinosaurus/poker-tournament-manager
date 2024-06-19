@@ -70,6 +70,18 @@
             [stat]="mostEliminations()"
             statTitle="Most Eliminations"
         ></app-series-stat>
+
+        <app-series-stat
+            [stat]="biggestRivals()"
+            statTitle="Biggest Rivals"
+        ></app-series-stat>
+    }
+
+    @if (series().showNonItmPlaces) {
+        <app-series-stat
+            [stat]="mostBubbles()"
+            statTitle="Most Bubbles"
+        ></app-series-stat>
     }
 
     @if (series().id === 1 || series().id === 3) {

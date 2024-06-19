@@ -52,6 +52,8 @@ export class AddBlindsComponent implements OnInit {
     filterDuration: number;
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
 
+    durations: number[];
+
     ngOnInit(): void {
         const allBlinds$ = this.blindApiService.getAll$().pipe(
             shareReplay(1)
@@ -85,6 +87,8 @@ export class AddBlindsComponent implements OnInit {
                             value: b.id
                         })
                     );
+
+                this.durations = Array.from(new Set(blinds.map(b => b.duration)));
 
                 this.initModel();
                 this.initFields();

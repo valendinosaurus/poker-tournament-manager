@@ -24,9 +24,16 @@ table tr th {
     padding: 6px 12px;
     color: $primaryDark;
     text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 
     @media (max-width: 1280px) {
-        padding: 4px 4px;
+        padding: 6px 8px;
+    }
+
+    @media (max-width: 800px) {
+        padding: 4px 8px;
     }
 }
 
@@ -89,12 +96,6 @@ mat-tab-body table td {
 .scrollable-dialog-table-wrapper {
     max-height: 40vh;
     overflow-y: auto;
-}
-
-@media (max-width: 800px) {
-    table tr td, table tr th {
-        padding: 0 8px;
-    }
 }
 
 .inner-container p,

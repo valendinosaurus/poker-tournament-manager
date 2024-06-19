@@ -38,6 +38,7 @@ export class PlayerDetailsComponent implements OnInit {
 
     withRebuy = computed(() => this.state.tournament().withRebuy);
     withAddon = computed(() => this.state.tournament().withAddon);
+    withReEntry = computed(() => this.state.tournament().withReEntry);
 
     private state: TimerStateService = inject(TimerStateService);
 

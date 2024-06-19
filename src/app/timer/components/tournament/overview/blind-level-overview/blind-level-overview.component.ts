@@ -1,7 +1,6 @@
 import {
     Component,
     computed,
-    effect,
     EventEmitter,
     inject,
     input,
@@ -17,6 +16,7 @@ import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { RouterLink } from '@angular/router';
+import { TournamentSettings } from '../../../../../shared/interfaces/tournament-settings.interface';
 
 @Component({
     selector: 'app-blind-level-overview',
@@ -43,13 +43,13 @@ export class BlindLevelOverviewComponent implements OnInit {
     isProOrAdmin: Signal<boolean>;
     levelsToShow: Signal<BlindLevel[]>;
     currentLevelIndex: WritableSignal<number>;
-    forceStopSlide: WritableSignal<boolean>;
+    forceStopSlide: Signal<boolean>;
+
+    settings: Signal<TournamentSettings>;
 
     ii = 1;
 
     private state: TimerStateService = inject(TimerStateService);
-
-    _effect = effect(() => this.state.forceStopSlide.set(this.levels().length === 0));
 
     @Output() addBlind = new EventEmitter<void>();
 
@@ -57,6 +57,8 @@ export class BlindLevelOverviewComponent implements OnInit {
         this.isProOrAdmin = this.state.isProOrAdmin;
         this.currentLevelIndex = this.state.currentLevelIndex;
         this.forceStopSlide = this.state.forceStopSlide;
+
+        this.settings = this.state.settings;
 
         this.levelsToShow = computed(() =>
             this.levels().map(l => ({

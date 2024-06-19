@@ -10,7 +10,6 @@ $borderColor: #fafafa;
 $font: #eee;
 
 .overview {
-    h1,
     h2,
     h3,
         // h4,
@@ -35,53 +34,9 @@ h4 {
     }
 }
 
-h3.highlighted {
-    width: 100%;
-    text-align: center;
-    text-transform: uppercase;
-    background: $primary;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0;
-    box-sizing: border-box;
-    border-bottom: solid 2px $borderColor;
-    font-size: 3vh;
 
-    .fa {
-        color: white;
-        margin-left: 2vw;
-    }
-}
 
-h2.sliding-panel-title {
-    font-size: 3vh;
-}
 
-.info-panel {
-    h3 {
-        width: 100%;
-        text-align: center;
-        text-transform: uppercase;
-        top: 0;
-        left: 0;
-        background: $primary;
-        padding: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-bottom: solid 2px $borderColor;
-
-        .mdc-fab {
-            margin-left: 12px;
-        }
-    }
-}
-
-.info-panel:not(.simple) h3 {
-    position: fixed;
-}
 
 .regular {
     font-weight: normal !important;

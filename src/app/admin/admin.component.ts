@@ -15,7 +15,7 @@ import { NullsafePrimitivePipe } from '../shared/pipes/nullsafe-primitive.pipe';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthUtilService } from '../shared/services/auth-util.service';
 import { take, tap } from 'rxjs/operators';
 import { Player } from '../shared/interfaces/player.interface';
@@ -47,7 +47,8 @@ import { TimerStateService } from '../timer/services/timer-state.service';
         RouterLink,
         JsonPipe,
         NgIf,
-        NgTemplateOutlet
+        NgTemplateOutlet,
+        RouterLinkActive
     ]
 })
 export class AdminComponent implements OnInit {

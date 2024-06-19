@@ -3,4 +3,5 @@ export interface SimpleStat {
     value: number;
     played: number;
     image: string;
+    inactive: boolean;
 }

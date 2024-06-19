@@ -9,7 +9,10 @@
         <table>
             <tr>
                 <th><small>Name</small></th>
-                <th class="center"><small>Entries</small></th>
+
+                @if (withReEntry()) {
+                    <th class="center"><small>Entries</small></th>
+                }
 
                 @if (withRebuy()) {
                     <th class="center"><small>Rebuys</small></th>
@@ -25,29 +28,32 @@
             @for (e of combination(); track e) {
                 <tr [class.finished]="e.isFinished">
                     <td>
-                    <span class="flex-td">
-                        @if (e.rank) {
-                            <span class="tbd">({{ e.rank | number }})</span>
-                        } @else {
-                            <span class="tbd">(TBD)</span>
-                        }
-
-                        @if (!e.isFinished) {
-                            <app-user-image-round [imageUrl]="e.image"></app-user-image-round>
-                        } @else {
-                            @if (e.isLastFinished) {
-                                <i class="fa fa-skull clickable w-32 mr-1"></i>
+                        <span class="flex-td">
+                            @if (e.rank) {
+                                <span class="tbd">({{ e.rank | number }})</span>
                             } @else {
-                                <i class="fa fa-skull w-32 mr-1"></i>
+                                <span class="tbd">(TBD)</span>
                             }
-                        }
 
-                        <span>{{ e.name }}</span>
-                    </span>
+                            @if (!e.isFinished) {
+                                <app-user-image-round [imageUrl]="e.image"></app-user-image-round>
+                            } @else {
+                                @if (e.isLastFinished) {
+                                    <i class="fa fa-skull clickable w-32 mr-1"></i>
+                                } @else {
+                                    <i class="fa fa-skull w-32 mr-1"></i>
+                                }
+                            }
+
+                            <span>{{ e.name }}</span>
+                        </span>
                     </td>
-                    <td class="center">
-                        <app-bullets [number]="e.reEntries"></app-bullets>
-                    </td>
+
+                    @if (withReEntry()) {
+                        <td class="center">
+                            <app-bullets [number]="e.reEntries"></app-bullets>
+                        </td>
+                    }
 
                     @if (withRebuy()) {
                         <td class="center">

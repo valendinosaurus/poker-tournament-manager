@@ -4,7 +4,7 @@ import { Finish } from '../../../../../shared/interfaces/finish.interface';
 import { Player } from '../../../../../shared/interfaces/player.interface';
 import { RankingService } from '../../../../../shared/services/util/ranking.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { debounceTime, map, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ModifyPayoutComponent } from '../../../../../dialogs/modify-payout/modify-payout.component';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
@@ -12,13 +12,14 @@ import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { FetchService } from '../../../../../shared/services/fetch.service';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { Tournament } from '../../../../../shared/interfaces/tournament.interface';
 import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
-import { defer, iif, of } from 'rxjs';
+import { defer, fromEvent, iif, Observable, of } from 'rxjs';
 import { TournamentApiService } from '../../../../../shared/services/api/tournament-api.service';
+import { NullsafePrimitivePipe } from '../../../../../shared/pipes/nullsafe-primitive.pipe';
 
 interface Payout {
     rank: number,
@@ -34,7 +35,7 @@ interface Payout {
     templateUrl: './payout-details.component.html',
     styleUrls: ['./payout-details.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe]
+    imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe, AsyncPipe, NullsafePrimitivePipe]
 })
 export class PayoutDetailsComponent implements OnInit {
 
@@ -52,6 +53,12 @@ export class PayoutDetailsComponent implements OnInit {
     payout: Signal<number>;
     totalPricePool: Signal<number>;
     deduction: Signal<number>;
+
+    imageEdgeSize$: Observable<number> = fromEvent(window, 'resize').pipe(
+        debounceTime(120),
+        map(() => window.innerWidth / 60),
+        startWith(window.innerWidth / 60)
+    );
 
     isAdaptedPayoutSumCorrect = computed(() =>
         this.tournament().adaptedPayout === undefined

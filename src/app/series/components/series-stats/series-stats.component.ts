@@ -26,6 +26,8 @@ export class SeriesStatsComponent {
     mostITM = input.required<SimpleStat[]>();
     mostPercITM = input.required<SimpleStat[]>();
     mostEliminations = input.required<SimpleStat[]>();
+    mostBubbles = input.required<SimpleStat[]>();
+    biggestRivals = input.required<SimpleStat[]>();
     mostSpilled = input.required<SimpleStat[]>();
     hasRebuy = input.required<boolean>();
     hasAddon = input.required<boolean>();

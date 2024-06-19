@@ -22,6 +22,7 @@
                 <div class="admin-menu-container">
                     <a
                         [routerLink]="['tournament']"
+                        routerLinkActive="link-active"
                         mat-menu-item
                     >
                         Tournaments
@@ -30,6 +31,7 @@
                     @if ((isAdmin$ | async) || (isPro$ | async)) {
                         <a
                             [routerLink]="['series']"
+                            routerLinkActive="link-active"
                             mat-menu-item
                         >
                             Series
@@ -39,6 +41,7 @@
                     @if ((isAdmin$ | async) || (isPro$ | async)) {
                         <a
                             [routerLink]="['player']"
+                            routerLinkActive="link-active"
                             mat-menu-item
                         >
                             Players
@@ -47,6 +50,7 @@
 
                     <a
                         [routerLink]="['blind-level']"
+                        routerLinkActive="link-active"
                         mat-menu-item
                     >
                         Blind Levels
@@ -54,6 +58,7 @@
 
                     <a
                         [routerLink]="['blind-structure']"
+                        routerLinkActive="link-active"
                         mat-menu-item
                     >
                         Blind Structures
@@ -61,6 +66,7 @@
 
                     <a
                         [routerLink]="['location']"
+                        routerLinkActive="link-active"
                         mat-menu-item
                     >
                         Locations
@@ -69,6 +75,7 @@
                     @if ((isAdmin$ | async) || (isPro$ | async)) {
                         <a
                             [routerLink]="['branding']"
+                            routerLinkActive="link-active"
                             mat-menu-item
                         >
                             Branding

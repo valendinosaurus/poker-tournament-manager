@@ -37,6 +37,7 @@ import { TournamentService } from '../../../../../../shared/services/util/tourna
 import { TimerStateService } from '../../../../../services/timer-state.service';
 import { Tournament } from '../../../../../../shared/interfaces/tournament.interface';
 import { SeriesMetadata } from '../../../../../../shared/interfaces/series.interface';
+import { EntryType } from '../../../../../../shared/enums/entry-type.enum';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -60,6 +61,11 @@ export class MenuDialogComponent implements OnInit {
     showCondensedBlinds: Signal<boolean>;
     isRunning: WritableSignal<boolean>;
     isITM: Signal<boolean>;
+
+    areAllPlayersEntered = computed(() =>
+        this.tournament().players.length === this.tournament().entries.filter(e => e.type === EntryType.ENTRY).length
+        && this.tournament().players.length > 0
+    );
 
     isFullScreen: WritableSignal<boolean>;
     isBigCursor: WritableSignal<boolean>;
@@ -313,12 +319,7 @@ export class MenuDialogComponent implements OnInit {
     }
 
     resetState(): void {
-        this.tournamentApiService.putTournamentSettings$({
-            ...this.state.settings(),
-            levelIndex: 0,
-            timeLeft: this.tournament().structure[0].duration,
-            started: undefined
-        }).pipe(
+        this.tournamentApiService.deleteTournamentSettings$(this.tournament().id).pipe(
             take(1),
             tap(() => this.fetchService.trigger()),
         ).subscribe();

@@ -77,7 +77,7 @@ export class RankingComponent implements OnInit {
             return missingRanks;
         });
 
-        const metaFormula = metadata()?.rankFormula.formula;
+        const metaFormula = metadata()?.rankFormula?.formula;
 
         if (metaFormula) {
             this.formula = eval(metaFormula);

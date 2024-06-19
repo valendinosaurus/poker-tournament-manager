@@ -61,7 +61,7 @@
         mat-flat-button
         matTooltip="Play / Pause"
         class="main"
-        [disabled]="isTournamentFinished() || !canStartTournament()"
+        [disabled]="isTournamentFinished() || !canStartTournament() || isTournamentLocked()"
         (click)="toggleRunning()"
     >
         @if (isRunning()) {

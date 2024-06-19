@@ -11,7 +11,7 @@
     <div class="overview-wrapper">
         <div class="left">
             <div
-                class="info-panel"
+                class="slider-panel"
                 [class.simple]="!isProOrAdmin()"
             >
                 @if (isProOrAdmin()) {
@@ -50,8 +50,12 @@
                             </div>
                         </div>
 
-                        <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
-                        <i class="fa fa-chevron-right" (click)="slider.next()"></i>
+                        <div class="slider-buttons-wrapper">
+                            <div class="slider-buttons">
+                                <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
+                                <i class="fa fa-chevron-right" (click)="slider.next()"></i>
+                            </div>
+                        </div>
 
                         <div class="steps">
                             <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 0"></i>
@@ -75,7 +79,7 @@
         >
             <div class="clock">
                 <span class="titles">
-                    <div class="flex">
+                    <div class="flex justify-center align-center">
                         <i class="fa fa-clock"></i>
 
                         <div class="now">

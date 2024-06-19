@@ -90,7 +90,8 @@ span.formula {
 }
 
 .position-big.fa-pause-circle {
-    font-size: 3.93vh;
+    font-size: 32px;
+    opacity: 0.5;
 }
 
 .indicator {
@@ -113,12 +114,12 @@ span.formula {
 }
 
 .rank {
-    width: 20px;
-    height: 20px;
-    border-radius: 20px;
+    width: 1vw;
+    height: 1vw;
+    border-radius: 1vw;
     background: $primary;
     color: white;
-    font-size: 1.31vh;
+    font-size: 0.6vw;
     display: flex;
     align-items: center;
     justify-content: center;

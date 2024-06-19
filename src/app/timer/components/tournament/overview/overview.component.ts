@@ -42,7 +42,6 @@ import { TournamentApiService } from '../../../../shared/services/api/tournament
 @Component({
     selector: 'app-overview',
     templateUrl: './overview.component.html',
-    styleUrls: ['./overview.component.scss'],
     standalone: true,
     imports: [
         BlindLevelOverviewComponent,
@@ -248,11 +247,14 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                         leftTime: this.currentLevelTimeLeft()
                     }));
 
-                    this.tournamentApiService.putTournamentSettings$({
-                        ...this.state.settings(),
-                        levelIndex: this.currentLevelIndex(),
-                        timeLeft: this.currentLevelTimeLeft()
-                    }).pipe(take(1)).subscribe();
+                    if (!this.state.blockPut()) {
+                        console.log('pput on dne');
+                        this.tournamentApiService.putTournamentSettings$({
+                            ...this.state.settings(),
+                            levelIndex: this.currentLevelIndex(),
+                            timeLeft: this.currentLevelTimeLeft()
+                        }).pipe(take(1)).subscribe();
+                    }
 
                     if (this.state.isRunning()) {
                         setTimeout(() => {
@@ -277,11 +279,14 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                     this.bleepNext.nativeElement.play();
                 }
 
-                this.tournamentApiService.putTournamentSettings$({
-                    ...this.state.settings(),
-                    levelIndex: this.currentLevelIndex(),
-                    timeLeft: this.currentLevelTimeLeft()
-                }).pipe(take(1)).subscribe();
+                if (!this.state.blockPut()) {
+                    console.log('pput on notify');
+                    this.tournamentApiService.putTournamentSettings$({
+                        ...this.state.settings(),
+                        levelIndex: this.currentLevelIndex(),
+                        timeLeft: this.currentLevelTimeLeft()
+                    }).pipe(take(1)).subscribe();
+                }
             }
         }
     }

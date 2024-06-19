@@ -16,7 +16,7 @@
                     [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
                     (click)="addPlayer()"
                 >
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-user"></i> {{ isProOrAdmin() }} <br> {{ data.isAddPlayerBlocked }}
                 </button>
             </div>
         }

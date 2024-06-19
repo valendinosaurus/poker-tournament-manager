@@ -38,7 +38,7 @@ mat-dialog-container#draw {
 
 
 .mdc-list-item__primary-text {
-    font-size: 26px !important;
+    font-size: 20px !important;
 }
 
 @media (max-width: 800px) {
@@ -214,4 +214,14 @@ h3 > button.round {
     .mdc-dialog__surface {
         padding: 12px !important;
     }
+}
+
+
+a.link-active {
+    font-weight: bold;
+    color: #00437b !important;
+}
+
+a.link-active > span {
+    color: #00437b !important;
 }
