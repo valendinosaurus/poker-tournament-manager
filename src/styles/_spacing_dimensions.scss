@@ -1,54 +1,5 @@
 @import "src/styles/colors_texts";
 
-.inner-container {
-    width: 100%;
-    padding: 0 24px;
-    box-sizing: border-box;
-
-    @media (max-width: 1280px) {
-        padding: 0 8px;
-    }
-}
-
-.inner-container.fill {
-    padding: 0;
-}
-
-.stats-container {
-    width: 100%;
-    padding: 12px;
-    box-sizing: border-box;
-    border-radius: 24px;
-
-    @media (max-width: 1280px) {
-        padding: 8px;
-    }
-}
-
-.stats-container > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    height: fit-content;
-    background: rgba(#006dc7, 0.05);
-    padding: 8px 16px;
-    box-sizing: border-box;
-    border-radius: 24px;
-
-    @media (max-width: 1280px) {
-        padding: 8px 20px;
-    }
-}
-
-.stats-container.w-100 > div {
-    width: 100% !important;
-}
-
-.stats-container h4 {
-    margin: 0;
-}
 
 .background-panel {
     box-sizing: border-box;

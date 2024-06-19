@@ -46,16 +46,6 @@ h4 {
     font-weight: bold;
 }
 
-p.big {
-    font-size: 4.5vh;
-    color: $primary;
-    font-weight: bold;
-
-    @media (max-width: 1280px) {
-        font-size: 4.8vh;
-    }
-}
-
 span.small {
     font-size: 2.62vh;
     transform: translateY(-30%);

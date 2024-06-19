@@ -1,66 +1,69 @@
-<div>
-    <h1 class="border-bottom-1-dark">
+<div class="payout-details">
+    <div>
+        <h1 class="border-bottom-1-dark">
         <span>
             effective price pool
         </span>
-        {{ totalPricePool() | number:'':'de-CH' }} $
-    </h1>
+            {{ totalPricePool() | number:'':'de-CH' }} $
+        </h1>
 
-    @if (deduction() > 0) {
-        <h2 class="no-mb border-bottom-1-dark">
+        @if (deduction() > 0) {
+            <h2 class="no-mb border-bottom-1-dark">
             <span>
                 total price pool
             </span>
-            <span>
+                <span>
                 {{ +deduction() + +totalPricePool()  | number:'':'de-CH' }} $
             </span>
-        </h2>
-    }
+            </h2>
+        }
 
-    @if (initialPricePool() > 0) {
-        <h2
-            [class.no-mb]="initialPricePool() > 0 && deduction() > 0"
-            class="no-mb border-bottom-1-dark"
-        >
+        @if (initialPricePool() > 0) {
+            <h2
+                [class.no-mb]="initialPricePool() > 0 && deduction() > 0"
+                class="no-mb border-bottom-1-dark"
+            >
             <span>
                 initial pricepool
             </span>
-            <span class="opaque">
+                <span class="opaque">
                 {{ initialPricePool() | number:'':'de-CH' }} $
             </span>
-        </h2>
-    }
+            </h2>
+        }
 
-    @if (deduction() > 0) {
-        <h2 class="border-bottom-1-dark">
+        @if (deduction() > 0) {
+            <h2 class="border-bottom-1-dark">
             <span>
                 added to final pot
             </span>
-            <span class="dark-red-opaque">
+                <span class="dark-red-opaque">
                 {{ deduction() | number:'':'de-CH' }} $
             </span>
-        </h2>
-    }
-</div>
+            </h2>
+        }
+    </div>
 
-<div class="stats-container w-100">
-    <h4>
-        @if (!isAdaptedPayoutSumCorrect()) {
-            <span>
+    <div class="stats-container w-100">
+
+        <div class="filled overflow-y-auto">
+            <h4>
+                @if (!isAdaptedPayoutSumCorrect()) {
+                    <span>
                 <i class="fa fa-exclamation-triangle mr-1"></i>
             </span>
-        }
+                }
 
-        Payout structure
-        @if (wasDealMade()) {
-            <span>
+                Payout
+                @if (wasDealMade()) {
+                    <span>
                 <i class="fa fa-handshake"></i>
                 DEAL WAS MADE
             </span>
-        }
+                }
 
-        @if (playersLeft() >= 2) {
-            <span>
+                @if (playersLeft() >= 2) {
+                    <span>
                 <button
                     mat-flat-button
                     class="ml-0-5 round"
@@ -72,10 +75,10 @@
                     <i class="fa fa-edit small"></i>
                 </button>
             </span>
-        }
+                }
 
-        @if (isPayoutAdapted()) {
-            <span>
+                @if (isPayoutAdapted()) {
+                    <span>
                 <button
                     mat-flat-button
                     class="ml-0-5 round"
@@ -87,15 +90,14 @@
                     <i class="fa fa-magic small"></i>
                 </button>
             </span>
-        }
-    </h4>
+                }
+            </h4>
 
-    <div class="overflow-y-auto">
-        <div id="topd"></div>
-        <table cellspacing="0" cellpadding="0">
-            @for (e of payouts(); track e) {
-                <tr>
-                    <td>
+            <div id="topd"></div>
+            <table cellspacing="0" cellpadding="0">
+                @for (e of payouts(); track e) {
+                    <tr>
+                        <td>
                         <span class="flex-td">
                             <span class="rank">
                                 {{ e.rank | number:'1.0-1' }}
@@ -105,28 +107,29 @@
                                 <i class="fa fa-handshake"></i>
                             }
                         </span>
-                    </td>
-                    <td>
-                        @if (e.name) {
-                            <div class="flex align-center">
-                                <app-user-image-round
-                                    [imageUrl]="e.image ? e.image : ''"
-                                    [size]="imageEdgeSize$ | async | nullsafePrimitive:0"
-                                ></app-user-image-round>
-                                <p>
-                                    {{ e.name }}
-                                </p>
-                            </div>
-                        }
-                    </td>
-                    <td class="bold text-align-right flex justify-end align-center">
-                        <span class="green">{{ e.price | number:'':'de-CH' }} $</span>
-                        <span class="regular"><small>{{ e.percentage }}</small></span>
-                    </td>
-                </tr>
-            }
-        </table>
-        <div id="bottomd"></div>
-    </div>
+                        </td>
+                        <td>
+                            @if (e.name) {
+                                <div class="flex align-center">
+                                    <app-user-image-round
+                                        [imageUrl]="e.image ? e.image : ''"
+                                        [size]="imageEdgeSize$ | async | nullsafePrimitive:0"
+                                    ></app-user-image-round>
+                                    <p>
+                                        {{ e.name }}
+                                    </p>
+                                </div>
+                            }
+                        </td>
+                        <td class="bold text-align-right flex justify-end align-center">
+                            <span class="green">{{ e.price | number:'':'de-CH' }} $</span>
+                            <span class="regular"><small>{{ e.percentage }}</small></span>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div id="bottomd"></div>
+        </div>
 
+    </div>
 </div>

@@ -1,15 +1,15 @@
-<div class="stats-container flex justify-center align-center gap-20">
+<div class="stats-container gap-20">
     @if (isWithRebuy()) {
         <div class="flex flex-dir-column justify-center align-center">
-            <h4
-            >Rebuys
+            <h4>
+                Rebuys
             </h4>
             <p class="big">
                 {{ textRebuys() }}
             </p>
-            <span class="small">
-            x {{ tournament().rebuyStack | number:'':'de-CH' }}
-        </span>
+            <!--                        <span class="small">-->
+            <!--                        x {{ tournament().rebuyStack | number:'':'de-CH' }}-->
+            <!--                    </span>-->
         </div>
     }
 
@@ -21,11 +21,9 @@
             <p class="big">
                 {{ textAddons() }}
             </p>
-            <span class="small">
-            x {{ tournament().addonStack | number:'':'de-CH' }}
-        </span>
+            <!--                        <span class="small">-->
+            <!--                        x {{ tournament().addonStack | number:'':'de-CH' }}-->
+            <!--                    </span>-->
         </div>
     }
-
-    <!-- TODO add bounties -->
 </div>

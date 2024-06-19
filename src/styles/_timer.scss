@@ -145,6 +145,21 @@ app-overview .overview {
         }
     }
 
+
+    div.left .inner-container {
+        width: 100%;
+        padding: 0 24px;
+        box-sizing: border-box;
+
+        @media (max-width: 1280px) {
+            padding: 0 8px;
+        }
+    }
+
+    div.left .inner-container.fill {
+        padding: 0;
+    }
+
     // CENTER PART
     div.center {
         width: 40%;
@@ -309,6 +324,19 @@ app-overview .overview {
         flex: 0 0 30%;
         height: 100%;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .payout-details {
+            flex-shrink: 1;
+        }
+
+        .info-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
     }
 
     div.right h3.highlighted {
@@ -329,6 +357,63 @@ app-overview .overview {
     div.right h3.highlighted .fa {
         color: white;
         margin-left: 2vw;
+    }
+
+
+    div.right .stats-container {
+        width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+        border-radius: 24px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    div.right .payout-details .stats-container {
+        display: block;
+    }
+
+    div.right .stats-container > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        height: fit-content;
+        padding: 8px 16px;
+        box-sizing: border-box;
+        flex: 0 0 48%;
+        margin-bottom: 1vw;
+    }
+
+    div.right .stats-container > div.filled {
+        border-radius: 24px;
+        background: rgba(#006dc7, 0.05);
+    }
+
+    div.right .stats-container > div:not(.filled) {
+        border-bottom-left-radius: 24px;
+        border-bottom-right-radius: 24px;
+        border-bottom: solid 4px rgba(#006dc7, 0.1);
+        //border-right: solid 4px rgba(#006dc7, 0.1);
+        //border-left: solid 4px rgba(#006dc7, 0.1);
+    }
+
+    div.right .stats-container.w-100 > div {
+        width: 100% !important;
+    }
+
+    div.right .stats-container h4 {
+        font-size: 1vw;
+        margin-bottom: 0 !important;
+        margin-top: 0;
+    }
+
+    div.right .stats-container p.big {
+        font-size: calc(100vw / 37);
+        color: $primary;
+        font-weight: bold;
     }
 }
 
