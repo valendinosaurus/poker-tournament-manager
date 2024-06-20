@@ -164,7 +164,7 @@ app-overview .overview {
     }
 
     div.left .blind-level-overview td .talign-center-big {
-        font-size: calc(100vw / 50);
+        font-size: calc(100vw / 60);
         font-weight: bold;
     }
 
@@ -172,6 +172,29 @@ app-overview .overview {
         font-size: calc(100vw / 100);
         font-weight: bold;
         opacity: 0.5;
+    }
+
+    div.left .position-big div {
+        font-size: calc(100vw / 111);
+        width: calc(100vw / 60);
+        height: calc(100vw / 60);
+        border-radius: calc(100vw / 60);
+    }
+
+    div.left .position-big.fa-pause-circle {
+        font-size: calc(100vw / 60);
+        opacity: 0.2;
+    }
+
+    div.left .pause {
+        font-size: calc(100vw / 90);
+        opacity: 0.7;
+    }
+
+    div.left .indicator {
+        font-size: calc(100vw / 50);
+        text-align: center;
+        color: $primary;
     }
 
     // CENTER PART

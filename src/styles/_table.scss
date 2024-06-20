@@ -39,7 +39,8 @@ table tr th {
 
 table tr td.m-40,
 table tr th.m-40 {
-    width: 40px;
+    width: 2vw;
+    min-width: 2vw !important;
     box-sizing: border-box;
 }
 
