@@ -7,12 +7,22 @@ import { Observable, ReplaySubject } from 'rxjs';
 export class FetchService {
 
     private readonly fetchTrigger$ = new ReplaySubject<void>();
-    
+    private readonly resetTrigger$ = new ReplaySubject<void>();
+
     getFetchTrigger$(): Observable<void> {
         return this.fetchTrigger$.asObservable();
     }
 
     trigger(): void {
         this.fetchTrigger$.next();
+    }
+
+    getResetTrigger$(): Observable<void> {
+        return this.resetTrigger$.asObservable();
+    }
+
+    triggerReset(): void {
+        console.log('trigger reset')
+        this.resetTrigger$.next();
     }
 }

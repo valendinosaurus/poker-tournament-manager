@@ -38,6 +38,7 @@ import { SeriesMetadata } from '../../../../shared/interfaces/series.interface';
 import { DEFAULT_DIALOG_POSITION } from '../../../../shared/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { TournamentApiService } from '../../../../shared/services/api/tournament-api.service';
+import { FetchService } from '../../../../shared/services/fetch.service';
 
 @Component({
     selector: 'app-overview',
@@ -104,6 +105,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private destroyRef: DestroyRef = inject(DestroyRef);
     private state: TimerStateService = inject(TimerStateService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
+    private fetchService: FetchService = inject(FetchService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownSpaceHandler(event: Event) {
@@ -175,6 +177,17 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         setInterval(() => {
             this.today = computed(() => Date.now());
         }, 100);
+
+        this.fetchService.getResetTrigger$().pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => {
+                console.log('overview: reset tiggered');
+                this.initTimeValues();
+                this.initCountdownConfig();
+                this.state.pauseTimer();
+                this.state.markForReset.set(false);
+            })
+        ).subscribe();
     }
 
     ngAfterViewInit(): void {

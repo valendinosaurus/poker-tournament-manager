@@ -289,6 +289,7 @@ export class TimerStateService {
     );
 
     blockPut = signal(false);
+    markForReset = signal(false);
 
     startTimer(): void {
         if (!this.isRunning() && this.canStartTournament() && !this.isTournamentFinished()) {

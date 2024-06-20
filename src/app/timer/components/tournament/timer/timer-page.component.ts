@@ -67,8 +67,12 @@ export class TimerPageComponent implements OnInit {
                 this.state.tournament.set(tournament);
                 this.tableDrawService.update();
                 this.canShow = true;
-                console.log(this.state.settings());
                 this.state.blockPut.set(false);
+
+                if (this.state.markForReset()) {
+                    console.log('trigger reset now in timer page' );
+                    this.fetchService.triggerReset();
+                }
             }),
             shareReplay(1)
         ).subscribe();

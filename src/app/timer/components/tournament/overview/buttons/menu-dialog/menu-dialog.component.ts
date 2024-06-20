@@ -321,6 +321,7 @@ export class MenuDialogComponent implements OnInit {
     resetState(): void {
         this.tournamentApiService.deleteTournamentSettings$(this.tournament().id).pipe(
             take(1),
+            tap(() => this.state.markForReset.set(true)),
             tap(() => this.fetchService.trigger()),
         ).subscribe();
     }
