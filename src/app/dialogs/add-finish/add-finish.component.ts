@@ -83,7 +83,7 @@ export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponen
         const payoutRaw = this.rankingService.getPayoutById(this.state.tournament().payout);
         const payoutPercentage = payoutRaw[this.rank() - 1];
 
-        const adaptedPayouts: number[] | undefined = this.state.tournament().adaptedPayout;// this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.state.tournament().adaptedPayout;
         const placesPaid = adaptedPayouts ? adaptedPayouts.length : payoutRaw.length;
 
         if (this.rank() > placesPaid) {

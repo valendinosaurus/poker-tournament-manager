@@ -118,6 +118,15 @@ export class TournamentService {
         const playerName = this.state.tournament().players.filter(e => e.id === playerId)[0].name;
         const {eliminated, eliminator} = this.getInvolvedPlayerNames(playerId, eliminatedById);
 
+        let message = `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament`;
+        message += `and finishes ${rank}${this.getOrdinalSuffix(rank)}`;
+
+        if (price > 0) {
+            message += ` and takes home ${price}! Congratulations`;
+        }
+
+        message += '!';
+
         const seatOpenEventNew: SeatOpenEvent = {
             tournamentId: this.state.tournament().id,
             clientId: this.state.clientId(),
@@ -141,7 +150,7 @@ export class TournamentService {
                 {
                     id: undefined,
                     tId: this.state.tournament().id,
-                    message: `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament!`,
+                    message: message,
                     type: TEventType.SEAT_OPEN,
                     timestamp: -1
                 },
@@ -170,6 +179,25 @@ export class TournamentService {
         }
 
         return seatOpenEventNew;
+    }
+
+    private getOrdinalSuffix(i: number): string {
+        let j = i % 10,
+            k = i % 100;
+
+        if (j === 1 && k !== 11) {
+            return 'st';
+        }
+
+        if (j === 2 && k !== 12) {
+            return 'nd';
+        }
+
+        if (j === 3 && k !== 13) {
+            return 'rd';
+        }
+
+        return 'th';
     }
 
     private getInvolvedPlayerNames(pId: number, eById: number): { eliminated: string, eliminator: string } {

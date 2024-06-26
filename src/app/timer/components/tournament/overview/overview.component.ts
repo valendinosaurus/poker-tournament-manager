@@ -199,7 +199,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 }
             });
 
-            interval(30000).pipe(
+            interval(20000).pipe(
                 takeUntilDestroyed(this.destroyRef),
                 tap(() => {
                     if (this.state.autoSlide() && !this.state.forceStopSlide()) {
