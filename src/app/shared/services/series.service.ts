@@ -132,6 +132,7 @@ export class SeriesService {
                     withAddon: tournament.withAddon,
                     withRebuy: tournament.withRebuy,
                     withReEntry: tournament.withReEntry,
+                    isPayoutsAdapted: tournament.adaptedPayout !== undefined && tournament.adaptedPayout !== null,
                     placesPaid: tournament.adaptedPayout?.toString().split(',').length ?? this.rankingService.getPayoutById(tournament.payout).length
                 });
             }

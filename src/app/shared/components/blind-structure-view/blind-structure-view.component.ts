@@ -47,7 +47,9 @@ export class BlindStructureViewComponent {
         this.updateWithPositions();
     }
 
-    sort(): void {
+    sort(event: Event): void {
+        event.preventDefault();
+
         this.structure.update((structure: BlindLevel[]) => {
             const blinds = structure.filter(b => !b.isPause);
             const pauses = structure.filter(b => b.isPause);

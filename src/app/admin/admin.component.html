@@ -98,12 +98,14 @@
     <div class="login-hint">
         <h1 class="mt-100px">You are not logged in!</h1>
 
-        <button
-            mat-flat-button
-            color="primary"
-            (click)="login()"
-        >
-            <i class="fa fa-user fa-ib"></i> LOGIN NOW
-        </button>
+        <div class="flex justify-center">
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="login()"
+            >
+                <i class="fa fa-user fa-ib"></i> LOGIN NOW
+            </button>
+        </div>
     </div>
 </ng-template>

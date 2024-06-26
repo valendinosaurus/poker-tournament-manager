@@ -131,6 +131,10 @@
                                 [class.bold]="e.price > 0"
                             >
                                 $ {{ e.price | number:'':'de-CH' }}
+
+                                @if (isPayoutAdapted() && e.price > 0) {
+                                    <i class="fa fa-wand-magic-sparkles"></i>
+                                }
                             </span>
                         </td>
                     </tr>

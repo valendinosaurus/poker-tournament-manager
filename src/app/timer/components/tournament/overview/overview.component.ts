@@ -181,7 +181,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.fetchService.getResetTrigger$().pipe(
             takeUntilDestroyed(this.destroyRef),
             tap(() => {
-                console.log('overview: reset tiggered');
                 this.initTimeValues();
                 this.initCountdownConfig();
                 this.state.pauseTimer();

@@ -43,6 +43,8 @@ export class SeriesTournamentComponent implements OnInit {
 
     isLiveTickerExpanded: WritableSignal<boolean>;
 
+    isPayoutAdapted = computed(() => this.tournament().isPayoutsAdapted);
+
     refreshTrigger$: Observable<number>;
     countdown$: Observable<number>;
 

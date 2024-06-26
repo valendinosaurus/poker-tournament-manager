@@ -1,122 +1,125 @@
-<app-blind-structure-estimated-duration
-    [structure]="structure()"
-    [estimationVisible]="estimationVisible()"
-></app-blind-structure-estimated-duration>
+<div class="relative">
+    <app-blind-structure-estimated-duration
+        [structure]="structure()"
+        [estimationVisible]="estimationVisible()"
+    ></app-blind-structure-estimated-duration>
 
-<button
-    mat-raised-button
-    color="accent"
-    (click)="sort()"
->
-    <i class="fa fa-sort fa-ib"></i> SORT
-</button>
-
-<div class="blind-structure">
-    <div class="header">
-        <div class="b-name">
-            <strong>Duration</strong>
+    <div class="blind-structure">
+        <div class="header">
+            <div class="b-name">
+                <strong>Duration</strong>
+            </div>
+            <div class="b-name">
+                <strong>Small Blind</strong>
+            </div>
+            <div class="b-name">
+                <strong>Big Blind</strong>
+            </div>
+            <div class="b-name">
+                <strong>Ante</strong>
+            </div>
+            <div class="b-name">
+                <strong>Button-Ante</strong>
+            </div>
         </div>
-        <div class="b-name">
-            <strong>Small Blind</strong>
-        </div>
-        <div class="b-name">
-            <strong>Big Blind</strong>
-        </div>
-        <div class="b-name">
-            <strong>Ante</strong>
-        </div>
-        <div class="b-name">
-            <strong>Button-Ante</strong>
-        </div>
-    </div>
 
-    <div
-        class="blind-level-list"
-        cdkDropList
-        (cdkDropListDropped)="drop($event)"
-    >
-        @for (blind of structure(); track blind; let i = $index; ) {
+        <div
+            class="blind-level-list"
+            cdkDropList
+            (cdkDropListDropped)="drop($event)"
+        >
+            @for (blind of structure(); track blind; let i = $index; ) {
 
-            @if (!blind.isPause) {
-                <div
-                    cdkDrag
-                    class="blind-element"
-                >
-                    <div class="index">
-                        {{ blind.position / 2 }}
-                    </div>
+                @if (!blind.isPause) {
+                    <div
+                        cdkDrag
+                        class="blind-element"
+                    >
+                        <div class="index">
+                            {{ blind.position / 2 }}
+                        </div>
 
-                    <div class="b-duration">
-                        {{ blind.duration }}min
-                    </div>
+                        <div class="b-duration">
+                            {{ blind.duration }}min
+                        </div>
 
-                    <div class="b-small">
-                        <strong>{{ blind.sb | number:'1.0-0' }}</strong>
+                        <div class="b-small">
+                            <strong>{{ blind.sb | number:'1.0-0' }}</strong>
+                        </div>
+                        <div class="b-big">
+                            <strong>{{ blind.bb | number:'1.0-0' }}</strong>
+                        </div>
+                        <div class="b-ante">
+                            <strong>{{ blind.ante | number:'1.0-0' }}</strong>
+                        </div>
+                        <div class="b-btn-ante">
+                            <strong>{{ blind.btnAnte | number:'1.0-0' }}</strong>
+                        </div>
+                        <div class="b-action">
+                            @if (!locked()) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteBlind.emit(blind.id)"
+                                ></i>
+                            }
+                        </div>
                     </div>
-                    <div class="b-big">
-                        <strong>{{ blind.bb | number:'1.0-0' }}</strong>
+                } @else {
+                    <div
+                        class="pause-element"
+                        cdkDrag
+                    >
+                        <div class="b-name">
+                            {{ blind.duration }}min
+                        </div>
+                        <div class="b-long-name">
+                            PAUSE
+
+                            @if (blind.isChipUp) {
+                                - (CHIP UP)
+                            }
+
+                            @if (blind.endsRebuy) {
+                                - ENDS REBUY
+                            }
+                        </div>
+                        <div class="b-action">
+                            @if (!locked()) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteBlind.emit(blind.id)"
+                                ></i>
+                            }
+                        </div>
                     </div>
-                    <div class="b-ante">
-                        <strong>{{ blind.ante | number:'1.0-0' }}</strong>
-                    </div>
-                    <div class="b-btn-ante">
-                        <strong>{{ blind.btnAnte | number:'1.0-0' }}</strong>
-                    </div>
-                    <div class="b-action">
-                        @if (!locked()) {
+                }
+
+                @if (blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()) {
+                    <div
+                        class="b-insert-pause"
+                        (click)="addPause.emit(blind.position)"
+                    >
+                        <div>
                             <i
-                                class="fa fa-trash"
-                                (click)="deleteBlind.emit(blind.id)"
+                                class="fa fa-plus-circle"
                             ></i>
-                        }
-                    </div>
-                </div>
-            } @else {
-                <div
-                    class="pause-element"
-                    cdkDrag
-                >
-                    <div class="b-name">
-                        {{ blind.duration }}min
-                    </div>
-                    <div class="b-long-name">
-                        PAUSE
-
-                        @if (blind.isChipUp) {
-                            - (CHIP UP)
-                        }
-
-                        @if (blind.endsRebuy) {
-                            - ENDS REBUY
-                        }
-                    </div>
-                    <div class="b-action">
-                        @if (!locked()) {
-                            <i
-                                class="fa fa-trash"
-                                (click)="deleteBlind.emit(blind.id)"
-                            ></i>
-                        }
-                    </div>
-                </div>
-            }
-
-            @if (blindPositions().indexOf(blind.position + 1) === -1 && i < structure().length - 1 && !locked()) {
-                <div
-                    class="b-insert-pause"
-                    (click)="addPause.emit(blind.position)"
-                >
-                    <div>
-                        <i
-                            class="fa fa-plus-circle"
-                        ></i>
-                        <span>
+                            <span>
                             INSERT PAUSE
                         </span>
+                        </div>
                     </div>
-                </div>
+                }
             }
-        }
+        </div>
     </div>
+
+    <button
+        class="dialog-small"
+        mat-raised-button
+        color="accent"
+        (click)="sort($event)"
+    >
+        <i class="fa fa-sort fa-ib"></i> SORT
+    </button>
 
 </div>

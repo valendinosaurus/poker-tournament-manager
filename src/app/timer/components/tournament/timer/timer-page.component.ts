@@ -70,7 +70,6 @@ export class TimerPageComponent implements OnInit {
                 this.state.blockPut.set(false);
 
                 if (this.state.markForReset()) {
-                    console.log('trigger reset now in timer page' );
                     this.fetchService.triggerReset();
                 }
             }),

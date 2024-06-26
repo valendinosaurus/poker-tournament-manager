@@ -78,7 +78,6 @@ mat-dialog-container#draw {
     }
 
     button:not(.mat-ripple) {
-        //color: white;
         padding: 12px 30px;
         margin: auto;
         display: block !important;
@@ -89,6 +88,27 @@ mat-dialog-container#draw {
             padding: 6px 16px;
             font-size: 14px !important;
         }
+    }
+
+    button.dialog-small {
+        padding: 8px 20px;
+        margin: auto;
+        display: block !important;
+        height: fit-content !important;
+        width: fit-content !important;
+        font-size: 16px !important;
+        margin-left: 0 !important;
+
+        @media (max-width: 800px) {
+            padding: 6px 16px;
+            font-size: 12px !important;
+        }
+    }
+
+    button.top-right {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 
     .actions {

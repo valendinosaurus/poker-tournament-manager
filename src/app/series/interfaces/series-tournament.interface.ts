@@ -15,4 +15,5 @@ export interface SeriesTournament {
     withAddon: boolean;
     withReEntry: boolean;
     placesPaid: number;
+    isPayoutsAdapted: boolean;
 }

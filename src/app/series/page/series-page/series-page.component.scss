@@ -273,3 +273,19 @@ th, td {
         }
     }
 }
+
+
+.tournament-legend {
+    padding-left: 20px;
+    margin-bottom: 20px;
+
+    div.flex {
+        margin-bottom: 4px;
+    }
+
+    .fa {
+        font-size: 16px !important;
+        margin-left: 0 !important;
+        margin-right: 12px;
+    }
+}

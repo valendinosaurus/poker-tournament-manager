@@ -22,7 +22,6 @@ export class FetchService {
     }
 
     triggerReset(): void {
-        console.log('trigger reset')
         this.resetTrigger$.next();
     }
 }

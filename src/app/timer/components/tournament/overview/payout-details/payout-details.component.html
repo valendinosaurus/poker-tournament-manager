@@ -50,47 +50,52 @@
             <h4>
                 @if (!isAdaptedPayoutSumCorrect()) {
                     <span>
-                <i class="fa fa-exclamation-triangle mr-1"></i>
-            </span>
+                        <i class="fa fa-exclamation-triangle mr-1"></i>
+                    </span>
                 }
 
-                Payout
-                @if (wasDealMade()) {
-                    <span>
-                <i class="fa fa-handshake"></i>
-                DEAL WAS MADE
-            </span>
-                }
+                <span>
+                    Payout
+                </span>
 
-                @if (playersLeft() >= 2) {
-                    <span>
-                <button
-                    mat-flat-button
-                    class="ml-0-5 round"
-                    matTooltip="Edit"
-                    matTooltipPosition="above"
-                    [matTooltipHideDelay]="600000"
-                    (click)="editPayouts()"
-                >
-                    <i class="fa fa-edit small"></i>
-                </button>
-            </span>
-                }
+                <span>
+                    @if (wasDealMade()) {
+                        <span>
+                            <i class="fa fa-handshake"></i>
+                            DEAL WAS MADE
+                        </span>
+                    }
 
-                @if (isPayoutAdapted()) {
-                    <span>
-                <button
-                    mat-flat-button
-                    class="ml-0-5 round"
-                    matTooltip="Remove custom payouts"
-                    matTooltipPosition="above"
-                    [matTooltipHideDelay]="600000"
-                    (click)="removeAdaptedPayouts()"
-                >
-                    <i class="fa fa-magic small"></i>
-                </button>
-            </span>
-                }
+                    @if (playersLeft() >= 2) {
+                        <span>
+                            <button
+                                mat-flat-button
+                                class="ml-0-5 round"
+                                matTooltip="Edit"
+                                matTooltipPosition="above"
+                                [matTooltipHideDelay]="600000"
+                                (click)="editPayouts()"
+                            >
+                                <i class="fa fa-edit small"></i>
+                            </button>
+                        </span>
+                    }
+
+                    @if (isPayoutAdapted()) {
+                        <span>
+                            <button
+                                mat-flat-button
+                                class="ml-0-5 round"
+                                matTooltip="Remove custom payouts"
+                                matTooltipPosition="above"
+                                [matTooltipHideDelay]="600000"
+                                (click)="removeAdaptedPayouts()"
+                            >
+                                <i class="fa fa-eraser small"></i>
+                            </button>
+                        </span>
+                    }
+                </span>
             </h4>
 
             <div id="topd"></div>

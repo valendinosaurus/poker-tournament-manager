@@ -45,11 +45,12 @@ h2 > span {
 }
 
 h4 {
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     font-size: 1vw;
-    margin-bottom: 0.5vw !important;
+    margin-bottom: 1vw !important;
 
     span {
         display: flex;
@@ -84,7 +85,7 @@ p {
     margin-right: 12px;
 }
 
-.fa-magic {
+.fa-eraser {
     font-size: calc(100vw / 166);
 }
 

@@ -72,6 +72,18 @@
 
             <h2>Tournaments</h2>
 
+            <div class="tournament-legend">
+                <div class="flex align-center">
+                    <i class="fa fa-handshake"></i>
+                    <span>Deal was made</span>
+                </div>
+
+                <div class="flex align-center">
+                    <i class="fa fa-wand-magic-sparkles"></i>
+                    <span>Payout was adapted</span>
+                </div>
+            </div>
+
             @for (tournament of tournaments$ | async; track tournament) {
                 <app-series-tournament
                     [series]="series"
