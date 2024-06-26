@@ -119,7 +119,7 @@ export class TournamentService {
         const {eliminated, eliminator} = this.getInvolvedPlayerNames(playerId, eliminatedById);
 
         let message = `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament`;
-        message += `and finishes ${rank}${this.getOrdinalSuffix(rank)}`;
+        message += ` and finishes ${rank}${this.getOrdinalSuffix(rank)}`;
 
         if (price > 0) {
             message += ` and takes home ${price}! Congratulations`;

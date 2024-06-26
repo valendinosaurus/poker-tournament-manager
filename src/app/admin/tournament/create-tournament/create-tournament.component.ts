@@ -87,6 +87,8 @@ export class CreateTournamentComponent implements OnInit {
             withAddon: this.data?.tournament?.withAddon ?? false,
             withReEntry: this.data?.tournament?.withReEntry ?? false,
             rebuyStack: this.data?.tournament?.rebuyStack ?? 0,
+            withBounty: this.data?.tournament?.withBounty ?? false,
+            bountyAmount: this.data?.tournament?.bountyAmount ?? 0,
             payout: this.data?.tournament?.payout ?? 0,
             rankFormula: this.data?.tournament?.rankFormula?.id ?? null,
             location: this.data?.tournament?.location ?? this.allLocations[0].value,
@@ -143,6 +145,16 @@ export class CreateTournamentComponent implements OnInit {
                 ],
                 expressions: {
                     hide: () => !this.model.withAddon
+                }
+            },
+            this.formlyFieldService.getDefaultCheckboxField('withBounty', 'with Bounty'),
+            {
+                className: 'sub-group',
+                fieldGroup: [
+                    this.formlyFieldService.getDefaultNumberField('bountyAmount', 'bounty amount', true),
+                ],
+                expressions: {
+                    hide: () => !this.model.withBounty
                 }
             },
             this.formlyFieldService.getDefaultNumberField('initialPricePool', 'initial pricepool', true),

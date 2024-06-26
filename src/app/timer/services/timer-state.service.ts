@@ -134,6 +134,12 @@ export class TimerStateService {
         this.totalPricePoolWithoutDeduction() - this.pricePoolDeduction()
     );
 
+    bountyPricePool = computed(() =>
+        this.withBounty()
+            ? this.tournament().entries.filter((e: Entry) => e.type !== EntryType.ADDON).length * this.tournament().bountyAmount
+            : 0
+    );
+
     simplePricePool = computed(() => {
         const buyInsReEntries: number = this.entries().filter(
             (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY
@@ -148,7 +154,7 @@ export class TimerStateService {
     withRebuy: Signal<boolean> = computed(() => this.tournament().withRebuy);
     withAddon: Signal<boolean> = computed(() => this.tournament().withAddon);
     withReEntry: Signal<boolean> = computed(() => this.tournament().withReEntry);
-    withBounty: Signal<boolean>;
+    withBounty: Signal<boolean> = computed(() => this.tournament().withBounty);
 
     eligibleForEntry: Signal<Player[]> = computed(() =>
         this.players().filter((player: Player) =>

@@ -36,9 +36,11 @@ export class PlayerDetailsComponent implements OnInit {
 
     combination: Signal<Combination[]>;
 
+    bountyAmount = computed(() => this.state.tournament().bountyAmount);
     withRebuy = computed(() => this.state.tournament().withRebuy);
     withAddon = computed(() => this.state.tournament().withAddon);
     withReEntry = computed(() => this.state.tournament().withReEntry);
+    withBounty = computed(() => this.state.tournament().withBounty);
 
     private state: TimerStateService = inject(TimerStateService);
 

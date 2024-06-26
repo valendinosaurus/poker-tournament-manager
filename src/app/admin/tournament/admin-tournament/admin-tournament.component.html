@@ -97,7 +97,7 @@
 
                 <span>
                     <h4>With Re-Entry?</h4>
-                    <p>$ {{ tournament.withReEntry }}</p>
+                    <p>{{ tournament.withReEntry }}</p>
                 </span>
 
                 <span>
@@ -126,6 +126,16 @@
                 </span>
 
                 <span>
+                    <h4>with Bounty</h4>
+                    <p>{{ tournament.withBounty }}</p>
+                </span>
+
+                <span>
+                    <h4>Bounty Amount</h4>
+                    <p>$ {{ tournament.bountyAmount }}</p>
+                </span>
+
+                <span>
                     <h4>Initial Pricepool</h4>
                     <p>$ {{ tournament.initialPricePool }}</p>
                 </span>
@@ -136,12 +146,10 @@
 
         <mat-tab label="Players">
             <!-- extract -->
-            <div class="flex">
-                <div class="flex-50">
-                    <div class="admin-header">
-                        <h2>Players</h2>
+            <div class="admin-header">
+                <h2>Players</h2>
 
-                        <span class="admin-header-buttons">
+                <span class="admin-header-buttons">
                             <button
                                 mat-raised-button
                                 color="primary"
@@ -151,30 +159,28 @@
                                 <i class="fa fa-user-plus fa-ib"></i> ADD PAYERS
                             </button>
                         </span>
-                    </div>
-
-                    <table class="admin-table">
-                        <ng-container *ngFor="let player of tournament.players">
-                            <tr>
-                                <td>
-                                    <app-user-image-round [imageUrl]="player.image"></app-user-image-round>
-                                </td>
-                                <td>
-                                    {{ player.name }}
-                                </td>
-                                <td>
-                                    @if (!tournament.locked) {
-                                        <i
-                                            class="fa fa-trash"
-                                            (click)="deletePlayerFromTournament(player.id)"
-                                        ></i>
-                                    }
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </table>
-                </div>
             </div>
+
+            <table class="admin-table">
+                <ng-container *ngFor="let player of tournament.players">
+                    <tr>
+                        <td>
+                            <app-user-image-round [imageUrl]="player.image"></app-user-image-round>
+                        </td>
+                        <td>
+                            {{ player.name }}
+                        </td>
+                        <td>
+                            @if (!tournament.locked) {
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deletePlayerFromTournament(player.id)"
+                                ></i>
+                            }
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
         </mat-tab>
 
         <mat-tab label="Blinds">

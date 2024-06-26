@@ -4,6 +4,26 @@
             {{ today() | date:'dd.MM.YYYY HH:mm' }}
         </span>
         <span>
+            {{ tournament().buyInAmount }} $
+
+            @if (tournament().withBounty) {
+                + {{ tournament().bountyAmount }} $ Bounty
+            }
+
+            @if (tournament().withReEntry) {
+                - with Re-Entry
+            }
+
+            @if (tournament().withRebuy) {
+                - with Rebuy
+            }
+
+            @if (tournament().withAddon) {
+                - with Addon
+            }
+
+        </span>
+        <span>
             {{ tournament().name }} &#64; {{ tournament().locationName }}
         </span>
     </div>

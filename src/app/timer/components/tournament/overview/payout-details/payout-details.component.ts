@@ -52,6 +52,7 @@ export class PayoutDetailsComponent implements OnInit {
     maxCap: Signal<number | null | undefined>;
     payout: Signal<number>;
     totalPricePool: Signal<number>;
+    bountyPricePool: Signal<number>;
     deduction: Signal<number>;
 
     imageEdgeSize$: Observable<number> = fromEvent(window, 'resize').pipe(
@@ -82,6 +83,7 @@ export class PayoutDetailsComponent implements OnInit {
 
     ngOnInit(): void {
         this.totalPricePool = this.state.totalPricePool;
+        this.bountyPricePool = this.state.bountyPricePool;
         this.deduction = this.state.pricePoolDeduction;
         this.tournament = this.state.tournament;
         this.metadata = this.state.metadata;

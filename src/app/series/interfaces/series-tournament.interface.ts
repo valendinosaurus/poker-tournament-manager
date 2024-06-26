@@ -14,6 +14,7 @@ export interface SeriesTournament {
     withRebuy: boolean;
     withAddon: boolean;
     withReEntry: boolean;
+    withBounty: boolean;
     placesPaid: number;
     isPayoutsAdapted: boolean;
 }

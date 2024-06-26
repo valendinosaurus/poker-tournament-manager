@@ -8,6 +8,7 @@ export interface LeaderboardRow {
     rebuysAddons: number;
     tournaments: number;
     eliminations: number;
+    collectedBounties: number;
     eliminatedPlayers: { name: string; id: number; }[];
     itm: number;
     isTemp: boolean;

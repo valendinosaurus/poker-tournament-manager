@@ -2,18 +2,29 @@
     <div>
         <h1 class="border-bottom-1-dark">
         <span>
-            effective price pool
+            Effective Price Pool
         </span>
             {{ totalPricePool() | number:'':'de-CH' }} $
         </h1>
 
-        @if (deduction() > 0) {
+        @if (tournament().withBounty) {
             <h2 class="no-mb border-bottom-1-dark">
             <span>
-                total price pool
+                Bounty Price Pool
             </span>
                 <span>
-                {{ +deduction() + +totalPricePool()  | number:'':'de-CH' }} $
+                {{ +bountyPricePool()  | number:'':'de-CH' }} $
+            </span>
+            </h2>
+        }
+
+        @if (deduction() > 0 || tournament().withBounty) {
+            <h2 class="no-mb border-bottom-1-dark">
+            <span>
+                Total Price Pool
+            </span>
+                <span>
+                {{ +deduction() + +totalPricePool() + +bountyPricePool()  | number:'':'de-CH' }} $
             </span>
             </h2>
         }
@@ -24,7 +35,7 @@
                 class="no-mb border-bottom-1-dark"
             >
             <span>
-                initial pricepool
+                Initial Pricepool
             </span>
                 <span class="opaque">
                 {{ initialPricePool() | number:'':'de-CH' }} $

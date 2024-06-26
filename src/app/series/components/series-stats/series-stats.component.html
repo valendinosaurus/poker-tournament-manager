@@ -77,6 +77,14 @@
         ></app-series-stat>
     }
 
+    @if (series().showPrices && hasBounty()) {
+        <app-series-stat
+            [stat]="mostBounties()"
+            statTitle="Most Bounties $"
+            [useNumberPipe]="true"
+        ></app-series-stat>
+    }
+
     @if (series().showNonItmPlaces) {
         <app-series-stat
             [stat]="mostBubbles()"

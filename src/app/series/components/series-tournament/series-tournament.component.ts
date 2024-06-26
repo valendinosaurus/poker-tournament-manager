@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, OnInit, Signal, signal, WritableSignal } from '@angular/core';
 import { SeriesTournament } from '../../interfaces/series-tournament.interface';
 import { TEventTypeIconPipe } from '../../../shared/pipes/t-event-type-icon.pipe';
 import { BulletsComponent } from '../../../shared/components/bullets/bullets.component';
@@ -11,6 +11,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimePipe } from '../../../shared/pipes/time.pipe';
 import { TEventApiService } from '../../../shared/services/api/t-event-api.service';
 import { Series } from '../../../shared/interfaces/series.interface';
+import { EntryType } from '../../../shared/enums/entry-type.enum';
+import { Entry } from 'src/app/shared/interfaces/entry.interface';
 
 @Component({
     selector: 'app-series-tournament',
@@ -44,6 +46,11 @@ export class SeriesTournamentComponent implements OnInit {
     isLiveTickerExpanded: WritableSignal<boolean>;
 
     isPayoutAdapted = computed(() => this.tournament().isPayoutsAdapted);
+
+    bountyPool = computed(() =>
+        this.tournament().tournament.bountyAmount
+        * this.tournament().tournament.entries.filter((e: Entry) => e.type !== EntryType.ADDON).length
+    );
 
     refreshTrigger$: Observable<number>;
     countdown$: Observable<number>;

@@ -11,5 +11,6 @@ export interface SeriesStats {
     mostEliminations: SimpleStat[];
     mostSpilled: SimpleStat[];
     mostBubbles: SimpleStat[];
+    mostBounties: SimpleStat[];
     biggestRivals: SimpleStat[];
 }

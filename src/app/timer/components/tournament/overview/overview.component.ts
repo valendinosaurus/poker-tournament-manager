@@ -146,7 +146,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         this.currentLevelIndex = this.state.currentLevelIndex;
         this.isRunning = this.state.isRunning;
         this.levels = computed(() => this.tournament().structure);
-        this.isTournamentPartOfSeries = computed(() => this.metadata() !== undefined);
+
+        this.isTournamentPartOfSeries = computed(() =>
+            this.metadata() !== undefined
+            && this.metadata() !== null
+            && this.metadata()?.rankFormula !== null
+        );
+
         this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
         this.isProOrAdmin = this.state.isProOrAdmin;
         this.isITM = this.state.isITM;

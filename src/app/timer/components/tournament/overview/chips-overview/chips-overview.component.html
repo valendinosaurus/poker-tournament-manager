@@ -1,6 +1,6 @@
 <div
     class="stats-container gap-20"
-    [class.flex-dir-column]="!isWithRebuyOrAddon()"
+    [class.flex-dir-column]="!isWithRebuyOrAddon() && !isTooNarrow()"
     [class.gap-20]="!isWithRebuyOrAddon()"
 >
     <div class="flex flex-dir-column justify-center align-center">

@@ -23,6 +23,7 @@ export class LeaderboardComponent {
     full = input<boolean>(true);
     hasRebuy = input.required<boolean>();
     hasAddon = input.required<boolean>();
+    hasBounty = input.required<boolean>();
 
     numberOfDisqualifiedPlayers = computed(() =>
         this.leaderboard().filter(e => e.disqualified).length

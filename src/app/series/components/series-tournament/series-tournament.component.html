@@ -30,7 +30,12 @@
                 @if (tournament().contribution > 0) {
                     <span>
                         <p>
-                            $ {{ tournament().pricePool | number:'1.0-0' }}
+                            @if (tournament().withBounty) {
+                                $ {{ +tournament().pricePool + bountyPool() | number:'1.0-0' }}
+
+                            } @else {
+                                $ {{ tournament().pricePool | number:'1.0-0' }}
+                            }
                         </p>
                         <h5>
                             Total price pool
@@ -43,6 +48,17 @@
                         </p>
                         <h5>
                             Goes to final pot
+                        </h5>
+                    </span>
+                }
+
+                @if (tournament().withBounty) {
+                    <span>
+                        <p>
+                            $ {{ bountyPool() | number:'1.0-0' }}
+                        </p>
+                        <h5>
+                            Bounty price pool
                         </h5>
                     </span>
                 }
@@ -67,6 +83,10 @@
 
                     @if (series().showEliminations) {
                         <th class="t-center">Eliminations</th>
+                    }
+
+                    @if (tournament().withBounty) {
+                        <th class="t-center">Bounties</th>
                     }
 
                     <th class="t-right">Price</th>
@@ -122,6 +142,17 @@
                                     [number]="e.eliminations"
                                     bulletClass="fa-skull"
                                 ></app-bullets>
+                            </td>
+                        }
+
+                        @if (tournament().withBounty) {
+                            <td class="t-center">
+                                <span
+                                    [class.green]="e.eliminations > 0"
+                                    [class.bold]="e.eliminations > 0"
+                                >
+                                    {{ e.eliminations * tournament().tournament.bountyAmount | number:'1.0-0' }} $
+                                </span>
                             </td>
                         }
 

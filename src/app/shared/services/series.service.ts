@@ -132,6 +132,7 @@ export class SeriesService {
                     withAddon: tournament.withAddon,
                     withRebuy: tournament.withRebuy,
                     withReEntry: tournament.withReEntry,
+                    withBounty: tournament.withBounty,
                     isPayoutsAdapted: tournament.adaptedPayout !== undefined && tournament.adaptedPayout !== null,
                     placesPaid: tournament.adaptedPayout?.toString().split(',').length ?? this.rankingService.getPayoutById(tournament.payout).length
                 });
@@ -170,7 +171,8 @@ export class SeriesService {
                         playerId: f.playerId,
                         disqualified: f.disqualified,
                         bubbles: +element.bubbles + ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
-                        eliminatedPlayers: (element.eliminatedPlayers ?? []).concat(f.eliminatedPlayers ?? [])
+                        eliminatedPlayers: (element.eliminatedPlayers ?? []).concat(f.eliminatedPlayers ?? []),
+                        collectedBounties: element.collectedBounties + (seriesTournament.withBounty ? f.eliminations * seriesTournament.tournament.bountyAmount : 0)
                     };
 
                 } else {
@@ -189,7 +191,8 @@ export class SeriesService {
                         email: f.email,
                         playerId: f.playerId,
                         disqualified: f.disqualified,
-                        eliminatedPlayers: f.eliminatedPlayers
+                        eliminatedPlayers: f.eliminatedPlayers,
+                        collectedBounties: seriesTournament.withBounty ? f.eliminations * seriesTournament.tournament.bountyAmount : 0
                     });
                 }
             })
@@ -380,6 +383,21 @@ export class SeriesService {
             .sort((a, b) => b.value - a.value || a.played - b.played);
     }
 
+    getMostBounties(overallRanking: LeaderboardRow[]): SimpleStat[] {
+        const mostB = overallRanking.sort(
+            (prev, curr) =>
+                ((prev.collectedBounties) - (curr.collectedBounties)) || prev.tournaments - curr.tournaments
+        ).reverse();
+
+        return mostB.slice(0, 7).map(e => ({
+            played: e.tournaments,
+            value: e.collectedBounties,
+            playerName: e.name,
+            image: e.image,
+            inactive: e.disqualified
+        }));
+    }
+
     getGuaranteedFromSeries(series: SeriesS): number {
         const percentage = series.percentage;
         const cap = +series.maxAmountPerTournament;
@@ -423,6 +441,7 @@ export class SeriesService {
             mostITM: this.getMostITM([...leaderboard]),
             mostPercITM: this.getMostPercentualITM([...leaderboard]),
             mostEliminations: this.getMostEliminations([...leaderboard]),
+            mostBounties: this.getMostBounties([...leaderboard]),
             mostBubbles: this.getMostBubbles([...leaderboard]),
             biggestRivals: this.getBiggestRivals([...leaderboard]),
             mostSpilled: mostSpilled

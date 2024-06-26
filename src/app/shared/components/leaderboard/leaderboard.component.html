@@ -17,6 +17,10 @@
                     <th class="t-right">Rebuys / Addons</th>
                 }
 
+                @if (series().showPrices && hasBounty()) {
+                    <th class="t-right">Bounties</th>
+                }
+
                 @if (series().showEliminations) {
                     <th class="t-right">Eliminations</th>
                 }
@@ -86,6 +90,17 @@
                         @if (hasRebuy() || hasAddon()) {
                             <td class="t-right">
                                 {{ e.rebuysAddons }}
+                            </td>
+                        }
+
+                        @if (series().showPrices && hasBounty()) {
+                            <td class="t-right">
+                                <span
+                                    [class.green]="e.collectedBounties > 0"
+                                    [class.bold]="e.collectedBounties > 0"
+                                >
+                                    {{ e.collectedBounties }} $
+                                </span>
                             </td>
                         }
 

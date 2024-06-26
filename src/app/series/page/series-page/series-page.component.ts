@@ -62,6 +62,7 @@ export class SeriesPageComponent implements OnInit {
     isLoadingSeries$: Observable<boolean>;
     hasRebuy$: Observable<boolean>;
     hasAddon$: Observable<boolean>;
+    hasBounty$: Observable<boolean>;
 
     seriesId: number;
     password: string;
@@ -194,6 +195,12 @@ export class SeriesPageComponent implements OnInit {
             filter((series: SeriesS | null): series is SeriesS => series !== null),
             map((series: SeriesS) => series.tournaments),
             map((tournaments: TournamentS[]) => tournaments.some((tournament: TournamentS) => tournament.withAddon))
+        );
+
+        this.hasBounty$ = this.series$.pipe(
+            filter((series: SeriesS | null): series is SeriesS => series !== null),
+            map((series: SeriesS) => series.tournaments),
+            map((tournaments: TournamentS[]) => tournaments.some((tournament: TournamentS) => tournament.withBounty))
         );
 
         this.trigger$.next();

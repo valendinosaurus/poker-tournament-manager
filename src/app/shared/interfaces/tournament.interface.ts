@@ -23,6 +23,8 @@ export interface TournamentBase {
     withAddon: boolean;
     addonStack: number;
     addonAmount: number;
+    withBounty: boolean;
+    bountyAmount: number;
     payout: number;
     initialPricePool: number;
     rankFormula: RankFormula | null;

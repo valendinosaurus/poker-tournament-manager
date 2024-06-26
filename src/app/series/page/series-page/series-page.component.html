@@ -40,6 +40,7 @@
                     [userEmail]="userEmail$ | async | nullsafePrimitive:''"
                     [hasRebuy]="hasRebuy$ | async | nullsafePrimitive:false"
                     [hasAddon]="hasAddon$ | async | nullsafePrimitive:false"
+                    [hasBounty]="hasBounty$ | async | nullsafePrimitive:false"
                 ></app-leaderboard>
 
                 @if (series.finalists > 0) {
@@ -63,10 +64,12 @@
                     [mostPercITM]="stats.mostPercITM"
                     [mostEliminations]="stats.mostEliminations"
                     [mostBubbles]="stats.mostBubbles"
+                    [mostBounties]="stats.mostBounties"
                     [biggestRivals]="stats.biggestRivals"
                     [mostSpilled]="stats.mostSpilled"
                     [hasRebuy]="hasRebuy$ | async | nullsafePrimitive:false"
                     [hasAddon]="hasAddon$ | async | nullsafePrimitive:false"
+                    [hasBounty]="hasBounty$ | async | nullsafePrimitive:false"
                 ></app-series-stats>
             }
 

@@ -23,6 +23,10 @@
                 }
 
                 <th class="center"><small>Eliminations</small></th>
+
+                @if (withBounty()) {
+                    <th class="center"><small>Bounty Prices</small></th>
+                }
             </tr>
 
             @for (e of combination(); track e) {
@@ -73,6 +77,17 @@
                             bulletClass="fa-skull"
                         ></app-bullets>
                     </td>
+
+                    @if (withBounty()) {
+                        <td class="center">
+                            <span
+                                [class.green]="e.eliminations > 0"
+                                [class.bold]="e.eliminations > 0"
+                            >
+                                {{ +e.eliminations * bountyAmount() | number:'':'de-CH' }} $
+                            </span>
+                        </td>
+                    }
                 </tr>
             }
         </table>
