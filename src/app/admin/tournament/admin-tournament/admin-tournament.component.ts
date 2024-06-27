@@ -28,12 +28,29 @@ import {
 } from '../../../shared/components/blind-structure-view/blind-structure-view.component';
 import { AssignBlindStructureComponent } from '../assign-blind-structure/assign-blind-structure.component';
 import { TimerStateService } from '../../../timer/services/timer-state.service';
+import { UserWithImageComponent } from '../../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-admin-tournament',
     templateUrl: './admin-tournament.component.html',
     standalone: true,
-    imports: [RouterLink, AsyncPipe, JsonPipe, MatDialogModule, NgIf, AppHeaderComponent, DatePipe, MatTabsModule, UserImageRoundComponent, NgForOf, MatSidenavModule, MatButtonModule, DecimalPipe, BlindStructureViewComponent]
+    imports: [
+        RouterLink,
+        AsyncPipe,
+        JsonPipe,
+        MatDialogModule,
+        NgIf,
+        AppHeaderComponent,
+        DatePipe,
+        MatTabsModule,
+        UserImageRoundComponent,
+        NgForOf,
+        MatSidenavModule,
+        MatButtonModule,
+        DecimalPipe,
+        BlindStructureViewComponent,
+        UserWithImageComponent
+    ]
 })
 export class AdminTournamentComponent implements OnInit {
 

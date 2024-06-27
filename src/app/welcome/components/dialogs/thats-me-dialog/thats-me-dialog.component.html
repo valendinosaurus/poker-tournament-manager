@@ -4,15 +4,11 @@
 </h2>
 
 <div class="user">
-    <div class="flex align-center">
-        <app-user-image-round
-            [imageUrl]="data.player.image"
-            [size]="64"
-        ></app-user-image-round>
-        <h3>
-            {{ data.player.name }}
-        </h3>
-    </div>
+    <app-user-with-image
+        [name]="data.player.name"
+        [image]="data.player.image"
+        [size]="64"
+    ></app-user-with-image>
 </div>
 
 <form

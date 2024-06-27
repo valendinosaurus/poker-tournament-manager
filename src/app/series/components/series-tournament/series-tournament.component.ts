@@ -13,6 +13,7 @@ import { TEventApiService } from '../../../shared/services/api/t-event-api.servi
 import { Series } from '../../../shared/interfaces/series.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
 import { Entry } from 'src/app/shared/interfaces/entry.interface';
+import { UserWithImageComponent } from '../../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-series-tournament',
@@ -22,7 +23,7 @@ import { Entry } from 'src/app/shared/interfaces/entry.interface';
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [NgIf, NgFor, UserImageRoundComponent, BulletsComponent, DecimalPipe, DatePipe, TEventTypeIconPipe, TimePipe, AsyncPipe]
+    imports: [NgIf, NgFor, UserImageRoundComponent, BulletsComponent, DecimalPipe, DatePipe, TEventTypeIconPipe, TimePipe, AsyncPipe, UserWithImageComponent]
 })
 export class SeriesTournamentComponent implements OnInit {
 

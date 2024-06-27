@@ -19,13 +19,14 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
 import { TimerApiService } from '../../shared/services/api/timer-api.service';
+import { UserWithImageComponent } from '../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-add-rebuy',
     templateUrl: './add-rebuy.component.html',
     styleUrls: ['./add-rebuy.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, JsonPipe, MatFormFieldModule, MatOptionModule, MatSelectModule]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, JsonPipe, MatFormFieldModule, MatOptionModule, MatSelectModule, UserWithImageComponent]
 })
 export class AddRebuyComponent extends BaseAddDialogComponent<AddRebuyComponent, AddRebuyModel> implements OnInit {
 

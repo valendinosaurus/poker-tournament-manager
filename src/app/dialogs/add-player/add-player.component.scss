@@ -9,3 +9,11 @@ td {
 .fa-skull {
     fill: darkred;
 }
+
+div.flex > button:first-child {
+    margin-right: 4px;
+}
+
+div.flex > button:last-child {
+    margin-left: 4px;
+}

@@ -9,6 +9,7 @@ import { TimerStateService } from '../../../../services/timer-state.service';
 import { FormulaPointsPipe } from '../../../../../shared/pipes/formula-points.pipe';
 import { Ranking } from '../../../../../series/interfaces/ranking.interface';
 import { Formula } from '../../../../../shared/interfaces/formula-input.type';
+import { UserWithImageComponent } from '../../../../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-ranking',
@@ -22,6 +23,7 @@ import { Formula } from '../../../../../shared/interfaces/formula-input.type';
         BulletsComponent,
         DecimalPipe,
         FormulaPointsPipe,
+        UserWithImageComponent,
     ],
 })
 export class RankingComponent implements OnInit {

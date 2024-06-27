@@ -20,6 +20,7 @@ import { SeriesMetadata } from '../../../../../shared/interfaces/series.interfac
 import { defer, fromEvent, iif, Observable, of } from 'rxjs';
 import { TournamentApiService } from '../../../../../shared/services/api/tournament-api.service';
 import { NullsafePrimitivePipe } from '../../../../../shared/pipes/nullsafe-primitive.pipe';
+import { UserWithImageComponent } from '../../../../../shared/components/user-with-image/user-with-image.component';
 
 interface Payout {
     rank: number,
@@ -35,7 +36,7 @@ interface Payout {
     templateUrl: './payout-details.component.html',
     styleUrls: ['./payout-details.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe, AsyncPipe, NullsafePrimitivePipe]
+    imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe, AsyncPipe, NullsafePrimitivePipe, UserWithImageComponent]
 })
 export class PayoutDetailsComponent implements OnInit {
 

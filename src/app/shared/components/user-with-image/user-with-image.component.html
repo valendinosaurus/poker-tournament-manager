@@ -1,0 +1,16 @@
+<div class="user-with-image">
+    <app-user-image-round
+        [imageUrl]="image()"
+        [border]="border()"
+        [borderWidth]="borderWidth()"
+        [size]="size()"
+    ></app-user-image-round>
+
+    <span class="flex flex-dir-column">
+        {{ name() }}
+
+        @if (subtitle()) {
+            <small>({{ subtitle() }})</small>
+        }
+    </span>
+</div>

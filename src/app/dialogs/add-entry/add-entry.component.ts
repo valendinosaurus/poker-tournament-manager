@@ -22,13 +22,14 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { AddEntryModel } from './add-entry-model.interface';
 import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
+import { UserWithImageComponent } from '../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-add-re-entry',
     templateUrl: './add-entry.component.html',
     styleUrls: ['./add-entry.component.scss'],
     standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule, JsonPipe, NgTemplateOutlet]
+    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule, JsonPipe, NgTemplateOutlet, UserWithImageComponent]
 })
 export class AddEntryComponent extends BaseAddDialogComponent<AddEntryComponent, AddEntryModel> implements OnInit {
 

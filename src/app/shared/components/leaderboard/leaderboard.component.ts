@@ -7,13 +7,14 @@ import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { Player } from '../../interfaces/player.interface';
 import { UserImageRoundComponent } from '../user-image-round/user-image-round.component';
 import { DecimalPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { UserWithImageComponent } from '../user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-leaderboard',
     templateUrl: './leaderboard.component.html',
     styleUrls: ['./leaderboard.component.scss'],
     standalone: true,
-    imports: [NgIf, NgFor, UserImageRoundComponent, DecimalPipe, JsonPipe]
+    imports: [NgIf, NgFor, UserImageRoundComponent, DecimalPipe, JsonPipe, UserWithImageComponent]
 })
 export class LeaderboardComponent {
 

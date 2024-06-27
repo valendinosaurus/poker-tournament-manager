@@ -126,15 +126,11 @@
                         </td>
                         <td>
                             @if (e.name) {
-                                <div class="flex align-center">
-                                    <app-user-image-round
-                                        [imageUrl]="e.image ? e.image : ''"
-                                        [size]="imageEdgeSize$ | async | nullsafePrimitive:0"
-                                    ></app-user-image-round>
-                                    <p>
-                                        {{ e.name }}
-                                    </p>
-                                </div>
+                                <app-user-with-image
+                                    [name]="e.name"
+                                    [image]="e.image ? e.image : ''"
+                                    [size]="imageEdgeSize$ | async | nullsafePrimitive:0"
+                                ></app-user-with-image>
                             }
                         </td>
                         <td class="bold text-align-right flex justify-end align-center">

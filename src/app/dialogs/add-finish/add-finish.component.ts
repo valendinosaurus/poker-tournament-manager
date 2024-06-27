@@ -21,13 +21,14 @@ import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/
 import { DeleteSeatOpenEvent } from '../../shared/interfaces/util/seat-open-event.interface';
 import { TimerApiService } from '../../shared/services/api/timer-api.service';
 import { TournamentService } from '../../shared/services/util/tournament.service';
+import { UserWithImageComponent } from '../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-add-finish',
     templateUrl: './add-finish.component.html',
     styleUrls: ['./add-finish.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, AsyncPipe, MatFormFieldModule, MatSelectModule]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, AsyncPipe, MatFormFieldModule, MatSelectModule, UserWithImageComponent]
 })
 export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponent, AddFinishModel> implements OnInit {
 

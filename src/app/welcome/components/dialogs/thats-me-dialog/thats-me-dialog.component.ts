@@ -10,13 +10,14 @@ import { FormsModule } from '@angular/forms';
 import { UserImageRoundComponent } from '../../../../shared/components/user-image-round/user-image-round.component';
 import { NgIf } from '@angular/common';
 import { AuthUtilService } from '../../../../shared/services/auth-util.service';
+import { UserWithImageComponent } from '../../../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-thats-me-dialog',
     templateUrl: './thats-me-dialog.component.html',
     styleUrls: ['./thats-me-dialog.component.scss'],
     standalone: true,
-    imports: [UserImageRoundComponent, FormsModule, MatButtonModule, NgIf]
+    imports: [UserImageRoundComponent, FormsModule, MatButtonModule, NgIf, UserWithImageComponent]
 })
 export class ThatsMeDialogComponent {
 

@@ -1,20 +1,12 @@
 @if (users()?.length) {
     <div class="flex flex-dir-column">
         @for (player of users(); track player.id) {
-            <span class="flex user-list-item align-center">
-                <app-user-image-round
-                    [imageUrl]="player.image"
-                    [size]="userImageSize()"
-                ></app-user-image-round>
-
-                <span>
-                    {{ player.name }}
-
-                    @if (player.email) {
-                        <small>({{ player.email }})</small>
-                    }
-                </span>
-            </span>
+            <app-user-with-image
+                [name]="player.name"
+                [subtitle]="player.email"
+                [image]="player.image"
+                [size]="userImageSize()"
+            ></app-user-with-image>
         }
     </div>
 } @else {

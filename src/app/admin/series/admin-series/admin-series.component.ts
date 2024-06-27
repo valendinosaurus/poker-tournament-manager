@@ -22,11 +22,12 @@ import { PlayerApiService } from '../../../shared/services/api/player-api.servic
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { UserWithImageComponent } from '../../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-admin-series',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, MatButtonModule, MatTabsModule, UserImageRoundComponent, RouterLink, MatFormFieldModule, MatOptionModule, MatSelectModule],
+    imports: [CommonModule, AppHeaderComponent, MatButtonModule, MatTabsModule, UserImageRoundComponent, RouterLink, MatFormFieldModule, MatOptionModule, MatSelectModule, UserWithImageComponent],
     templateUrl: './admin-series.component.html',
 })
 export class AdminSeriesComponent implements OnInit {

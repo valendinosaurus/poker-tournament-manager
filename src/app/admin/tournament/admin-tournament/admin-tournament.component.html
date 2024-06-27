@@ -165,11 +165,10 @@
                 <ng-container *ngFor="let player of tournament.players">
                     <tr>
                         <td>
-                            <app-user-image-round [imageUrl]="player.image"></app-user-image-round>
-                        </td>
-                        <td>
-                            {{ player.name }}
-                        </td>
+                            <app-user-with-image
+                                [name]="player.name"
+                                [image]="player.image"
+                            ></app-user-with-image>
                         <td>
                             @if (!tournament.locked) {
                                 <i

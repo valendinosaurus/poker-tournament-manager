@@ -24,13 +24,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
+import { UserWithImageComponent } from '../../shared/components/user-with-image/user-with-image.component';
 
 @Component({
     selector: 'app-add-player',
     templateUrl: './add-player.component.html',
     styleUrls: ['./add-player.component.scss'],
     standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, MatFormFieldModule, MatOptionModule, MatSelectModule]
+    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, MatFormFieldModule, MatOptionModule, MatSelectModule, UserWithImageComponent]
 })
 export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponent, AddPlayerModel> implements OnInit {
 

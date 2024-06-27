@@ -64,13 +64,10 @@
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}
                     </td>
                     <td>
-                    <span class="flex-td">
-                        <app-user-image-round
-                            [imageUrl]="e.image"
-                        ></app-user-image-round>
-
-                        <span>{{ e.name }}</span>
-                    </span>
+                        <app-user-with-image
+                            [name]="e.name"
+                            [image]="e.image"
+                        ></app-user-with-image>
                     </td>
                     <td>
                         @if (!e.isFinished) {

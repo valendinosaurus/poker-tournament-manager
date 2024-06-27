@@ -95,13 +95,11 @@
                 @for (e of finishesToShow(); track e) {
                     <tr>
                         <td>
-                            <span class="flex-td">
-                               <app-user-image-round
-                                   [imageUrl]="e.image"
-                                   [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && myEmail() === e.email) ? 'b-my-user' : 'b-regular'"
-                               ></app-user-image-round>
-                                {{ e.name }}
-                            </span>
+                            <app-user-with-image
+                                [name]="e.name"
+                                [image]="e.image"
+                                [border]="e.isTemp ? 'b-live' : (e.email && e.email.length > 0 && myEmail() === e.email) ? 'b-my-user' : 'b-regular'"
+                            ></app-user-with-image>
                         </td>
                         <td class="t-center">
                             @if (!e.isTemp) {
