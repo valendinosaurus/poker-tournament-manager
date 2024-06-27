@@ -9,20 +9,40 @@
 </h2>
 
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="flexed"
+    (ngSubmit)="onSubmit()"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field>
+        <mat-label>Duration</mat-label>
+        <input
+            type="number"
+            matInput
+            [ngModel]="model.duration()"
+            (ngModelChange)="model.duration.set($event)"
+            name="duration"
+        />
+    </mat-form-field>
+
+    <mat-checkbox
+        [ngModel]="model.endsRebuy()"
+        (ngModelChange)="model.endsRebuy.set($event)"
+        name="endsRebuy"
+    >
+        Ends Rebuy?
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.isChipUp()"
+        (ngModelChange)="model.isChipUp.set($event)"
+        name="isChipUp"
+    >
+        Is Chip-up?
+    </mat-checkbox>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid() || isLoadingAdd"
     >
         @if (data.blindLevel !== null) {
             EDIT
@@ -30,11 +50,19 @@
             CREATE
         }
     </button>
+
+    <button
+        mat-raised-button
+        [disabled]="isLoadingAdd"
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
 </form>
 
-<button
-    mat-raised-button
-    (click)="cancel()"
->
-    CANCEL
-</button>

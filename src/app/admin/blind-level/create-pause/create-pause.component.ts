@@ -1,81 +1,98 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BlindLevelApiService } from '../../../shared/services/api/blind-level-api.service';
-import { take, tap } from 'rxjs/operators';
-import { TriggerService } from '../../../shared/services/util/trigger.service';
+import { catchError, take, tap } from 'rxjs/operators';
 import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
+import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { of } from 'rxjs';
 
 @Component({
     selector: 'app-create-pause',
     templateUrl: './create-pause.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        NgIf,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatInputModule
+    ]
 })
-export class CreatePauseComponent implements OnInit {
-
-    private dialogRef: MatDialogRef<CreatePauseComponent> = inject(MatDialogRef<CreatePauseComponent>);
+export class CreatePauseComponent extends BaseAddDialogComponent<CreatePauseComponent, BlindLevelModel> implements OnInit {
 
     data: {
         blindLevel: BlindLevel | null;
     } = inject(MAT_DIALOG_DATA);
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: BlindLevelModel;
-    fields: FormlyFieldConfig[];
-
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindLevelApiService: BlindLevelApiService = inject(BlindLevelApiService);
-    private triggerService: TriggerService = inject(TriggerService);
 
     ngOnInit(): void {
         this.initModel();
-        this.initFields();
     }
 
     private initModel(): void {
         this.model = {
-            id: this.data?.blindLevel?.id ?? undefined,
-            duration: Math.round(this.data?.blindLevel?.duration ?? 0),
-            sb: 0,
-            bb: 0,
-            ante: 0,
-            btnAnte: 0,
-            isPause: true,
-            isChipUp: this.data?.blindLevel?.isChipUp ?? false,
-            endsRebuy: this.data?.blindLevel?.endsRebuy ?? false
+            id: signal(this.data?.blindLevel?.id ?? undefined),
+            duration: signal(Math.round(this.data?.blindLevel?.duration ?? 0)),
+            sb: signal(0),
+            bb: signal(0),
+            ante: signal(0),
+            btnAnte: signal(0),
+            isPause: signal(true),
+            isChipUp: signal(this.data?.blindLevel?.isChipUp ?? false),
+            endsRebuy: signal(this.data?.blindLevel?.endsRebuy ?? false),
+            isValid: computed(() => true)
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultNumberField('duration', 'Duration', true),
-            this.formlyFieldService.getDefaultCheckboxField('isChipUp', 'Chip-Up?'),
-            this.formlyFieldService.getDefaultCheckboxField('endsRebuy', 'ends rebuy / re-entry?')
-        ];
-    }
+    onSubmit(): void {
+        this.isLoadingAdd = true;
 
-    onSubmit(model: BlindLevelModel): void {
+        const model: BlindLevel = {
+            id: this.model.id() ?? -1,
+            duration: this.model.duration(),
+            sb: this.model.sb(),
+            bb: this.model.bb(),
+            ante: this.model.ante(),
+            btnAnte: this.model.btnAnte(),
+            isPause: this.model.isPause(),
+            isChipUp: this.model.isChipUp(),
+            endsRebuy: this.model.endsRebuy(),
+            position: -1
+        };
+
         if (this.data?.blindLevel) {
             this.blindLevelApiService.put$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         } else {
             this.blindLevelApiService.post$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         }
-    }
-
-    cancel(): void {
-        this.dialogRef.close(false);
     }
 
 }

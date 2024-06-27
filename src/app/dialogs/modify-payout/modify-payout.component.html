@@ -9,18 +9,27 @@
     </div>
 </div>
 
-<form>
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-        (modelChange)="modelChange(model)"
-    ></formly-form>
+<form
+    class="w-100 flexed"
+    (ngSubmit)="onSubmit()"
+>
+    @for (payout of model | keyvalue; track payout) {
+        <mat-form-field>
+            <mat-label>{{ +payout.key + 1 }}</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model[payout.key].payout"
+                (ngModelChange)="modelChange(payout.key, $event)"
+                [disabled]="model[payout.key].isDisabled"
+                [name]="payout.key"
+            />
+        </mat-form-field>
+    }
 
     <button
         mat-raised-button
-        [disabled]="fields.length >= playersLeft"
+        [disabled]="(model | numberOfKeys) >= playersLeft"
         (click)="addPayoutField()"
     >
         Add Payout Step
@@ -33,8 +42,7 @@
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid || toDistribute !== 0"
-        (click)="onSubmit(model)"
+        [disabled]="(model | numberOfKeys) === 0 || toDistribute !== 0"
     >
         ADAPT PAYOUTS
     </button>

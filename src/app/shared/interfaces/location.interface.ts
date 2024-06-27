@@ -1,3 +1,5 @@
+import { Signal, WritableSignal } from '@angular/core';
+
 export interface Location {
     id: number;
     name: string;
@@ -5,6 +7,10 @@ export interface Location {
     locked: boolean;
 }
 
-export interface LocationModel extends Omit<Location, 'id'> {
-    id: number | undefined;
+export interface LocationModel {
+    id: WritableSignal<number | undefined>;
+    name: WritableSignal<string>;
+    image: WritableSignal<string>;
+    locked: WritableSignal<boolean>;
+    isValid: Signal<boolean>;
 }

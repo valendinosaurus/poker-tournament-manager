@@ -9,32 +9,91 @@
 </h2>
 
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="flexed"
+    (ngSubmit)="onSubmit()"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field>
+        <mat-label>Duration</mat-label>
+        <input
+            type="number"
+            matInput
+            [ngModel]="model.duration()"
+            (ngModelChange)="model.duration.set($event)"
+            name="duration"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Small Blinds</mat-label>
+        <input
+            type="number"
+            matInput
+            [ngModel]="model.sb()"
+            (ngModelChange)="model.sb.set($event)"
+            name="sb"
+        />
+
+        <mat-hint *ngIf="model.sb() > model.bb()">
+            Small Blind must be equal or smaller than Big Blind
+        </mat-hint>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Big Blind</mat-label>
+        <input
+            type="number"
+            matInput
+            [ngModel]="model.bb()"
+            (ngModelChange)="model.bb.set($event)"
+            name="bb"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Ante</mat-label>
+        <input
+            type="number"
+            matInput
+            [ngModel]="model.ante()"
+            (ngModelChange)="model.ante.set($event)"
+            name="ante"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Button Ante</mat-label>
+        <input
+            type="number"
+            matInput
+            [ngModel]="model.btnAnte()"
+            (ngModelChange)="model.btnAnte.set($event)"
+            name="btnAnte"
+        />
+    </mat-form-field>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid() || isLoadingAdd"
     >
-        @if (data.blindLevel === null) {
-            CREATE
-        } @else {
+        @if (data.blindLevel !== null) {
             EDIT
+        } @else {
+            CREATE
         }
     </button>
-</form>
 
-<button
-    mat-raised-button
-    (click)="cancel()"
->
-    CANCEL
-</button>
+    <button
+        mat-raised-button
+        [disabled]="isLoadingAdd"
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
+</form>

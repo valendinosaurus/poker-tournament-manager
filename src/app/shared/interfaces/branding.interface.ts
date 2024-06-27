@@ -1,3 +1,5 @@
+import { Signal, WritableSignal } from '@angular/core';
+
 export interface Branding {
     id: number;
     name: string;
@@ -6,6 +8,11 @@ export interface Branding {
     locked: boolean;
 }
 
-export interface BrandingModel extends Omit<Branding, 'id'> {
-    id: number | undefined;
+export interface BrandingModel {
+    id: WritableSignal<number | undefined>;
+    name: WritableSignal<string>;
+    description: WritableSignal<string>;
+    logo: WritableSignal<string>;
+    locked: WritableSignal<boolean>;
+    isValid: Signal<boolean>;
 }

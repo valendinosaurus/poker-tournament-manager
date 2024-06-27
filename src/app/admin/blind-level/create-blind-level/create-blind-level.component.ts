@@ -1,75 +1,99 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BlindLevelApiService } from '../../../shared/services/api/blind-level-api.service';
-import { take, tap } from 'rxjs/operators';
+import { catchError, take, tap } from 'rxjs/operators';
 import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
+import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { of } from 'rxjs';
 
 @Component({
     selector: 'app-create-blind-level',
     templateUrl: './create-blind-level.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        NgIf,
+        MatFormFieldModule,
+        MatInputModule,
+    ]
 })
-export class CreateBlindLevelComponent implements OnInit {
-
-    private dialogRef: MatDialogRef<CreateBlindLevelComponent> = inject(MatDialogRef<CreateBlindLevelComponent>);
+export class CreateBlindLevelComponent extends BaseAddDialogComponent<CreateBlindLevelComponent, BlindLevelModel> implements OnInit {
 
     data: {
         blindLevel: BlindLevel | null;
     } = inject(MAT_DIALOG_DATA);
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: BlindLevelModel;
-    fields: FormlyFieldConfig[];
-
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindLevelApiService: BlindLevelApiService = inject(BlindLevelApiService);
 
     ngOnInit(): void {
         this.initModel();
-        this.initFields();
     }
 
     private initModel(): void {
         this.model = {
-            id: this.data?.blindLevel?.id ?? undefined,
-            duration: Math.round(this.data?.blindLevel?.duration ?? 0),
-            sb: Math.round(this.data?.blindLevel?.sb ?? 0),
-            bb: Math.round(this.data?.blindLevel?.bb ?? 0),
-            ante: Math.round(this.data?.blindLevel?.ante ?? 0),
-            btnAnte: Math.round(this.data?.blindLevel?.btnAnte ?? 0),
-            isPause: false,
-            isChipUp: false,
-            endsRebuy: false
+            id: signal(this.data?.blindLevel?.id ?? undefined),
+            duration: signal(Math.round(this.data?.blindLevel?.duration ?? 0)),
+            sb: signal(Math.round(this.data?.blindLevel?.sb ?? 0)),
+            bb: signal(Math.round(this.data?.blindLevel?.bb ?? 0)),
+            ante: signal(Math.round(this.data?.blindLevel?.ante ?? 0)),
+            btnAnte: signal(Math.round(this.data?.blindLevel?.btnAnte ?? 0)),
+            isPause: signal(false),
+            isChipUp: signal(false),
+            endsRebuy: signal(false),
+            isValid: computed(() =>
+                this.model.duration() > 0 &&
+                this.model.sb() > 0 &&
+                this.model.bb() > 0 &&
+                this.model.bb() > this.model.sb()
+            )
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultNumberField('duration', 'Duration', true),
-            this.formlyFieldService.getDefaultNumberField('sb', 'SB', true),
-            this.formlyFieldService.getDefaultNumberField('bb', 'BB', true),
-            this.formlyFieldService.getDefaultNumberField('ante', 'Ante', true),
-            this.formlyFieldService.getDefaultNumberField('btnAnte', 'Button Ante', true),
-        ];
-    }
+    onSubmit(): void {
+        this.isLoadingAdd = true;
 
-    onSubmit(model: BlindLevelModel): void {
+        const model: BlindLevel = {
+            id: this.model.id() ?? -1,
+            duration: this.model.duration(),
+            sb: this.model.sb(),
+            bb: this.model.bb(),
+            ante: this.model.ante(),
+            btnAnte: this.model.btnAnte(),
+            isPause: false,
+            isChipUp: false,
+            endsRebuy: false,
+            position: -1
+        };
+
         if (this.data?.blindLevel) {
             this.blindLevelApiService.put$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         } else {
             this.blindLevelApiService.post$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         }
     }

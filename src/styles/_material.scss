@@ -47,6 +47,11 @@ mat-dialog-container#draw {
     }
 }
 
+form .mdc-button,
+.mdc-dialog__container .mdc-button {
+    margin-bottom: 12px !important;
+}
+
 .mat-mdc-dialog-surface {
     padding: 32px;
 
@@ -55,14 +60,29 @@ mat-dialog-container#draw {
     }
 
     h2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         color: #222 !important;
         margin-bottom: 20px;
+        margin-top: 0;
         text-align: center;
         padding-bottom: 10px;
         border-bottom: solid 2px black;
 
+        .fa {
+            margin-right: 20px;
+            font-size: 26px;
+        }
+
         @media (max-width: 800px) {
+            font-size: 18px;
             margin-bottom: 12px;
+
+            .fa {
+                margin-right: 12px;
+                font-size: 16px;
+            }
         }
     }
 
@@ -244,4 +264,8 @@ a.link-active {
 
 a.link-active > span {
     color: #00437b !important;
+}
+
+mat-hint, mat-hint * {
+    color: red;
 }

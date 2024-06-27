@@ -2,8 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Branding, BrandingModel } from '../../interfaces/branding.interface';
-import { AuthService } from '@auth0/auth0-angular';
+import { Branding } from '../../interfaces/branding.interface';
 import { switchMap } from 'rxjs/operators';
 import { ServerResponse } from '../../interfaces/server-response';
 import { AuthUtilService } from '../auth-util.service';
@@ -34,7 +33,7 @@ export class BrandingApiService {
         );
     }
 
-    post$(branding: BrandingModel): Observable<ServerResponse> {
+    post$(branding: Branding): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
@@ -46,7 +45,7 @@ export class BrandingApiService {
         );
     }
 
-    put$(branding: BrandingModel): Observable<ServerResponse> {
+    put$(branding: Branding): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({

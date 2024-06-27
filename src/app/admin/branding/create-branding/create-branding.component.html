@@ -8,39 +8,69 @@
 </h2>
 
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="flexed"
+    (ngSubmit)="onSubmit()"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input
+            matInput
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Logo</mat-label>
+        <input
+            matInput
+            [ngModel]="model.logo()"
+            (ngModelChange)="model.logo.set($event)"
+            name="logo"
+        />
+    </mat-form-field>
 
     <h4>Preview</h4>
     <img
         class="preview-image"
-        [src]="model.logo"
+        [src]="model.logo()"
         onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
     />
+
+    <mat-form-field>
+        <mat-label>Description</mat-label>
+        <input
+            matInput
+            [ngModel]="model.description()"
+            (ngModelChange)="model.description.set($event)"
+            name="description"
+        />
+    </mat-form-field>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid() || isLoadingAdd"
     >
-        @if (data.branding === null) {
-            CREATE
-        } @else {
+        @if (data.branding !== null) {
             EDIT
+        } @else {
+            CREATE
         }
     </button>
-</form>
 
-<button
-    mat-raised-button
-    (click)="cancel()"
->
-    CANCEL
-</button>
+    <button
+        mat-raised-button
+        [disabled]="isLoadingAdd"
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
+</form>

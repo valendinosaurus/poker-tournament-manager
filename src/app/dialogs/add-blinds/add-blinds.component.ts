@@ -1,47 +1,49 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Tournament } from '../../shared/interfaces/tournament.interface';
-import { FormlyFieldService } from '../../shared/services/util/formly-field.service';
-import { shareReplay, take, tap } from 'rxjs/operators';
+import { catchError, shareReplay, take, tap } from 'rxjs/operators';
 import { BlindLevelApiService } from '../../shared/services/api/blind-level-api.service';
 import { BlindLevel } from '../../shared/interfaces/blind-level.interface';
 import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FetchService } from '../../shared/services/fetch.service';
 import { BlindLevelTextPipe } from '../../shared/pipes/blind-level-text.pipe';
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { BlindStructure } from '../../shared/interfaces/blind-structure.interface';
 import { BlindStructureApiService } from '../../shared/services/api/blind-structure-api.service';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
+import { AddAddonComponent } from '../add-addon/add-addon.component';
+import { AddBlindsModel } from './add-blinds-model.interface';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
     selector: 'app-add-blinds',
     templateUrl: './add-blinds.component.html',
-    styleUrls: ['./add-blinds.component.scss'],
     standalone: true,
-    imports: [MatRadioModule, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, BlindLevelTextPipe]
+    imports: [
+        MatRadioModule,
+        FormsModule,
+        MatButtonModule,
+        BlindLevelTextPipe,
+        AsyncPipe,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule
+    ]
 })
-export class AddBlindsComponent implements OnInit {
+export class AddBlindsComponent extends BaseAddDialogComponent<AddAddonComponent, AddBlindsModel> implements OnInit {
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: {
-        blindIds: number[] | undefined,
-        parentId: number
-    };
-    fields: FormlyFieldConfig[];
-
-    private dialogRef: MatDialogRef<AddBlindsComponent> = inject(MatDialogRef<AddBlindsComponent>);
     data: {
         tournament: Tournament | undefined,
         structure: BlindStructure | undefined
     } = inject(MAT_DIALOG_DATA);
 
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
@@ -55,6 +57,8 @@ export class AddBlindsComponent implements OnInit {
     durations: number[];
 
     ngOnInit(): void {
+        this.initModel();
+
         const allBlinds$ = this.blindApiService.getAll$().pipe(
             shareReplay(1)
         );
@@ -71,7 +75,6 @@ export class AddBlindsComponent implements OnInit {
                     .filter(b => !b.isPause)
                     .sort((a, b) => a.bb - b.bb)
                     .filter(blind => !base.filter(p => !p.isPause).map(p => p.id).includes(blind.id))
-                    //   .filter(blind => blind.sb > Math.max(...base.map(b => b.sb)))
                     .filter(
                         (level) => {
                             if (+duration === 0) {
@@ -89,9 +92,6 @@ export class AddBlindsComponent implements OnInit {
                     );
 
                 this.durations = Array.from(new Set(blinds.map(b => b.duration)));
-
-                this.initModel();
-                this.initFields();
             })
         ).subscribe();
 
@@ -107,22 +107,28 @@ export class AddBlindsComponent implements OnInit {
 
     private initModel(): void {
         this.model = {
-            blindIds: undefined,
-            parentId: this.data.tournament?.id ?? this.data.structure?.id ?? -1
+            blindIds: signal(undefined),
+            parentId: signal(this.data.tournament?.id ?? this.data.structure?.id ?? -1),
+            isValid: computed(() =>
+                this.model.blindIds() !== undefined &&
+                this.model.blindIds()!.length > 0 &&
+                this.model.parentId() >= 0
+            )
         };
-    }
-
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultMultiSelectField('blindIds', 'Blind Level', true, this.allBlinds)
-        ];
     }
 
     onFilterDurationChange(event: number): void {
         this.filterDurationTrigger$.next(+event);
     }
 
-    onSubmit(model: { blindIds: number[] | undefined, parentId: number }): void {
+    onSubmit(): void {
+        this.isLoadingAdd = true;
+
+        const model = {
+            blindIds: this.model.blindIds(),
+            parentId: this.model.parentId()
+        };
+
         if (model.blindIds && model.parentId && model.parentId >= 0) {
             const base = this.data.tournament?.structure ?? this.data.structure?.structure ?? [];
             const positions = [];
@@ -144,6 +150,12 @@ export class AddBlindsComponent implements OnInit {
                                 blindId: model.blindIds
                             });
                         }
+
+                        this.isLoadingAdd = false;
+                    }),
+                    catchError(() => {
+                        this.isLoadingAdd = false;
+                        return of(null);
                     })
                 ).subscribe();
             }
@@ -158,14 +170,16 @@ export class AddBlindsComponent implements OnInit {
                                 blindId: model.blindIds
                             });
                         }
+
+                        this.isLoadingAdd = false;
+                    }),
+                    catchError(() => {
+                        this.isLoadingAdd = false;
+                        return of(null);
                     })
                 ).subscribe();
             }
         }
-    }
-
-    removeBlind(blindId: number): void {
-        // TODO
     }
 
 }

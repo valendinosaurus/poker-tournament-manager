@@ -1,67 +1,81 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
 import { LocationApiService } from '../../../shared/services/api/location-api.service';
 import { Location, LocationModel } from '../../../shared/interfaces/location.interface';
-import { take, tap } from 'rxjs/operators';
+import { catchError, take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
+import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
+import { CreatePauseComponent } from '../../blind-level/create-pause/create-pause.component';
+import { of } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'app-create-location',
     templateUrl: './create-location.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, MatFormFieldModule, MatInputModule]
 })
-export class CreateLocationComponent implements OnInit {
-
-    private dialogRef: MatDialogRef<CreateLocationComponent> = inject(MatDialogRef<CreateLocationComponent>);
+export class CreateLocationComponent extends BaseAddDialogComponent<CreatePauseComponent, LocationModel> implements OnInit {
 
     data: {
         location: Location | null;
     } = inject(MAT_DIALOG_DATA);
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: LocationModel;
-    fields: FormlyFieldConfig[];
-
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private locationApiService: LocationApiService = inject(LocationApiService);
 
     ngOnInit(): void {
         this.initModel();
-        this.initFields();
     }
 
     private initModel(): void {
         this.model = {
-            id: this.data?.location?.id ?? undefined,
-            name: this.data?.location?.name ?? '',
-            image: this.data?.location?.image ?? '',
-            locked: this.data?.location?.locked ?? false
+            id: signal(this.data?.location?.id ?? undefined),
+            name: signal(this.data?.location?.name ?? ''),
+            image: signal(this.data?.location?.image ?? ''),
+            locked: signal(this.data?.location?.locked ?? false),
+            isValid: computed(() =>
+                this.model.name().length > 0 &&
+                this.model.image().length > 0
+            )
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
-            this.formlyFieldService.getDefaultTextField('image', 'Image', true, 1000),
-        ];
-    }
+    onSubmit(): void {
+        this.isLoadingAdd = true;
+        const model: Location = {
+            id: this.model.id() ?? -1,
+            name: this.model.name(),
+            image: this.model.image(),
+            locked: this.model.locked()
+        };
 
-    onSubmit(model: LocationModel): void {
         if (this.data?.location) {
             this.locationApiService.put$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         } else {
             this.locationApiService.post$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         }
     }

@@ -67,7 +67,7 @@ export class AddAddonComponent extends BaseAddDialogComponent<AddAddonComponent,
                 this.tournamentService.getAddonEvent(playerId)
             ).pipe(
                 take(1),
-                tap((a) => {
+                tap(() => {
                     this.fetchService.trigger();
                     this.isLoadingAdd = false;
                 }),

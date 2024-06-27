@@ -45,7 +45,7 @@ export class BlindLevelTextPipe implements PipeTransform {
         }
 
         if (level.isChipUp) {
-            text += 'CHIP UP';
+            text += ' CHIP UP';
         }
 
         if (level.isChipUp && level.endsRebuy) {

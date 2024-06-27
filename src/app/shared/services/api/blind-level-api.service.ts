@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { BlindLevel, BlindLevelModel } from '../../interfaces/blind-level.interface';
-import { switchMap } from 'rxjs/operators';
+import { BlindLevel } from '../../interfaces/blind-level.interface';
+import { map, switchMap } from 'rxjs/operators';
 import { ServerResponseType } from '../../types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';
 
@@ -29,11 +29,17 @@ export class BlindLevelApiService {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.get<BlindLevel>(
                 `${BACKEND_URL}${this.ENDPOINT}/${id}/${sub}`
-            ))
+            )),
+            map((blindLevel: BlindLevel) => ({
+                ...blindLevel,
+                isPause: Boolean(blindLevel.isPause),
+                isChipUp: Boolean(blindLevel.isChipUp),
+                endsRebuy: Boolean(blindLevel.endsRebuy)
+            }))
         );
     }
 
-    post$(blindLevel: BlindLevelModel): Observable<ServerResponseType> {
+    post$(blindLevel: BlindLevel): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.post<ServerResponseType>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
@@ -45,7 +51,7 @@ export class BlindLevelApiService {
         );
     }
 
-    put$(blindLevel: BlindLevelModel): Observable<ServerResponseType> {
+    put$(blindLevel: BlindLevel): Observable<ServerResponseType> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.put<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({

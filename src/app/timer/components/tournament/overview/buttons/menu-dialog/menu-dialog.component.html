@@ -282,20 +282,42 @@
     <br>
 
     <form
-        [formGroup]="form"
+        class="flexed"
+        (ngSubmit)="applySettings()"
     >
-        <formly-form
-            [form]="form"
-            [fields]="fields"
-            [options]="options"
-            [model]="model"
-        ></formly-form>
+        @if (isProOrAdmin()) {
+            <mat-form-field>
+                <mat-label>Payout Structure</mat-label>
+
+                <mat-select
+                    name="payout"
+                    [ngModel]="model.payout()"
+                    [disabled]="payoutDone() || isPayoutAdapted()"
+                    (selectionChange)="this.model.payout.set($event.value)"
+                >
+                    @for (payout of payoutsForSelect; track payout.value) {
+                        <mat-option [value]="payout.value">
+                            {{ payout.label }}
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        }
+
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input
+                matInput
+                [ngModel]="model.name()"
+                (ngModelChange)="model.name.set($event)"
+                name="name"
+            />
+        </mat-form-field>
 
         <button
             mat-flat-button color="primary"
             type="submit"
-            [disabled]="!form.valid"
-            (click)="applySettings(model)"
+            [disabled]="!model.isValid()"
         >
             APPLY
         </button>

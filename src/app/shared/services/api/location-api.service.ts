@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
-import { Location, LocationModel } from '../../interfaces/location.interface';
+import { Location } from '../../interfaces/location.interface';
 import { switchMap } from 'rxjs/operators';
 import { ServerResponse } from '../../interfaces/server-response';
 import { AuthUtilService } from '../auth-util.service';
@@ -33,7 +33,7 @@ export class LocationApiService {
         );
     }
 
-    post$(location: LocationModel): Observable<ServerResponse> {
+    post$(location: Location): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.post<ServerResponse>(
                 `${BACKEND_URL}${this.ENDPOINT}`,
@@ -45,7 +45,7 @@ export class LocationApiService {
         );
     }
 
-    put$(location: LocationModel): Observable<ServerResponse> {
+    put$(location: Location): Observable<ServerResponse> {
         return this.authUtilService.getSub$().pipe(
             switchMap((sub: string) => this.http.put<ServerResponse>(`${BACKEND_URL}${this.ENDPOINT}`,
                 JSON.stringify({

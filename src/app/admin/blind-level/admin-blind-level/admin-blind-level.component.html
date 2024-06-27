@@ -55,6 +55,20 @@
                     {{ blindLevel.bb | number:'1.0-0' }}
                 </p>
             </span>
+
+            <span>
+                <h4>Ante</h4>
+                <p>
+                    {{ blindLevel.ante | number:'1.0-0' }}
+                </p>
+            </span>
+
+            <span>
+                <h4>Button ante</h4>
+                <p>
+                    {{ blindLevel.btnAnte | number:'1.0-0' }}
+                </p>
+            </span>
         }
 
         @if (blindLevel.isPause) {

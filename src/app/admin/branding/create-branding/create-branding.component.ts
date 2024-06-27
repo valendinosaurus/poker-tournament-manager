@@ -1,69 +1,83 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
 import { Branding, BrandingModel } from '../../../shared/interfaces/branding.interface';
 import { BrandingApiService } from '../../../shared/services/api/branding-api.service';
-import { take, tap } from 'rxjs/operators';
+import { catchError, take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgIf } from '@angular/common';
+import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { of } from 'rxjs';
 
 @Component({
     selector: 'app-create-branding',
     templateUrl: './create-branding.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, MatFormFieldModule, MatInputModule]
 })
-export class CreateBrandingComponent implements OnInit {
-
-    private dialogRef: MatDialogRef<CreateBrandingComponent> = inject(MatDialogRef<CreateBrandingComponent>);
+export class CreateBrandingComponent extends BaseAddDialogComponent<CreateBrandingComponent, BrandingModel> implements OnInit {
 
     data: {
         branding: Branding | null;
     } = inject(MAT_DIALOG_DATA);
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: BrandingModel;
-    fields: FormlyFieldConfig[];
-
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private brandingApiService: BrandingApiService = inject(BrandingApiService);
 
     ngOnInit(): void {
         this.initModel();
-        this.initFields();
     }
 
     private initModel(): void {
         this.model = {
-            id: this.data?.branding?.id ?? undefined,
-            name: this.data?.branding?.name ?? '',
-            logo: this.data?.branding?.logo ?? '',
-            description: this.data?.branding?.description ?? '',
-            locked: this.data?.branding?.locked ?? false
+            id: signal(this.data?.branding?.id ?? undefined),
+            name: signal(this.data?.branding?.name ?? ''),
+            logo: signal(this.data?.branding?.logo ?? ''),
+            description: signal(this.data?.branding?.description ?? ''),
+            locked: signal(this.data?.branding?.locked ?? false),
+            isValid: computed(() =>
+                this.model.name().length > 0 &&
+                this.model.logo().length > 0
+            )
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
-            this.formlyFieldService.getDefaultTextField('logo', 'Logo', true, 1000),
-            this.formlyFieldService.getDefaultTextField('description', 'Description', true, 1000),
-        ];
-    }
+    onSubmit(): void {
+        this.isLoadingAdd = true;
 
-    onSubmit(model: BrandingModel): void {
+        const model: Branding = {
+            id: this.model.id() ?? -1,
+            name: this.model.name(),
+            logo: this.model.logo(),
+            description: this.model.description(),
+            locked: this.model.locked()
+        };
+
         if (this.data?.branding) {
             this.brandingApiService.put$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         } else {
             this.brandingApiService.post$(model).pipe(
                 take(1),
-                tap(() => this.dialogRef.close(true))
+                tap(() => {
+                    this.dialogRef.close(true);
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
             ).subscribe();
         }
     }
