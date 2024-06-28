@@ -1,11 +1,8 @@
 import { Component, inject, OnInit, WritableSignal } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../shared/interfaces/tournament.interface';
 import { SeriesMetadata } from '../../shared/interfaces/series.interface';
 import { Player } from '../../shared/interfaces/player.interface';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormGroup, FormsModule } from '@angular/forms';
-import { FormlyFieldService } from '../../shared/services/util/formly-field.service';
+import { FormsModule } from '@angular/forms';
 import { forkJoin, Observable, of } from 'rxjs';
 import { ServerResponse } from '../../shared/interfaces/server-response';
 import { FinishApiService } from '../../shared/services/api/finish-api.service';
@@ -18,25 +15,29 @@ import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { MatButtonModule } from '@angular/material/button';
 import { TournamentService } from '../../shared/services/util/tournament.service';
 import { TimerStateService } from '../../timer/services/timer-state.service';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
+import { MakeDealModel } from './make-deal-model.interface';
+import { KeyValuePipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'app-make-deal',
     templateUrl: './make-deal.component.html',
     styleUrls: ['./make-deal.component.scss'],
     standalone: true,
-    imports: [FormsModule, FormlyModule, MatButtonModule]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        KeyValuePipe,
+        MatFormFieldModule,
+        MatInputModule
+    ]
 })
-export class MakeDealComponent implements OnInit {
+export class MakeDealComponent extends BaseAddDialogComponent<MakeDealComponent, MakeDealModel> implements OnInit {
 
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
-
-    private dialogRef: MatDialogRef<MakeDealComponent> = inject(MatDialogRef<MakeDealComponent>);
-
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    fields: FormlyFieldConfig[];
-    model: { [key: string]: number } = {};
 
     toDistribute: number = 0;
     rankAfterDeal: number;
@@ -44,7 +45,6 @@ export class MakeDealComponent implements OnInit {
     keys: string[];
 
     private finishApiService: FinishApiService = inject(FinishApiService);
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private fetchService: FetchService = inject(FetchService);
     private tournamentService: TournamentService = inject(TournamentService);
     private rankingService: RankingService = inject(RankingService);
@@ -53,6 +53,7 @@ export class MakeDealComponent implements OnInit {
     private state: TimerStateService = inject(TimerStateService);
 
     ngOnInit(): void {
+        this.model = {};
         this.tournament = this.state.tournament;
         this.metadata = this.state.metadata;
 
@@ -78,7 +79,6 @@ export class MakeDealComponent implements OnInit {
         const remainingPlaces = Array.from({length: noOfRemainingPlaces}, (_, i) => i + 1);
         this.rankAfterDeal = remainingPlaces.reduce((acc, curr) => acc + curr, 0) / remainingPlaces.length;
 
-        this.fields = [];
         this.keys = [];
 
         remainingPlayers.forEach(
@@ -86,17 +86,14 @@ export class MakeDealComponent implements OnInit {
                 const key = player.id.toString();
                 this.keys.push(key);
                 this.model[key] = 0;
-
-                this.fields.push({
-                    ...this.formlyFieldService.getDefaultNumberField(key, player.name, true),
-                });
             });
     }
 
-    modelChange(model: { [key: string]: number }): void {
+    modelChange(key: string, amount: number): void {
         this.total = 0;
+        this.model[key] = amount;
 
-        this.keys.forEach(k => this.total += model[k]);
+        this.keys.forEach(k => this.total += this.model[k]);
     }
 
     distributeEvenly(event: Event): void {
@@ -106,18 +103,19 @@ export class MakeDealComponent implements OnInit {
 
         const even = total / noOfRemainingPlaces;
 
-        this.keys.forEach((key: string) => this.form.get(key)?.patchValue(even));
-
-        this.form.updateValueAndValidity();
+        this.keys.forEach((key: string) => this.model[key] = even);
+        this.total = total;
     }
 
-    onSubmit(model: { [key: string]: number }): void {
+    onSubmit(): void {
+        this.isLoadingAdd = true;
+
         const streams: Observable<ServerResponse>[] = [];
         this.keys.forEach(k => {
             streams.push(
                 this.finishApiService.post$({
                     playerId: +k,
-                    price: model[k],
+                    price: this.model[k],
                     rank: this.rankAfterDeal,
                     tournamentId: this.tournament().id,
                     timestamp: -1,
@@ -127,10 +125,6 @@ export class MakeDealComponent implements OnInit {
 
         forkJoin(streams).pipe(
             take(1),
-            catchError(() => {
-                this.notificationService.error(`Error making Deal`);
-                return of(null);
-            }),
             tap(() => {
                 this.notificationService.success('Deal was made');
             }),
@@ -159,7 +153,7 @@ export class MakeDealComponent implements OnInit {
 
                 this.keys.forEach(k => {
                     const name = this.tournament().players.filter(e => e.id === +k)[0].name;
-                    message += `<br>${name}: ${model[k]}.-`;
+                    message += `<br>${name}: ${this.model[k]}.-`;
                 });
 
                 return this.tEventApiService.post$(this.tournament().id, message, TEventType.DEAL);
@@ -170,7 +164,14 @@ export class MakeDealComponent implements OnInit {
                 if (this.dialogRef) {
                     this.dialogRef.close();
                 }
-            })
+
+                this.isLoadingAdd = false;
+            }),
+            catchError(() => {
+                this.notificationService.error(`Error making Deal`);
+                this.isLoadingAdd = false;
+                return of(null);
+            }),
         ).subscribe();
     }
 

@@ -1,12 +1,10 @@
 import { Component, computed, input, Signal } from '@angular/core';
-import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'app-bullets',
     templateUrl: './bullets.component.html',
     styleUrls: ['./bullets.component.scss'],
-    standalone: true,
-    imports: [NgFor]
+    standalone: true
 })
 export class BulletsComponent {
 

@@ -1,19 +1,41 @@
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="w-800px flexed"
+    (ngSubmit)="onSubmit()"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field>
+        <mat-label>Tournament *</mat-label>
+        <mat-select
+            name="tournamentId"
+            [ngModel]="model.tournamentId()"
+            (selectionChange)="model.tournamentId.set($event.value)"
+        >
+            @for (tournament of allTournaments; track tournament) {
+                <mat-option [value]="tournament.value">
+                    {{ tournament.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid()"
     >
         ADD TOURNAMNET
     </button>
+
+    <button
+        mat-raised-button
+        [disabled]="isLoadingAdd"
+        (click)="closeDialog($event)"
+    >
+        CANCEL
+    </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
 </form>

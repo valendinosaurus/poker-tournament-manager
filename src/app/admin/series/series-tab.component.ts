@@ -12,7 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
@@ -26,8 +26,6 @@ import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/c
         MatButtonModule,
         AsyncPipe,
         DatePipe,
-        NgForOf,
-        NgIf,
         RouterLink
     ]
 })

@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Tournament } from '../../../shared/interfaces/tournament.interface';
-import { JsonPipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,12 +16,10 @@ import { Router } from '@angular/router';
     templateUrl: './copy-tournament.component.html',
     standalone: true,
     imports: [
-        NgIf,
         FormsModule,
         MatFormFieldModule,
         MatInputModule,
         MatDatepickerModule,
-        JsonPipe,
         MatCheckboxModule,
         MatButtonModule
     ]

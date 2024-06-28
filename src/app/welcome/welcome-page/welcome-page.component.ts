@@ -16,7 +16,7 @@ import { PlayerApiService } from '../../shared/services/api/player-api.service';
 import { ConnectionRequestComponent } from '../components/connection-request/connection-request.component';
 import { MatButtonModule } from '@angular/material/button';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { IPayPalConfig, NgxPayPalModule } from 'ngx-paypal';
@@ -30,13 +30,10 @@ import { UserListComponent } from './components/user-list/user-list.component';
     imports: [
         MatDialogModule,
         AppHeaderComponent,
-        NgIf,
         UserImageRoundComponent,
-        NgFor,
         MatButtonModule,
         ConnectionRequestComponent,
         AsyncPipe,
-        JsonPipe,
         NgxPayPalModule,
         UserListComponent
     ]

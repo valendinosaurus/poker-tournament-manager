@@ -18,7 +18,7 @@
             <th>Image</th>
             <th>Name</th>
         </tr>
-        <ng-container *ngFor="let location of locations$ | async">
+        @for (location of locations$ | async; track location.id) {
             <a class="contents" [routerLink]="['/admin/location', location.id]">
                 <tr>
                     <td>
@@ -48,7 +48,7 @@
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>
 

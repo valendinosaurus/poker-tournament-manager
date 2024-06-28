@@ -9,14 +9,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { FormsModule } from '@angular/forms';
-import { JsonPipe, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-edit-player',
     templateUrl: './create-player.component.html',
     styleUrls: ['./create-player.component.scss'],
     standalone: true,
-    imports: [FormsModule, UserImageRoundComponent, MatFormFieldModule, MatInputModule, MatButtonModule, NgIf, JsonPipe]
+    imports: [
+        FormsModule,
+        UserImageRoundComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+    ]
 })
 export class CreatePlayerComponent implements OnInit {
 

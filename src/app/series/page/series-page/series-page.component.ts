@@ -10,7 +10,7 @@ import { SeriesService } from '../../../shared/services/series.service';
 import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
 import { SeriesStatsComponent } from '../../components/series-stats/series-stats.component';
-import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { LeaderboardComponent } from '../../../shared/components/leaderboard/leaderboard.component';
 import { SeriesHeaderComponent } from '../../components/series-header/series-header.component';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
@@ -36,15 +36,12 @@ import { TournamentS } from '../../../shared/interfaces/tournament.interface';
         AppHeaderComponent,
         SeriesHeaderComponent,
         LeaderboardComponent,
-        NgIf,
         SeriesStatsComponent,
-        NgFor,
         SeriesTournamentComponent,
         AsyncPipe,
         MatDialogModule,
         MatButtonModule,
         NullsafePrimitivePipe,
-        JsonPipe
     ]
 })
 export class SeriesPageComponent implements OnInit {

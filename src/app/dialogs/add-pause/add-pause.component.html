@@ -13,29 +13,43 @@
 </mat-radio-group>
 
 <form
-    class="w-800px"
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="w-800px flexed"
+    (ngSubmit)="onSubmit()"
 >
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field>
+        <mat-label>Pause *</mat-label>
+        <mat-select
+            name="blindId"
+            [ngModel]="model.blindId()"
+            (selectionChange)="model.blindId.set($event.value)"
+        >
+            @for (blind of allPauses; track blind) {
+                <mat-option [value]="blind.value">
+                    {{ blind.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid()"
     >
         ADD PAUSE
     </button>
 
     <button
-        mat-raised-button color="primary"
+        mat-raised-button
+        [disabled]="isLoadingAdd"
         (click)="closeDialog($event)"
     >
         CANCEL
     </button>
+
+    @if (isLoadingAdd) {
+        <div class="loading-wrapper">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    }
 </form>

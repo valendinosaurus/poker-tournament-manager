@@ -17,10 +17,18 @@ import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
 
 @Component({
     selector: 'app-assign-blind-structure',
-    standalone: true,
-    imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatSelectModule],
     templateUrl: './assign-blind-structure.component.html',
-    styleUrls: ['./assign-blind-structure.component.scss']
+    styleUrls: ['./assign-blind-structure.component.scss'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatSelectModule
+    ]
 })
 export class AssignBlindStructureComponent {
 

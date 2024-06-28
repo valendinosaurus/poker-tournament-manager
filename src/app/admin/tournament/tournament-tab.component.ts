@@ -2,12 +2,11 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { AuthUtilService } from '../../shared/services/auth-util.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
 import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
-import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AdminTournament } from '../../shared/interfaces/tournament.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -17,14 +16,18 @@ import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/c
     selector: 'app-tournament-tab',
     templateUrl: './tournament-tab.component.html',
     standalone: true,
-    imports: [MatButtonModule, NgFor, RouterLink, NgIf, AsyncPipe, DatePipe]
+    imports: [
+        MatButtonModule,
+        RouterLink,
+        AsyncPipe,
+        DatePipe
+    ]
 })
 export class TournamentTabComponent implements OnInit {
 
     tournaments$: Observable<AdminTournament[]>;
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
-    private authUtilService: AuthUtilService = inject(AuthUtilService);
     private router: Router = inject(Router);
     private dialog: MatDialog = inject(MatDialog);
     private destroyRef: DestroyRef = inject(DestroyRef);

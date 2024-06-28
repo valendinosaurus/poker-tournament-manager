@@ -8,9 +8,239 @@
 </h2>
 
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="flexed"
+    (ngSubmit)="onSubmit()"
 >
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input
+            matInput
+            maxlength="100"
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+            required
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Date</mat-label>
+        <input
+            matInput
+            type="date"
+            [ngModel]="model.date()"
+            (ngModelChange)="model.date.set($event)"
+            name="date"
+            required
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Location</mat-label>
+        <mat-select
+            [ngModel]="model.location()"
+            (selectionChange)="this.model.location.set($event.value)"
+            name="location"
+        >
+            @for (payout of locations$ | async; track payout) {
+                <mat-option [value]="payout.value">
+                    {{ payout.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Max Players</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.maxPlayers()"
+            (ngModelChange)="model.maxPlayers.set($event)"
+            name="maxPlayers"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Start Stack</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.startStack()"
+            (ngModelChange)="model.startStack.set($event)"
+            name="startStack"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Initial Pricepool</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.initialPricePool()"
+            (ngModelChange)="model.initialPricePool.set($event)"
+            name="initialPricePool"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Buy-In</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.buyInAmount()"
+            (ngModelChange)="model.buyInAmount.set($event)"
+            name="buyInAmount"
+        />
+    </mat-form-field>
+
+    <mat-checkbox
+        [ngModel]="model.withReEntry()"
+        (ngModelChange)="model.withReEntry.set($event)"
+        name="withReEntry"
+    >
+        With Re-Entry?
+    </mat-checkbox>
+
+    @if (model.withReEntry()) {
+        <mat-form-field>
+            <mat-label>Number of Re-Entries</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.buyInAmount()"
+                (ngModelChange)="model.buyInAmount.set($event)"
+                name="buyInAmount"
+            />
+        </mat-form-field>
+    }
+
+    <mat-checkbox
+        [ngModel]="model.withRebuy()"
+        (ngModelChange)="model.withRebuy.set($event)"
+        name="withRebuy"
+    >
+        With Rebuy?
+    </mat-checkbox>
+
+    @if (model.withRebuy()) {
+        <mat-form-field>
+            <mat-label>Number of Rebuys</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.noOfRebuys()"
+                (ngModelChange)="model.noOfRebuys.set($event)"
+                name="noOfRebuys"
+            />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Cost Rebuy</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.rebuyAmount()"
+                (ngModelChange)="model.rebuyAmount.set($event)"
+                name="rebuyAmount"
+            />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Stack Rebuy</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.rebuyStack()"
+                (ngModelChange)="model.rebuyStack.set($event)"
+                name="rebuyStack"
+            />
+        </mat-form-field>
+    }
+
+    <mat-checkbox
+        [ngModel]="model.withAddon()"
+        (ngModelChange)="model.withAddon.set($event)"
+        name="withAddon"
+    >
+        With Addon?
+    </mat-checkbox>
+
+    @if (model.withAddon()) {
+        <mat-form-field>
+            <mat-label>Cost Addon</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.addonAmount()"
+                (ngModelChange)="model.addonAmount.set($event)"
+                name="addonAmount"
+            />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Stack Addon</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.addonStack()"
+                (ngModelChange)="model.addonStack.set($event)"
+                name="addonStack"
+            />
+        </mat-form-field>
+    }
+
+    <mat-checkbox
+        [ngModel]="model.withBounty()"
+        (ngModelChange)="model.withBounty.set($event)"
+        name="withBounty"
+    >
+        With Bounty?
+    </mat-checkbox>
+
+    @if (model.withBounty()) {
+        <mat-form-field>
+            <mat-label>Amount Bounty</mat-label>
+            <input
+                matInput
+                type="number"
+                [ngModel]="model.bountyAmount()"
+                (ngModelChange)="model.bountyAmount.set($event)"
+                name="bountyAmount"
+            />
+        </mat-form-field>
+    }
+
+    <mat-form-field>
+        <mat-label>Payout *</mat-label>
+        <mat-select
+            [ngModel]="model.payout()"
+            (selectionChange)="this.model.payout.set($event.value)"
+            name="payout"
+        >
+            @for (payout of allPayouts; track payout) {
+                <mat-option [value]="payout.value">
+                    {{ payout.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Points Formula</mat-label>
+        <mat-select
+            [ngModel]="model.rankFormula()"
+            (selectionChange)="this.model.rankFormula.set($event.value)"
+            name="rankFormula"
+        >
+            @for (formula of formulas$ | async; track formula) {
+                <mat-option [value]="formula.value">
+                    {{ formula.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
     <a
         [routerLink]="['rank-formula']"
         (click)="cancel()"
@@ -18,18 +248,32 @@
         <i class="fa fa-info-circle"></i> Learn more about formulas
     </a>
 
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-checkbox
+        [ngModel]="model.temp()"
+        (ngModelChange)="model.temp.set($event)"
+        name="temp"
+    >
+        Is Test?
+    </mat-checkbox>
+
+    <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+            matInput
+            maxlength="100"
+            [ngModel]="model.password()"
+            (ngModelChange)="model.password.set($event)"
+            name="password"
+        />
+    </mat-form-field>
+
+    <p>This password is used for sharing tournament information with users without login.</p>
 
     <button
         mat-raised-button
         color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid()"
     >
         @if (data.tournament !== null) {
             EDIT

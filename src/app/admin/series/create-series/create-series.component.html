@@ -8,9 +8,73 @@
 </h2>
 
 <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit(model)"
+    class="flexed"
+    (ngSubmit)="onSubmit()"
 >
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input
+            matInput
+            maxlength="100"
+            [ngModel]="model.name()"
+            (ngModelChange)="model.name.set($event)"
+            name="name"
+            required
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Short Description</mat-label>
+        <input
+            matInput
+            maxlength="200"
+            [ngModel]="model.shortDesc()"
+            (ngModelChange)="model.shortDesc.set($event)"
+            name="shortDesc"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Long Description</mat-label>
+        <input
+            matInput
+            maxlength="1000"
+            [ngModel]="model.longDesc()"
+            (ngModelChange)="model.longDesc.set($event)"
+            name="longDesc"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Branding</mat-label>
+        <mat-select
+            [ngModel]="model.branding()"
+            (selectionChange)="this.model.branding.set($event.value)"
+            name="branding"
+        >
+            @for (branding of allBrandings$ | async; track branding) {
+                <mat-option [value]="branding.value">
+                    {{ branding.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Points Formula</mat-label>
+        <mat-select
+            [ngModel]="model.rankFormula()"
+            (selectionChange)="this.model.rankFormula.set($event.value)"
+            name="rankFormula"
+        >
+            @for (formula of formulas$ | async; track formula) {
+                <mat-option [value]="formula.value">
+                    {{ formula.label }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
     <a
         [routerLink]="['rank-formula']"
         (click)="cancel()"
@@ -18,17 +82,126 @@
         <i class="fa fa-info-circle"></i> Learn more about formulas
     </a>
 
-    <formly-form
-        [form]="form"
-        [fields]="fields"
-        [options]="options"
-        [model]="model"
-    ></formly-form>
+    <mat-form-field>
+        <mat-label>% of Pot to Final Tournament</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.percentage()"
+            (ngModelChange)="model.percentage.set($event)"
+            name="percentage"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Max Amount of Pot to Final Tournament</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.maxAmountPerTournament()"
+            (ngModelChange)="model.maxAmountPerTournament.set($event)"
+            name="maxAmountPerTournament"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Number of Tournaments in Series</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.noOfTournaments()"
+            (ngModelChange)="model.noOfTournaments.set($event)"
+            name="noOfTournaments"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Number of Finalists</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.finalists()"
+            (ngModelChange)="model.finalists.set($event)"
+            name="finalists"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+            matInput
+            maxlength="100"
+            [ngModel]="model.password()"
+            (ngModelChange)="model.password.set($event)"
+            name="password"
+        />
+    </mat-form-field>
+
+    <p>This password is used for sharing series information with users without login.</p>
+
+    <mat-form-field>
+        <mat-label>Owner email</mat-label>
+        <input
+            matInput
+            maxlength="200"
+            [ngModel]="model.ownerEmail()"
+            (ngModelChange)="model.ownerEmail.set($event)"
+            name="ownerEmail"
+        />
+    </mat-form-field>
+
+    <mat-checkbox
+        [ngModel]="model.temp()"
+        (ngModelChange)="model.temp.set($event)"
+        name="temp"
+    >
+        Is Test?
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.showPrices()"
+        (ngModelChange)="model.showPrices.set($event)"
+        name="showPrices"
+    >
+        Show Prices in Series overview?
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.showNonItmPlaces()"
+        (ngModelChange)="model.showNonItmPlaces.set($event)"
+        name="showNonItmPlaces"
+    >
+        Show non-ITM places in Series overview?
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.showEliminations()"
+        (ngModelChange)="model.showEliminations.set($event)"
+        name="showEliminations"
+    >
+        Show Eliminations in Series overview?
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.showLiveTicker()"
+        (ngModelChange)="model.showLiveTicker.set($event)"
+        name="showLiveTicker"
+    >
+        Show Live Ticker in Series overview?
+    </mat-checkbox>
+
+    <mat-checkbox
+        [ngModel]="model.showAverageRank()"
+        (ngModelChange)="model.showAverageRank.set($event)"
+        name="showAverageRank"
+    >
+        Show average Rank in Series overview?
+    </mat-checkbox>
 
     <button
         mat-raised-button color="primary"
         type="submit"
-        [disabled]="!form.valid"
+        [disabled]="!model.isValid()"
     >
         @if (data.series === null) {
             CREATE

@@ -16,7 +16,12 @@ import { NotificationService } from '../../../../shared/services/notification.se
     templateUrl: './connect-to-other-user-dialog.component.html',
     styleUrls: ['./connect-to-other-user-dialog.component.scss'],
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule]
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule
+    ]
 })
 export class ConnectToOtherUserDialogComponent {
 

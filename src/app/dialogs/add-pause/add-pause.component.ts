@@ -1,44 +1,44 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormlyFieldService } from '../../shared/services/util/formly-field.service';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BlindLevelApiService } from '../../shared/services/api/blind-level-api.service';
 import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
-import { AuthService } from '@auth0/auth0-angular';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { shareReplay, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { catchError, shareReplay, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlindLevel } from '../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { BlindStructureApiService } from '../../shared/services/api/blind-structure-api.service';
+import { BaseAddDialogComponent } from '../../shared/components/base-add-dialog/base-add-dialog.component';
+import { AddPlayerComponent } from '../add-player/add-player.component';
+import { AddPauseModel } from './add-pause-model.interface';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
     selector: 'app-add-pause',
     templateUrl: './add-pause.component.html',
     styleUrls: ['./add-pause.component.scss'],
     standalone: true,
-    imports: [MatRadioModule, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule]
+    imports: [
+        MatRadioModule,
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule
+    ]
 })
-export class AddPauseComponent implements OnInit {
+export class AddPauseComponent extends BaseAddDialogComponent<AddPlayerComponent, AddPauseModel> implements OnInit {
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: {
-        blindId: number | undefined,
-        parentId: number
-    };
-    fields: FormlyFieldConfig[];
-
-    private dialogRef: MatDialogRef<AddPauseComponent> = inject(MatDialogRef<AddPauseComponent>);
     data: {
         tId: number | undefined,
         sId: number | undefined,
         position: number
     } = inject(MAT_DIALOG_DATA);
 
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private blindApiService: BlindLevelApiService = inject(BlindLevelApiService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
@@ -49,6 +49,8 @@ export class AddPauseComponent implements OnInit {
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
 
     ngOnInit(): void {
+        this.initModel();
+
         const allBlinds$ = this.blindApiService.getAll$().pipe(
             shareReplay(1)
         );
@@ -76,9 +78,6 @@ export class AddPauseComponent implements OnInit {
                             value: b.id
                         })
                     );
-
-                this.initModel();
-                this.initFields();
             })
         ).subscribe();
     }
@@ -93,52 +92,52 @@ export class AddPauseComponent implements OnInit {
 
     private initModel(): void {
         this.model = {
-            blindId: undefined,
-            parentId: this.data.tId ?? this.data.sId ?? -1
+            blindId: signal(undefined),
+            parentId: signal(this.data.tId ?? this.data.sId ?? -1),
+            isValid: computed(() => this.model.blindId() !== undefined)
         };
-    }
-
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultSelectField('blindId', 'Blind Level', true, this.allPauses)
-        ];
     }
 
     onFilterDurationChange(event: number): void {
         this.filterDurationTrigger$.next(event);
     }
 
-    onSubmit(model: { blindId: number | undefined, parentId: number }): void {
-        if (model.blindId && model.parentId && model.parentId >= 0) {
+    onSubmit(): void {
+        if (this.model.blindId() && this.model.parentId() && this.model.parentId() >= 0) {
+            this.isLoadingAdd = true;
 
             if (this.data.tId) {
-                this.tournamentApiService.addPause$(model.blindId, model.parentId, this.data.position).pipe(
+                this.tournamentApiService.addPause$(this.model.blindId()!, this.model.parentId(), this.data.position).pipe(
                     take(1),
                     tap(() => {
                         if (this.dialogRef) {
                             this.dialogRef.close(true);
+                            this.isLoadingAdd = false;
                         }
+                    }),
+                    catchError(() => {
+                        this.isLoadingAdd = false;
+                        return of(null);
                     })
                 ).subscribe();
             }
 
             if (this.data.sId) {
-                this.blindStructureApiService.addPause$(model.blindId, model.parentId, this.data.position).pipe(
+                this.blindStructureApiService.addPause$(this.model.blindId()!, this.model.parentId(), this.data.position).pipe(
                     take(1),
                     tap(() => {
                         if (this.dialogRef) {
                             this.dialogRef.close(true);
+                            this.isLoadingAdd = false;
                         }
+                    }),
+                    catchError(() => {
+                        this.isLoadingAdd = false;
+                        return of(null);
                     })
                 ).subscribe();
             }
         }
-    }
-
-    closeDialog(event: Event): void {
-        event.preventDefault();
-
-        this.dialogRef.close(false);
     }
 
 }

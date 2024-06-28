@@ -1,12 +1,10 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule } from '@angular/forms';
 import { Branding, BrandingModel } from '../../../shared/interfaces/branding.interface';
 import { BrandingApiService } from '../../../shared/services/api/branding-api.service';
 import { catchError, take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
 import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,7 +14,12 @@ import { of } from 'rxjs';
     selector: 'app-create-branding',
     templateUrl: './create-branding.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, MatFormFieldModule, MatInputModule]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule
+    ]
 })
 export class CreateBrandingComponent extends BaseAddDialogComponent<CreateBrandingComponent, BrandingModel> implements OnInit {
 

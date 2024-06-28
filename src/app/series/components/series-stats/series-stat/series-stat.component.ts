@@ -1,13 +1,12 @@
 import { Component, input } from '@angular/core';
 import { SimpleStat } from '../../../../shared/interfaces/simple-stat.interface';
-import { DecimalPipe, NgForOf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { UserImageRoundComponent } from '../../../../shared/components/user-image-round/user-image-round.component';
 
 @Component({
     selector: 'app-series-stat',
     standalone: true,
     imports: [
-        NgForOf,
         UserImageRoundComponent,
         DecimalPipe
     ],

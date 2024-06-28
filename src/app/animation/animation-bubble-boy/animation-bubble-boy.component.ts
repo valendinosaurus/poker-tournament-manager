@@ -1,5 +1,5 @@
 import { Component, effect, input } from '@angular/core';
-import { DecimalPipe, NgIf, NgTemplateOutlet } from '@angular/common';
+import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 
 // @ts-ignore
 import confetti from 'canvas-confetti';
@@ -12,7 +12,6 @@ declare var anime: any;
     standalone: true,
     imports: [
         DecimalPipe,
-        NgIf,
         NgTemplateOutlet,
         RankPipe
     ],

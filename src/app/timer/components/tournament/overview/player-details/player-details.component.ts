@@ -3,7 +3,7 @@ import { Player } from '../../../../../shared/interfaces/player.interface';
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { TimerStateService } from '../../../../services/timer-state.service';
 
 interface Combination {
@@ -25,8 +25,6 @@ interface Combination {
     styles: [':host{display: contents}'],
     standalone: true,
     imports: [
-        NgFor,
-        NgIf,
         UserImageRoundComponent,
         BulletsComponent,
         DecimalPipe,

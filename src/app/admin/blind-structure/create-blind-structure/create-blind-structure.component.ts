@@ -15,7 +15,15 @@ import { take, tap } from 'rxjs/operators';
     templateUrl: './create-blind-structure.component.html',
     styleUrls: ['./create-blind-structure.component.scss'],
     standalone: true,
-    imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, UserImageRoundComponent]
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        UserImageRoundComponent
+    ]
 })
 export class CreateBlindStructureComponent implements OnInit {
 

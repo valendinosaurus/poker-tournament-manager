@@ -1,6 +1,7 @@
 import { Branding } from './branding.interface';
 import { Tournament, TournamentS } from './tournament.interface';
 import { RankFormula } from './rank-formula.interface';
+import { Signal, WritableSignal } from '@angular/core';
 
 export interface SeriesBase {
     id: number;
@@ -40,6 +41,31 @@ export interface SeriesModel extends Omit<Series, 'id' | 'rankFormula' | 'brandi
     branding: number;
     finalTournament: number;
     rankFormula: number;
+}
+
+export interface CreateSeriesModel {
+    id: WritableSignal<number | undefined>;
+    name: WritableSignal<string>;
+    shortDesc: WritableSignal<string>;
+    longDesc: WritableSignal<string>;
+    branding: WritableSignal<number>;
+    finalTournament: WritableSignal<number>;
+    rankFormula: WritableSignal<number>;
+    ftFormula: WritableSignal<number>;
+    percentage: WritableSignal<number>;
+    maxAmountPerTournament: WritableSignal<number>;
+    noOfTournaments: WritableSignal<number>;
+    finalists: WritableSignal<number>;
+    password: WritableSignal<string>;
+    temp: WritableSignal<boolean>;
+    locked: WritableSignal<boolean>;
+    ownerEmail: WritableSignal<string>;
+    showPrices: WritableSignal<boolean>;
+    showNonItmPlaces: WritableSignal<boolean>;
+    showEliminations: WritableSignal<boolean>;
+    showLiveTicker: WritableSignal<boolean>;
+    showAverageRank: WritableSignal<boolean>;
+    isValid: Signal<boolean>;
 }
 
 export interface SeriesMetadata {

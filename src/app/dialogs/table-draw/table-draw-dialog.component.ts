@@ -10,14 +10,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TableDrawStateComponent } from '../../shared/components/table-draw-state/table-draw-state.component';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-table-draw-dialog',
     templateUrl: './table-draw-dialog.component.html',
     styleUrls: ['./table-draw-dialog.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, TableDrawStateComponent, NgFor, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule]
+    imports: [
+        MatButtonModule,
+        TableDrawStateComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatSelectModule,
+        MatOptionModule
+    ]
 })
 export class TableDrawDialogComponent implements OnInit {
 

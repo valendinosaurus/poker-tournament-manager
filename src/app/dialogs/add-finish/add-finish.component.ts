@@ -1,6 +1,5 @@
 import { Component, computed, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { RankingService } from '../../shared/services/util/ranking.service';
@@ -10,7 +9,7 @@ import { ConductedFinish } from '../../shared/interfaces/util/conducted-finish.i
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ConductedElimination } from '../../shared/interfaces/util/conducted-elimination.interface';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AddFinishModel } from './add-finish-model.interface';
 import { TimerStateService } from '../../timer/services/timer-state.service';
@@ -28,7 +27,16 @@ import { UserWithImageComponent } from '../../shared/components/user-with-image/
     templateUrl: './add-finish.component.html',
     styleUrls: ['./add-finish.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, AsyncPipe, MatFormFieldModule, MatSelectModule, UserWithImageComponent]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        UserImageRoundComponent,
+        DatePipe,
+        AsyncPipe,
+        MatFormFieldModule,
+        MatSelectModule,
+        UserWithImageComponent
+    ]
 })
 export class AddFinishComponent extends BaseAddDialogComponent<AddFinishComponent, AddFinishModel> implements OnInit {
 

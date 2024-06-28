@@ -18,8 +18,9 @@
         <mat-label>Blind Levels *</mat-label>
         <mat-select
             name="blindIds"
+            [ngModel]="model.blindIds()"
             multiple
-            (selectionChange)="this.model.blindIds.set($event.value)"
+            (selectionChange)="model.blindIds.set($event.value)"
         >
             @for (blind of allBlinds; track blind) {
                 <mat-option [value]="blind.value">

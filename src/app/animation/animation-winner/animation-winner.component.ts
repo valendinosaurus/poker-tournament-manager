@@ -1,5 +1,5 @@
 import { Component, Input, input, OnChanges, signal, SimpleChanges } from '@angular/core';
-import { DecimalPipe, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { DecimalPipe, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { of, range, Subject, Subscription } from 'rxjs';
 import { concatMap, delay, tap } from 'rxjs/operators';
 
@@ -14,7 +14,6 @@ declare var anime: any;
     standalone: true,
     imports: [
         DecimalPipe,
-        NgIf,
         NgTemplateOutlet,
         NgStyle
     ],

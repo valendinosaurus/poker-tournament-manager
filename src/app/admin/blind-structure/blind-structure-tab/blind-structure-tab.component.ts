@@ -8,10 +8,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { CreateBlindStructureComponent } from '../create-blind-structure/create-blind-structure.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-blind-structure-tab',
@@ -20,9 +20,7 @@ import { CreateBlindStructureComponent } from '../create-blind-structure/create-
     imports: [
         MatButtonModule,
         RouterLink,
-        NgFor,
-        AsyncPipe,
-        NgIf
+        AsyncPipe
     ]
 })
 export class BlindStructureTabComponent implements OnInit {

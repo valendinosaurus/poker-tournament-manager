@@ -19,9 +19,16 @@ import { ThatsMeDialogComponent } from '../../../welcome/components/dialogs/that
 
 @Component({
     selector: 'app-admin-player',
+    templateUrl: './admin-player.component.html',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, RouterLink, MatButtonModule, MatTabsModule, UserImageRoundComponent],
-    templateUrl: './admin-player.component.html'
+    imports: [
+        CommonModule,
+        AppHeaderComponent,
+        RouterLink,
+        MatButtonModule,
+        MatTabsModule,
+        UserImageRoundComponent
+    ]
 })
 export class AdminPlayerComponent implements OnInit {
 

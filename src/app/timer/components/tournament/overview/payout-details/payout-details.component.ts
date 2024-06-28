@@ -12,7 +12,7 @@ import { ConfirmationDialogComponent } from '../../../../../dialogs/confirmation
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { FetchService } from '../../../../../shared/services/fetch.service';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { Tournament } from '../../../../../shared/interfaces/tournament.interface';
@@ -36,7 +36,15 @@ interface Payout {
     templateUrl: './payout-details.component.html',
     styleUrls: ['./payout-details.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButtonModule, MatTooltipModule, NgFor, UserImageRoundComponent, DecimalPipe, AsyncPipe, NullsafePrimitivePipe, UserWithImageComponent]
+    imports: [
+        MatButtonModule,
+        MatTooltipModule,
+        UserImageRoundComponent,
+        DecimalPipe,
+        AsyncPipe,
+        NullsafePrimitivePipe,
+        UserWithImageComponent
+    ]
 })
 export class PayoutDetailsComponent implements OnInit {
 
@@ -193,7 +201,9 @@ export class PayoutDetailsComponent implements OnInit {
 
         payouts.sort((a, b) => a.rank - b.rank);
 
-        return payouts;
+        console.log(payouts);
+
+        return payouts.filter(p => +p.price > 0);
     }
 
     editPayouts(): void {

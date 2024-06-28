@@ -8,7 +8,7 @@ import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
 import { CreateTournamentComponent } from '../create-tournament/create-tournament.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AsyncPipe, DatePipe, DecimalPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { AppHeaderComponent } from '../../../shared/components/app-header/app-header.component';
 import { User } from '@auth0/auth0-angular';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -37,14 +37,11 @@ import { UserWithImageComponent } from '../../../shared/components/user-with-ima
     imports: [
         RouterLink,
         AsyncPipe,
-        JsonPipe,
         MatDialogModule,
-        NgIf,
         AppHeaderComponent,
         DatePipe,
         MatTabsModule,
         UserImageRoundComponent,
-        NgForOf,
         MatSidenavModule,
         MatButtonModule,
         DecimalPipe,

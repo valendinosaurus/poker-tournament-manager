@@ -1,6 +1,5 @@
 import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { EntryApiService } from '../../shared/services/api/entry-api.service';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
@@ -15,7 +14,7 @@ import { TEventApiService } from '../../shared/services/api/t-event-api.service'
 import { TEventType } from '../../shared/enums/t-event-type.enum';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
-import { DatePipe, JsonPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
@@ -29,7 +28,17 @@ import { UserWithImageComponent } from '../../shared/components/user-with-image/
     templateUrl: './add-entry.component.html',
     styleUrls: ['./add-entry.component.scss'],
     standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, DatePipe, MatFormFieldModule, MatOptionModule, MatSelectModule, JsonPipe, NgTemplateOutlet, UserWithImageComponent]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        UserImageRoundComponent,
+        DatePipe,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule,
+        NgTemplateOutlet,
+        UserWithImageComponent
+    ]
 })
 export class AddEntryComponent extends BaseAddDialogComponent<AddEntryComponent, AddEntryModel> implements OnInit {
 

@@ -96,7 +96,7 @@
 
         @if (isProOrAdmin() && isRebuyPhaseFinished()) {
             <div class="action">
-                <h5>Make Deal</h5>
+                <h5>Make Deal {{ isTournamentFinished() }} , {{ isTournamentLocked() }} , {{ isITM() }}</h5>
                 <button
                     mat-flat-button
                     class="main"

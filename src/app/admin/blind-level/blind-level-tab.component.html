@@ -36,9 +36,10 @@
 
         <mat-radio-group [ngModel]="type" (ngModelChange)="filterDuration($event)">
             <mat-radio-button value="-1">ALL</mat-radio-button>
-            <ng-container *ngFor="let d of durations$ | async">
+
+            @for (d of durations$ | async; track d) {
                 <mat-radio-button [value]="d">{{ d }} min</mat-radio-button>
-            </ng-container>
+            }
         </mat-radio-group>
     </div>
 </div>

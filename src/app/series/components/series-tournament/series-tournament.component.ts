@@ -1,9 +1,9 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
 import { SeriesTournament } from '../../interfaces/series-tournament.interface';
 import { TEventTypeIconPipe } from '../../../shared/pipes/t-event-type-icon.pipe';
 import { BulletsComponent } from '../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { AsyncPipe, DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { TEvent } from '../../../shared/interfaces/t-event.interface';
 import { interval, Observable } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
@@ -23,7 +23,16 @@ import { UserWithImageComponent } from '../../../shared/components/user-with-ima
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [NgIf, NgFor, UserImageRoundComponent, BulletsComponent, DecimalPipe, DatePipe, TEventTypeIconPipe, TimePipe, AsyncPipe, UserWithImageComponent]
+    imports: [
+        UserImageRoundComponent,
+        BulletsComponent,
+        DecimalPipe,
+        DatePipe,
+        TEventTypeIconPipe,
+        TimePipe,
+        AsyncPipe,
+        UserWithImageComponent
+    ]
 })
 export class SeriesTournamentComponent implements OnInit {
 

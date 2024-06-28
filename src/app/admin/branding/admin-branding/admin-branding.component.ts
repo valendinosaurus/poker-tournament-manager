@@ -17,7 +17,12 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
     selector: 'app-admin-branding',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, MatButtonModule, RouterLink],
+    imports: [
+        CommonModule,
+        AppHeaderComponent,
+        MatButtonModule,
+        RouterLink
+    ],
     templateUrl: './admin-branding.component.html',
 })
 export class AdminBrandingComponent implements OnInit {

@@ -27,7 +27,18 @@ import { UserWithImageComponent } from '../../../shared/components/user-with-ima
 @Component({
     selector: 'app-admin-series',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, MatButtonModule, MatTabsModule, UserImageRoundComponent, RouterLink, MatFormFieldModule, MatOptionModule, MatSelectModule, UserWithImageComponent],
+    imports: [
+        CommonModule,
+        AppHeaderComponent,
+        MatButtonModule,
+        MatTabsModule,
+        UserImageRoundComponent,
+        RouterLink,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule,
+        UserWithImageComponent
+    ],
     templateUrl: './admin-series.component.html',
 })
 export class AdminSeriesComponent implements OnInit {

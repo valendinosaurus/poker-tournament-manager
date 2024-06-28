@@ -78,7 +78,6 @@ export class ModifyPayoutComponent extends BaseAddDialogComponent<ModifyPayoutCo
     }
 
     modelChange(key: string, amount: number): void {
-        console.log('model change', key, amount);
         this.model[key].payout = amount;
         this.total = 0;
 
@@ -87,14 +86,11 @@ export class ModifyPayoutComponent extends BaseAddDialogComponent<ModifyPayoutCo
             this.total += +this.model[k].payout;
         });
 
-        console.log(this.total);
         this.toDistribute = this.data.pricepool - this.total;
     }
 
     onSubmit(): void {
         const model = this.model;
-
-        console.log(model);
 
         const payouts: number[] = [];
         const keys = Object.keys(model);

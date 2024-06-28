@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../shared/services/notification.service';
 import { ConnectionRequestState } from '../../shared/enums/connection-request-state.enum';
@@ -20,7 +19,13 @@ import { ConnectionRequestState } from '../../shared/enums/connection-request-st
     templateUrl: './map-player.component.html',
     styleUrls: ['./map-player.component.scss'],
     standalone: true,
-    imports: [FormsModule, NgIf, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatButtonModule]
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule
+    ]
 })
 export class MapPlayerComponent implements OnInit {
 
@@ -35,6 +40,7 @@ export class MapPlayerComponent implements OnInit {
     private fetchService: FetchService = inject(FetchService);
     private notificationService: NotificationService = inject(NotificationService);
 
+    // TODO signal
     allMappablePlayers: Player[];
 
     model: WritableSignal<Player>;

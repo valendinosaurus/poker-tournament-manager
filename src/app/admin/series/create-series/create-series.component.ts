@@ -1,114 +1,129 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { SeriesApiService } from '../../../shared/services/api/series-api.service';
 import { BrandingApiService } from '../../../shared/services/api/branding-api.service';
 import { Branding } from '../../../shared/interfaces/branding.interface';
-import { take, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { TriggerService } from '../../../shared/services/util/trigger.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { Series, SeriesModel } from '../../../shared/interfaces/series.interface';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
+import { CreateSeriesModel, Series, SeriesModel } from '../../../shared/interfaces/series.interface';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AsyncPipe } from '@angular/common';
 import { RankingService } from '../../../shared/services/util/ranking.service';
 import { RouterLink } from '@angular/router';
+import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
+import { Observable } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'app-create-series',
     templateUrl: './create-series.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, RouterLink]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        RouterLink,
+        MatFormFieldModule,
+        MatInputModule,
+        AsyncPipe,
+        MatOptionModule,
+        MatSelectModule,
+        MatCheckboxModule
+    ]
 })
-export class CreateSeriesComponent implements OnInit {
-
-    private dialogRef: MatDialogRef<CreateSeriesComponent> = inject(MatDialogRef<CreateSeriesComponent>);
+export class CreateSeriesComponent extends BaseAddDialogComponent<CreateSeriesComponent, CreateSeriesModel> implements OnInit {
 
     data: {
         series: Series | null;
     } = inject(MAT_DIALOG_DATA);
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: SeriesModel;
-    fields: FormlyFieldConfig[];
     sub: string;
 
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
     private brandingApiService: BrandingApiService = inject(BrandingApiService);
     private triggerService: TriggerService = inject(TriggerService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private rankingService: RankingService = inject(RankingService);
 
-    allBrandings: { label: string, value: number }[];
+    allBrandings$: Observable<{ label: string, value: number }[]>;
+    formulas$: Observable<{ label: string, value: number | null }[]>;
 
     ngOnInit(): void {
-        this.brandingApiService.getAll$().pipe(
+        this.initModel();
+
+        this.formulas$ = this.rankingService.getFormulasForSelect$();
+
+        this.allBrandings$ = this.brandingApiService.getAll$().pipe(
             takeUntilDestroyed(this.destroyRef),
-            tap((brandings: Branding[]) => {
-                this.allBrandings = brandings.map(b => ({
+            map((brandings: Branding[]) => brandings.map(b => ({
                     label: b.name,
                     value: b.id
-                }));
-                this.initModel();
-                this.initFields();
-            })
-        ).subscribe();
-
+                }))
+            )
+        );
     }
 
     private initModel(): void {
         this.model = {
-            id: this.data?.series?.id ?? undefined,
-            name: this.data?.series?.name ?? '',
-            shortDesc: this.data?.series?.shortDesc ?? '',
-            longDesc: this.data?.series?.longDesc ?? '',
-            branding: this.data?.series?.branding.id ?? 0,
-            finalTournament: this.data?.series?.finalTournament.id ?? 0,
-            rankFormula: this.data?.series?.rankFormula.id ?? 0,
-            ftFormula: this.data?.series?.ftFormula ?? 0,
-            percentage: this.data?.series?.percentage ?? 0,
-            maxAmountPerTournament: this.data?.series?.maxAmountPerTournament ?? 0,
-            noOfTournaments: this.data?.series?.noOfTournaments ?? 0,
-            finalists: this.data?.series?.finalists ?? 0,
-            password: this.data?.series?.password ?? '',
-            temp: this.data?.series?.temp ?? false,
-            locked: false,
-            ownerEmail: this.data?.series?.ownerEmail ?? '',
-            showPrices: this.data?.series?.showPrices ?? true,
-            showNonItmPlaces: this.data?.series?.showNonItmPlaces ?? true,
-            showEliminations: this.data?.series?.showEliminations ?? true,
-            showLiveTicker: this.data?.series?.showLiveTicker ?? true,
-            showAverageRank: this.data?.series?.showAverageRank ?? true,
+            id: signal(this.data?.series?.id ?? undefined),
+            name: signal(this.data?.series?.name ?? ''),
+            shortDesc: signal(this.data?.series?.shortDesc ?? ''),
+            longDesc: signal(this.data?.series?.longDesc ?? ''),
+            branding: signal(this.data?.series?.branding.id ?? 0),
+            finalTournament: signal(this.data?.series?.finalTournament.id ?? 0),
+            rankFormula: signal(this.data?.series?.rankFormula.id ?? 0),
+            ftFormula: signal(this.data?.series?.ftFormula ?? 0),
+            percentage: signal(this.data?.series?.percentage ?? 0),
+            maxAmountPerTournament: signal(this.data?.series?.maxAmountPerTournament ?? 0),
+            noOfTournaments: signal(this.data?.series?.noOfTournaments ?? 0),
+            finalists: signal(this.data?.series?.finalists ?? 0),
+            password: signal(this.data?.series?.password ?? ''),
+            temp: signal(this.data?.series?.temp ?? false),
+            locked: signal(false),
+            ownerEmail: signal(this.data?.series?.ownerEmail ?? ''),
+            showPrices: signal(this.data?.series?.showPrices ?? true),
+            showNonItmPlaces: signal(this.data?.series?.showNonItmPlaces ?? true),
+            showEliminations: signal(this.data?.series?.showEliminations ?? true),
+            showLiveTicker: signal(this.data?.series?.showLiveTicker ?? true),
+            showAverageRank: signal(this.data?.series?.showAverageRank ?? true),
+            isValid: computed(() =>
+                this.model.name().length > 0
+            )
         };
     }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
-            this.formlyFieldService.getDefaultTextField('shortDesc', 'Short Description', true, 200),
-            this.formlyFieldService.getDefaultTextField('longDesc', 'Long Description', true, 1000),
-            this.formlyFieldService.getDefaultSelectField('branding', 'Branding', true, this.allBrandings),
-            this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect$()),
-            this.formlyFieldService.getDefaultNumberField('ftFormula', 'Formula: Final Table', true),
-            this.formlyFieldService.getDefaultNumberField('percentage', '% of Pot into Final Tournament', true),
-            this.formlyFieldService.getDefaultNumberField('maxAmountPerTournament', 'Cap per Tournament', true),
-            this.formlyFieldService.getDefaultNumberField('noOfTournaments', 'Number of Tournaments', true),
-            this.formlyFieldService.getDefaultNumberField('finalists', 'Number of Finalists', true),
-            this.formlyFieldService.getDefaultTextField('password', 'Password', false, 1000),
-            this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Series?'),
-            this.formlyFieldService.getDefaultCheckboxField('showPrices', 'Show Prices in Leaderboard?', true),
-            this.formlyFieldService.getDefaultCheckboxField('showNonItmPlaces', 'Show Places not ITM?', true),
-            this.formlyFieldService.getDefaultCheckboxField('showEliminations', 'Show Eliminations?', true),
-            this.formlyFieldService.getDefaultCheckboxField('showLiveTicker', 'Show Live Ticker?', true),
-            this.formlyFieldService.getDefaultCheckboxField('showAverageRank', 'Show Average Rank?', true),
-            this.formlyFieldService.getDefaultTextField('ownerEmail', 'Owner\'s Email', false, 200),
-        ];
-    }
+    onSubmit(): void {
+        this.isLoadingAdd = true;
 
-    onSubmit(model: SeriesModel): void {
+        const model: SeriesModel = {
+            id: this.model.id(),
+            name: this.model.name(),
+            shortDesc: this.model.shortDesc(),
+            longDesc: this.model.longDesc(),
+            branding: this.model.branding(),
+            finalTournament: this.model.finalTournament(),
+            rankFormula: this.model.rankFormula(),
+            ftFormula: this.model.ftFormula(),
+            percentage: this.model.percentage(),
+            maxAmountPerTournament: this.model.maxAmountPerTournament(),
+            noOfTournaments: this.model.noOfTournaments(),
+            finalists: this.model.finalists(),
+            password: this.model.password(),
+            temp: this.model.temp(),
+            locked: this.model.locked(),
+            ownerEmail: this.model.ownerEmail(),
+            showPrices: this.model.showPrices(),
+            showNonItmPlaces: this.model.showNonItmPlaces(),
+            showEliminations: this.model.showEliminations(),
+            showLiveTicker: this.model.showLiveTicker(),
+            showAverageRank: this.model.showAverageRank()
+        };
+
         if (this.data?.series) {
             this.seriesApiService.put$(model).pipe(
                 take(1),

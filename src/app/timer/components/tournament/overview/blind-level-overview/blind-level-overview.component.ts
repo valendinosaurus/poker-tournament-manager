@@ -12,7 +12,7 @@ import {
 import { BlindLevel } from '../../../../../shared/interfaces/blind-level.interface';
 import { BlindLevelTextPipe } from '../../../../../shared/pipes/blind-level-text.pipe';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DecimalPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { RouterLink } from '@angular/router';
@@ -24,14 +24,11 @@ import { TournamentSettings } from '../../../../../shared/interfaces/tournament-
     styles: [':host{display: contents}'],
     standalone: true,
     imports: [
-        NgIf,
         MatTooltipModule,
-        NgFor,
         DecimalPipe,
         BlindLevelTextPipe,
         MatButtonModule,
         RouterLink,
-        JsonPipe,
     ],
 })
 export class BlindLevelOverviewComponent implements OnInit {

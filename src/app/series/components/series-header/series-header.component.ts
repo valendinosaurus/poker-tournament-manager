@@ -1,6 +1,5 @@
 import { Component, input } from '@angular/core';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { JsonPipe } from '@angular/common';
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 import { FormulaToImagePipe } from '../../../shared/pipes/formula-to-image.pipe';
 
@@ -12,7 +11,10 @@ import { FormulaToImagePipe } from '../../../shared/pipes/formula-to-image.pipe'
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [UserImageRoundComponent, JsonPipe, FormulaToImagePipe]
+    imports: [
+        UserImageRoundComponent,
+        FormulaToImagePipe
+    ]
 })
 export class SeriesHeaderComponent {
 

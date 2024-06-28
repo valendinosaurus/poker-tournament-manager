@@ -4,7 +4,7 @@ import { RankingService } from '../../../../../shared/services/util/ranking.serv
 import { EntryType } from '../../../../../shared/enums/entry-type.enum';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { UserImageRoundComponent } from '../../../../../shared/components/user-image-round/user-image-round.component';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { TimerStateService } from '../../../../services/timer-state.service';
 import { FormulaPointsPipe } from '../../../../../shared/pipes/formula-points.pipe';
 import { Ranking } from '../../../../../series/interfaces/ranking.interface';
@@ -17,8 +17,6 @@ import { UserWithImageComponent } from '../../../../../shared/components/user-wi
     styles: [':host{display: contents}'],
     standalone: true,
     imports: [
-        NgIf,
-        NgFor,
         UserImageRoundComponent,
         BulletsComponent,
         DecimalPipe,

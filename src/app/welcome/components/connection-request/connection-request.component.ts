@@ -7,7 +7,6 @@ import { ConnectionRequestState } from '../../../shared/enums/connection-request
 import { MatDialog } from '@angular/material/dialog';
 import { MapPlayerComponent } from '../../../dialogs/map-player/map-player.component';
 import { DEFAULT_DIALOG_POSITION } from '../../../shared/const/app.const';
-import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
@@ -15,7 +14,6 @@ import { NotificationService } from '../../../shared/services/notification.servi
     templateUrl: './connection-request.component.html',
     styleUrls: ['./connection-request.component.scss'],
     standalone: true,
-    imports: [NgSwitch, NgSwitchCase, NgIf]
 })
 export class ConnectionRequestComponent {
 

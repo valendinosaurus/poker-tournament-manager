@@ -17,7 +17,12 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
     selector: 'app-admin-location',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, MatButtonModule, RouterLink],
+    imports: [
+        CommonModule,
+        AppHeaderComponent,
+        MatButtonModule,
+        RouterLink
+    ],
     templateUrl: './admin-location.component.html',
 })
 export class AdminLocationComponent implements OnInit {

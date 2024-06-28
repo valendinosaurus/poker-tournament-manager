@@ -28,7 +28,8 @@
                     <th class="center"><small>Points</small></th>
                 }
             </tr>
-            <ng-container *ngFor="let e of missingRanks()">
+
+            @for (e of missingRanks(); track e) {
                 <tr class="opaque">
                     <td>
                         <span class="flex-td">
@@ -62,8 +63,9 @@
                         </td>
                     }
                 </tr>
-            </ng-container>
-            <ng-container *ngFor="let e of ranking()">
+            }
+
+            @for (e of ranking(); track e) {
                 <tr>
                     <td>
                         <app-user-with-image
@@ -105,7 +107,7 @@
                         </td>
                     }
                 </tr>
-            </ng-container>
+            }
         </table>
 
         <div id="bottomr"></div>

@@ -77,9 +77,10 @@ export class TimerStateService {
     isTournamentLocked = computed(() => Boolean(this.tournament().locked));
     isITM = computed(() => {
         const remaining = this.tournament().players.length - this.tournament().finishes.length;
-        const paidPlaces = this.rankingService.getPayoutById(this.tournament().payout).length;
+        const paidPlaces = (this.tournament().adaptedPayout ??
+            this.rankingService.getPayoutById(this.tournament().payout)).length;
 
-        return remaining < paidPlaces && this.tournament().players.length > 0
+        return remaining <= paidPlaces && this.tournament().players.length > 0
             && this.tournament().players.length > paidPlaces;
     });
 

@@ -23,11 +23,11 @@
                 (selectionChange)="selectPlayer($event.value)"
                 name="model"
             >
-                <ng-container *ngFor="let p of allMappablePlayers">
+                @for (p of allMappablePlayers; track p.id) {
                     <mat-option [value]="p">
                         {{ p.name }}
                     </mat-option>
-                </ng-container>
+                }
             </mat-select>
         </mat-form-field>
     }

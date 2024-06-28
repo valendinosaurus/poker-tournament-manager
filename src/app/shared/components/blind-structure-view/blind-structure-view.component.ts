@@ -1,6 +1,6 @@
 import { Component, computed, EventEmitter, inject, input, model, Output } from '@angular/core';
 import { BlindLevel } from '../../interfaces/blind-level.interface';
-import { DecimalPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { TimePipe } from '../../pipes/time.pipe';
 import {
     BlindStructureEstimatedDurationComponent
@@ -17,11 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
     standalone: true,
     imports: [
         DecimalPipe,
-        NgFor,
-        NgIf,
         TimePipe,
         BlindStructureEstimatedDurationComponent,
-        JsonPipe,
         CdkDropList,
         CdkDrag,
         MatButtonModule

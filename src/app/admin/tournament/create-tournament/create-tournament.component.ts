@@ -1,55 +1,56 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyFieldConfig, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
-import { FormlyFieldService } from '../../../shared/services/util/formly-field.service';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TournamentApiService } from '../../../shared/services/api/tournament-api.service';
 import { RankingService } from '../../../shared/services/util/ranking.service';
-import { catchError, take, tap } from 'rxjs/operators';
+import { catchError, map, take, tap } from 'rxjs/operators';
 import { LocationApiService } from '../../../shared/services/api/location-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
-import { Tournament, TournamentModel } from '../../../shared/interfaces/tournament.interface';
+import { AsyncPipe } from '@angular/common';
+import { CreateTournamentModel, Tournament, TournamentModel } from '../../../shared/interfaces/tournament.interface';
 import { TriggerService } from '../../../shared/services/util/trigger.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { RouterLink } from '@angular/router';
+import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'app-create-tournament',
     templateUrl: './create-tournament.component.html',
     standalone: true,
     imports: [
-        NgIf,
         FormsModule,
-        ReactiveFormsModule,
         MatDialogModule,
-        FormlyModule,
         MatButtonModule,
         MatStepperModule,
         MatDatepickerModule,
-        RouterLink
+        RouterLink,
+        MatFormFieldModule,
+        MatInputModule,
+        AsyncPipe,
+        MatOptionModule,
+        MatSelectModule,
+        MatCheckboxModule
     ],
 })
-export class CreateTournamentComponent implements OnInit {
-
-    private dialogRef: MatDialogRef<CreateTournamentComponent> = inject(MatDialogRef<CreateTournamentComponent>);
+export class CreateTournamentComponent extends BaseAddDialogComponent<CreateTournamentComponent, CreateTournamentModel> implements OnInit {
 
     data: {
         tournament: Tournament | null;
     } = inject(MAT_DIALOG_DATA);
 
-    form = new FormGroup({});
-    options: FormlyFormOptions = {};
-    model: TournamentModel;
-    fields: FormlyFieldConfig[];
+    allPayouts: { label: string, value: number }[] = [];
+    formulas$: Observable<{ label: string, value: number | null }[]>;
+    locations$: Observable<{ label: string, value: number }[]>;
 
-    allLocations: { label: string, value: number }[];
-
-    private formlyFieldService: FormlyFieldService = inject(FormlyFieldService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private rankingService: RankingService = inject(RankingService);
     private locationService: LocationApiService = inject(LocationApiService);
@@ -58,42 +59,96 @@ export class CreateTournamentComponent implements OnInit {
     private notificationService: NotificationService = inject(NotificationService);
 
     ngOnInit(): void {
-        this.locationService.getAll$().pipe(
+        this.initModel();
+
+        this.allPayouts = this.rankingService.getAllPayoutsForSelect();
+        this.formulas$ = this.rankingService.getFormulasForSelect$();
+
+        this.locations$ = this.locationService.getAll$().pipe(
             takeUntilDestroyed(this.destroyRef),
+            map((locations) =>
+                locations.map(l => ({label: l.name, value: l.id}))
+            ),
             tap((locations) => {
-                this.allLocations = locations.map(l => ({label: l.name, value: l.id}));
-                this.initModel();
-                this.initFields();
+                this.model.location.set(locations[0].value);
             })
-        ).subscribe();
+        );
 
     }
 
     private initModel(): void {
         this.model = {
-            id: this.data?.tournament?.id ?? undefined,
-            name: this.data?.tournament?.name ?? '',
-            date: this.data?.tournament?.date ? new Date(this.data.tournament.date).toISOString() : new Date().toISOString(),
-            maxPlayers: this.data?.tournament?.maxPlayers ?? 0,
-            startStack: this.data?.tournament?.startStack ?? 0,
-            initialPricePool: this.data?.tournament?.initialPricePool ?? 0,
-            buyInAmount: this.data?.tournament?.buyInAmount ?? 0,
-            noOfRebuys: this.data?.tournament?.noOfRebuys ?? 0,
-            rebuyAmount: this.data?.tournament?.rebuyAmount ?? 0,
-            addonStack: this.data?.tournament?.addonStack ?? 0,
-            noOfReEntries: this.data?.tournament?.noOfReEntries ?? 0,
-            addonAmount: this.data?.tournament?.addonAmount ?? 0,
-            withRebuy: this.data?.tournament?.withRebuy ?? false,
-            withAddon: this.data?.tournament?.withAddon ?? false,
-            withReEntry: this.data?.tournament?.withReEntry ?? false,
-            rebuyStack: this.data?.tournament?.rebuyStack ?? 0,
-            withBounty: this.data?.tournament?.withBounty ?? false,
-            bountyAmount: this.data?.tournament?.bountyAmount ?? 0,
-            payout: this.data?.tournament?.payout ?? 0,
-            rankFormula: this.data?.tournament?.rankFormula?.id ?? null,
-            location: this.data?.tournament?.location ?? this.allLocations[0].value,
-            temp: this.data?.tournament?.temp ?? false,
-            password: '',
+            id: signal(this.data?.tournament?.id ?? undefined),
+            name: signal(this.data?.tournament?.name ?? ''),
+            date: signal(this.data?.tournament?.date
+                ? this.getDateString(new Date(this.data.tournament.date))
+                : this.getDateString(new Date())
+            ),
+            //date: signal(this.data?.tournament?.date ? new Date(this.data.tournament.date).toISOString() : new Date().toISOString()),
+            maxPlayers: signal(this.data?.tournament?.maxPlayers ?? 0),
+            startStack: signal(this.data?.tournament?.startStack ?? 0),
+            initialPricePool: signal(this.data?.tournament?.initialPricePool ?? 0),
+            buyInAmount: signal(this.data?.tournament?.buyInAmount ?? 0),
+            withReEntry: signal(this.data?.tournament?.withReEntry ?? false),
+            noOfReEntries: signal(this.data?.tournament?.noOfReEntries ?? 0),
+            withRebuy: signal(this.data?.tournament?.withRebuy ?? false),
+            noOfRebuys: signal(this.data?.tournament?.noOfRebuys ?? 0),
+            rebuyAmount: signal(this.data?.tournament?.rebuyAmount ?? 0),
+            rebuyStack: signal(this.data?.tournament?.rebuyStack ?? 0),
+            withAddon: signal(this.data?.tournament?.withAddon ?? false),
+            addonAmount: signal(this.data?.tournament?.addonAmount ?? 0),
+            addonStack: signal(this.data?.tournament?.addonStack ?? 0),
+            withBounty: signal(this.data?.tournament?.withBounty ?? false),
+            bountyAmount: signal(this.data?.tournament?.bountyAmount ?? 0),
+            payout: signal(this.data?.tournament?.payout ?? 0),
+            rankFormula: signal(this.data?.tournament?.rankFormula?.id ?? null),
+            location: signal(this.data?.tournament?.location ?? -1),
+            temp: signal(this.data?.tournament?.temp ?? false),
+            password: signal(this.data?.tournament?.password ?? ''),
+            isValid: computed(() =>
+                this.model.name().length > 0
+                && this.model.date().length > 0
+                && this.model.payout() >= 0
+                && this.model.location() >= 0
+            )
+        };
+    }
+
+    private getDateString(date: Date): string {
+        console.log(date);
+        const month = (date.getMonth() + 1).toString();
+        const day = date.getDate().toString();
+
+        return `${date.getFullYear()}-${month.length === 1 ? '0' : ''}${month}-${day.length === 1 ? '0' : ''}${day}`;
+    }
+
+    onSubmit(): void {
+        this.isLoadingAdd = true;
+
+        const model: TournamentModel = {
+            id: this.model.id(),
+            name: this.model.name(),
+            date: new Date(this.model.date()).toISOString(),
+            maxPlayers: this.model.maxPlayers(),
+            startStack: this.model.startStack(),
+            initialPricePool: this.model.initialPricePool(),
+            buyInAmount: this.model.buyInAmount(),
+            noOfRebuys: this.model.noOfRebuys(),
+            rebuyAmount: this.model.rebuyAmount(),
+            rebuyStack: this.model.rebuyStack(),
+            noOfReEntries: this.model.noOfReEntries(),
+            addonStack: this.model.addonStack(),
+            addonAmount: this.model.addonAmount(),
+            withRebuy: this.model.withRebuy(),
+            withAddon: this.model.withAddon(),
+            withReEntry: this.model.withReEntry(),
+            withBounty: this.model.withBounty(),
+            bountyAmount: this.model.bountyAmount(),
+            payout: this.model.payout(),
+            rankFormula: this.model.rankFormula(),
+            location: this.model.location(),
+            temp: this.model.temp(),
+            password: this.model.password(),
             locked: false,
             adaptedPayout: undefined,
             settings: {
@@ -105,68 +160,7 @@ export class CreateTournamentComponent implements OnInit {
                 showCondensedBlinds: false
             }
         };
-    }
 
-    private initFields(): void {
-        this.fields = [
-            this.formlyFieldService.getDefaultTextField('name', 'Name', true, 100),
-            this.formlyFieldService.getDefaultDateField('date', 'Date', true),
-            this.formlyFieldService.getDefaultNumberField('maxPlayers', 'max Players', true),
-            this.formlyFieldService.getDefaultNumberField('buyInAmount', 'buy-in', true),
-            this.formlyFieldService.getDefaultNumberField('startStack', 'start stack', true),
-            this.formlyFieldService.getDefaultCheckboxField('withReEntry', 'with Re-Entry'),
-            {
-                className: 'sub-group',
-                fieldGroup: [
-                    this.formlyFieldService.getDefaultNumberField('noOfReEntries', 'no of re-entries', true),
-                ],
-                expressions: {
-                    hide: () => !this.model.withReEntry
-                }
-            },
-            this.formlyFieldService.getDefaultCheckboxField('withRebuy', 'with Rebuy'),
-            {
-                className: 'sub-group',
-                fieldGroup: [
-                    this.formlyFieldService.getDefaultNumberField('noOfRebuys', 'no of rebuys', true),
-                    this.formlyFieldService.getDefaultNumberField('rebuyAmount', 'rebuy amount', true),
-                    this.formlyFieldService.getDefaultNumberField('rebuyStack', 'rebuy stack', true),
-                ],
-                expressions: {
-                    hide: () => !this.model.withRebuy
-                }
-            },
-            this.formlyFieldService.getDefaultCheckboxField('withAddon', 'with Addon'),
-            {
-                className: 'sub-group',
-                fieldGroup: [
-                    this.formlyFieldService.getDefaultNumberField('addonAmount', 'addon amount', true),
-                    this.formlyFieldService.getDefaultNumberField('addonStack', 'addon chips', true),
-                ],
-                expressions: {
-                    hide: () => !this.model.withAddon
-                }
-            },
-            this.formlyFieldService.getDefaultCheckboxField('withBounty', 'with Bounty'),
-            {
-                className: 'sub-group',
-                fieldGroup: [
-                    this.formlyFieldService.getDefaultNumberField('bountyAmount', 'bounty amount', true),
-                ],
-                expressions: {
-                    hide: () => !this.model.withBounty
-                }
-            },
-            this.formlyFieldService.getDefaultNumberField('initialPricePool', 'initial pricepool', true),
-            this.formlyFieldService.getDefaultSelectField('payout', 'payout structure', true, this.rankingService.getAllPayoutsForSelect()),
-            this.formlyFieldService.getDefaultSelectField('rankFormula', 'rankFormula', false, this.rankingService.getFormulasForSelect$()),
-            this.formlyFieldService.getDefaultSelectField('location', 'location', true, this.allLocations),
-            this.formlyFieldService.getDefaultCheckboxField('temp', 'Test Tournament?'),
-            this.formlyFieldService.getDefaultTextField('password', 'Password', false, 100),
-        ];
-    }
-
-    onSubmit(model: TournamentModel): void {
         if (this.data?.tournament) {
             this.tournamentApiService.put$(model).pipe(
                 take(1),

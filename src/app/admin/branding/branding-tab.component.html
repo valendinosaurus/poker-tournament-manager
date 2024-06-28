@@ -19,7 +19,8 @@
             <th>Name</th>
             <th>Description</th>
         </tr>
-        <ng-container *ngFor="let branding of brandings$ | async">
+
+        @for (branding of brandings$ | async; track branding.id) {
             <a class="contents" [routerLink]="['/admin/branding', branding.id]">
                 <tr>
                     <td>
@@ -48,6 +49,6 @@
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>

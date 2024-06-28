@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule } from '@angular/forms';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
 import { Tournament } from '../../shared/interfaces/tournament.interface';
@@ -15,7 +14,6 @@ import { FinishApiService } from '../../shared/services/api/finish-api.service';
 import { Finish } from '../../shared/interfaces/finish.interface';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor, NgIf } from '@angular/common';
 import { TournamentService } from '../../shared/services/util/tournament.service';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 import { AddPlayerModel } from './add-player-model.interface';
@@ -31,7 +29,15 @@ import { UserWithImageComponent } from '../../shared/components/user-with-image/
     templateUrl: './add-player.component.html',
     styleUrls: ['./add-player.component.scss'],
     standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgFor, UserImageRoundComponent, MatFormFieldModule, MatOptionModule, MatSelectModule, UserWithImageComponent]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        UserImageRoundComponent,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule,
+        UserWithImageComponent
+    ]
 })
 export class AddPlayerComponent extends BaseAddDialogComponent<AddPlayerComponent, AddPlayerModel> implements OnInit {
 

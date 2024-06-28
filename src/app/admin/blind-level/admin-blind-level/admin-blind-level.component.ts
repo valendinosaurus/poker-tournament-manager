@@ -18,9 +18,15 @@ import { CreatePauseComponent } from '../create-pause/create-pause.component';
 
 @Component({
     selector: 'app-admin-blind-level',
+    templateUrl: './admin-blind-level.component.html',
     standalone: true,
-    imports: [CommonModule, AppHeaderComponent, MatButtonModule, UserImageRoundComponent, RouterLink],
-    templateUrl: './admin-blind-level.component.html'
+    imports: [
+        CommonModule,
+        AppHeaderComponent,
+        MatButtonModule,
+        UserImageRoundComponent,
+        RouterLink
+    ]
 })
 export class AdminBlindLevelComponent implements OnInit {
 

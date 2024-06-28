@@ -33,7 +33,7 @@ import { ButtonsComponent } from './buttons/buttons.component';
 import { BlindLevelTextPipe } from '../../../../shared/pipes/blind-level-text.pipe';
 import { TimePipe } from '../../../../shared/pipes/time.pipe';
 import { LeaderboardInfoComponent } from './leaderboard/leaderboard-info.component';
-import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { SeriesMetadata } from '../../../../shared/interfaces/series.interface';
 import { DEFAULT_DIALOG_POSITION } from '../../../../shared/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
@@ -47,7 +47,6 @@ import { FetchService } from '../../../../shared/services/fetch.service';
     imports: [
         BlindLevelOverviewComponent,
         PlayerDetailsComponent,
-        NgIf,
         RankingComponent,
         LeaderboardInfoComponent,
         CountdownComponent,

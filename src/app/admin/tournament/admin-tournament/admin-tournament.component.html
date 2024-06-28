@@ -162,7 +162,7 @@
             </div>
 
             <table class="admin-table">
-                <ng-container *ngFor="let player of tournament.players">
+                @for (player of tournament.players; track player.id) {
                     <tr>
                         <td>
                             <app-user-with-image
@@ -178,7 +178,7 @@
                             }
                         </td>
                     </tr>
-                </ng-container>
+                }
             </table>
         </mat-tab>
 

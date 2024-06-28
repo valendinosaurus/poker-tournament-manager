@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { combineLatest, defer, iif, Observable, of, ReplaySubject } from 'rxjs';
 import { BlindStructure } from '../../../shared/interfaces/blind-structure.interface';
 import { User } from '@auth0/auth0-angular';
@@ -29,10 +29,8 @@ import { BlindLevel } from '../../../shared/interfaces/blind-level.interface';
         RouterLink,
         AppHeaderComponent,
         AsyncPipe,
-        NgFor,
         MatButtonModule,
-        BlindStructureViewComponent,
-        NgIf
+        BlindStructureViewComponent
     ]
 })
 export class AdminBlindStructureComponent implements OnInit {

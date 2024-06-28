@@ -3,8 +3,6 @@ import { enableProdMode, importProvidersFrom, inject, LOCALE_ID } from '@angular
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 import { AuthGuard, AuthModule } from '@auth0/auth0-angular';
-import { FormlyMaterialModule } from '@ngx-formly/material';
-import { FormlyModule } from '@ngx-formly/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { CanActivateFn, provideRouter, Router, Routes, withRouterConfig } from '@angular/router';
@@ -31,7 +29,6 @@ import { AuthInterceptorService } from './app/shared/interceptors/auth-intercept
 import { AuthUtilService } from './app/shared/services/auth-util.service';
 import { combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {
     BlindStructureTabComponent
@@ -200,10 +197,7 @@ bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(
             BrowserModule,
-            FormlyModule.forRoot(),
-            FormlyMaterialModule,
             MatNativeDateModule,
-            FormlyMatDatepickerModule,
             AuthModule.forRoot({
                     domain: 'https://pokermanager.eu.auth0.com',
                     clientId: 'NVE3fYgdsVQUYnJ0IEnDobzkKKaaBw9j',

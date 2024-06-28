@@ -17,7 +17,12 @@ import { CreatePlayerComponent } from '../../../dialogs/create-player/create-pla
 @Component({
     selector: 'app-players-tab',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, RouterLink, UserImageRoundComponent],
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        RouterLink,
+        UserImageRoundComponent
+    ],
     templateUrl: './players-tab.component.html',
 })
 export class PlayersTabComponent implements OnInit {

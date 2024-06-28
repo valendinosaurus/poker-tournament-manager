@@ -6,7 +6,7 @@ import { TournamentApiService } from '../../../../shared/services/api/tournament
 import { ActivatedRoute } from '@angular/router';
 import { FetchService } from '../../../../shared/services/fetch.service';
 import { OverviewComponent } from '../overview/overview.component';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PlayerApiService } from '../../../../shared/services/api/player-api.service';
@@ -19,7 +19,6 @@ import { AuthUtilService } from '../../../../shared/services/auth-util.service';
     templateUrl: './timer-page.component.html',
     standalone: true,
     imports: [
-        NgIf,
         OverviewComponent,
         AsyncPipe,
         MatDialogModule

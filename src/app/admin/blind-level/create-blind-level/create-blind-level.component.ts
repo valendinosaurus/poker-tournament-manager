@@ -5,7 +5,6 @@ import { catchError, take, tap } from 'rxjs/operators';
 import { BlindLevel, BlindLevelModel } from '../../../shared/interfaces/blind-level.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
 import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,7 +17,6 @@ import { of } from 'rxjs';
     imports: [
         FormsModule,
         MatButtonModule,
-        NgIf,
         MatFormFieldModule,
         MatInputModule,
     ]

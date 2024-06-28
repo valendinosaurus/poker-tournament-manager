@@ -6,6 +6,7 @@ import { Elimination } from './elimination.interface';
 import { TEvent } from './t-event.interface';
 import { TournamentSettings } from './tournament-settings.interface';
 import { RankFormula } from './rank-formula.interface';
+import { Signal, WritableSignal } from '@angular/core';
 
 export interface TournamentBase {
     id: number;
@@ -77,4 +78,31 @@ export interface TournamentModel extends Omit<Tournament, omitted> {
     id: number | undefined;
     date: string;
     rankFormula: number | null;
+}
+
+export interface CreateTournamentModel {
+    id: WritableSignal<number | undefined>;
+    name: WritableSignal<string>;
+    date: WritableSignal<string>;
+    maxPlayers: WritableSignal<number>;
+    startStack: WritableSignal<number>;
+    initialPricePool: WritableSignal<number>;
+    buyInAmount: WritableSignal<number>;
+    noOfRebuys: WritableSignal<number>;
+    rebuyAmount: WritableSignal<number>;
+    addonStack: WritableSignal<number>;
+    noOfReEntries: WritableSignal<number>;
+    addonAmount: WritableSignal<number>;
+    withRebuy: WritableSignal<boolean>;
+    withAddon: WritableSignal<boolean>;
+    withReEntry: WritableSignal<boolean>;
+    rebuyStack: WritableSignal<number>;
+    withBounty: WritableSignal<boolean>;
+    bountyAmount: WritableSignal<number>;
+    payout: WritableSignal<number>;
+    rankFormula: WritableSignal<number | null>;
+    location: WritableSignal<number>;
+    temp: WritableSignal<boolean>;
+    password: WritableSignal<string>;
+    isValid: Signal<boolean>;
 }

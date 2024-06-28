@@ -1,12 +1,10 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule } from '@angular/forms';
 import { LocationApiService } from '../../../shared/services/api/location-api.service';
 import { Location, LocationModel } from '../../../shared/interfaces/location.interface';
 import { catchError, take, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
 import { BaseAddDialogComponent } from '../../../shared/components/base-add-dialog/base-add-dialog.component';
 import { CreatePauseComponent } from '../../blind-level/create-pause/create-pause.component';
 import { of } from 'rxjs';
@@ -17,7 +15,12 @@ import { MatInputModule } from '@angular/material/input';
     selector: 'app-create-location',
     templateUrl: './create-location.component.html',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, MatFormFieldModule, MatInputModule]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule
+    ]
 })
 export class CreateLocationComponent extends BaseAddDialogComponent<CreatePauseComponent, LocationModel> implements OnInit {
 

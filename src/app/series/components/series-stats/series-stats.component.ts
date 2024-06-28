@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { SimpleStat } from '../../../shared/interfaces/simple-stat.interface';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
-import { DecimalPipe, NgFor } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { SeriesStatComponent } from './series-stat/series-stat.component';
 import { Series } from '../../../shared/interfaces/series.interface';
 
@@ -13,7 +13,11 @@ import { Series } from '../../../shared/interfaces/series.interface';
         '../../page/series-page/series-page.component.scss'
     ],
     standalone: true,
-    imports: [NgFor, UserImageRoundComponent, DecimalPipe, SeriesStatComponent]
+    imports: [
+        UserImageRoundComponent,
+        DecimalPipe,
+        SeriesStatComponent
+    ]
 })
 export class SeriesStatsComponent {
 

@@ -9,7 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DEFAULT_DIALOG_POSITION } from '../../shared/const/app.const';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { AsyncPipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 
@@ -18,7 +18,13 @@ import { RouterLink } from '@angular/router';
     templateUrl: './location-tab.component.html',
     styleUrls: ['./location-tab.component.scss'],
     standalone: true,
-    imports: [CreateLocationComponent, AsyncPipe, DecimalPipe, MatButtonModule, NgForOf, NgIf, RouterLink]
+    imports: [
+        CreateLocationComponent,
+        AsyncPipe,
+        DecimalPipe,
+        MatButtonModule,
+        RouterLink
+    ]
 })
 export class LocationTabComponent implements OnInit {
 

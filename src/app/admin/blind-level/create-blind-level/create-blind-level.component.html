@@ -33,9 +33,11 @@
             name="sb"
         />
 
-        <mat-hint *ngIf="model.sb() > model.bb()">
-            Small Blind must be equal or smaller than Big Blind
-        </mat-hint>
+        @if (model.sb() > model.bb()) {
+            <mat-hint>
+                Small Blind must be equal or smaller than Big Blind
+            </mat-hint>
+        }
     </mat-form-field>
 
     <mat-form-field>

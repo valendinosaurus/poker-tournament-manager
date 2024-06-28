@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RankingService } from '../../../../../shared/services/util/ranking.service';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/table-draw-dialog.component';
-import { AsyncPipe, DecimalPipe, DOCUMENT, NgForOf, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, DecimalPipe, DOCUMENT, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
@@ -42,11 +42,9 @@ declare var anime: any;
     styleUrls: ['./buttons.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
         MatButtonModule,
         MatTooltipModule,
         DecimalPipe,
-        NgForOf,
         NgStyle,
         NgTemplateOutlet,
         AnimationBubbleBoyComponent,

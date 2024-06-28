@@ -1,6 +1,5 @@
 import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { FetchService } from '../../shared/services/fetch.service';
@@ -10,7 +9,7 @@ import { defer, iif, of } from 'rxjs';
 import { NotificationService } from '../../shared/services/notification.service';
 import { TournamentService } from '../../shared/services/util/tournament.service';
 import { UserImageRoundComponent } from '../../shared/components/user-image-round/user-image-round.component';
-import { DatePipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { TimerStateService } from '../../timer/services/timer-state.service';
 import { AddRebuyModel } from './add-rebuy-model.interface';
@@ -26,7 +25,16 @@ import { UserWithImageComponent } from '../../shared/components/user-with-image/
     templateUrl: './add-rebuy.component.html',
     styleUrls: ['./add-rebuy.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, MatButtonModule, NgIf, NgFor, UserImageRoundComponent, DatePipe, JsonPipe, MatFormFieldModule, MatOptionModule, MatSelectModule, UserWithImageComponent]
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        UserImageRoundComponent,
+        DatePipe,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule,
+        UserWithImageComponent
+    ]
 })
 export class AddRebuyComponent extends BaseAddDialogComponent<AddRebuyComponent, AddRebuyModel> implements OnInit {
 

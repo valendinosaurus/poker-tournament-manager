@@ -9,7 +9,13 @@ import { AnimationWinnerComponent } from '../../animation/animation-winner/anima
 @Component({
     selector: 'app-playground-page',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, AnimationSeatOpenComponent, AnimationBubbleBoyComponent, AnimationWinnerComponent],
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        AnimationSeatOpenComponent,
+        AnimationBubbleBoyComponent,
+        AnimationWinnerComponent
+    ],
     templateUrl: './playground-page.component.html',
     styleUrls: ['./playground-page.component.scss']
 })

@@ -29,7 +29,7 @@ import { AddPlayerComponent } from '../../../../../../dialogs/add-player/add-pla
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { TournamentApiService } from '../../../../../../shared/services/api/tournament-api.service';
 import { FetchService } from '../../../../../../shared/services/fetch.service';
-import { AsyncPipe, DOCUMENT, NgIf } from '@angular/common';
+import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../shared/const/app.const';
 import { RouterLink } from '@angular/router';
@@ -52,7 +52,6 @@ import { MatSelectModule } from '@angular/material/select';
     styleUrls: ['./menu-dialog.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
         MatButtonModule,
         RouterLink,
         FormsModule,
@@ -181,23 +180,6 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
 
         this.payoutCache = this.tournament().payout;
     }
-
-    // private initFields(): void {
-    //
-    //     this.fields = [];
-    //
-    //     if (this.isProOrAdmin()) {
-    //         this.fields.push(this.formlyFieldService.getDefaultSelectField(
-    //             'payout',
-    //             'Payout structure',
-    //             true,
-    //             payoutsForSelect,
-    //             payoutDone || this.isPayoutAdapted()
-    //         ));
-    //     }
-    //
-    //     this.fields.push(this.formlyFieldService.getDefaultTextField('name', 'Name', false));
-    // }
 
     addRebuy(): void {
         const dialogRef = this.dialog.open(AddRebuyComponent, {

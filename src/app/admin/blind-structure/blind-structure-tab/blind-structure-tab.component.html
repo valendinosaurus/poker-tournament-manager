@@ -19,7 +19,8 @@
             <th>No of Blind Levels</th>
             <th>Actions</th>
         </tr>
-        <ng-container *ngFor="let blindStructure of blindStructures$ | async">
+
+        @for (blindStructure of blindStructures$ | async; track blindStructure.id) {
             <a class="contents" [routerLink]="['/admin/blind-structure', blindStructure.id]">
                 <tr>
                     <td>
@@ -42,6 +43,6 @@
                     </td>
                 </tr>
             </a>
-        </ng-container>
+        }
     </table>
 </div>

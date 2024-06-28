@@ -9,7 +9,7 @@ import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/c
 import { Branding } from '../../shared/interfaces/branding.interface';
 import { BrandingApiService } from '../../shared/services/api/branding-api.service';
 import { CreateBrandingComponent } from './create-branding/create-branding.component';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 
@@ -21,8 +21,6 @@ import { RouterLink } from '@angular/router';
     imports: [
         AsyncPipe,
         MatButtonModule,
-        NgForOf,
-        NgIf,
         RouterLink
     ]
 })

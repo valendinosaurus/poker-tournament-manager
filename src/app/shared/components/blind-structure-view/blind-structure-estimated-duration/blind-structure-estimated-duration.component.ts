@@ -1,5 +1,4 @@
 import { Component, computed, input, signal } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TimePipe } from '../../../pipes/time.pipe';
 import { BlindLevel } from '../../../interfaces/blind-level.interface';
@@ -10,7 +9,6 @@ import { BlindLevel } from '../../../interfaces/blind-level.interface';
     styleUrl: './blind-structure-estimated-duration.component.scss',
     standalone: true,
     imports: [
-        NgIf,
         FormsModule,
         TimePipe
     ]
