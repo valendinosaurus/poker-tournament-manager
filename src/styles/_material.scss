@@ -34,6 +34,7 @@ mat-dialog-container:not(#draw) {
 mat-dialog-container#draw {
     width: 80vw;
     min-height: 80vh;
+    max-width: 1000px;
 }
 
 

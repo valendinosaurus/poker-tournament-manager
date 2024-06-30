@@ -39,6 +39,9 @@ import { DEFAULT_DIALOG_POSITION } from '../../../../shared/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { TournamentApiService } from '../../../../shared/services/api/tournament-api.service';
 import { FetchService } from '../../../../shared/services/fetch.service';
+import { TableDrawService } from '../../../../shared/services/table-draw.service';
+import { TableDrawState } from '../../../../shared/enums/table-draw-state.enum';
+import { TablesComponent } from './tables/tables.component';
 
 @Component({
     selector: 'app-overview',
@@ -59,6 +62,7 @@ import { FetchService } from '../../../../shared/services/fetch.service';
         AsyncPipe,
         DatePipe,
         BlindLevelTextPipe,
+        TablesComponent,
     ],
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
@@ -87,6 +91,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     elapsed: Signal<number>;
     timeForRebuy: Signal<Date>;
 
+    drawState: Signal<TableDrawState>;
+
     countdownConfig: WritableSignal<CountdownConfig>;
 
     firstDonePassed = false;
@@ -105,6 +111,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private state: TimerStateService = inject(TimerStateService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
+    tableDrawService: TableDrawService = inject(TableDrawService);
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownSpaceHandler(event: Event) {
@@ -172,6 +179,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
             return date;
         });
+
+        this.drawState = computed(() =>
+            this.tableDrawService.tableDraw().state
+        );
 
         this.initTimeValues();
         this.initCountdownConfig();

@@ -22,6 +22,8 @@
                 - with Addon
             }
 
+            {{ tableDrawService.tableDraw().state }} /{{ drawState() }}
+
         </span>
         <span>
             {{ tournament().name }} &#64; {{ tournament().locationName }}
@@ -51,6 +53,8 @@
                             <div class="keen-slider__slide number-slide3 slide-stats">
                                 @if (tournament().finishes.length > tournament().players.length / 2) {
                                     <app-ranking></app-ranking>
+                                } @else if (drawState()) {
+                                    <app-tables></app-tables>
                                 } @else {
                                     <app-blind-level-overview
                                         [levels]="tournament().structure"

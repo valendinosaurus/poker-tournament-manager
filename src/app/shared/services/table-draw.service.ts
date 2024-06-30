@@ -158,6 +158,7 @@ export class TableDrawService {
             ]
         );
 
+        console.log('set', tableDraw.state);
         this.tableDraw.set(tableDraw);
 
         this.tournamentApiService.deleteTableDraw$(tableDraw.tournament.id).pipe(
@@ -278,6 +279,13 @@ export class TableDrawService {
 
             return tableDraw;
         });
+
+        this.tableDraw.update(
+            (tableDraw: TableDraw) => ({
+                ...tableDraw,
+                state: TableDrawState.DRAWN
+            })
+        );
 
         this.tournamentApiService.deleteTableDraw$(this.tableDraw().tournament.id).pipe(
             take(1),
@@ -419,6 +427,13 @@ export class TableDrawService {
     }
 
     resetTableDraw(): void {
+        this.tableDraw.update(
+            (tableDraw: TableDraw) => ({
+                ...tableDraw,
+                state: TableDrawState.BLANK
+            })
+        );
+
         this.tournamentApiService.deleteTableDraw$(this.tournament().id).pipe(
             take(1),
             tap(() => this.tableDraw.update((tableDraw: TableDraw) => {

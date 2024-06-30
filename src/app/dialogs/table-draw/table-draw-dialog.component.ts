@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, WritableSignal } from '@angular/core';
+import { Component, computed, inject, OnInit, WritableSignal } from '@angular/core';
 import { TableDraw } from '../../shared/interfaces/table-draw.interface';
 import { Player } from '../../shared/interfaces/player.interface';
 import { TableDrawService } from '../../shared/services/table-draw.service';
@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TableDrawStateComponent } from '../../shared/components/table-draw-state/table-draw-state.component';
 import { MatButtonModule } from '@angular/material/button';
+import { TimerStateService } from '../../timer/services/timer-state.service';
 
 @Component({
     selector: 'app-table-draw-dialog',
@@ -33,6 +34,11 @@ export class TableDrawDialogComponent implements OnInit {
     readonly TABLE_DRAW_STATE = TableDrawState;
 
     private tableDrawService: TableDrawService = inject(TableDrawService);
+    private state: TimerStateService = inject(TimerStateService);
+
+    areAllPlayersAlive = computed(() =>
+        this.state.tournament().players.length > 0 && this.state.tournament().finishes.length === 0
+    );
 
     ngOnInit() {
         this.tableDrawService.update();

@@ -24,7 +24,7 @@ div.bullets {
     font-size: 18px;
     font-weight: bold;
     border-radius: 24px;
-    background: #ccc;
+    background: #85BB65;
     color: white;
     display: flex;
     justify-content: center;
@@ -32,8 +32,7 @@ div.bullets {
 }
 
 .draw-state > div > div.bullet.completed {
-    background: #85BB65;
-    color: white;
+    background: #ccc;
 }
 
 .draw-state > div > div.line {
@@ -45,18 +44,19 @@ div.bullets {
 }
 
 .draw-state > div > div.line.completed {
-    background: #3f403f;
+    background: #ccc;
 }
 
 .draw-state > div > p {
     width: 130px;
     text-align: center;
-    color: #ccc;
+    color: $primary;
 }
 
 .draw-state > div > p.completed {
     font-weight: bold;
     color: $primary;
+    color: #ccc;
 }
 
 .texts p {

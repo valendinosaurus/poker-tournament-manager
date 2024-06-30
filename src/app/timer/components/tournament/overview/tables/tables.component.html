@@ -1,0 +1,45 @@
+<div class="inner-container">
+    <h3>
+        Tables
+    </h3>
+
+    <div class="overflow-y-auto background-panel">
+        <div id="topr"></div>
+
+        <div class="tables-wrapper">
+            @for (table of tableDraw().tables; track table; let i = $index) {
+                <div class="table">
+                    <h4>Table {{ i + 1 }}</h4>
+                    <div class="table-content">
+
+                        @for (player of table; track player; let j = $index; ) {
+                            <div
+                                class="seat"
+                                [class.fixed]="player.fixSeat"
+                                [class.eliminated]="player.eliminated"
+                            >
+                                <div class="position">
+                                    <div>
+                                        <span>
+                                            {{ player.seatNo + 1 }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <p>
+                                    {{ player?.player?.name }}
+                                </p>
+
+                                @if (player.isButton) {
+                                    <div class="button">B</div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div id="bottomr"></div>
+    </div>
+</div>

@@ -8,7 +8,9 @@
                 class="fa fa-chevron-circle-down"
                 [class.rotate-180]="isExpanded()"
             ></i>
-            <h3>Estimated duration</h3>
+            <h4>
+                Estimated duration
+            </h4>
         </div>
 
         <div
@@ -16,14 +18,14 @@
             [class.expanded]="isExpanded()"
         >
             <div>
-                <h4>players</h4>
+                <h5>players</h5>
                 <input
                     type="number"
                     name="noOfPlayers"
                     [ngModel]="noOfPlayers()"
                     (ngModelChange)="noOfPlayers.set($event)"
                 >
-                <h4>start stack</h4>
+                <h5>start stack</h5>
                 <input
                     type="number"
                     name="startStack"
@@ -33,14 +35,14 @@
             </div>
 
             <div>
-                <h4>rebuys</h4>
+                <h5>rebuys</h5>
                 <input
                     type="number"
                     name="noOfRebuys"
                     [ngModel]="noOfRebuys()"
                     (ngModelChange)="noOfRebuys.set($event)"
                 >
-                <h4>rebuy stack</h4>
+                <h5>rebuy stack</h5>
                 <input
                     type="number"
                     name="rebuyStack"
@@ -50,14 +52,14 @@
             </div>
 
             <div>
-                <h4>addons</h4>
+                <h5>addons</h5>
                 <input
                     type="number"
                     name="noOfAddons"
                     [ngModel]="noOfAddons()"
                     (ngModelChange)="noOfAddons.set($event)"
                 >
-                <h4>addon stack</h4>
+                <h5>addon stack</h5>
                 <input
                     type="number"
                     name="addonStack"
@@ -66,7 +68,7 @@
                 >
             </div>
             <p class="estimation">
-                {{ estimatedDurationInMinutes() | time }}
+                Duration: {{ estimatedDurationInMinutes() | time }}
                 <small>
                     (+/- 1 Level)
                 </small>

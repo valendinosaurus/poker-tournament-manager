@@ -1,5 +1,9 @@
+@import "src/styles/colors_texts";
+
 .duration {
     background: aliceblue;
+    border: solid 1px $primaryDark;
+    border-radius: 8px;
     padding: 12px;
     margin-bottom: 48px;
     width: fit-content;
@@ -8,30 +12,33 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        margin-bottom: 12px;
+        margin-top: 12px;
     }
 
     .fa-chevron-circle-down {
         margin-right: 20px;
     }
 
-    h3 {
+    h4 {
         margin: 0;
         text-align: left;
+        color: black;
     }
 
     & > .expandable > div:not(.expandable-header) {
         display: flex;
         align-items: center;
-        margin-top: 20px;
+        margin-top: 8px;
 
         input {
             margin-right: 32px;
-            width: 140px;
-            font-size: 32px;
+            width: 120px;
+            font-size: 20px;
             font-weight: bold;
             color: #00437b;
             text-align: right;
-            padding-right: 8px;
+            padding-right: 4px;
             box-sizing: border-box;
         }
 
@@ -40,10 +47,14 @@
             font-weight: bold;
         }
 
-        h4 {
-            font-weight: normal;
+        h5 {
             margin-right: 12px;
-            width: 120px;
+            margin-top: 0;
+            margin-bottom: 0;
+            width: 90px;
+            text-align: left;
+            text-transform: uppercase;
+            font-weight: bold;
         }
     }
 
@@ -52,7 +63,7 @@
     }
 
     p.estimation {
-        font-size: 54px;
+        font-size: 40px;
         margin-top: 20px;
         text-align: left;
         font-weight: bold;
