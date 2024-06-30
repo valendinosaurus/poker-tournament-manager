@@ -130,45 +130,27 @@ export class AddBlindsComponent extends BaseAddDialogComponent<AddAddonComponent
                 positions.push(i);
             }
 
-            if (this.data.tournament) {
-                this.tournamentApiService.addBlinds$(model.blindIds, model.parentId, positions).pipe(
-                    take(1),
-                    tap((a) => this.fetchService.trigger()),
-                    tap(() => {
-                        if (this.dialogRef) {
-                            this.dialogRef.close({
-                                blindId: model.blindIds
-                            });
-                        }
+            const action$ = this.data.tournament
+                ? this.tournamentApiService.addBlinds$(model.blindIds, model.parentId, positions)
+                : this.blindStructureApiService.addBlinds$(model.blindIds, model.parentId, positions);
 
-                        this.isLoadingAdd = false;
-                    }),
-                    catchError(() => {
-                        this.isLoadingAdd = false;
-                        return of(null);
-                    })
-                ).subscribe();
-            }
+            action$.pipe(
+                take(1),
+                tap((a) => this.fetchService.trigger()),
+                tap(() => {
+                    if (this.dialogRef) {
+                        this.dialogRef.close({
+                            blindId: model.blindIds
+                        });
+                    }
 
-            if (this.data.structure) {
-                this.blindStructureApiService.addBlinds$(model.blindIds, model.parentId, positions).pipe(
-                    take(1),
-                    tap((a) => this.fetchService.trigger()),
-                    tap(() => {
-                        if (this.dialogRef) {
-                            this.dialogRef.close({
-                                blindId: model.blindIds
-                            });
-                        }
-
-                        this.isLoadingAdd = false;
-                    }),
-                    catchError(() => {
-                        this.isLoadingAdd = false;
-                        return of(null);
-                    })
-                ).subscribe();
-            }
+                    this.isLoadingAdd = false;
+                }),
+                catchError(() => {
+                    this.isLoadingAdd = false;
+                    return of(null);
+                })
+            ).subscribe();
         }
     }
 
