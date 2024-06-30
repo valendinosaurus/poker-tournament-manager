@@ -1,6 +1,6 @@
 @if (users()?.length) {
     <div class="flex flex-dir-column">
-        @for (player of users(); track player.id) {
+        @for (player of first5Users(); track player.id) {
             <app-user-with-image
                 [name]="player.name"
                 [subtitle]="player.email"
@@ -9,6 +9,35 @@
             ></app-user-with-image>
         }
     </div>
+
+    @if (restOfUsers().length > 0) {
+        <span
+            class="flex align-center cursor-pointer color-link m-b-12 p-l-4"
+            (click)="isListExpanded.set(!isListExpanded())"
+        >
+            <i
+                class="fa fa-chevron-circle-down hoverable m-r-12"
+                [class.rotate-180]="!isListExpanded()"
+            ></i>
+
+            <p class="margin-0">Show More </p>
+        </span>
+
+        <div
+            class="expandable"
+            [class.expanded]="isListExpanded()"
+        >
+            @for (player of restOfUsers(); track player.id) {
+                <app-user-with-image
+                    [name]="player.name"
+                    [subtitle]="player.email"
+                    [image]="player.image"
+                    [size]="userImageSize()"
+                ></app-user-with-image>
+            }
+        </div>
+    }
+
 } @else {
     <h4>
         {{ noEntriesText() }}

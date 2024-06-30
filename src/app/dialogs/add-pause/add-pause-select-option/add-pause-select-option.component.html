@@ -1,0 +1,20 @@
+<div class="pause-select-option flex align-center">
+    <span class="bold time">
+        {{ pause().duration }}min
+    </span>
+
+    <div class="flex flex-dir-column">
+        @if (pause().isChipUp) {
+            <span><small>Chip-Up</small></span>
+        }
+
+        @if (pause().endsRebuy) {
+            <span><small>Ends Rebuy</small></span>
+        }
+
+        @if (!pause().isChipUp && !pause().endsRebuy) {
+            <span><small>Regular</small></span>
+        }
+
+    </div>
+</div>

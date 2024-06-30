@@ -16,6 +16,8 @@ import { AddPauseModel } from './add-pause-model.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { PauseTriggerTextPipe } from '../../shared/pipes/pause-trigger-text.pipe';
+import { AddPauseSelectOptionComponent } from './add-pause-select-option/add-pause-select-option.component';
 
 @Component({
     selector: 'app-add-pause',
@@ -28,7 +30,9 @@ import { MatSelectModule } from '@angular/material/select';
         MatButtonModule,
         MatFormFieldModule,
         MatOptionModule,
-        MatSelectModule
+        MatSelectModule,
+        PauseTriggerTextPipe,
+        AddPauseSelectOptionComponent
     ]
 })
 export class AddPauseComponent extends BaseAddDialogComponent<AddPlayerComponent, AddPauseModel> implements OnInit {
@@ -44,7 +48,7 @@ export class AddPauseComponent extends BaseAddDialogComponent<AddPlayerComponent
     private blindStructureApiService: BlindStructureApiService = inject(BlindStructureApiService);
     private destroyRef: DestroyRef = inject(DestroyRef);
 
-    allPauses: { label: string, value: number }[];
+    allPauses: BlindLevel[] = [];
     filterDuration: number;
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
 
@@ -71,23 +75,9 @@ export class AddPauseComponent extends BaseAddDialogComponent<AddPlayerComponent
 
                             return level.duration === +duration;
                         }
-                    )
-                    .map(
-                        b => ({
-                            label: this.getLabel(b),
-                            value: b.id
-                        })
                     );
             })
         ).subscribe();
-    }
-
-    private getLabel(blind: BlindLevel): string {
-        if (!blind.isPause) {
-            return `${blind.sb} / ${blind.bb} / ${blind.ante} / ${blind.btnAnte} - ${blind.duration}min`;
-        }
-
-        return `PAUSE -${blind.isChipUp ? ' CHIP-UP -' : ''}${blind.endsRebuy ? ' ENDS REBUY -' : ''} ${blind.duration}min`;
     }
 
     private initModel(): void {

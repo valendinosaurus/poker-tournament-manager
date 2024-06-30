@@ -19,12 +19,25 @@
         <mat-select
             name="blindIds"
             [ngModel]="model.blindIds()"
-            multiple
+            [multiple]="true"
+            #blinds
             (selectionChange)="model.blindIds.set($event.value)"
         >
-            @for (blind of allBlinds; track blind) {
-                <mat-option [value]="blind.value">
-                    {{ blind.label }}
+            <mat-select-trigger>
+                {{ blinds.value | blindLevelTriggerText:allBlindLevels }}
+                @if ((blinds.value?.length || 0) > 1) {
+                    <span class="example-additional-selection">
+                      (+{{ (blinds.value?.length ?? 0) - 1 }} {{ blinds.value?.length === 2 ? 'other' : 'others' }}
+                        )
+                    </span>
+                }
+            </mat-select-trigger>
+
+            @for (blindLevel of allBlindLevels; track blindLevel) {
+                <mat-option [value]="blindLevel.id">
+                    <app-add-blinds-select-option
+                        [blindLevel]="blindLevel"
+                    ></app-add-blinds-select-option>
                 </mat-option>
             }
         </mat-select>

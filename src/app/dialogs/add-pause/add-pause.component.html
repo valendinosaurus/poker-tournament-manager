@@ -21,11 +21,24 @@
         <mat-select
             name="blindId"
             [ngModel]="model.blindId()"
+            #pauses
             (selectionChange)="model.blindId.set($event.value)"
         >
-            @for (blind of allPauses; track blind) {
-                <mat-option [value]="blind.value">
-                    {{ blind.label }}
+            <mat-select-trigger>
+                {{ pauses.value | pauseTriggerText:allPauses }}
+                @if ((pauses.value?.length || 0) > 1) {
+                    <span class="example-additional-selection">
+                      (+{{ (pauses.value?.length ?? 0) - 1 }} {{ pauses.value?.length === 2 ? 'other' : 'others' }}
+                        )
+                    </span>
+                }
+            </mat-select-trigger>
+
+            @for (pause of allPauses; track pause) {
+                <mat-option [value]="pause.id">
+                    <app-add-pause-select-option
+                        [pause]="pause"
+                    ></app-add-pause-select-option>
                 </mat-option>
             }
         </mat-select>

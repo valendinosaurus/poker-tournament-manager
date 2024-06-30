@@ -21,6 +21,8 @@ import { AddBlindsModel } from './add-blinds-model.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { BlindLevelTriggerTextPipe } from '../../shared/pipes/blind-level-trigger-text.pipe';
+import { AddBlindsSelectOptionComponent } from './add-blinds-select-option/add-blinds-select-option.component';
 
 @Component({
     selector: 'app-add-blinds',
@@ -34,7 +36,9 @@ import { MatSelectModule } from '@angular/material/select';
         AsyncPipe,
         MatFormFieldModule,
         MatOptionModule,
-        MatSelectModule
+        MatSelectModule,
+        BlindLevelTriggerTextPipe,
+        AddBlindsSelectOptionComponent
     ]
 })
 export class AddBlindsComponent extends BaseAddDialogComponent<AddAddonComponent, AddBlindsModel> implements OnInit {
@@ -50,7 +54,7 @@ export class AddBlindsComponent extends BaseAddDialogComponent<AddAddonComponent
     private destroyRef: DestroyRef = inject(DestroyRef);
     private fetchService: FetchService = inject(FetchService);
 
-    allBlinds: { label: string, value: number }[];
+    allBlindLevels: BlindLevel[] = [];
     filterDuration: number;
     private filterDurationTrigger$ = new BehaviorSubject<number>(0);
 
@@ -71,7 +75,7 @@ export class AddBlindsComponent extends BaseAddDialogComponent<AddAddonComponent
         ]).pipe(
             takeUntilDestroyed(this.destroyRef),
             tap(([blinds, duration]: [BlindLevel[], number]) => {
-                this.allBlinds = blinds
+                this.allBlindLevels = blinds
                     .filter(b => !b.isPause)
                     .sort((a, b) => a.bb - b.bb)
                     .filter(blind => !base.filter(p => !p.isPause).map(p => p.id).includes(blind.id))
@@ -83,26 +87,12 @@ export class AddBlindsComponent extends BaseAddDialogComponent<AddAddonComponent
 
                             return +level.duration === +duration;
                         }
-                    )
-                    .map(
-                        b => ({
-                            label: this.getLabel(b),
-                            value: b.id
-                        })
                     );
 
                 this.durations = Array.from(new Set(blinds.map(b => b.duration)));
             })
         ).subscribe();
 
-    }
-
-    private getLabel(blind: BlindLevel): string {
-        if (!blind.isPause) {
-            return `${blind.sb} / ${blind.bb} / ${blind.ante} / ${blind.btnAnte} - ${blind.duration}min`;
-        }
-
-        return `PAUSE -${blind.isChipUp ? ' CHIP-UP -' : ''} ${blind.duration}min`;
     }
 
     private initModel(): void {

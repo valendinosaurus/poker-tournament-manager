@@ -35,9 +35,6 @@ h4 {
 }
 
 
-
-
-
 .regular {
     font-weight: normal !important;
 }
@@ -110,4 +107,8 @@ h4 .fa-exclamation-triangle {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.color-link {
+    color: $primary;
 }
