@@ -74,5 +74,7 @@ export interface SeriesMetadata {
     percentage: number;
     maxAmountPerTournament: number;
     password: string;
+    name: string;
+    branding: Branding;
 }
 

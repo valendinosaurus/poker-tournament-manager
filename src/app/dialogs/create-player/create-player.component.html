@@ -18,15 +18,33 @@
         ></app-user-image-round>
     </div>
 
-    <mat-form-field>
-        <mat-label>Image URL</mat-label>
-        <input
-            matInput
-            [ngModel]="model.userImage()"
-            (ngModelChange)="model.userImage.set($event)"
-            name="userImage"
-        />
-    </mat-form-field>
+<!--    <mat-form-field>-->
+    <!--        <mat-label>Image URL</mat-label>-->
+    <!--        <input-->
+    <!--            matInput-->
+    <!--            [ngModel]="model.userImage()"-->
+    <!--            (ngModelChange)="model.userImage.set($event)"-->
+    <!--            name="userImage"-->
+    <!--        />-->
+    <!--    </mat-form-field>-->
+
+    <button type="button" class="narrow" mat-raised-button (click)="fileInput.click()">
+        Upload image
+    </button>
+    <input
+        hidden
+        (change)="onFileSelected($event)"
+        #fileInput
+        type="file"
+        id="image"
+    >
+
+    <!--    -->
+    <!--    <img-->
+    <!--        *ngIf="previewImage"-->
+    <!--        class="preview"-->
+    <!--        [src]="previewImage"-->
+    <!--    />-->
 
     <mat-form-field>
         <mat-label>Your name</mat-label>

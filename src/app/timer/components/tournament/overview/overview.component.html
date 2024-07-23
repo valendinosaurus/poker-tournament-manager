@@ -27,6 +27,11 @@
         </span>
         <span>
             {{ tournament().name }} &#64; {{ tournament().locationName }}
+
+            <!--            @if (metadata() !== undefined && metadata() !== null) {-->
+            <!--                &#64; {{ metadata()!.name }}-->
+            <!--                <img [src]="metadata()!.branding.logo"/>-->
+            <!--            }-->
         </span>
     </div>
 
@@ -158,7 +163,10 @@
             </div>
 
             @if (!isFinished() && tournament().structure.length > 0) {
-                <div class="current-level">
+                <div
+                    class="current-level"
+                    [class.pause]="levels()[currentLevelIndex()].isPause"
+                >
                     <p class="level"
                        [innerHTML]="levels()[currentLevelIndex()] | blindLevelText:true"
                     ></p>

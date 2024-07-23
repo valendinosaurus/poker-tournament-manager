@@ -15,7 +15,11 @@ export class AuthInterceptorService implements HttpInterceptor {
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        return (req.url.includes('series/details/pw') || req.url.includes('series/meta/pw'))
+        return (
+            req.url.includes('series/details/pw')
+            || req.url.includes('series/meta/pw')
+            || req.url.includes('img.poker.rugolo')
+        )
             ? next.handle(req)
             : this.auth.getAccessTokenSilently().pipe(
                 mergeMap((token: string) => {

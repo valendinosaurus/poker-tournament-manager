@@ -22,10 +22,17 @@ app-overview .overview {
 
         span {
             font-weight: bold;
+            display: flex;
+            align-items: center;
         }
 
         * {
-            color: white;
+            color: aliceblue;
+        }
+
+        img {
+            max-height: 32px;
+            margin-left: 12px;
         }
     }
 
@@ -105,6 +112,7 @@ app-overview .overview {
         align-items: center;
         border-bottom: solid 2px $borderColor;
         font-size: calc(100vw / 60);
+        color: aliceblue;
     }
 
     div.left .slider-panel:not(.simple) h3 {
@@ -295,6 +303,7 @@ app-overview .overview {
         width: 100%;
         flex: 1 1 12%;
         text-align: center;
+        color: aliceblue;
     }
 
     div.center .current-level .level {
@@ -307,6 +316,10 @@ app-overview .overview {
         flex-direction: column;
     }
 
+    div.center .current-level.pause {
+        background: #b32821c;
+    }
+
     div.center .next-level {
         display: flex;
         align-items: center;
@@ -314,6 +327,7 @@ app-overview .overview {
         flex: 1 1 12%;
         background: $primaryDark;
         text-align: center;
+        color: aliceblue;
     }
 
     div.center .next-level .next-level-title {
@@ -389,6 +403,7 @@ app-overview .overview {
         box-sizing: border-box;
         border-bottom: solid 2px $borderColor;
         font-size: calc(100vw / 60);
+        color: aliceblue;
     }
 
     div.right h3.highlighted .fa {
