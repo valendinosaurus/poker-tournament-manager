@@ -2,6 +2,7 @@ import {
     Component,
     computed,
     DestroyRef,
+    ElementRef,
     EventEmitter,
     HostListener,
     inject,
@@ -9,6 +10,7 @@ import {
     Output,
     signal,
     Signal,
+    ViewChild,
     WritableSignal
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
@@ -125,6 +127,8 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
     @Output() previousLevel = new EventEmitter<void>();
+
+    @ViewChild('bleepNext') bleepNext!: ElementRef;
 
     ngOnInit(): void {
         this.tournament = this.state.tournament;
@@ -314,7 +318,7 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
     }
 
     onToggleIsBigCursor(): void {
-        this.state.isBigCursor.set(!this.isBigCursor);
+        this.state.isBigCursor.set(!this.isBigCursor());
 
         if (this.isBigCursor()) {
             document.querySelector('body')?.classList.add('big-cursor');
@@ -370,5 +374,11 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
 
     onPause(): void {
         this.state.pauseTimer();
+    }
+
+    onTestSound(): void {
+        if (this.bleepNext) {
+            this.bleepNext.nativeElement.play();
+        }
     }
 }

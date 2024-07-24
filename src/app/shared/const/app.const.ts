@@ -15,37 +15,37 @@ export const TIMER_DIALOG_PANEL_CLASS = {
 
 export const mostSpilled: SimpleStat[] = [
     {
-        image: 'https://c8.alamy.com/compde/gc2ebk/ufo-verteiler-lkw-weissbier-in-boston-street-gc2ebk.jpg',
+        image: '',
         played: 4,
         value: 3,
         playerName: 'Leon',
         inactive: false
     },
     {
-        image: 'https://c8.alamy.com/compde/gc2ebk/ufo-verteiler-lkw-weissbier-in-boston-street-gc2ebk.jpg',
-        played: 4,
+        image: 'https://www.artshub.com.au/wp-content/uploads/sites/2/2017/10/2-273647-Main-0x0-0.jpg?w=1006',
+        played: 5,
         value: 3,
         playerName: 'Maki',
         inactive: false
     },
     {
         image: 'https://media.wired.com/photos/5af36b4a65806b269bfe8e44/master/w_2560%2Cc_limit/marijuana-522464999.jpg',
-        played: 5,
+        played: 6,
         value: 3,
         playerName: 'Päscu',
         inactive: false
     },
     {
         image: 'https://wallpapers.com/images/high/spongebob-funny-pictures-5nvei6lzsokn0rek.webp',
-        played: 6,
+        played: 7,
         value: 2,
         playerName: 'Ali',
         inactive: false
     },
     {
-        image: 'https://media.wired.com/photos/5af36b4a65806b269bfe8e44/master/w_2560%2Cc_limit/marijuana-522464999.jpg',
-        played: 6,
-        value: 1,
+        image: 'https://img.poker.rugolo.ch/images/668711fabbab6-1720127994.jpg',
+        played: 7,
+        value: 2,
         playerName: 'Valentino',
         inactive: false
     },

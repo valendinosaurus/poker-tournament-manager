@@ -53,7 +53,7 @@ export class TournamentService {
             tEvent: {
                 id: undefined,
                 tId: this.state.tournament().id,
-                message: `Rebuy for <strong>${eliminated}</strong>, who was kicked out by ${eliminator}!`,
+                message: `Rebuy for <strong>${eliminated}</strong>, who was kicked out by <strong>${eliminator}</strong>!`,
                 type: TEventType.REBUY,
                 timestamp: -1,
             }
@@ -66,7 +66,7 @@ export class TournamentService {
             tEvent: {
                 id: undefined,
                 tId: this.state.tournament().id,
-                message: `Player ${playerName} cancelled his Rebuy!`,
+                message: `<strong>${playerName}</strong> cancelled his Rebuy!`,
                 type: TEventType.CORRECTION,
                 timestamp: -1
             }
@@ -102,7 +102,7 @@ export class TournamentService {
             tEvent: {
                 id: undefined,
                 tId: this.state.tournament().id,
-                message: `Player ${playerName} cancelled his Addon!`,
+                message: `<strong>${playerName}</strong> cancelled his Addon!`,
                 type: TEventType.CORRECTION,
                 timestamp: -1
             }
@@ -118,11 +118,11 @@ export class TournamentService {
         const playerName = this.state.tournament().players.filter(e => e.id === playerId)[0].name;
         const {eliminated, eliminator} = this.getInvolvedPlayerNames(playerId, eliminatedById);
 
-        let message = `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> is out of the tournament`;
-        message += ` and finishes ${rank}${this.getOrdinalSuffix(rank)}`;
+        let message = `<strong>!!! SEAT OPEN !!!</strong> - <strong>${playerName}</strong> finished in`;
+        message += ` ${rank}${this.getOrdinalSuffix(rank)} place`;
 
         if (price > 0) {
-            message += ` and takes home ${price}! Congratulations`;
+            message += ` and takes home <strong>${price}$</strong>! Congratulations`;
         }
 
         message += '!';
@@ -172,7 +172,7 @@ export class TournamentService {
             seatOpenEventNew.tEvents.push({
                 id: undefined,
                 tId: this.state.tournament().id,
-                message: `<strong>FINISHED! ${name}</strong> wins the tournament and takes home ${winner.price}.-! Congratulations!`,
+                message: `<strong>FINISHED! ${name}</strong> wins the tournament and takes home <strong>${winner.price}$</strong>! Congratulations!`,
                 type: TEventType.FINISH,
                 timestamp: -1
             });
