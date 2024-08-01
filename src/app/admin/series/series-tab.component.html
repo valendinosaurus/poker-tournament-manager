@@ -14,46 +14,50 @@
 
 <div class="table-wrapper">
     <table class="admin-table">
-        <tr>
-            <th>Name</th>
-            <th>Owner's Email</th>
-            <th>Actions</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner's Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-        @for (series of series$ | async; track series.id) {
-            <a class="contents" [routerLink]="['/admin/series', series.id]">
-                <tr
-                    [class.temp]="series.temp"
+        <tbody>
+            @for (series of series$ | async; track series.id) {
+                <a class="contents" [routerLink]="['/admin/series', series.id]">
+                    <tr
+                        [class.temp]="series.temp"
 
-                >
-                    <td>
-                        @if (series.temp) {
-                            <i class="fa fa-exclamation-triangle"></i>
-                        }
-                        {{ series.name }}
-                    </td>
-                    <td>
-                        {{ series.ownerEmail }}
-                    </td>
-                    <td>
-                        <div class="table-actions">
-                            <i
-                                class="fa fa-share"
-                                (click)="openSeries(series.id, series.password)"
-                            ></i>
-
-                            @if (!series.locked) {
-                                <i
-                                    class="fa fa-trash"
-                                    (click)="deleteSeries(series, $event)"
-                                ></i>
-                            } @else {
-                                <i class="fa fa-lock"></i>
+                    >
+                        <td>
+                            @if (series.temp) {
+                                <i class="fa fa-exclamation-triangle"></i>
                             }
-                        </div>
-                    </td>
-                </tr>
-            </a>
-        }
+                            {{ series.name }}
+                        </td>
+                        <td>
+                            {{ series.ownerEmail }}
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <i
+                                    class="fa fa-share"
+                                    (click)="openSeries(series.id, series.password)"
+                                ></i>
+
+                                @if (!series.locked) {
+                                    <i
+                                        class="fa fa-trash"
+                                        (click)="deleteSeries(series, $event)"
+                                    ></i>
+                                } @else {
+                                    <i class="fa fa-lock"></i>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </a>
+            }
+        </tbody>
     </table>
 </div>

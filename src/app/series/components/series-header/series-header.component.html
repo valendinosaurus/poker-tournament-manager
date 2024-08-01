@@ -39,7 +39,7 @@
         @if (seriesHeader().percentageToFinalPot > 0) {
             <div class="li-pair">
                 <span>
-                    {{ seriesHeader().percentageToFinalPot }}%
+                    {{ seriesHeader().percentageToFinalPot | number:'1.0-0' }}%
                 </span>
                 <h4>
                     % to final pot
@@ -49,8 +49,8 @@
 
         @if (seriesHeader().maxAmountPerTournament > 0) {
             <div class="li-pair">
-                <span>
-                    ${{ seriesHeader().maxAmountPerTournament }}
+                <span class="green">
+                    ${{ seriesHeader().maxAmountPerTournament | number:'1.0-0' }}
                 </span>
                 <h4>
                     Max. to final pot
@@ -60,7 +60,7 @@
 
         @if (seriesHeader().guaranteed > 0) {
             <div class="li-pair">
-                <span>
+                <span class="green">
                     ${{ seriesHeader().guaranteed }}
                 </span>
                 <h4>

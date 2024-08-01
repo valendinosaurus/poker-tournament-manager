@@ -115,7 +115,6 @@ export class CreateTournamentComponent extends BaseAddDialogComponent<CreateTour
     }
 
     private getDateString(date: Date): string {
-        console.log(date);
         const month = (date.getMonth() + 1).toString();
         const day = date.getDate().toString();
 

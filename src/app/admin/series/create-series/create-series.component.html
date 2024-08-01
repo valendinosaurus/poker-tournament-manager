@@ -52,7 +52,7 @@
             (selectionChange)="this.model.branding.set($event.value)"
             name="branding"
         >
-            @for (branding of allBrandings$ | async; track branding) {
+            @for (branding of allBrandings$ | async; track branding.value) {
                 <mat-option [value]="branding.value">
                     {{ branding.label }}
                 </mat-option>
@@ -67,7 +67,7 @@
             (selectionChange)="this.model.rankFormula.set($event.value)"
             name="rankFormula"
         >
-            @for (formula of formulas$ | async; track formula) {
+            @for (formula of formulas$ | async; track formula.value) {
                 <mat-option [value]="formula.value">
                     {{ formula.label }}
                 </mat-option>

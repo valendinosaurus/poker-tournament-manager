@@ -21,9 +21,6 @@
             @if (tournament().withAddon) {
                 - with Addon
             }
-
-            {{ tableDrawService.tableDraw().state }} /{{ drawState() }}
-
         </span>
         <span>
             {{ tournament().name }} &#64; {{ tournament().locationName }}
@@ -58,7 +55,7 @@
                             <div class="keen-slider__slide number-slide3 slide-stats">
                                 @if (tournament().finishes.length > tournament().players.length / 2) {
                                     <app-ranking></app-ranking>
-                                } @else if (drawState()) {
+                                } @else if (drawState() !== 'BLANK') {
                                     <app-tables></app-tables>
                                 } @else {
                                     <app-blind-level-overview
@@ -81,8 +78,14 @@
 
                         <div class="slider-buttons-wrapper">
                             <div class="slider-buttons">
-                                <i class="fa fa-chevron-left" (click)="slider.prev()"></i>
-                                <i class="fa fa-chevron-right" (click)="slider.next()"></i>
+                                <i
+                                    class="fa fa-chevron-left"
+                                    (click)="slider.prev()"
+                                ></i>
+                                <i
+                                    class="fa fa-chevron-right"
+                                    (click)="slider.next()"
+                                ></i>
                             </div>
                         </div>
 
@@ -109,23 +112,7 @@
             <div class="clock">
                 <span class="titles">
                     <div class="flex justify-center align-center">
-                        <i class="fa fa-clock"></i>
-
-                        <div class="now">
-                           <h3>Now</h3>
-                            <h2>
-                                {{ today() | date:'HH:mm' }}
-                            </h2>
-                        </div>
-
                         @if (started() !== undefined) {
-                            <div class="now">
-                                <h3>Started</h3>
-                                <h2>
-                                    {{ started() | date:'HH:mm' }}
-                                </h2>
-                            </div>
-
                             @if (!isRebuyPhaseFinished() && isProOrAdmin()) {
                                 <div class="now">
                                     <h3>Rebuy Phase </h3>

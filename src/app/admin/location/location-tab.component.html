@@ -14,41 +14,46 @@
 
 <div class="table-wrapper">
     <table class="admin-table">
-        <tr>
-            <th>Image</th>
-            <th>Name</th>
-        </tr>
-        @for (location of locations$ | async; track location.id) {
-            <a class="contents" [routerLink]="['/admin/location', location.id]">
-                <tr>
-                    <td>
-                        <img
-                            class="mh-40px"
-                            [src]="location.image"
-                            onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
-                        />
-                    </td>
-                    <td>
-                        {{ location.name }}
-                    </td>
-                    <td>
-                        <div class="table-actions">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+            </tr>
+        </thead>
 
-                            @if (!location.locked) {
-                                <i
-                                    class="fa fa-trash"
-                                    (click)="deleteLocation(location, $event)"
-                                ></i>
-                            }
+        <tbody>
+            @for (location of locations$ | async; track location.id) {
+                <a class="contents" [routerLink]="['/admin/location', location.id]">
+                    <tr>
+                        <td>
+                            <img
+                                class="mh-40px"
+                                [src]="location.image"
+                                onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
+                            />
+                        </td>
+                        <td>
+                            {{ location.name }}
+                        </td>
+                        <td>
+                            <div class="table-actions">
 
-                            @if (location.locked) {
-                                <i class="fa fa-lock"></i>
-                            }
-                        </div>
-                    </td>
-                </tr>
-            </a>
-        }
+                                @if (!location.locked) {
+                                    <i
+                                        class="fa fa-trash"
+                                        (click)="deleteLocation(location, $event)"
+                                    ></i>
+                                }
+
+                                @if (location.locked) {
+                                    <i class="fa fa-lock"></i>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </a>
+            }
+        </tbody>
     </table>
 </div>
 

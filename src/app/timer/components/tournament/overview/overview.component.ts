@@ -231,10 +231,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
         if (fromSettings) {
             this.currentLevelTimeLeft.set(fromSettings.timeLeft);
+            this.state.currentLevelTimeLeft.set(fromSettings.timeLeft);
             this.blindDuration.set(fromSettings.timeLeft);
             this.currentLevelIndex.set(fromSettings.levelIndex);
         } else {
             this.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
+            this.state.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
             this.blindDuration.set(this.levels()[this.currentLevelIndex()].duration * 60);
         }
 
@@ -267,6 +269,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             if (this.currentLevelIndex() < this.levels().length) {
                 setTimeout(() => {
                     this.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
+                    this.state.currentLevelTimeLeft.set(this.levels()[this.currentLevelIndex()].duration * 60);
                     this.blindDuration.set(this.currentLevelTimeLeft());
                     this.blindDurationFixed.set(this.currentLevelTimeLeft());
 
@@ -297,6 +300,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         if (!this.blockNotifications) {
             if (e.action === 'notify') {
                 this.currentLevelTimeLeft.set(e.left / 1000);
+                this.state.currentLevelTimeLeft.set(e.left / 1000);
 
                 if (this.currentLevelTimeLeft() === 60 && this.warning) {
                     this.warning.nativeElement.play();

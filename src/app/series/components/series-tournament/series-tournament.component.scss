@@ -64,6 +64,11 @@
 
 .cd-title-info {
     width: 430px;
+    max-width: 100%;
+
+    @media (max-width: 800px) {
+        margin-top: 24px;
+    }
 }
 
 .countdown {

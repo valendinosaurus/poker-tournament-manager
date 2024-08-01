@@ -39,6 +39,7 @@ import {
 import { PlaygroundPageComponent } from './app/playground/playground-page/playground-page.component';
 import { TimerPageComponent } from './app/timer/components/tournament/timer/timer-page.component';
 import { RankFormulaPageComponent } from './app/shared/components/rank-formula-page/rank-formula-page.component';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 if (environment.production) {
     enableProdMode();
@@ -215,6 +216,7 @@ bootstrapApplication(AppComponent, {
         provideHttpClient(
             withInterceptorsFromDi(),
         ),
+        provideCharts(withDefaultRegisterables()),
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptorService,

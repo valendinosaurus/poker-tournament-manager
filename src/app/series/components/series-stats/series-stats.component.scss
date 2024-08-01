@@ -6,3 +6,42 @@ p {
     padding-left: 12px;
     margin-bottom: 12px;
 }
+
+.stats-wrapper {
+    position: relative;
+}
+
+.slider-wrapper {
+    width: 800px;
+    margin: auto;
+
+    .keen-slider__slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @media (max-width: 860px) {
+        width: 90%;
+    }
+}
+
+.ind-left {
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.ind-right {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+i.fa-chevron-left,
+i.fa-chevron-right {
+    font-size: 34px;
+    color: black;
+}

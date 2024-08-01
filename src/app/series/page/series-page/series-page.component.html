@@ -51,6 +51,24 @@
                 }
             </div>
 
+
+            @if (positionChartData$ | async; as chartData) {
+                <h2>
+                    Point progression
+                </h2>
+
+                <div
+                    style="width: 100%; height: 600px; display: block; margin-top: 32px"
+                >
+                    <canvas baseChart
+                            [type]="'line'"
+                            [data]="chartData"
+                            [options]="lineChartOptions"
+                            [legend]="lineChartLegend">
+                    </canvas>
+                </div>
+            }
+
             <!-- TODO refactor -->
             @if (seriesStats$ | async; as stats) {
                 <app-series-stats
@@ -87,7 +105,7 @@
                 </div>
             </div>
 
-            @for (tournament of tournaments$ | async; track tournament) {
+            @for (tournament of tournaments$ | async; track tournament.tournament.id) {
                 <app-series-tournament
                     [series]="series"
                     [tournament]="tournament"

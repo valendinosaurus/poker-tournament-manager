@@ -29,7 +29,7 @@
                 }
             </tr>
 
-            @for (e of missingRanks(); track e) {
+            @for (e of missingRanks(); track e.name) {
                 <tr class="opaque">
                     <td>
                         <span class="flex-td">
@@ -65,7 +65,7 @@
                 </tr>
             }
 
-            @for (e of ranking(); track e) {
+            @for (e of ranking(); track e.name) {
                 <tr>
                     <td>
                         <app-user-with-image

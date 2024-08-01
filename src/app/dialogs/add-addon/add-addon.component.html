@@ -42,7 +42,7 @@
 
 @if (conductedAddons().length > 0) {
     <table class="dialog-table">
-        @for (e of conductedAddons(); track e) {
+        @for (e of conductedAddons(); track e.playerId) {
             <tr>
                 <td class="small-gray">
                     {{ e.time | date:'d.M.yy, HH:mm:ss' }}

@@ -3,7 +3,7 @@
         <tr>
             <th class="t-rank">Rank</th>
             <th>Name</th>
-            <th class="t-right">Points</th>
+            <th class=" t-right">Points</th>
 
             @if (full()) {
                 @if (series().showAverageRank) {
@@ -38,7 +38,27 @@
                     [class.disqualified]="e.disqualified"
                 >
                     <td class="t-rank">
-                        {{ i + 1 }}.
+                        <div class="flex align-center">
+                            @if (!e.disqualified) {
+                                <div class="position-ind">
+                                    {{ e.position }}.
+                                </div>
+
+                                <div class="movement">
+                                    @if (e.lastMovement === 'up') {
+                                        <i class="fa fa-caret-up green"></i>
+                                    }
+
+                                    @if (e.lastMovement === 'down') {
+                                        <i class="fa fa-caret-down red"></i>
+                                    }
+
+                                    @if (e.lastMovementDiff !== 0) {
+                                        <span>{{ e.lastMovementDiff }}</span>
+                                    }
+                                </div>
+                            }
+                        </div>
                     </td>
                     <td>
                     <span class="flex-td align-center">

@@ -55,8 +55,6 @@ export class ModifyPayoutComponent extends BaseAddDialogComponent<ModifyPayoutCo
         this.toDistribute = this.data.payouts.reduce((acc, curr) => acc + curr, 0) - this.data.pricepool;
         this.playersLeft = this.data.players.length - this.data.finishes.length;
 
-        console.log('pay', this.data.payouts);
-
         this.data.payouts.forEach(
             (payout: number, index: number) => {
                 this.keys.push(index);
@@ -82,7 +80,6 @@ export class ModifyPayoutComponent extends BaseAddDialogComponent<ModifyPayoutCo
         this.total = 0;
 
         this.keys.forEach(k => {
-            console.log('adding', this.model[k].payout);
             this.total += +this.model[k].payout;
         });
 

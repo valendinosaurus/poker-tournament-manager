@@ -107,6 +107,10 @@ div.admin-header {
 
 
 table.admin-table {
+    thead {
+        border-bottom: solid 1px black;;
+    }
+
     th, td {
         text-align: left;
     }
@@ -116,7 +120,7 @@ table.admin-table {
     }
 
     tr.temp {
-        background: linen;
+        background: rgba(linen, 0.4);
     }
 
     tr td:last-child,
@@ -124,7 +128,7 @@ table.admin-table {
         text-align: right !important;
     }
 
-    tr:hover {
+    tbody tr:hover {
         background: aliceblue;
     }
 
@@ -133,7 +137,7 @@ table.admin-table {
         margin-right: 8px;
     }
 
-    .fa:not(.fa-lock) {
+    .fa:not(.fa-lock, .fa-exclamation-triangle) {
         opacity: 0.5;
 
         &:hover {
@@ -248,4 +252,10 @@ tr.blind-pause {
 
 .admin-body.admin-body-flexed > span:last-child {
     border-right: none;
+}
+
+app-admin {
+    th, td {
+        color: black !important;
+    }
 }

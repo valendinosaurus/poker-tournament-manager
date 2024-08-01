@@ -154,6 +154,8 @@ export class AdminTournamentComponent implements OnInit {
 
     addBlinds(tournament: Tournament): void {
         const dialogRef = this.dialog.open(AddBlindsComponent, {
+            ...DEFAULT_DIALOG_POSITION,
+            maxHeight: '80vh',
             data: {
                 tournament: tournament
             }

@@ -9,87 +9,131 @@
     <i>p</i>: played
 </p>
 
-<div class="page-content-block spaced">
-    @if (series().showAverageRank) {
-        <app-series-stat
-            [stat]="bestAverageRank()"
-            [useNumberPipe]="true"
-            statTitle="Best &#x2205; rank (p > 1)"
-        ></app-series-stat>
-    }
 
-    @if (series().showPrices) {
-        <app-series-stat
-            [stat]="mostPrices()"
-            [useNumberPipe]="true"
-            statTitle="Most prices"
-        ></app-series-stat>
-    }
+<div class="page-content-block spaced stats-wrapper">
 
-    @if (series().showPrices) {
-        <app-series-stat
-            [stat]="mostEffPrices()"
-            statTitle="Most effective prices"
-        ></app-series-stat>
-    }
+    <div class="ind-left">
+        <i
+            class="fa fa-chevron-left cursor-pointer"
+            (click)="slider.prev()"
+        ></i>
+    </div>
 
-    @if (hasRebuy() || hasAddon()) {
-        <app-series-stat
-            [stat]="mostRebuysAddons()"
-            statTitle="Most RB & A"
-        ></app-series-stat>
-    }
+    <div class="ind-right">
+        <i
+            class="fa fa-chevron-right cursor-pointer"
+            (click)="slider.next()"
+        ></i>
+    </div>
+    <div class="slider-wrapper">
 
-    @if (hasRebuy() || hasAddon()) {
-        <app-series-stat
-            [stat]="mostRebuysAddonsPerT()"
-            [useNumberPipe]="true"
-            statTitle="Most &#x2205; RB & A (p > 1)"
-        ></app-series-stat>
-    }
+        <div class="keen-slider" #sliderRef>
+            @if (series().showAverageRank) {
+                <div class="keen-slider__slide number-slide1">
+                    <app-series-stat
+                        [stat]="bestAverageRank()"
+                        [useNumberPipe]="true"
+                        statTitle="Best &#x2205; rank (p > 1)"
+                    ></app-series-stat>
+                </div>
+            }
 
-    <app-series-stat
-        [stat]="mostITM()"
-        statTitle="Most times ITM"
-    ></app-series-stat>
+            @if (series().showPrices) {
+                <div class="keen-slider__slide number-slide2">
+                    <app-series-stat
+                        [stat]="mostPrices()"
+                        [useNumberPipe]="true"
+                        statTitle="Most prices"
+                    ></app-series-stat>
+                </div>
+            }
 
-    <app-series-stat
-        [stat]="mostPercITM()"
-        statTitle="Most % ITM"
-        [useNumberPipe]="true"
-    ></app-series-stat>
+            @if (series().showPrices) {
+                <div class="keen-slider__slide number-slide3">
+                    <app-series-stat
+                        [stat]="mostEffPrices()"
+                        statTitle="Most effective prices"
+                    ></app-series-stat>
+                </div>
+            }
 
-    @if (series().showEliminations) {
-        <app-series-stat
-            [stat]="mostEliminations()"
-            statTitle="Most Eliminations"
-        ></app-series-stat>
+            @if (hasRebuy() || hasAddon()) {
+                <div class="keen-slider__slide number-slide4">
+                    <app-series-stat
+                        [stat]="mostRebuysAddons()"
+                        statTitle="Most RB & A"
+                    ></app-series-stat>
+                </div>
+            }
 
-        <app-series-stat
-            [stat]="biggestRivals()"
-            statTitle="Biggest Rivals"
-        ></app-series-stat>
-    }
+            @if (hasRebuy() || hasAddon()) {
+                <div class="keen-slider__slide number-slide5">
+                    <app-series-stat
+                        [stat]="mostRebuysAddonsPerT()"
+                        [useNumberPipe]="true"
+                        statTitle="Most &#x2205; RB & A (p > 1)"
+                    ></app-series-stat>
+                </div>
+            }
 
-    @if (series().showPrices && hasBounty()) {
-        <app-series-stat
-            [stat]="mostBounties()"
-            statTitle="Most Bounties $"
-            [useNumberPipe]="true"
-        ></app-series-stat>
-    }
+            <div class="keen-slider__slide number-slide6">
+                <app-series-stat
+                    [stat]="mostITM()"
+                    statTitle="Most times ITM"
+                ></app-series-stat>
+            </div>
 
-    @if (series().showNonItmPlaces) {
-        <app-series-stat
-            [stat]="mostBubbles()"
-            statTitle="Most Bubbles"
-        ></app-series-stat>
-    }
+            <div class="keen-slider__slide number-slide7">
+                <app-series-stat
+                    [stat]="mostPercITM()"
+                    statTitle="Most % ITM"
+                    [useNumberPipe]="true"
+                ></app-series-stat>
+            </div>
 
-    @if (series().id === 1 || series().id === 3) {
-        <app-series-stat
-            [stat]="mostSpilled()"
-            statTitle="Spilled & Broken"
-        ></app-series-stat>
-    }
+            @if (series().showEliminations) {
+                <div class="keen-slider__slide number-slide8">
+                    <app-series-stat
+                        [stat]="mostEliminations()"
+                        statTitle="Most Eliminations"
+                    ></app-series-stat>
+                </div>
+
+                <div class="keen-slider__slide number-slide9">
+                    <app-series-stat
+                        [stat]="biggestRivals()"
+                        statTitle="Biggest Rivals"
+                    ></app-series-stat>
+                </div>
+            }
+
+            @if (series().showPrices && hasBounty()) {
+                <div class="keen-slider__slide number-slide10">
+                    <app-series-stat
+                        [stat]="mostBounties()"
+                        statTitle="Most Bounties $"
+                        [useNumberPipe]="true"
+                    ></app-series-stat>
+                </div>
+            }
+
+            @if (series().showNonItmPlaces) {
+                <div class="keen-slider__slide number-slide11">
+                    <app-series-stat
+                        [stat]="mostBubbles()"
+                        statTitle="Most Bubbles"
+                    ></app-series-stat>
+                </div>
+            }
+
+            @if (series().id === 1 || series().id === 3) {
+                <div class="keen-slider__slide number-slide12">
+                    <app-series-stat
+                        [stat]="mostSpilled()"
+                        statTitle="Spilled & Broken"
+                    ></app-series-stat>
+                </div>
+            }
+        </div>
+    </div>
 </div>

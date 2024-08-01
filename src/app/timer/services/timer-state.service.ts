@@ -109,6 +109,8 @@ export class TimerStateService {
             ).length === this.players().length
     );
 
+    currentLevelTimeLeft = signal(0);
+
     totalPricePoolWithoutDeduction = computed(() =>
         this.entries().filter(
             (entry: Entry) => entry.type === EntryType.ENTRY || entry.type === EntryType.RE_ENTRY

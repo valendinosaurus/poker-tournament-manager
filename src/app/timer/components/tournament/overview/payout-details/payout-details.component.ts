@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, Signal, WritableSignal } from '@angular/core';
 import { Entry } from '../../../../../shared/interfaces/entry.interface';
 import { Finish } from '../../../../../shared/interfaces/finish.interface';
 import { Player } from '../../../../../shared/interfaces/player.interface';
@@ -21,6 +21,7 @@ import { defer, fromEvent, iif, Observable, of } from 'rxjs';
 import { TournamentApiService } from '../../../../../shared/services/api/tournament-api.service';
 import { NullsafePrimitivePipe } from '../../../../../shared/pipes/nullsafe-primitive.pipe';
 import { UserWithImageComponent } from '../../../../../shared/components/user-with-image/user-with-image.component';
+import { BlindLevel } from '../../../../../shared/interfaces/blind-level.interface';
 
 interface Payout {
     rank: number,
@@ -200,8 +201,6 @@ export class PayoutDetailsComponent implements OnInit {
         });
 
         payouts.sort((a, b) => a.rank - b.rank);
-
-        console.log(payouts);
 
         return payouts.filter(p => +p.price > 0);
     }

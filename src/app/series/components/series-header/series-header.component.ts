@@ -2,6 +2,7 @@ import { Component, input } from '@angular/core';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 import { FormulaToImagePipe } from '../../../shared/pipes/formula-to-image.pipe';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-series-header',
@@ -13,7 +14,8 @@ import { FormulaToImagePipe } from '../../../shared/pipes/formula-to-image.pipe'
     standalone: true,
     imports: [
         UserImageRoundComponent,
-        FormulaToImagePipe
+        FormulaToImagePipe,
+        DecimalPipe
     ]
 })
 export class SeriesHeaderComponent {

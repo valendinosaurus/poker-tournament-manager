@@ -42,7 +42,7 @@
             (selectionChange)="this.model.location.set($event.value)"
             name="location"
         >
-            @for (payout of locations$ | async; track payout) {
+            @for (payout of locations$ | async; track payout.value) {
                 <mat-option [value]="payout.value">
                     {{ payout.label }}
                 </mat-option>
@@ -218,7 +218,7 @@
             (selectionChange)="this.model.payout.set($event.value)"
             name="payout"
         >
-            @for (payout of allPayouts; track payout) {
+            @for (payout of allPayouts; track payout.value) {
                 <mat-option [value]="payout.value">
                     {{ payout.label }}
                 </mat-option>
@@ -233,7 +233,7 @@
             (selectionChange)="this.model.rankFormula.set($event.value)"
             name="rankFormula"
         >
-            @for (formula of formulas$ | async; track formula) {
+            @for (formula of formulas$ | async; track formula.value) {
                 <mat-option [value]="formula.value">
                     {{ formula.label }}
                 </mat-option>

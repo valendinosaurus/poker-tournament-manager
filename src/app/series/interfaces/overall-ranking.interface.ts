@@ -15,4 +15,8 @@ export interface LeaderboardRow {
     email: string | undefined | null;
     disqualified: boolean;
     bubbles: number;
+    position: number | undefined;
+    lastMovement: 'up' | 'down' | 'same' | undefined;
+    lastMovementDiff: number | undefined;
+    pointsBeforeLastTournament: number;
 }

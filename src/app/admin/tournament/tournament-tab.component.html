@@ -14,55 +14,59 @@
 
 <div class="table-wrapper">
     <table class="admin-table">
-        <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Players</th>
-            <th>Levels</th>
-            <th>Location</th>
-            <th>Actions</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Players</th>
+                <th>Levels</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-        @for (tournament of tournaments$ | async; track tournament.id) {
-            <a class="contents" [routerLink]="['/admin/tournament', tournament.id]">
-                <tr [class.temp]="tournament.temp">
-                    <td>
-                        {{ tournament.date | date:'dd.MM.YYYY' }}
-                    </td>
-                    <td>
-                        @if (tournament.temp) {
-                            <i class="fa fa-exclamation-triangle"></i>
-                        }
-                        {{ tournament.name }}
-                    </td>
-                    <td>
-                        {{ tournament.players }}
-                    </td>
-                    <td>
-                        {{ tournament.levels }}
-                    </td>
-                    <td>
-                        {{ tournament.location }}
-                    </td>
-                    <td>
-                        <div class="table-actions">
-                            <i
-                                class="fa fa-share"
-                                (click)="openTournament(tournament.id, $event)"
-                            ></i>
-
-                            @if (!tournament.locked) {
-                                <i
-                                    class="fa fa-trash"
-                                    (click)="deleteTournament(tournament, $event)"
-                                ></i>
-                            } @else {
-                                <i class="fa fa-lock"></i>
+        <tbody>
+            @for (tournament of tournaments$ | async; track tournament.id) {
+                <a class="contents" [routerLink]="['/admin/tournament', tournament.id]">
+                    <tr [class.temp]="tournament.temp">
+                        <td>
+                            {{ tournament.date | date:'dd.MM.YYYY' }}
+                        </td>
+                        <td>
+                            @if (tournament.temp) {
+                                <i class="fa fa-exclamation-triangle"></i>
                             }
-                        </div>
-                    </td>
-                </tr>
-            </a>
-        }
+                            {{ tournament.name }}
+                        </td>
+                        <td>
+                            {{ tournament.players }}
+                        </td>
+                        <td>
+                            {{ tournament.levels }}
+                        </td>
+                        <td>
+                            {{ tournament.location }}
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <i
+                                    class="fa fa-share"
+                                    (click)="openTournament(tournament.id, $event)"
+                                ></i>
+
+                                @if (!tournament.locked) {
+                                    <i
+                                        class="fa fa-trash"
+                                        (click)="deleteTournament(tournament, $event)"
+                                    ></i>
+                                } @else {
+                                    <i class="fa fa-lock"></i>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </a>
+            }
+        </tbody>
     </table>
 </div>

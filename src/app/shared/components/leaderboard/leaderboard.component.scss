@@ -7,8 +7,8 @@ tr td {
     color: black;
 }
 
-tr th:not(.t-rank),
-tr td:not(.t-rank) {
+tr th:not(.t-rank, .t-rank-half),
+tr td:not(.t-rank, .t-rank-half) {
     min-width: 80px;
 }
 
@@ -19,7 +19,7 @@ tr.finalist td {
 
 tr.disqualified th,
 tr.disqualified td {
-    //opacity: 0.3;
+    opacity: 0.7;
     background: white;
     color: #BBBBBB;
 }
@@ -96,3 +96,31 @@ th, td {
         }
     }
 }
+
+div.position-ind {
+    width: 28px;
+}
+
+.movement {
+    // transform: translateY(-4px);
+    display: flex;
+    align-items: center;
+
+    span {
+        font-size: 12px;
+    }
+}
+
+.fa-caret-up {
+    //  transform: translateY(4px);
+    margin-right: 4px;
+    font-size: 16px !important;
+}
+
+.fa-caret-down {
+    //  transform: translateY(2px);
+    color: red;
+    margin-right: 4px;
+    font-size: 16px !important;
+}
+

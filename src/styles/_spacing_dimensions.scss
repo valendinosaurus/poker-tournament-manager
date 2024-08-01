@@ -39,6 +39,9 @@
     align-items: center;
 }
 
+.flex-wrap {
+    flex-wrap: wrap;
+}
 
 .align-start-mobile {
     @media (max-width: 800px) {
@@ -63,7 +66,6 @@
 
 .w-800px {
     width: 800px;
-    flex: 0 0 800px;
 }
 
 .w-120px {

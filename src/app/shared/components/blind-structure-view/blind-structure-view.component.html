@@ -28,7 +28,7 @@
             cdkDropList
             (cdkDropListDropped)="drop($event)"
         >
-            @for (blind of structure(); track blind; let i = $index; ) {
+            @for (blind of structure(); track blind.id; let i = $index; ) {
 
                 @if (!blind.isPause) {
                     <div

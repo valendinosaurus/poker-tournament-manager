@@ -158,7 +158,6 @@ export class TableDrawService {
             ]
         );
 
-        console.log('set', tableDraw.state);
         this.tableDraw.set(tableDraw);
 
         this.tournamentApiService.deleteTableDraw$(tableDraw.tournament.id).pipe(

@@ -97,7 +97,7 @@
         </button>
     }
 
-    @if (tournament().withRebuy && isProOrAdmin() && !isRebuyPhaseFinished()) {
+    @if (tournament().withAddon && isProOrAdmin() && !isRebuyPhaseFinished()) {
         <button
             mat-flat-button
             matTooltip="Addon"

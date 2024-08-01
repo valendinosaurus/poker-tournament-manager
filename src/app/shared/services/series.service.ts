@@ -14,6 +14,7 @@ import { mostSpilled } from '../const/app.const';
 import { Elimination } from '../interfaces/elimination.interface';
 import { SeriesStats } from '../../series/interfaces/series-stats.interface';
 import { Formula } from '../interfaces/formula-input.type';
+import { ChartConfiguration } from 'chart.js';
 
 @Injectable({
     providedIn: 'root'
@@ -149,56 +150,175 @@ export class SeriesService {
             (seriesTournament: SeriesTournament) => seriesTournament.tournament.players
         ).reduce((a, b) => a.concat(b), []);
 
-        seriesTournaments.forEach(
-            (seriesTournament: SeriesTournament) => seriesTournament.rows.forEach((f: SeriesTournamentRow) => {
-                if (overallRanking.filter(e => e.name === f.name).length > 0) {
-                    const index = overallRanking.findIndex(o => o.name === f.name);
+        const noOfTournaments = seriesTournaments.length;
 
-                    const element: LeaderboardRow = {...overallRanking[index]};
+        seriesTournaments.reverse().forEach((seriesTournament: SeriesTournament, i: number) => {
+                seriesTournament.rows.forEach((f: SeriesTournamentRow) => {
+                    if (overallRanking.filter(e => e.playerId === f.playerId).length > 0) {
+                        const index = overallRanking.findIndex(o => o.playerId === f.playerId);
 
-                    overallRanking[index] = {
-                        name: f.name,
-                        rank: +f.rank + +element.rank,
-                        price: +f.price + +element.price,
-                        image: f.image,
-                        points: +f.points + +element.points,
-                        tournaments: allPlayers.filter(e => e.name === f.name).length,
-                        rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons,
-                        eliminations: +f.eliminations + +element.eliminations,
-                        itm: +element.itm + ((+f.rank <= seriesTournament.placesPaid) ? 1 : 0),
-                        isTemp: f.isTemp ? true : element.isTemp,
-                        email: f.email,
-                        playerId: f.playerId,
-                        disqualified: f.disqualified,
-                        bubbles: +element.bubbles + ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
-                        eliminatedPlayers: (element.eliminatedPlayers ?? []).concat(f.eliminatedPlayers ?? []),
-                        collectedBounties: element.collectedBounties + (seriesTournament.withBounty ? f.eliminations * seriesTournament.tournament.bountyAmount : 0)
+                        const element: LeaderboardRow = {...overallRanking[index]};
+
+                        overallRanking[index] = {
+                            name: f.name,
+                            rank: +f.rank + +element.rank,
+                            price: +f.price + +element.price,
+                            image: f.image,
+                            points: +f.points + +element.points,
+                            pointsBeforeLastTournament: +element.points + ((i < noOfTournaments - 1) ? +f.points : 0),
+                            tournaments: allPlayers.filter(e => e.id === f.playerId).length,
+                            rebuysAddons: +element.rebuysAddons + +f.rebuys + +f.addons,
+                            eliminations: +f.eliminations + +element.eliminations,
+                            itm: +element.itm + ((+f.rank <= seriesTournament.placesPaid) ? 1 : 0),
+                            isTemp: f.isTemp ? true : element.isTemp,
+                            email: f.email,
+                            playerId: f.playerId,
+                            disqualified: f.disqualified,
+                            bubbles: +element.bubbles + ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
+                            eliminatedPlayers: (element.eliminatedPlayers ?? []).concat(f.eliminatedPlayers ?? []),
+                            collectedBounties: element.collectedBounties + (seriesTournament.withBounty ? f.eliminations * seriesTournament.tournament.bountyAmount : 0),
+                            position: undefined,
+                            lastMovement: undefined,
+                            lastMovementDiff: undefined
+                        };
+
+                    } else {
+                        overallRanking.push({
+                            name: f.name,
+                            points: f.points,
+                            pointsBeforeLastTournament: ((i < noOfTournaments - 1) ? f.points : 0),
+                            image: f.image,
+                            price: f.price,
+                            rank: f.rank,
+                            tournaments: allPlayers.filter(e => e.id === f.playerId).length,
+                            rebuysAddons: +f.rebuys + +f.addons,
+                            eliminations: f.eliminations,
+                            itm: (+f.rank <= seriesTournament.placesPaid) ? 1 : 0,
+                            bubbles: ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
+                            isTemp: f.isTemp,
+                            email: f.email,
+                            playerId: f.playerId,
+                            disqualified: f.disqualified,
+                            eliminatedPlayers: f.eliminatedPlayers,
+                            collectedBounties: seriesTournament.withBounty ? f.eliminations * seriesTournament.tournament.bountyAmount : 0,
+                            position: undefined,
+                            lastMovement: undefined,
+                            lastMovementDiff: undefined
+                        });
+                    }
+                });
+            }
+        );
+
+        let pos = 1;
+
+        const rankingBeforeLastTournament = [...overallRanking].sort(
+            (a, b) => b.pointsBeforeLastTournament - a.pointsBeforeLastTournament);
+
+        overallRanking
+            .sort((a, b) => b.points - a.points)
+            .forEach((player: LeaderboardRow, i: number) => {
+                if (!player.disqualified) {
+                    player.position = pos++;
+                }
+
+                const indexBefore = rankingBeforeLastTournament.findIndex(e => e.name === player.name);
+
+                player.lastMovement = indexBefore === -1
+                    ? 'same'
+                    : indexBefore < i
+                        ? 'down'
+                        : indexBefore > i
+                            ? 'up'
+                            : 'same';
+
+                player.lastMovementDiff = indexBefore - i;
+            });
+
+        return overallRanking;
+    }
+
+    getPositionChartData(seriesTournaments: SeriesTournament[]): ChartConfiguration<'line'>['data'] {
+        const labels: string[] = [];
+        const datasets: { label: string; data: number[], borderColor: string; playerId: number; }[] = [];
+        const allPlayers = seriesTournaments.map(
+            (seriesTournament: SeriesTournament) => seriesTournament.rows.map(r => ({
+                id: r.playerId,
+                name: r.name
+            }))
+        ).reduce((a, b) => a.concat(b), []);
+
+        const uniquePlayers: { id: number; name: string; }[] = [];
+
+        allPlayers.forEach(p => {
+            if (!uniquePlayers.map(e => e.id).includes(p.id)) {
+                uniquePlayers.push(p);
+            }
+        });
+
+        seriesTournaments.reverse().forEach((seriesTournament: SeriesTournament, i: number) => {
+            labels.push(`${seriesTournament.tournament.name}`);
+
+            const missingPlayersInThisTournament = uniquePlayers.filter(
+                p => !seriesTournament.rows.map(r => r.playerId).includes(p.id)
+            );
+
+            seriesTournament.rows.forEach((f: SeriesTournamentRow) => {
+                if (datasets.filter(e => e.playerId === f.playerId).length > 0) {
+                    const index = datasets.findIndex(o => o.playerId === f.playerId);
+
+                    const element = datasets[index];
+                    if (f.name === 'Bole') {
+                        console.log('add', seriesTournament.tournament.name, f.points);
+                    }
+
+                    datasets[index] = {
+                        label: f.name,
+                        data: [...element.data, element.data[element.data.length - 1] + +f.points],
+                        borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+                        playerId: f.playerId
                     };
 
                 } else {
-                    overallRanking.push({
-                        name: f.name,
-                        points: f.points,
-                        image: f.image,
-                        price: f.price,
-                        rank: f.rank,
-                        tournaments: allPlayers.filter(e => e.name === f.name).length,
-                        rebuysAddons: +f.rebuys + +f.addons,
-                        eliminations: f.eliminations,
-                        itm: (+f.rank <= seriesTournament.placesPaid) ? 1 : 0,
-                        bubbles: ((+f.rank === seriesTournament.placesPaid + 1) ? 1 : 0),
-                        isTemp: f.isTemp,
-                        email: f.email,
-                        playerId: f.playerId,
-                        disqualified: f.disqualified,
-                        eliminatedPlayers: f.eliminatedPlayers,
-                        collectedBounties: seriesTournament.withBounty ? f.eliminations * seriesTournament.tournament.bountyAmount : 0
+                    if (f.name === 'Bole') {
+                        console.log('first', seriesTournament.tournament.name, f.points);
+                    }
+                    datasets.push({
+                        label: f.name,
+                        data: [+f.points],
+                        borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+                        playerId: f.playerId
                     });
                 }
-            })
-        );
+            });
 
-        return overallRanking;
+            missingPlayersInThisTournament.forEach(
+                player => {
+                    if (datasets.filter(e => e.playerId === player.id).length > 0) {
+                        const index = datasets.findIndex(o => o.playerId === player.id);
+
+                        datasets[index] = {
+                            label: player.name,
+                            data: [...datasets[index].data, datasets[index].data[datasets[index].data.length - 1]],
+                            borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+                            playerId: player.id
+                        };
+                    } else {
+                        datasets.push({
+                            label: player.name,
+                            data: [0],
+                            borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+                            playerId: player.id
+                        });
+                    }
+                }
+            );
+        });
+
+        return {
+            labels,
+            datasets
+        };
     }
 
     getBestAverageRank(overallRanking: LeaderboardRow[]): SimpleStat[] {

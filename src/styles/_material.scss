@@ -28,6 +28,7 @@ mat-dialog-container:not(#draw) {
 
     .mdc-dialog__container button {
         font-size: 26px;
+        background: #f4f4f4;
     }
 }
 
@@ -101,6 +102,7 @@ form .mdc-button,
     button:not(.mat-ripple) {
         padding: 12px 30px;
         margin: auto;
+        margin-top: 0;
         display: block !important;
         height: fit-content !important;
         width: 100% !important;
@@ -258,15 +260,27 @@ h3 > button.round {
 }
 
 
+.mat-drawer * {
+    color: black !important;
+}
+
 a.link-active {
     font-weight: bold;
-    color: #00437b !important;
+    color: black !important;
 }
 
 a.link-active > span {
-    color: #00437b !important;
+    color: black !important;
 }
 
 mat-hint, mat-hint * {
     color: #C41E3A;
+}
+
+.mat-drawer a {
+    text-decoration: none;
+}
+
+mat-radio-button {
+    margin-right: 20px;
 }

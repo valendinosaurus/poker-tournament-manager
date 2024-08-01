@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, input, signal, ViewChild, WritableSignal } from '@angular/core';
 import { SimpleStat } from '../../../shared/interfaces/simple-stat.interface';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { DecimalPipe } from '@angular/common';
 import { SeriesStatComponent } from './series-stat/series-stat.component';
 import { Series } from '../../../shared/interfaces/series.interface';
+import KeenSlider, { KeenSliderInstance } from 'keen-slider';
 
 @Component({
     selector: 'app-series-stats',
@@ -19,7 +20,7 @@ import { Series } from '../../../shared/interfaces/series.interface';
         SeriesStatComponent
     ]
 })
-export class SeriesStatsComponent {
+export class SeriesStatsComponent implements AfterViewInit {
 
     series = input.required<Series>();
     bestAverageRank = input.required<SimpleStat[]>();
@@ -37,5 +38,20 @@ export class SeriesStatsComponent {
     hasRebuy = input.required<boolean>();
     hasAddon = input.required<boolean>();
     hasBounty = input.required<boolean>();
+
+    slider: KeenSliderInstance;
+    currentSlide: WritableSignal<number> = signal(0);
+
+    @ViewChild('sliderRef') sliderRef: ElementRef<HTMLElement>;
+
+    ngAfterViewInit(): void {
+        this.slider = new KeenSlider(this.sliderRef.nativeElement, {
+            loop: true,
+            initial: this.currentSlide(),
+            slideChanged: (s: any) => {
+                this.currentSlide.set(s.track.details.rel);
+            }
+        });
+    }
 
 }

@@ -14,35 +14,39 @@
 
 <div class="table-wrapper">
     <table class="admin-table">
-        <tr>
-            <th>Name</th>
-            <th>No of Blind Levels</th>
-            <th>Actions</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>No of Blind Levels</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-        @for (blindStructure of blindStructures$ | async; track blindStructure.id) {
-            <a class="contents" [routerLink]="['/admin/blind-structure', blindStructure.id]">
-                <tr>
-                    <td>
-                        {{ blindStructure.name }}
-                    </td>
-                    <td>
-                        TODO
-                    </td>
-                    <td>
-                        <div class="table-actions">
-                            <i
-                                class="fa fa-trash"
-                                (click)="deleteStructure(blindStructure, $event)"
-                            ></i>
+        <tbody>
+            @for (blindStructure of blindStructures$ | async; track blindStructure.id) {
+                <a class="contents" [routerLink]="['/admin/blind-structure', blindStructure.id]">
+                    <tr>
+                        <td>
+                            {{ blindStructure.name }}
+                        </td>
+                        <td>
+                            TODO
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <i
+                                    class="fa fa-trash"
+                                    (click)="deleteStructure(blindStructure, $event)"
+                                ></i>
 
-                            @if (blindStructure.locked) {
-                                <i class="fa fa-lock"></i>
-                            }
-                        </div>
-                    </td>
-                </tr>
-            </a>
-        }
+                                @if (blindStructure.locked) {
+                                    <i class="fa fa-lock"></i>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </a>
+            }
+        </tbody>
     </table>
 </div>

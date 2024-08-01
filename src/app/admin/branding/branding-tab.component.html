@@ -14,41 +14,45 @@
 
 <div class="table-wrapper">
     <table class="admin-table">
-        <tr>
-            <th>Logo</th>
-            <th>Name</th>
-            <th>Description</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
 
-        @for (branding of brandings$ | async; track branding.id) {
-            <a class="contents" [routerLink]="['/admin/branding', branding.id]">
-                <tr>
-                    <td>
-                        <img
-                            [src]="branding.logo"
-                            onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
-                        />
-                    </td>
-                    <td>
-                        {{ branding.name }}
-                    </td>
-                    <td>
-                        {{ branding.description }}
-                    </td>
-                    <td>
-                        <div class="table-actions">
-                            @if (branding.locked) {
-                                <i
-                                    class="fa fa-trash"
-                                    (click)="deleteBranding(branding, $event)"
-                                ></i>
-                            } @else {
-                                <i class="fa fa-lock"></i>
-                            }
-                        </div>
-                    </td>
-                </tr>
-            </a>
-        }
+        <tbody>
+            @for (branding of brandings$ | async; track branding.id) {
+                <a class="contents" [routerLink]="['/admin/branding', branding.id]">
+                    <tr>
+                        <td>
+                            <img
+                                [src]="branding.logo"
+                                onerror="this.src='http:///i.imgur.com/hfM1J8s.png'"
+                            />
+                        </td>
+                        <td>
+                            {{ branding.name }}
+                        </td>
+                        <td>
+                            {{ branding.description }}
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                @if (branding.locked) {
+                                    <i
+                                        class="fa fa-trash"
+                                        (click)="deleteBranding(branding, $event)"
+                                    ></i>
+                                } @else {
+                                    <i class="fa fa-lock"></i>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </a>
+            }
+        </tbody>
     </table>
 </div>

@@ -26,6 +26,8 @@ import { NullsafePrimitivePipe } from '../../../shared/pipes/nullsafe-primitive.
 import { SeriesHeader } from '../../interfaces/series-header.interface';
 import { SeriesStats } from '../../interfaces/series-stats.interface';
 import { TournamentS } from '../../../shared/interfaces/tournament.interface';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
 
 @Component({
     selector: 'app-series-page',
@@ -42,6 +44,7 @@ import { TournamentS } from '../../../shared/interfaces/tournament.interface';
         MatDialogModule,
         MatButtonModule,
         NullsafePrimitivePipe,
+        BaseChartDirective
     ]
 })
 export class SeriesPageComponent implements OnInit {
@@ -61,8 +64,30 @@ export class SeriesPageComponent implements OnInit {
     hasAddon$: Observable<boolean>;
     hasBounty$: Observable<boolean>;
 
+    positionChartData$: Observable<ChartConfiguration<'line'>['data']>;
+
     seriesId: number;
     password: string;
+
+    lineChartOptions: ChartOptions<'line'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        },
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    text: 'Points'
+                }
+            }
+        }
+    };
+
+    lineChartLegend = true;
 
     private route: ActivatedRoute = inject(ActivatedRoute);
     private seriesApiService: SeriesApiService = inject(SeriesApiService);
@@ -126,20 +151,6 @@ export class SeriesPageComponent implements OnInit {
                     maxAmountPerTournament: series.maxAmountPerTournament,
                 })
             ),
-            // map((series: SeriesS) => ({
-            //         logo: series.branding.logo,
-            //         name: series.name,
-            //         tournamentsPlayed: series.tournaments.length,
-            //         totalTournaments: series.noOfTournaments,
-            //         percentageToFinalPot: series.percentage,
-            //         maxAmountPerTournament: series.maxAmountPerTournament,
-            //         guaranteed: this.seriesService.getGuaranteedFromSeries(series),
-            //         formulaMathContent: {
-            //             latex: this.rankingService.getFormulaDesc$(series.rankFormula)
-            //         },
-            //         formulaLatexString: this.rankingService.getFormulaDesc$(series.rankFormula)
-            //     })
-            // )
         );
 
         const metadata$ = this.seriesApiService.getSeriesMetadata$(this.seriesId, this.password).pipe(
@@ -163,6 +174,10 @@ export class SeriesPageComponent implements OnInit {
             map((ranking: LeaderboardRow[]) => ranking.sort(
                 (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
             )),
+        );
+
+        this.positionChartData$ = this.tournaments$.pipe(
+            map((tournaments: SeriesTournament[]) => this.seriesService.getPositionChartData(tournaments))
         );
 
         this.seriesStats$ = this.leaderboard$.pipe(
