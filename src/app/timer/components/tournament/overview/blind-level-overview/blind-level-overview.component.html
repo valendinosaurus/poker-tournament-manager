@@ -13,7 +13,7 @@
 
             <table class="blinds-table">
                 <tbody>
-                    @for (level of levelsToShow(); track level; let i = $index) {
+                    @for (level of levelsToShow(); track level.id; let i = $index) {
                         @if (i > currentLevelIndex() - 3 && i < currentLevelIndex() + 4) {
                             <tr
                                 [class.bold]="i === currentLevelIndex()"

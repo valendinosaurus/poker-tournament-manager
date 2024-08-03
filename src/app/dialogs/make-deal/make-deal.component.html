@@ -20,7 +20,7 @@
     (ngSubmit)="onSubmit()"
 >
 
-    @for (payout of model | keyvalue; track payout) {
+    @for (payout of model | keyvalue; track payout.value) {
         <mat-form-field>
             <mat-label>{{ +payout.key + 1 }}</mat-label>
             <input

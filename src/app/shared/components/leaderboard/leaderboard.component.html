@@ -31,7 +31,7 @@
             }
         </tr>
 
-        @for (e of leaderboard(); track e; let i = $index) {
+        @for (e of leaderboard(); track e.playerId; let i = $index) {
             @if (series().showNonItmPlaces || (!series().showNonItmPlaces && e.points > 0)) {
                 <tr
                     [class.finalist]="series().finalists > 0 && i < (series().finalists + numberOfDisqualifiedPlayers()) && !e.disqualified"

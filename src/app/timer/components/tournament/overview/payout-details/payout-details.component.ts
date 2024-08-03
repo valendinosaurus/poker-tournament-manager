@@ -21,7 +21,7 @@ import { defer, fromEvent, iif, Observable, of } from 'rxjs';
 import { TournamentApiService } from '../../../../../shared/services/api/tournament-api.service';
 import { NullsafePrimitivePipe } from '../../../../../shared/pipes/nullsafe-primitive.pipe';
 import { UserWithImageComponent } from '../../../../../shared/components/user-with-image/user-with-image.component';
-import { BlindLevel } from '../../../../../shared/interfaces/blind-level.interface';
+import { TimerkMode } from '../../../../../shared/enums/timer-mode.enum';
 
 interface Payout {
     rank: number,
@@ -49,6 +49,7 @@ interface Payout {
 })
 export class PayoutDetailsComponent implements OnInit {
 
+    timerMode: WritableSignal<TimerkMode>;
     tournament: Signal<Tournament>;
     metadata: Signal<SeriesMetadata | undefined>;
     entries: Signal<Entry[]>;
@@ -84,6 +85,8 @@ export class PayoutDetailsComponent implements OnInit {
     playersLeft: Signal<number>;
     placesPaid: Signal<number>;
 
+    readonly TIMER_MODE = TimerkMode;
+
     private rankingService: RankingService = inject(RankingService);
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -92,6 +95,7 @@ export class PayoutDetailsComponent implements OnInit {
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
 
     ngOnInit(): void {
+        this.timerMode = this.state.timerMode;
         this.totalPricePool = this.state.totalPricePool;
         this.bountyPricePool = this.state.bountyPricePool;
         this.deduction = this.state.pricePoolDeduction;

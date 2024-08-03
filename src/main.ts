@@ -40,6 +40,7 @@ import { PlaygroundPageComponent } from './app/playground/playground-page/playgr
 import { TimerPageComponent } from './app/timer/components/tournament/timer/timer-page.component';
 import { RankFormulaPageComponent } from './app/shared/components/rank-formula-page/rank-formula-page.component';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { TimerkMode } from './app/shared/enums/timer-mode.enum';
 
 if (environment.production) {
     enableProdMode();
@@ -84,9 +85,28 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
+        path: 'timer/clock/:tId',
+        loadComponent: () => TimerPageComponent,
+        canActivate: [AuthGuard],
+        data: {
+            mode: TimerkMode.CLOCK
+        }
+    },
+    {
+        path: 'timer/manage/:tId',
+        loadComponent: () => TimerPageComponent,
+        canActivate: [AuthGuard],
+        data: {
+            mode: TimerkMode.MANAGE
+        }
+    },
+    {
         path: 'timer/:tId',
         loadComponent: () => TimerPageComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+            mode: TimerkMode.FULL
+        }
     },
     {
         path: 'playground',
@@ -175,7 +195,7 @@ const routes: Routes = [
         ]
     },
     {
-        path: `rank-formula`,
+        path: `about/rank-formula`,
         loadComponent: () => RankFormulaPageComponent,
     },
     {

@@ -77,7 +77,7 @@
                         </span>
                     }
 
-                    @if (playersLeft() >= 2) {
+                    @if (playersLeft() >= 2 && timerMode() === TIMER_MODE.FULL) {
                         <span>
                             <button
                                 mat-flat-button
@@ -111,7 +111,7 @@
 
             <div id="topd"></div>
             <table cellspacing="0" cellpadding="0">
-                @for (e of payouts(); track e) {
+                @for (e of payouts(); track e.rank) {
                     <tr>
                         <td>
                         <span class="flex-td">
