@@ -280,7 +280,6 @@ export class ButtonsComponent implements OnInit {
         dialogRef.componentInstance.addMinute = this.addMinute;
         dialogRef.componentInstance.nextLevel = this.nextLevel;
         dialogRef.componentInstance.prevLevel = this.prevLevel;
-        dialogRef.componentInstance.previousLevel = this.previousLevel;
     }
 
     toggleRunning(): void {

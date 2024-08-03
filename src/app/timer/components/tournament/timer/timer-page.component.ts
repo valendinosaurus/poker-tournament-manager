@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { Tournament } from 'src/app/shared/interfaces/tournament.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { PlayerApiService } from '../../../../shared/services/api/player-api.ser
 import { Player } from '../../../../shared/interfaces/player.interface';
 import { TableDrawService } from '../../../../shared/services/table-draw.service';
 import { AuthUtilService } from '../../../../shared/services/auth-util.service';
+import { BroadcastAction, BroadcastEvent } from '../../../../shared/interfaces/broadcast-event.interface';
 
 @Component({
     selector: 'app-timer-page',
@@ -40,6 +41,8 @@ export class TimerPageComponent implements OnInit {
     private fetchTrigger$: Observable<void>;
 
     ngOnInit(): void {
+        this.state.timerMode.set(this.route.snapshot.data['mode'] || 'FULL');
+
         this.fetchTrigger$ = this.fetchService.getFetchTrigger$();
         this.state.clientId.set(Math.ceil(Math.random() * 100000));
         const tournamentId = +this.route.snapshot.params['tId'];
