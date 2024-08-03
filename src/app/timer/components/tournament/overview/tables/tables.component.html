@@ -12,7 +12,7 @@
                     <h4>Table {{ i + 1 }}</h4>
                     <div class="table-content">
 
-                        @for (player of table; track player; let j = $index; ) {
+                        @for (player of table; track player.player.id; let j = $index; ) {
                             <div
                                 class="seat"
                                 [class.fixed]="player.fixSeat"

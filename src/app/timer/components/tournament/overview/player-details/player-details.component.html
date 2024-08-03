@@ -29,7 +29,7 @@
                 }
             </tr>
 
-            @for (e of combination(); track e) {
+            @for (e of combination(); track e.pId) {
                 <tr [class.finished]="e.isFinished">
                     <td>
                         <span class="flex-td">

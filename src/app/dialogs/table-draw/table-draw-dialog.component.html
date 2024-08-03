@@ -58,7 +58,7 @@
                 }
 
                 @if (tableDraw().playersToMove) {
-                    @for (p of tableDraw().playersToMove; track p) {
+                    @for (p of tableDraw().playersToMove; track p.player.id) {
                         <div class="notification">
                             <i class="fa fa-exclamation-triangle"></i>
 
@@ -167,7 +167,7 @@
                         <h4>Table {{ i + 1 }}</h4>
                         <div class="table-content">
 
-                            @for (player of table; track player; let j = $index; ) {
+                            @for (player of table; track player.player.id; let j = $index; ) {
                                 <div
                                     class="seat"
                                     [class.fixed]="player.fixSeat"
@@ -196,7 +196,7 @@
                                     @if (player.selectVisible && !player.eliminated) {
                                         <mat-form-field>
                                             <mat-select>
-                                                @for (p of tableDraw().availablePlayers; track p) {
+                                                @for (p of tableDraw().availablePlayers; track p.id) {
                                                     <mat-option [value]="p" (click)="addFixedSeat(i, j, p)">
                                                         {{ p.name }}
                                                     </mat-option>

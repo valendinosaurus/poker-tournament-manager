@@ -80,7 +80,7 @@
 
                     @if (incomingRequests$ | async; as incomingRequests) {
                         @if (incomingRequests.length > 0) {
-                            @for (cr of incomingRequests; track cr) {
+                            @for (cr of incomingRequests; track cr.id) {
                                 <app-connection-request
                                     [connectionRequest]="cr"
                                     [myEmail]="email$ | async"
@@ -97,7 +97,7 @@
 
                     @if (outgoingPendingRequests$ | async; as outgoingPendingRequests) {
                         @if (outgoingPendingRequests.length > 0) {
-                            @for (cr of outgoingPendingRequests; track cr) {
+                            @for (cr of outgoingPendingRequests; track cr.id) {
                                 <app-connection-request
                                     [connectionRequest]="cr"
                                     [myEmail]="email$ | async"
@@ -114,7 +114,7 @@
 
                     @if (outgoingAcceptedRequests$ | async; as outgoingAcceptedRequests) {
                         @if (outgoingAcceptedRequests.length > 0) {
-                            @for (cr of outgoingAcceptedRequests; track cr) {
+                            @for (cr of outgoingAcceptedRequests; track cr.id) {
                                 <app-connection-request
                                     [connectionRequest]="cr"
                                     [myEmail]="email$ | async"
@@ -131,7 +131,7 @@
 
                     @if (outgoingDeclinedRequests$ | async; as outgoingDeclinedRequests) {
                         @if (outgoingDeclinedRequests.length > 0) {
-                            @for (cr of outgoingDeclinedRequests; track cr) {
+                            @for (cr of outgoingDeclinedRequests; track cr.id) {
                                 <app-connection-request
                                     [connectionRequest]="cr"
                                     [myEmail]="email$ | async"
