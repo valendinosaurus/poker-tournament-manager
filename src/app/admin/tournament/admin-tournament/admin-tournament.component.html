@@ -48,6 +48,22 @@
                 <i class="fa fa-share fa-ib"></i> OPEN
             </button>
 
+            <button
+                mat-raised-button
+                color="accent"
+                (click)="openTournamentClock(tournament.id)"
+            >
+                <i class="fa fa-clock fa-ib"></i> CLOCK
+            </button>
+
+            <button
+                mat-raised-button
+                color="accent"
+                (click)="openManageTournament(tournament.id)"
+            >
+                <i class="fa fa-gear fa-ib"></i> MANAGE
+            </button>
+
             @if (tournament.locked) {
                 <button
                     mat-raised-button

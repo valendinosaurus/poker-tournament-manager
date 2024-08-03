@@ -54,7 +54,7 @@
 @if (conductedEntries().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            @for (e of conductedEntries(); track e) {
+            @for (e of conductedEntries(); track e.playerId) {
                 <tr>
                     <td class="small-gray">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}

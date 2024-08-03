@@ -68,7 +68,7 @@
 @if (conductedFinishes().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            @for (e of conductedFinishes(); track e; let i = $index) {
+            @for (e of conductedFinishes(); track e.playerId; let i = $index) {
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}
@@ -110,7 +110,7 @@
 @if (conductedEliminations().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            @for (e of conductedEliminations(); track e; let i = $index) {
+            @for (e of conductedEliminations(); track e.eId; let i = $index) {
                 <tr>
                     <td class="small-gray w-120px">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}

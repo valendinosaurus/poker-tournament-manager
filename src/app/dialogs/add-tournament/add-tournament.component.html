@@ -11,7 +11,7 @@
             [ngModel]="model.tournamentId()"
             (selectionChange)="model.tournamentId.set($event.value)"
         >
-            @for (tournament of allTournaments; track tournament) {
+            @for (tournament of allTournaments; track tournament.value) {
                 <mat-option [value]="tournament.value">
                     {{ tournament.label }}
                 </mat-option>

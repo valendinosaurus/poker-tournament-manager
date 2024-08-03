@@ -34,7 +34,7 @@
                 }
             </mat-select-trigger>
 
-            @for (pause of allPauses; track pause) {
+            @for (pause of allPauses; track pause.id) {
                 <mat-option [value]="pause.id">
                     <app-add-pause-select-option
                         [pause]="pause"

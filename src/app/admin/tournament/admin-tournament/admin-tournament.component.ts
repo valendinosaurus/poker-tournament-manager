@@ -290,4 +290,14 @@ export class AdminTournamentComponent implements OnInit {
         window.open(link, '_blank');
     }
 
+    openTournamentClock(tId: number): void {
+        const link = this.router.serializeUrl(this.router.createUrlTree(['timer/clock', tId]));
+        window.open(link, '_blank');
+    }
+
+    openManageTournament(tId: number): void {
+        const link = this.router.serializeUrl(this.router.createUrlTree(['timer/manage', tId]));
+        window.open(link, '_blank');
+    }
+
 }

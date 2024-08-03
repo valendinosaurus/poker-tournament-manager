@@ -61,7 +61,7 @@
 @if (conductedRebuys().length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            @for (e of conductedRebuys(); track e) {
+            @for (e of conductedRebuys(); track e.playerId) {
                 <tr>
                     <td class="small-gray">
                         {{ e.time | date:'d.M.yy, HH:mm:ss' }}

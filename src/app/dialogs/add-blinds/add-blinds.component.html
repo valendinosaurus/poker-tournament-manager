@@ -71,7 +71,7 @@
 @if (data.tournament && data.tournament.structure.length > 0) {
     <div class="scrollable-dialog-table-wrapper">
         <table class="dialog-table">
-            @for (e of data.tournament.structure; track e) {
+            @for (e of data.tournament.structure; track e.id) {
                 <tr>
                     <td class="flex align-center">
                         <span
