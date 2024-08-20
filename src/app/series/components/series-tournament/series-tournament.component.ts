@@ -1,4 +1,15 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
+import {
+    Component,
+    computed,
+    DestroyRef,
+    EventEmitter,
+    inject,
+    input,
+    OnInit,
+    Output,
+    signal,
+    WritableSignal
+} from '@angular/core';
 import { SeriesTournament } from '../../interfaces/series-tournament.interface';
 import { TEventTypeIconPipe } from '../../../shared/pipes/t-event-type-icon.pipe';
 import { BulletsComponent } from '../../../shared/components/bullets/bullets.component';
@@ -14,6 +25,7 @@ import { Series } from '../../../shared/interfaces/series.interface';
 import { EntryType } from '../../../shared/enums/entry-type.enum';
 import { Entry } from 'src/app/shared/interfaces/entry.interface';
 import { UserWithImageComponent } from '../../../shared/components/user-with-image/user-with-image.component';
+import { MatButton } from '@angular/material/button';
 
 @Component({
     selector: 'app-series-tournament',
@@ -31,7 +43,8 @@ import { UserWithImageComponent } from '../../../shared/components/user-with-ima
         TEventTypeIconPipe,
         TimePipe,
         AsyncPipe,
-        UserWithImageComponent
+        UserWithImageComponent,
+        MatButton
     ]
 })
 export class SeriesTournamentComponent implements OnInit {
@@ -40,6 +53,7 @@ export class SeriesTournamentComponent implements OnInit {
     tournament = input.required<SeriesTournament>();
     myEmail = input.required<string | undefined | null>();
     password = input.required<string>();
+    isPreview = input<boolean>(true);
 
     finishesToShow = computed(() =>
         this.series().showNonItmPlaces
@@ -67,6 +81,8 @@ export class SeriesTournamentComponent implements OnInit {
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private tEventApiService: TEventApiService = inject(TEventApiService);
+
+    @Output() showFull = new EventEmitter<void>();
 
     ngOnInit(): void {
         this.isLiveTickerExpanded = signal(this.fetchLiveTicker());

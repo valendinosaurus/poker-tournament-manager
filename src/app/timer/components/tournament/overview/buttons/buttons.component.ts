@@ -7,10 +7,8 @@ import {
     inject,
     OnInit,
     Output,
-    Signal,
-    WritableSignal
+    Signal
 } from '@angular/core';
-import { Tournament } from '../../../../../shared/interfaces/tournament.interface';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -24,7 +22,6 @@ import { TableDrawDialogComponent } from '../../../../../dialogs/table-draw/tabl
 import { AsyncPipe, DecimalPipe, DOCUMENT, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { SeriesMetadata } from '../../../../../shared/interfaces/series.interface';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../shared/const/app.const';
 import {
     AnimationBubbleBoyComponent
@@ -32,7 +29,9 @@ import {
 import { AnimationSeatOpenComponent } from '../../../../../animation/animation-seat-open/animation-seat-open.component';
 import { AnimationWinnerComponent } from '../../../../../animation/animation-winner/animation-winner.component';
 import { TimerStateService } from '../../../../services/timer-state.service';
-import { TableDrawService } from '../../../../../shared/services/table-draw.service';
+import { InfoPanelComponent } from '../../../../../shared/components/info-panel/info-panel.component';
+import { TableDrawService } from '../../../../../table-draw/services/table-draw.service';
+import { TableDrawAction } from '../../../../../table-draw/enums/table-draw-action.enum';
 
 declare var anime: any;
 
@@ -50,44 +49,11 @@ declare var anime: any;
         AnimationBubbleBoyComponent,
         AnimationSeatOpenComponent,
         AnimationWinnerComponent,
-        AsyncPipe
+        AsyncPipe,
+        InfoPanelComponent
     ]
 })
 export class ButtonsComponent implements OnInit {
-
-    tournament: WritableSignal<Tournament>;
-    metadata: WritableSignal<SeriesMetadata | undefined>;
-    isProOrAdmin: Signal<boolean>;
-    started: Signal<Date | undefined>;
-    isTournamentFinished: Signal<boolean>;
-    isRebuyPhaseFinished: Signal<boolean>;
-    canStartTournament: Signal<boolean>;
-    isRunning: WritableSignal<boolean>;
-    isTournamentLocked: Signal<boolean>;
-    isITM: Signal<boolean>;
-    hasLevels: Signal<boolean>;
-    hasPlayersToSeatOpen: Signal<boolean>;
-
-    canShowInfoPanel: Signal<boolean>;
-    isFullScreen: WritableSignal<boolean>;
-
-    isAnimatingSeatOpen$ = new BehaviorSubject(false);
-    isAnimatingBubbleBoy$ = new BehaviorSubject(false);
-    winnerTrigger$ = new ReplaySubject<number>();
-
-    playerHasToBeMoved: Signal<boolean>;
-    tableHasToBeEliminated: Signal<boolean>;
-    // TODO singals
-    isAddPlayerBlocked = false;
-    lastSeatOpenName = 'TEST NAME';
-    winnerName = 'WINNER';
-    winnerPrice = 0;
-    lastPrice = 0;
-    lastRank = 0;
-    lastIsBubble = false;
-    elem: HTMLElement;
-    menuVisible = false;
-    isAdaptedPayoutSumCorrect = true;
 
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
@@ -95,6 +61,41 @@ export class ButtonsComponent implements OnInit {
     private document: Document = inject(DOCUMENT);
     private state: TimerStateService = inject(TimerStateService);
     private tableDrawService: TableDrawService = inject(TableDrawService);
+
+    tournament = this.state.tournament;
+    metadata = this.state.metadata;
+    started = this.state.started;
+    isTournamentFinished = this.state.isTournamentFinished;
+    isProOrAdmin = this.state.isProOrAdmin;
+    isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
+    isRunning = this.state.isRunning;
+    isTournamentLocked = this.state.isTournamentLocked;
+    isFullScreen = this.state.isFullScreen;
+    isITM = this.state.isITM;
+    elem = this.document.documentElement;
+    hasLevels = this.state.hasLevels;
+    canStartTournament = this.state.canStartTournament;
+    isAddPlayerBlocked = this.state.isAddPlayerBlocked;
+    hasPlayersToSeatOpen = this.state.hasPlayersToSeatOpen;
+    currentTableDrawAction = this.tableDrawService.currentAction;
+    // playerHasToBeMoved = this.tableDrawService.playerHasToBeMoved;
+    // tableHasToBeEliminated = this.tableDrawService.tableHasToBeEliminated;
+
+    canShowInfoPanel: Signal<boolean>;
+
+    isAnimatingSeatOpen$ = new BehaviorSubject(false);
+    isAnimatingBubbleBoy$ = new BehaviorSubject(false);
+    winnerTrigger$ = new ReplaySubject<number>();
+
+    // TODO singals
+    lastSeatOpenName = 'TEST NAME';
+    winnerName = 'WINNER';
+    winnerPrice = 0;
+    lastPrice = 0;
+    lastRank = 0;
+    lastIsBubble = false;
+    menuVisible = false;
+    isAdaptedPayoutSumCorrect = true;
 
     @Output() addMinute = new EventEmitter<void>();
     @Output() nextLevel = new EventEmitter<void>();
@@ -110,27 +111,7 @@ export class ButtonsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.tournament = this.state.tournament;
-        this.metadata = this.state.metadata;
-        this.started = this.state.started;
-        this.isTournamentFinished = this.state.isTournamentFinished;
-        this.isProOrAdmin = this.state.isProOrAdmin;
-        this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
-        this.isRunning = this.state.isRunning;
-        this.isTournamentLocked = this.state.isTournamentLocked;
-        this.isFullScreen = this.state.isFullScreen;
-        this.isITM = this.state.isITM;
-        this.elem = this.document.documentElement;
-
-        this.hasLevels = computed(() =>
-            this.state.tournament().structure.length > 0
-        );
-
-        this.hasPlayersToSeatOpen = computed(() =>
-            this.state.players().length > 0
-        );
-
-        const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout;// this.localStorageService.getAdaptedPayoutById(this.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout;
 
         if (adaptedPayouts) {
             const adaptedSum = adaptedPayouts.reduce((p, c) => p + c, 0);
@@ -145,20 +126,16 @@ export class ButtonsComponent implements OnInit {
 
         const playersLeft = this.state.players().length - this.state.finishes().length;
 
-        this.isAddPlayerBlocked = this.state.players().length >= numberOfPaidPlaces && playersLeft < numberOfPaidPlaces;
-
-        this.canStartTournament = this.state.canStartTournament;
-        this.playerHasToBeMoved = this.tableDrawService.playerHasToBeMoved;
-        this.tableHasToBeEliminated = this.tableDrawService.tableHasToBeEliminated;
+        this.state.isAddPlayerBlocked.set(this.state.players().length >= numberOfPaidPlaces && playersLeft < numberOfPaidPlaces);
 
         this.canShowInfoPanel = computed(() =>
-            (this.isAddPlayerBlocked && !this.isTournamentFinished())
+            (this.isAddPlayerBlocked() && !this.isTournamentFinished())
             || (this.tournament().withRebuy && this.isRebuyPhaseFinished() && !this.isTournamentFinished())
             || !this.canStartTournament()
             || this.isTournamentFinished()
             || (this.canStartTournament() && !this.started())
-            || this.playerHasToBeMoved()
-            || this.tableHasToBeEliminated()
+            || this.currentTableDrawAction() === TableDrawAction.PLAYER_HAS_TO_BE_MOVED// this.playerHasToBeMoved()
+            || this.currentTableDrawAction() === TableDrawAction.TABLE_CAN_BE_ELIMINATED//this.tableHasToBeEliminated()
         );
     }
 
@@ -269,11 +246,9 @@ export class ButtonsComponent implements OnInit {
     openMenu(): void {
         const dialogRef = this.dialog.open(
             MenuDialogComponent, {
-                data: {
-                    isAddPlayerBlocked: this.isAddPlayerBlocked // TODO
-                },
                 panelClass: 'menu-dialog',
-                ...DEFAULT_DIALOG_POSITION
+                ...DEFAULT_DIALOG_POSITION,
+                autoFocus: false
             }
         );
 

@@ -12,7 +12,7 @@
     padding-right: 12px;
     background: aliceblue;
 
-    * {
+    *:not(button) {
         background: aliceblue;
     }
 }
@@ -99,3 +99,18 @@
     color: #666 !important;
     margin-left: 6px;
 }
+
+button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 24px;
+}
+
+.expandable.expanded {
+    max-height: 5000px !important;
+}
+
+//*:not(button) {
+//    pointer-events: none;
+//}

@@ -45,8 +45,6 @@ export class BlindLevelOverviewComponent implements OnInit {
 
     settings: Signal<TournamentSettings>;
 
-    ii = 1;
-
     private state: TimerStateService = inject(TimerStateService);
 
     @Output() addBlind = new EventEmitter<void>();
@@ -59,11 +57,13 @@ export class BlindLevelOverviewComponent implements OnInit {
         this.settings = this.state.settings;
 
         this.levelsToShow = computed(() => {
-            this.ii = 1;
+            let displayedPosition = 1;
+            let localId = 0;
 
             return this.levels().map(l => ({
                 ...l,
-                id: l.isPause ? this.ii : this.ii++
+                displayedPosition: l.isPause ? undefined : displayedPosition++,
+                id: localId++
             }));
         });
     }

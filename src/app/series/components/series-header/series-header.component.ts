@@ -21,5 +21,6 @@ import { DecimalPipe } from '@angular/common';
 export class SeriesHeaderComponent {
 
     seriesHeader = input.required<SeriesHeader>();
+    totalPlayers = input<number>(0);
 
 }

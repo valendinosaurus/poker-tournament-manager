@@ -145,7 +145,7 @@ export class PayoutDetailsComponent implements OnInit {
             })
         );
 
-        const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout; // this.localStorageService.getAdaptedPayoutById(this.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.tournament().adaptedPayout;
 
         if (adaptedPayouts) {
             adaptedPayouts.forEach((payout: number) => {

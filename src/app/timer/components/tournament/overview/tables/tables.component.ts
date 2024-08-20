@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, Signal } from '@angular/core';
-import { TableDrawService } from '../../../../../shared/services/table-draw.service';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { BulletsComponent } from '../../../../../shared/components/bullets/bullets.component';
 import { DecimalPipe } from '@angular/common';
 import { FormulaPointsPipe } from '../../../../../shared/pipes/formula-points.pipe';
@@ -7,7 +6,8 @@ import { UserWithImageComponent } from '../../../../../shared/components/user-wi
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { TableDraw } from '../../../../../shared/interfaces/table-draw.interface';
+import { TableDrawService } from '../../../../../table-draw/services/table-draw.service';
+import { TableDraw } from '../../../../../table-draw/interfaces/table-draw.interface';
 
 @Component({
     selector: 'app-tables',
@@ -24,14 +24,10 @@ import { TableDraw } from '../../../../../shared/interfaces/table-draw.interface
         MatSelectModule
     ],
 })
-export class TablesComponent implements OnInit {
-
-    tableDraw: Signal<TableDraw>;
+export class TablesComponent {
 
     private tableDrawService: TableDrawService = inject(TableDrawService);
 
-    ngOnInit(): void {
-        this.tableDraw = this.tableDrawService.tableDraw;
-    }
+    tableDraw: Signal<TableDraw | undefined> = computed(() => this.tableDrawService.tableDraw());
 
 }

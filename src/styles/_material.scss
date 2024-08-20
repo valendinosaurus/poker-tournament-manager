@@ -210,6 +210,33 @@ button.main {
     }
 }
 
+button.main.border {
+    border: solid 4px $primary;
+
+    .fa {
+        font-size: 24px;
+
+        @media (max-width: 800px) {
+            font-size: 32px;
+        }
+    }
+}
+
+button.main.border:hover {
+    background: rgba($primary, 0.5);
+
+    .fa {
+        color: white !important;
+    }
+}
+
+div.manage button.main.border {
+    width: 44px !important;
+    height: 44px !important;
+    flex: 0 0 44px !important;
+    border-radius: 44px;
+}
+
 .mat-mdc-raised-button[color="primary"]:not(:disabled) {
     background: $primaryDark !important;
 }
@@ -231,6 +258,10 @@ button.round {
 
 h3 > button.round {
     margin-left: 12px;
+}
+
+button.no-m {
+    margin: 0 !important;
 }
 
 .mat-sidenav {

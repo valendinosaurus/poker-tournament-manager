@@ -38,13 +38,13 @@
     <mat-form-field>
         <mat-label>Location</mat-label>
         <mat-select
-            [ngModel]="model.location()"
+            [ngModel]="+model.location()"
             (selectionChange)="this.model.location.set($event.value)"
             name="location"
         >
-            @for (payout of locations$ | async; track payout.value) {
-                <mat-option [value]="payout.value">
-                    {{ payout.label }}
+            @for (location of locations$ | async; track location.value) {
+                <mat-option [value]="+location.value">
+                    {{ location.label }}
                 </mat-option>
             }
         </mat-select>
@@ -58,6 +58,39 @@
             [ngModel]="model.maxPlayers()"
             (ngModelChange)="model.maxPlayers.set($event)"
             name="maxPlayers"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Min Tables</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.minTables()"
+            (ngModelChange)="model.minTables.set($event)"
+            name="minTables"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Max Tables</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.maxTables()"
+            (ngModelChange)="model.maxTables.set($event)"
+            name="maxTables"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Max Players per Table</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.maxPlayersPerTable()"
+            (ngModelChange)="model.maxPlayersPerTable.set($event)"
+            name="maxPlayersPerTable"
         />
     </mat-form-field>
 
@@ -91,6 +124,17 @@
             [ngModel]="model.buyInAmount()"
             (ngModelChange)="model.buyInAmount.set($event)"
             name="buyInAmount"
+        />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Rake</mat-label>
+        <input
+            matInput
+            type="number"
+            [ngModel]="model.rake()"
+            (ngModelChange)="model.rake.set($event)"
+            name="rake"
         />
     </mat-form-field>
 

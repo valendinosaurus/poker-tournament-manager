@@ -70,7 +70,9 @@ export class CreateTournamentComponent extends BaseAddDialogComponent<CreateTour
                 locations.map(l => ({label: l.name, value: l.id}))
             ),
             tap((locations) => {
-                this.model.location.set(locations[0].value);
+                if (this.model.location() === -1) {
+                    this.model.location.set(locations[0].value);
+                }
             })
         );
 
@@ -86,9 +88,13 @@ export class CreateTournamentComponent extends BaseAddDialogComponent<CreateTour
             ),
             //date: signal(this.data?.tournament?.date ? new Date(this.data.tournament.date).toISOString() : new Date().toISOString()),
             maxPlayers: signal(this.data?.tournament?.maxPlayers ?? 0),
+            minTables: signal(this.data?.tournament?.minTables ?? 0),
+            maxTables: signal(this.data?.tournament?.maxTables ?? 0),
+            maxPlayersPerTable: signal(this.data?.tournament?.maxPlayersPerTable ?? 0),
             startStack: signal(this.data?.tournament?.startStack ?? 0),
             initialPricePool: signal(this.data?.tournament?.initialPricePool ?? 0),
             buyInAmount: signal(this.data?.tournament?.buyInAmount ?? 0),
+            rake: signal(this.data?.tournament?.rake ?? 0),
             withReEntry: signal(this.data?.tournament?.withReEntry ?? false),
             noOfReEntries: signal(this.data?.tournament?.noOfReEntries ?? 0),
             withRebuy: signal(this.data?.tournament?.withRebuy ?? false),
@@ -127,11 +133,15 @@ export class CreateTournamentComponent extends BaseAddDialogComponent<CreateTour
         const model: TournamentModel = {
             id: this.model.id(),
             name: this.model.name(),
-            date: new Date(this.model.date()).toISOString(),
+            date: new Date(new Date(this.model.date()).setHours(12)).toISOString(),
             maxPlayers: this.model.maxPlayers(),
+            minTables: this.model.minTables(),
+            maxTables: this.model.maxTables(),
+            maxPlayersPerTable: this.model.maxPlayersPerTable(),
             startStack: this.model.startStack(),
             initialPricePool: this.model.initialPricePool(),
             buyInAmount: this.model.buyInAmount(),
+            rake: this.model.rake(),
             noOfRebuys: this.model.noOfRebuys(),
             rebuyAmount: this.model.rebuyAmount(),
             rebuyStack: this.model.rebuyStack(),
@@ -186,4 +196,5 @@ export class CreateTournamentComponent extends BaseAddDialogComponent<CreateTour
     cancel(): void {
         this.dialogRef.close(false);
     }
+
 }

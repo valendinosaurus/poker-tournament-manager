@@ -8,14 +8,15 @@
                 {{ tournament().tournament.name }}
             </h4>
 
-            @if (tournament().playersAlive.length > 0) {
-                <h5 class="flex justify-center align-center">
-                    <span class="running"></span>
-                    RUNNING!
-                </h5>
-            }
+            @if (!isPreview()) {
+                @if (tournament().playersAlive.length > 0) {
+                    <h5 class="flex justify-center align-center">
+                        <span class="running"></span>
+                        RUNNING!
+                    </h5>
+                }
 
-            <div>
+                <div>
                 <span>
                     <p>
                         <strong class="green">
@@ -27,8 +28,8 @@
                     </h5>
                 </span>
 
-                @if (tournament().contribution > 0) {
-                    <span>
+                    @if (tournament().contribution > 0) {
+                        <span>
                         <p>
                             @if (tournament().withBounty) {
                                 $ {{ +tournament().pricePool + bountyPool() | number:'1.0-0' }}
@@ -42,7 +43,7 @@
                         </h5>
                     </span>
 
-                    <span>
+                        <span>
                         <p>
                             $ {{ tournament().contribution | number:'1.0-0' }}
                         </p>
@@ -50,10 +51,10 @@
                             Goes to final pot
                         </h5>
                     </span>
-                }
+                    }
 
-                @if (tournament().withBounty) {
-                    <span>
+                    @if (tournament().withBounty) {
+                        <span>
                         <p>
                             $ {{ bountyPool() | number:'1.0-0' }}
                         </p>
@@ -61,8 +62,9 @@
                             Bounty price pool
                         </h5>
                     </span>
-                }
-            </div>
+                    }
+                </div>
+            }
         </div>
 
         <div class="table-wrapper">
@@ -171,7 +173,7 @@
             </table>
         </div>
 
-        @if (series().showLiveTicker && liveTicker() && liveTicker().length > 0) {
+        @if (!isPreview() && series().showLiveTicker && liveTicker() && liveTicker().length > 0) {
             <div class="live-ticker">
                 <span class="flex justify-between align-center flex-wrap">
                     <span class="flex">
@@ -217,6 +219,16 @@
                     }
                 </div>
             </div>
+        }
+
+        @if (isPreview()) {
+            <button
+                mat-raised-button
+                color="accent"
+                (click)="showFull.emit()"
+            >
+                SHOW FULL DETAILS
+            </button>
         }
     </div>
 }

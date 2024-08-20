@@ -293,3 +293,37 @@ th, td {
         margin-right: 12px;
     }
 }
+
+.tournament-wrapper {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: calc(100vh - 64px);
+    top: 64px;
+    overflow-y: auto;
+    left: 0;
+    background: rgba(white, 0.7);
+    justify-content: center;
+    z-index: 99999;
+}
+
+.tournament-wrapper.visible {
+    display: flex;
+
+    @media (max-width: 800px) {
+        display: block;
+    }
+}
+
+.tournament-content {
+    flex: 0 0 100%;
+    max-width: 800px;
+    background: white;
+    padding: 20px;
+    box-sizing: border-box;
+
+    @media (max-width: 800px) {
+        width: 100%;
+        padding: 8px;
+    }
+}

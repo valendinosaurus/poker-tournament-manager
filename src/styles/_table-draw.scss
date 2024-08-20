@@ -1,7 +1,8 @@
 @import 'src/styles/colors_texts';
 
 .draw-dialog,
-app-tables {
+app-tables,
+app-table-draw {
     .tables-wrapper {
         display: grid;
         grid-template-columns: 1fr 1fr;

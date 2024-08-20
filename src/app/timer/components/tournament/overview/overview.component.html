@@ -1,4 +1,7 @@
-<div class="overview">
+<div
+    class="overview"
+    [class.g-padding]="hasPadding()"
+>
     <div class="overview-header">
         <span>
             {{ today() | date:'dd.MM.YYYY HH:mm' }}
@@ -7,19 +10,19 @@
             {{ tournament().buyInAmount }} $
 
             @if (tournament().withBounty) {
-                + {{ tournament().bountyAmount }} $ Bounty
+                + {{ tournament().bountyAmount }} $B
             }
 
             @if (tournament().withReEntry) {
-                - with Re-Entry
+                RE
             }
 
             @if (tournament().withRebuy) {
-                - with Rebuy
+                RB
             }
 
             @if (tournament().withAddon) {
-                - with Addon
+                A
             }
         </span>
         <span>
@@ -33,83 +36,86 @@
     </div>
 
     <div class="overview-wrapper">
-        <div class="left">
-            <div
-                class="slider-panel"
-                [class.simple]="!isProOrAdmin()"
-            >
-                @if (isProOrAdmin()) {
-                    <div class="slider-wrapper">
-                        <div class="keen-slider" #sliderRef>
-                            <div class="keen-slider__slide number-slide1 slide-blinds">
-                                <app-blind-level-overview
-                                    [levels]="tournament().structure"
-                                    (addBlind)="addBlind()"
-                                ></app-blind-level-overview>
-                            </div>
-
-                            <div class="keen-slider__slide number-slide2 slide-stats">
-                                <app-player-details></app-player-details>
-                            </div>
-
-                            <div class="keen-slider__slide number-slide3 slide-stats">
-                                @if (tournament().finishes.length > tournament().players.length / 2) {
-                                    <app-ranking></app-ranking>
-                                } @else if (drawState() !== 'BLANK') {
-                                    <app-tables></app-tables>
-                                } @else {
+        @if (timerMode() !== TIMER_MODE.MANAGE) {
+            <div class="left">
+                <div
+                    class="slider-panel"
+                    [class.simple]="!isProOrAdmin()"
+                >
+                    @if (isProOrAdmin()) {
+                        <div class="slider-wrapper">
+                            <div class="keen-slider" #sliderRefLeft>
+                                <div class="keen-slider__slide number-slide1 slide-blinds">
                                     <app-blind-level-overview
                                         [levels]="tournament().structure"
                                         (addBlind)="addBlind()"
                                     ></app-blind-level-overview>
-                                }
-                            </div>
+                                </div>
 
-                            <div
-                                class="keen-slider__slide number-slide4 slide-stats"
-                            >
-                                @if (isTournamentPartOfSeries()) {
-                                    <app-leaderboard-info></app-leaderboard-info>
-                                } @else {
+                                <div class="keen-slider__slide number-slide2 slide-stats">
                                     <app-player-details></app-player-details>
-                                }
+                                </div>
+
+                                <div class="keen-slider__slide number-slide3 slide-stats">
+                                    @if (tournament().finishes.length > tournament().players.length / 2) {
+                                        <app-ranking></app-ranking>
+                                    } @else if (drawState() !== 'BLANK') {
+                                        <app-tables></app-tables>
+                                    } @else {
+                                        <app-blind-level-overview
+                                            [levels]="tournament().structure"
+                                            (addBlind)="addBlind()"
+                                        ></app-blind-level-overview>
+                                    }
+                                </div>
+
+                                <div
+                                    class="keen-slider__slide number-slide4 slide-stats"
+                                >
+                                    @if (isTournamentPartOfSeries()) {
+                                        <app-leaderboard-info></app-leaderboard-info>
+                                    } @else {
+                                        <app-player-details></app-player-details>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (timerMode() === TIMER_MODE.FULL) {
+                                <div class="slider-buttons-wrapper">
+                                    <div class="slider-buttons">
+                                        <i
+                                            class="fa fa-chevron-left"
+                                            (click)="sliderLeft.prev()"
+                                        ></i>
+                                        <i
+                                            class="fa fa-chevron-right"
+                                            (click)="sliderLeft.next()"
+                                        ></i>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="steps">
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideLeft() === 0"></i>
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideLeft() === 1"></i>
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideLeft() === 2"></i>
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideLeft() === 3"></i>
                             </div>
                         </div>
-
-                        <div class="slider-buttons-wrapper">
-                            <div class="slider-buttons">
-                                <i
-                                    class="fa fa-chevron-left"
-                                    (click)="slider.prev()"
-                                ></i>
-                                <i
-                                    class="fa fa-chevron-right"
-                                    (click)="slider.next()"
-                                ></i>
-                            </div>
-                        </div>
-
-                        <div class="steps">
-                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 0"></i>
-                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 1"></i>
-                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 2"></i>
-                            <i class="fa fa-circle-dot" [class.fa-circle]="currentSlide() === 3"></i>
-                        </div>
-                    </div>
-                } @else {
-                    <app-blind-level-overview
-                        [levels]="tournament().structure"
-                        [fill]="true"
-                    ></app-blind-level-overview>
-                }
+                    } @else {
+                        <app-blind-level-overview
+                            [levels]="tournament().structure"
+                            [fill]="true"
+                        ></app-blind-level-overview>
+                    }
+                </div>
             </div>
-        </div>
 
-        <div
-            class="center"
-            [class.full]="!isProOrAdmin()"
-        >
-            <div class="clock">
+            <div
+                class="center"
+                [class.full]="!isProOrAdmin()"
+            >
+                <div class="clock">
                 <span class="titles">
                     <div class="flex justify-center align-center">
                         @if (started() !== undefined) {
@@ -125,81 +131,129 @@
                     </div>
                 </span>
 
-                <h1>
-                    {{ currentLevelTimeLeft() | time }}
-                </h1>
+                    <h1>
+                        {{ currentLevelTimeLeft() | time }}
+                    </h1>
 
-                @if (!isRunning() && !isFinished()) {
-                    <div class="popup paused">
-                        PAUSED
-                    </div>
-                }
-
-                @if (isFinished()) {
-                    <div class="popup finished">
-                        FINISHED
-                    </div>
-                } @else {
-                    <countdown
-                        class="countdown"
-                        #cd
-                        (event)="handleEvent($event)"
-                        [config]="countdownConfig()"
-                    ></countdown>
-                }
-            </div>
-
-            @if (!isFinished() && tournament().structure.length > 0) {
-                <div
-                    class="current-level"
-                    [class.pause]="levels()[currentLevelIndex()].isPause"
-                >
-                    <p class="level"
-                       [innerHTML]="levels()[currentLevelIndex()] | blindLevelText:true"
-                    ></p>
-                </div>
-            }
-
-            @if (!isFinished() && tournament().structure.length > 1 && currentLevelIndex() < tournament().structure.length) {
-                <div class="next-level">
-                    <p class="next-level-title">
-                        NEXT
-                    </p>
-
-                    <p
-                        class="next-level-text"
-                        [innerHTML]="levels()[currentLevelIndex() + 1] | blindLevelText:false"
-                    ></p>
-                </div>
-            }
-
-            <div class="button-wrapper">
-                <app-buttons
-                    (addMinute)="addMinute()"
-                    (nextLevel)="goToNextLevel()"
-                    (prevLevel)="goToPreviousLevel()"
-                ></app-buttons>
-            </div>
-        </div>
-
-        @if (isProOrAdmin()) {
-            <div class="right">
-                <h3 class="highlighted">
-                    Tournament Info
-                </h3>
-
-                <app-payout-details></app-payout-details>
-
-                <div class="info-wrapper">
-                    <app-player-overview></app-player-overview>
-
-                    @if (isWithRebuyOrAddon()) {
-                        <app-buyin-overview></app-buyin-overview>
+                    @if (!isRunning() && !isFinished()) {
+                        <div class="popup paused">
+                            PAUSED
+                        </div>
                     }
 
-                    <app-chips-overview></app-chips-overview>
+                    @if (isFinished()) {
+                        <div class="popup finished">
+                            FINISHED
+                        </div>
+                    } @else {
+                        <countdown
+                            class="countdown"
+                            #cd
+                            (event)="handleEvent($event)"
+                            [config]="countdownConfig()"
+                        ></countdown>
+                    }
                 </div>
+
+                @if (!isFinished() && tournament().structure.length > 0) {
+                    <div
+                        class="current-level"
+                        [class.pause]="levels()[currentLevelIndex()].isPause"
+                    >
+                        <p class="level"
+                           [innerHTML]="levels()[currentLevelIndex()] | blindLevelText:true"
+                        ></p>
+                    </div>
+                }
+
+                @if (!isFinished() && tournament().structure.length > 1 && currentLevelIndex() < tournament().structure.length) {
+                    <div class="next-level">
+                        <p class="next-level-title">
+                            NEXT
+                        </p>
+
+                        <p
+                            class="next-level-text"
+                            [innerHTML]="levels()[currentLevelIndex() + 1] | blindLevelText:false"
+                        ></p>
+                    </div>
+                }
+
+                @if (timerMode() === TIMER_MODE.FULL) {
+                    <div class="button-wrapper">
+                        <app-buttons
+                            (addMinute)="addMinute()"
+                            (nextLevel)="goToNextLevel()"
+                            (prevLevel)="goToPreviousLevel()"
+                        ></app-buttons>
+                    </div>
+                }
             </div>
+
+            @if (isProOrAdmin()) {
+                <div class="right">
+                    <h3 class="highlighted">
+                        Tournament Info
+                    </h3>
+
+                    <app-payout-details></app-payout-details>
+
+
+                    <div class="slider-panel">
+                        <div class="slider-wrapper">
+                            <div class="keen-slider" #sliderRefRight>
+                                <div class="keen-slider__slide number-slide1 slide-blinds">
+                                    <app-player-overview></app-player-overview>
+                                </div>
+
+                                <div class="keen-slider__slide number-slide2 slide-blinds">
+                                    <app-buyin-overview></app-buyin-overview>
+                                </div>
+
+                                <div class="keen-slider__slide number-slide3 slide-blinds">
+                                    <app-chips-overview></app-chips-overview>
+                                </div>
+                            </div>
+
+                            @if (timerMode() === TIMER_MODE.FULL) {
+                                <div class="slider-buttons-wrapper">
+                                    <div class="slider-buttons">
+                                        <i
+                                            class="fa fa-chevron-left"
+                                            (click)="sliderRight.prev()"
+                                        ></i>
+                                        <i
+                                            class="fa fa-chevron-right"
+                                            (click)="sliderRight.next()"
+                                        ></i>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="steps">
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideRight() === 0"></i>
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideRight() === 1"></i>
+                                <i class="fa fa-circle-dot" [class.fa-circle]="currentSlideRight() === 2"></i>
+                            </div>
+                        </div>
+                        <!--                    <div class="info-wrapper">-->
+                        <!--                        <app-player-overview></app-player-overview>-->
+
+                        <!--                        @if (isWithRebuyOrAddon()) {-->
+                        <!--                            <app-buyin-overview></app-buyin-overview>-->
+                        <!--                        }-->
+
+                        <!--                        <app-chips-overview></app-chips-overview>-->
+                        <!--                    </div>-->
+                    </div>
+                </div>
+            }
+        } @else {
+            <app-menu-dialog
+                (addMinute)="addMinute()"
+                (nextLevel)="goToNextLevel()"
+                (prevLevel)="goToPreviousLevel()"
+            ></app-menu-dialog>
         }
     </div>
 </div>

@@ -12,8 +12,8 @@ import { ConductedEntry } from '../../shared/interfaces/util/conducted-entry.int
 import { RankingService } from '../../shared/services/util/ranking.service';
 import { TournamentSettings } from '../../shared/interfaces/tournament-settings.interface';
 import { TournamentApiService } from '../../shared/services/api/tournament-api.service';
-import { take, tap } from 'rxjs/operators';
-import { FetchService } from '../../shared/services/fetch.service';
+import { take } from 'rxjs/operators';
+import { TimerkMode } from '../../shared/enums/timer-mode.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -22,13 +22,26 @@ export class TimerStateService {
 
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private rankingService: RankingService = inject(RankingService);
-    private fetchService: FetchService = inject(FetchService);
+
+    uuid = computed(() => Math.ceil(Math.random() * 100000));
+    timerMode: WritableSignal<TimerkMode> = signal(TimerkMode.FULL);
+    hasPadding = signal(false);
 
     tournament: WritableSignal<Tournament> = signal({} as Tournament);
+    tournamentId = computed(() => this.tournament().id);
     metadata: WritableSignal<SeriesMetadata | undefined> = signal(undefined);
     clientId: WritableSignal<number> = signal(-1);
 
     isProOrAdmin: WritableSignal<boolean> = signal(false);
+    isAddPlayerBlocked = signal(false);
+
+    hasLevels = computed(() =>
+        this.tournament().structure.length > 0
+    );
+
+    hasPlayersToSeatOpen = computed(() =>
+        this.players().length > 0
+    );
 
     settings: Signal<TournamentSettings> = computed(() => {
         const structure = this.tournament().structure;
@@ -312,7 +325,7 @@ export class TimerStateService {
                     started: new Date()
                 }).pipe(
                     take(1),
-                    tap(() => this.fetchService.trigger())
+                    // TODO    tap(() => this.fetchService.trigger(true))
                 ).subscribe();
             }
         }

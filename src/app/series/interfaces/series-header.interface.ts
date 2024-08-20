@@ -7,4 +7,5 @@ export interface SeriesHeader {
     maxAmountPerTournament: number;
     guaranteed: number;
     formulaLatexString: string;
+    noOfFinalists: number;
 }

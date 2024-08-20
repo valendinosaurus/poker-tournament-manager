@@ -11,6 +11,7 @@ export interface BlindLevel {
     isChipUp: boolean;
     endsRebuy: boolean;
     position: number;
+    displayedPosition?: number;
 }
 
 export interface BlindLevelModel {

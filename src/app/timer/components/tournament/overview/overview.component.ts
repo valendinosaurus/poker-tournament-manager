@@ -39,9 +39,13 @@ import { DEFAULT_DIALOG_POSITION } from '../../../../shared/const/app.const';
 import { TimerStateService } from '../../../services/timer-state.service';
 import { TournamentApiService } from '../../../../shared/services/api/tournament-api.service';
 import { FetchService } from '../../../../shared/services/fetch.service';
-import { TableDrawService } from '../../../../shared/services/table-draw.service';
-import { TableDrawState } from '../../../../shared/enums/table-draw-state.enum';
 import { TablesComponent } from './tables/tables.component';
+import { TimerkMode } from '../../../../shared/enums/timer-mode.enum';
+import { MenuDialogComponent } from './buttons/menu-dialog/menu-dialog.component';
+import { BroadcastAction, BroadcastEvent } from '../../../../shared/interfaces/broadcast-event.interface';
+import { WebSocketService } from '../../../../shared/services/web-socket.service';
+import { TableDrawStep } from '../../../../table-draw/enums/table-draw-step.enum';
+import { TableDrawService } from '../../../../table-draw/services/table-draw.service';
 
 @Component({
     selector: 'app-overview',
@@ -63,10 +67,12 @@ import { TablesComponent } from './tables/tables.component';
         DatePipe,
         BlindLevelTextPipe,
         TablesComponent,
+        MenuDialogComponent,
     ],
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
 
+    timerMode: WritableSignal<TimerkMode>;
     tournament: WritableSignal<Tournament>;
     metadata: WritableSignal<SeriesMetadata | undefined>;
     isFinished: Signal<boolean>;
@@ -79,8 +85,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     isITM: Signal<boolean>;
     isWithRebuyOrAddon = computed(() => this.tournament().withRebuy || this.tournament().withAddon);
 
-    slider: KeenSliderInstance;
-    currentSlide: WritableSignal<number> = signal(0);
+    sliderLeft: KeenSliderInstance;
+    sliderRight: KeenSliderInstance;
+    currentSlideLeft: WritableSignal<number> = signal(0);
+    currentSlideRight: WritableSignal<number> = signal(0);
 
     currentLevelTimeLeft: WritableSignal<number> = signal(0);
     blindDuration: WritableSignal<number> = signal(0);
@@ -91,17 +99,20 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     elapsed: Signal<number>;
     timeForRebuy: Signal<Date>;
 
-    drawState: Signal<TableDrawState>;
+    drawState: Signal<TableDrawStep>;
 
     countdownConfig: WritableSignal<CountdownConfig>;
 
     firstDonePassed = false;
     blockNotifications = false;
 
+    readonly TIMER_MODE = TimerkMode;
+
     @ViewChild('warning') warning!: ElementRef;
     @ViewChild('bleepNext') bleepNext!: ElementRef;
     @ViewChild('cd') countdown!: CountdownComponent;
-    @ViewChild('sliderRef') sliderRef: ElementRef<HTMLElement>;
+    @ViewChild('sliderRefLeft') sliderRefLeft: ElementRef<HTMLElement>;
+    @ViewChild('sliderRefRight') sliderRefRight: ElementRef<HTMLElement>;
 
     @ViewChild(BlindLevelOverviewComponent) blindCmp: BlindLevelOverviewComponent;
     @ViewChild(ButtonsComponent) buttonsCmp: ButtonsComponent;
@@ -111,7 +122,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private state: TimerStateService = inject(TimerStateService);
     private tournamentApiService: TournamentApiService = inject(TournamentApiService);
     private fetchService: FetchService = inject(FetchService);
-    tableDrawService: TableDrawService = inject(TableDrawService);
+    private tableDrawService: TableDrawService = inject(TableDrawService);
+    private webSocketService: WebSocketService = inject(WebSocketService);
+
+    hasPadding = this.state.hasPadding;
 
     @HostListener('window:keyup.space', ['$event'])
     onKeydownSpaceHandler(event: Event) {
@@ -138,14 +152,17 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
 
     _runningEffect = effect(() => {
-        if (this.state.isRunning()) {
-            this.countdown.resume();
-        } else if (!this.state.isTournamentFinished()) {
-            this.countdown.pause();
+        if (this.timerMode() !== TimerkMode.MANAGE) {
+            if (this.state.isRunning()) {
+                this.countdown.resume();
+            } else if (!this.state.isTournamentFinished()) {
+                this.countdown.pause();
+            }
         }
     });
 
     ngOnInit(): void {
+        this.timerMode = this.state.timerMode;
         this.tournament = this.state.tournament;
         this.metadata = this.state.metadata;
         this.isFinished = this.state.isTournamentFinished;
@@ -181,7 +198,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         });
 
         this.drawState = computed(() =>
-            this.tableDrawService.tableDraw().state
+            this.tableDrawService.tableDraw()?.step ?? TableDrawStep.BLANK
         );
 
         this.initTimeValues();
@@ -203,15 +220,50 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 this.state.markForReset.set(false);
             })
         ).subscribe();
+
+        this.webSocketService.getSocket$().pipe(
+            tap((event: BroadcastEvent) => {
+                switch (event.action) {
+                    case BroadcastAction.UPDATE:
+                        this.fetchService.trigger(true);
+                        break;
+                    case BroadcastAction.START:
+                        this.state.startTimer();
+                        break;
+                    case BroadcastAction.PAUSE:
+                        this.state.pauseTimer();
+                        break;
+                    case BroadcastAction.NEXT_LEVEL:
+                        this.goToNextLevel();
+                        break;
+                    case BroadcastAction.PREV_LEVEL:
+                        this.goToPreviousLevel();
+                        break;
+                    case BroadcastAction.ADD_MINUTE:
+                        this.addMinute();
+                        break;
+                }
+            })
+        ).subscribe();
+
+        setInterval(() => {
+            this.webSocketService.send({
+                senderUuid: this.state.uuid(),
+                action: BroadcastAction.HEARTBEAT,
+                tournamentId: this.tournament().id,
+                data: null
+            });
+
+        }, 30000);
     }
 
     ngAfterViewInit(): void {
-        if (this.state.isProOrAdmin()) {
-            this.slider = new KeenSlider(this.sliderRef.nativeElement, {
+        if (this.state.isProOrAdmin() && this.timerMode() !== TimerkMode.MANAGE) {
+            this.sliderLeft = new KeenSlider(this.sliderRefLeft.nativeElement, {
                 loop: true,
-                initial: this.currentSlide(),
+                initial: this.currentSlideLeft(),
                 slideChanged: (s: any) => {
-                    this.currentSlide.set(s.track.details.rel);
+                    this.currentSlideLeft.set(s.track.details.rel);
                 }
             });
 
@@ -219,7 +271,26 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 takeUntilDestroyed(this.destroyRef),
                 tap(() => {
                     if (this.state.autoSlide() && !this.state.forceStopSlide()) {
-                        this.slider.next();
+                        this.sliderLeft.next();
+                    }
+                })
+            ).subscribe();
+        }
+
+        if (this.timerMode() !== TimerkMode.MANAGE) {
+            this.sliderRight = new KeenSlider(this.sliderRefRight.nativeElement, {
+                loop: true,
+                initial: this.currentSlideRight(),
+                slideChanged: (s: any) => {
+                    this.currentSlideRight.set(s.track.details.rel);
+                }
+            });
+
+            interval(5000).pipe(
+                takeUntilDestroyed(this.destroyRef),
+                tap(() => {
+                    if (this.state.autoSlide() && !this.state.forceStopSlide()) {
+                        this.sliderRight.next();
                     }
                 })
             ).subscribe();

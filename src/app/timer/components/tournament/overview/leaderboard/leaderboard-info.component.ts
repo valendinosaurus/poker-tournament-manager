@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, WritableSignal } from '@angular/core';
-import { LeaderboardRow } from '../../../../../series/interfaces/overall-ranking.interface';
 import { SeriesMetadata, SeriesS } from '../../../../../shared/interfaces/series.interface';
 import { SeriesService } from '../../../../../shared/services/series.service';
 import { combineLatest, Observable } from 'rxjs';
@@ -71,9 +70,9 @@ export class LeaderboardInfoComponent implements OnInit {
 
             this.leaderboard$ = tournaments$.pipe(
                 map((tournaments: SeriesTournament[]) => this.seriesService.merge(tournaments)),
-                map((ranking: LeaderboardRow[]) => ranking.sort(
-                    (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
-                )),
+                // map((ranking: LeaderboardRow[]) => ranking.sort(
+                //     (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
+                // )),
             );
         }
     }

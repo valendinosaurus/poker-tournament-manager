@@ -25,7 +25,7 @@ export class PlayerOverviewComponent implements OnInit {
     ngOnInit(): void {
         this.tournament = this.state.tournament;
         const playersIn = computed(() => this.tournament().players.length - this.tournament().finishes.length);
-        this.text = computed(() => `${playersIn()}/${this.tournament().players.length}`);
+        this.text = computed(() => `${playersIn()}`); /*/${this.tournament().players.length}*/
 
         const entries = computed(() =>
             this.tournament().entries.filter((e: Entry) => e.type === EntryType.ENTRY).length

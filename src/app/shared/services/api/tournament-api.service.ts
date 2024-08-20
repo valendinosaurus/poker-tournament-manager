@@ -1,17 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { BACKEND_URL } from '../../../app.const';
 import { AdminTournament, Tournament, TournamentModel } from '../../interfaces/tournament.interface';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SeriesMetadata } from '../../interfaces/series.interface';
 import { LocalTournamentSettings } from '../../interfaces/local-tournament-settings.interface';
 import { Router } from '@angular/router';
 import { ServerResponseType } from '../../types/server-response.type';
 import { AuthUtilService } from '../auth-util.service';
 import { TEvent } from '../../interfaces/t-event.interface';
-import { TableDraw } from '../../interfaces/table-draw.interface';
 import { TournamentSettings } from '../../interfaces/tournament-settings.interface';
+import { TableDraw } from '../../../table-draw/interfaces/table-draw.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -233,14 +233,16 @@ export class TournamentApiService {
         return this.http.post<ServerResponseType>(
             `${BACKEND_URL}${this.ENDPOINT}-draw`,
             JSON.stringify({
-                tId: tableDraw.tournament.id,
+                tId: tableDraw.id,
                 tableDraw: JSON.stringify(tableDraw)
             })
+        ).pipe(
+            catchError(() => of(undefined))
         );
     }
 
     deleteTableDraw$(tId: number): Observable<ServerResponseType> {
-        return this.http.delete<ServerResponseType>(`${BACKEND_URL}${this.ENDPOINT}-draw/${tId}`);
+        return of(undefined);
     }
 
     putTournamentSettings$(settings: TournamentSettings): Observable<ServerResponseType> {

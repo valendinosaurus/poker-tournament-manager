@@ -13,7 +13,11 @@ export interface TournamentBase {
     name: string;
     date: Date;
     maxPlayers: number;
+    maxPlayersPerTable: number;
+    minTables: number;
+    maxTables: number;
     buyInAmount: number;
+    rake: number;
     startStack: number;
     withReEntry: boolean;
     noOfReEntries: number;
@@ -85,9 +89,13 @@ export interface CreateTournamentModel {
     name: WritableSignal<string>;
     date: WritableSignal<string>;
     maxPlayers: WritableSignal<number>;
+    minTables: WritableSignal<number>;
+    maxTables: WritableSignal<number>;
+    maxPlayersPerTable: WritableSignal<number>;
     startStack: WritableSignal<number>;
     initialPricePool: WritableSignal<number>;
     buyInAmount: WritableSignal<number>;
+    rake: WritableSignal<number>;
     noOfRebuys: WritableSignal<number>;
     rebuyAmount: WritableSignal<number>;
     addonStack: WritableSignal<number>;

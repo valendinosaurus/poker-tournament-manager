@@ -41,6 +41,7 @@ import { TimerPageComponent } from './app/timer/components/tournament/timer/time
 import { RankFormulaPageComponent } from './app/shared/components/rank-formula-page/rank-formula-page.component';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { TimerkMode } from './app/shared/enums/timer-mode.enum';
+import { TableDrawPageComponent } from './app/table-draw/components/table-draw-page/table-draw-page.component';
 
 if (environment.production) {
     enableProdMode();
@@ -197,6 +198,10 @@ const routes: Routes = [
     {
         path: `about/rank-formula`,
         loadComponent: () => RankFormulaPageComponent,
+    },
+    {
+        path: 'table-draw',
+        loadComponent: () => TableDrawPageComponent,
     },
     {
         path: 'not-found',

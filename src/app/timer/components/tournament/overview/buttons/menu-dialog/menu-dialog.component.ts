@@ -9,11 +9,9 @@ import {
     OnInit,
     Output,
     signal,
-    Signal,
-    ViewChild,
-    WritableSignal
+    ViewChild
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddEntryComponent } from '../../../../../../dialogs/add-entry/add-entry.component';
 import { FormsModule } from '@angular/forms';
@@ -34,19 +32,26 @@ import { FetchService } from '../../../../../../shared/services/fetch.service';
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { TableDrawDialogComponent } from '../../../../../../dialogs/table-draw/table-draw-dialog.component';
 import { DEFAULT_DIALOG_POSITION, TIMER_DIALOG_PANEL_CLASS } from '../../../../../../shared/const/app.const';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthUtilService } from '../../../../../../shared/services/auth-util.service';
 import { TournamentService } from '../../../../../../shared/services/util/tournament.service';
 import { TimerStateService } from '../../../../../services/timer-state.service';
-import { Tournament } from '../../../../../../shared/interfaces/tournament.interface';
-import { SeriesMetadata } from '../../../../../../shared/interfaces/series.interface';
 import { EntryType } from '../../../../../../shared/enums/entry-type.enum';
-import { BaseAddDialogComponent } from '../../../../../../shared/components/base-add-dialog/base-add-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { BroadcastAction } from '../../../../../../shared/interfaces/broadcast-event.interface';
+import { WebSocketService } from '../../../../../../shared/services/web-socket.service';
+import { TimerkMode } from '../../../../../../shared/enums/timer-mode.enum';
+import { InfoPanelComponent } from '../../../../../../shared/components/info-panel/info-panel.component';
+import { MatCard } from '@angular/material/card';
+import { MenuDialogItemComponent } from './menu-dialog-item/menu-dialog-item.component';
+import { PlayerOverviewComponent } from '../../player-overview/player-overview.component';
+import { BuyinOverviewComponent } from '../../buyin-overview/buyin-overview.component';
+import { ChipsOverviewComponent } from '../../chips-overview/chips-overview.component';
+import { TableDrawService } from '../../../../../../table-draw/services/table-draw.service';
 
 @Component({
     selector: 'app-menu-dialog',
@@ -61,32 +66,47 @@ import { MatSelectModule } from '@angular/material/select';
         MatFormFieldModule,
         MatInputModule,
         MatOptionModule,
-        MatSelectModule
+        MatSelectModule,
+        InfoPanelComponent,
+        MatCard,
+        MenuDialogItemComponent,
+        PlayerOverviewComponent,
+        BuyinOverviewComponent,
+        ChipsOverviewComponent
     ]
 })
-export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogComponent, LocalTournamentSettingsModel> implements OnInit {
+export class MenuDialogComponent implements OnInit {
 
-    tournament: WritableSignal<Tournament>;
-    metadata: WritableSignal<SeriesMetadata | undefined>;
-    isProOrAdmin: WritableSignal<boolean>;
-    isRebuyPhaseFinished: Signal<boolean>;
-    isTournamentFinished: Signal<boolean>;
-    isTournamentLocked: Signal<boolean>;
-    withRebuy: Signal<boolean>;
-    withAddon: Signal<boolean>;
-    withReEntry: Signal<boolean>;
-    autoSlide: Signal<boolean>;
-    showCondensedBlinds: Signal<boolean>;
-    isRunning: WritableSignal<boolean>;
-    isITM: Signal<boolean>;
+    private state: TimerStateService = inject(TimerStateService);
+    private tableDrawService: TableDrawService = inject(TableDrawService);
+
+    timerMode = this.state.timerMode;
+    tournament = this.state.tournament;
+    isProOrAdmin = this.state.isProOrAdmin;
+    isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
+    withRebuy = this.state.withRebuy;
+    withAddon = this.state.withAddon;
+    withReEntry = this.state.withReEntry;
+    autoSlide = this.state.autoSlide;
+    showCondensedBlinds = this.state.showCondensedBlinds;
+    isRunning = this.state.isRunning;
+    isTournamentLocked = this.state.isTournamentLocked;
+    isTournamentFinished = this.state.isTournamentFinished;
+    isFullScreen = this.state.isFullScreen;
+    isBigCursor = this.state.isBigCursor;
+    isITM = this.state.isITM;
+
+    canStartTournament = this.state.canStartTournament;
+    currentTableDrawAction = this.tableDrawService.currentAction;
+    started = this.state.started;
+    isAddPlayerBlocked = this.state.isAddPlayerBlocked;
+    hasLevels = this.state.hasLevels;
 
     areAllPlayersEntered = computed(() =>
         this.tournament().players.length === this.tournament().entries.filter(e => e.type === EntryType.ENTRY).length
         && this.tournament().players.length > 0
     );
 
-    isFullScreen: WritableSignal<boolean>;
-    isBigCursor: WritableSignal<boolean>;
     isPayoutAdapted = computed(() => this.tournament().adaptedPayout !== undefined);
 
     payoutDone = computed(() =>
@@ -97,12 +117,12 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
 
     payoutsForSelect: { value: number, label: string }[] = [];
 
-    data: {
-        isAddPlayerBlocked: boolean,
-    } = inject(MAT_DIALOG_DATA);
-
     payoutCache: number;
+    model: LocalTournamentSettingsModel;
+    isLoadingAdd = false;
+    isLoadingRemove = false;
 
+    protected dialogRef: MatDialogRef<MenuDialogComponent> | null = inject(MatDialogRef<MenuDialogComponent>, {optional: true});
     private destroyRef: DestroyRef = inject(DestroyRef);
     private dialog: MatDialog = inject(MatDialog);
     private authUtilService: AuthUtilService = inject(AuthUtilService);
@@ -111,9 +131,12 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
     private fetchService: FetchService = inject(FetchService);
     private document: Document = inject(DOCUMENT);
     private tournamentService: TournamentService = inject(TournamentService);
-    private state: TimerStateService = inject(TimerStateService);
+    private webSocketService: WebSocketService = inject(WebSocketService);
+    private router: Router = inject(Router);
 
     isAuthenticated$: Observable<boolean> = this.authUtilService.getIsAuthenticated$();
+
+    readonly TIMER_MODE = TimerkMode;
 
     @HostListener('document:fullscreenchange', ['$event'])
     @HostListener('document:webkitfullscreenchange', ['$event'])
@@ -126,26 +149,10 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
     @Output() addMinute = new EventEmitter<void>();
     @Output() nextLevel = new EventEmitter<void>();
     @Output() prevLevel = new EventEmitter<void>();
-    @Output() previousLevel = new EventEmitter<void>();
 
     @ViewChild('bleepNext') bleepNext!: ElementRef;
 
     ngOnInit(): void {
-        this.tournament = this.state.tournament;
-        this.isProOrAdmin = this.state.isProOrAdmin;
-        this.isRebuyPhaseFinished = this.state.isRebuyPhaseFinished;
-        this.withRebuy = this.state.withRebuy;
-        this.withAddon = this.state.withAddon;
-        this.withReEntry = this.state.withReEntry;
-        this.autoSlide = this.state.autoSlide;
-        this.showCondensedBlinds = this.state.showCondensedBlinds;
-        this.isRunning = this.state.isRunning;
-        this.isTournamentLocked = this.state.isTournamentLocked;
-        this.isTournamentFinished = this.state.isTournamentFinished;
-        this.isFullScreen = this.state.isFullScreen;
-        this.isBigCursor = this.state.isBigCursor;
-        this.isITM = this.state.isITM;
-
         this.elem = this.document.documentElement;
         this.initModel();
     }
@@ -297,6 +304,10 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
         }
     }
 
+    togglePadding(): void {
+        this.state.hasPadding.update(hasPadding => !hasPadding);
+    }
+
     onToggleAutoSlide(): void {
         this.tournamentApiService.putTournamentSettings$({
             ...this.state.settings(),
@@ -365,15 +376,62 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
     }
 
     closeMenu(): void {
-        this.dialogRef.close();
+        this.dialogRef?.close();
     }
 
     onStart(): void {
         this.state.startTimer();
+
+        this.webSocketService.send({
+            senderUuid: this.state.uuid(),
+            tournamentId: this.state.tournament().id,
+            action: BroadcastAction.START,
+            data: null
+        });
     }
 
     onPause(): void {
         this.state.pauseTimer();
+
+        this.webSocketService.send({
+            senderUuid: this.state.uuid(),
+            tournamentId: this.state.tournament().id,
+            action: BroadcastAction.PAUSE,
+            data: null
+        });
+    }
+
+    onAddMinute(): void {
+        this.addMinute.emit();
+
+        this.webSocketService.send({
+            senderUuid: this.state.uuid(),
+            tournamentId: this.state.tournament().id,
+            action: BroadcastAction.ADD_MINUTE,
+            data: null
+        });
+    }
+
+    onPrevLevel(): void {
+        this.prevLevel.emit();
+
+        this.webSocketService.send({
+            senderUuid: this.state.uuid(),
+            tournamentId: this.state.tournament().id,
+            action: BroadcastAction.PREV_LEVEL,
+            data: null
+        });
+    }
+
+    onNextLevel(): void {
+        this.nextLevel.emit();
+
+        this.webSocketService.send({
+            senderUuid: this.state.uuid(),
+            tournamentId: this.state.tournament().id,
+            action: BroadcastAction.NEXT_LEVEL,
+            data: null
+        });
     }
 
     onTestSound(): void {
@@ -381,4 +439,22 @@ export class MenuDialogComponent extends BaseAddDialogComponent<MenuDialogCompon
             this.bleepNext.nativeElement.play();
         }
     }
+
+    openAdmin(): void {
+        this.closeMenu();
+        this.router.navigate(['/admin']);
+    }
+
+    openDrawDialog(): void {
+        const dialogRef = this.dialog.open(TableDrawDialogComponent, {
+            ...DEFAULT_DIALOG_POSITION,
+            ...TIMER_DIALOG_PANEL_CLASS,
+            id: 'draw'
+        });
+
+        dialogRef.afterClosed().pipe(
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe();
+    }
+
 }

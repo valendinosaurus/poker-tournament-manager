@@ -1,59 +1,5 @@
 @if (canShowInfoPanel()) {
-    <div class="info-panel">
-        @if (isAddPlayerBlocked && !isTournamentFinished()) {
-            <span>
-                <i class="fa fa-exclamation-triangle"></i> Players cannot be added anymore
-            </span>
-        }
-
-        @if (tournament().withRebuy && isRebuyPhaseFinished() && !isTournamentFinished()) {
-            <span>
-                <i class="fa fa-exclamation-triangle"></i> Rebuy / Addon finished
-            </span>
-        }
-
-        @if (playerHasToBeMoved() && !isTournamentFinished()) {
-            <span
-                class="clickable"
-                (click)="openDrawDialog()"
-            >
-                <i class="fa fa-exclamation-triangle"></i> Player has to be moved
-            </span>
-        }
-
-        @if (tableHasToBeEliminated() && !isTournamentFinished()) {
-            <span
-                class="clickable"
-                (click)="openDrawDialog()"
-            >
-                <i class="fa fa-exclamation-triangle"></i> Table can be eliminated
-            </span>
-        }
-
-        @if (!canStartTournament()) {
-            @if (hasLevels()) {
-                <span>
-                    <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament until all players entered
-                </span>
-            } @else {
-                <span>
-                    <i class="fa fa-exclamation-triangle"></i>  Cannot start tournament without blind levels
-                </span>
-            }
-        }
-
-        @if (isTournamentFinished()) {
-            <span>
-                <i class="fa fa-flag-checkered "></i> Tournament is finished
-            </span>
-        }
-
-        @if (canStartTournament() && !started() && !isTournamentFinished()) {
-            <span>
-                <i class="fa fa-check"></i> Ready to start tournament
-            </span>
-        }
-    </div>
+    <app-info-panel></app-info-panel>
 }
 
 <div class="main-buttons">
@@ -77,7 +23,7 @@
             mat-flat-button
             matTooltip="Seat Open"
             class="main"
-            [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked() || !hasPlayersToSeatOpen()"
+            [disabled]="!isAdaptedPayoutSumCorrect || isTournamentLocked() || isTournamentFinished()"
             (click)="seatOpen()"
         >
             <i class="fa fa-skull"></i>

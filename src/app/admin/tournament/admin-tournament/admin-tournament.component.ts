@@ -29,6 +29,7 @@ import {
 import { AssignBlindStructureComponent } from '../assign-blind-structure/assign-blind-structure.component';
 import { TimerStateService } from '../../../timer/services/timer-state.service';
 import { UserWithImageComponent } from '../../../shared/components/user-with-image/user-with-image.component';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
     selector: 'app-admin-tournament',
@@ -46,7 +47,10 @@ import { UserWithImageComponent } from '../../../shared/components/user-with-ima
         MatButtonModule,
         DecimalPipe,
         BlindStructureViewComponent,
-        UserWithImageComponent
+        UserWithImageComponent,
+        MatMenuTrigger,
+        MatMenu,
+        MatMenuItem
     ]
 })
 export class AdminTournamentComponent implements OnInit {
@@ -285,19 +289,26 @@ export class AdminTournamentComponent implements OnInit {
         ).subscribe();
     }
 
-    openTournament(tId: number): void {
+    openTournamentInHomegameMode(tId: number): void {
         const link = this.router.serializeUrl(this.router.createUrlTree(['timer', tId]));
         window.open(link, '_blank');
     }
 
-    openTournamentClock(tId: number): void {
-        const link = this.router.serializeUrl(this.router.createUrlTree(['timer/clock', tId]));
-        window.open(link, '_blank');
+    openTournamentInProMode(tId: number): void {
+        this.router.navigate(['timer/clock', tId]);
+
+        setTimeout(() => {
+            const linkManage = this.router.serializeUrl(this.router.createUrlTree(['timer/manage', tId]));
+            window.open(linkManage, '_blank');
+        });
     }
 
-    openManageTournament(tId: number): void {
-        const link = this.router.serializeUrl(this.router.createUrlTree(['timer/manage', tId]));
-        window.open(link, '_blank');
+    openTournamentInManageMode(tId: number): void {
+        this.router.navigate(['timer/manage', tId]);
+    }
+
+    openTournamentInClockMode(tId: number): void {
+        this.router.navigate(['timer/clock', tId]);
     }
 
 }

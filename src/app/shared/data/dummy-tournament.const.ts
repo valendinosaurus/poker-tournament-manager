@@ -18,7 +18,7 @@ export const dummyTourney: Tournament = {
     entries: [],
     eliminations: [],
     initialPricePool: 0,
-    maxPlayers: 9,
+    maxPlayers: 10,
     location: 1,
     password: '',
     locationName: 'Location Test',
@@ -27,8 +27,28 @@ export const dummyTourney: Tournament = {
     withRebuy: true,
     withReEntry: false,
     rebuyStack: 1000,
-    rankFormula: 0,
+    rankFormula: {
+        id: 0,
+        formula: '',
+        name: '',
+        description: ''
+    },
     liveTicker: [],
     temp: true,
-    locked: false
+    locked: false,
+    adaptedPayout: undefined,
+    bountyAmount: 0,
+    withBounty: false,
+    settings: {
+        id: 0,
+        timeLeft: 1,
+        started: new Date(),
+        showCondensedBlinds: false,
+        autoSlide: true,
+        levelIndex: 1
+    },
+    rake: 0,
+    minTables: 1,
+    maxTables: 4,
+    maxPlayersPerTable: 9
 };

@@ -26,32 +26,6 @@ div.main-buttons {
     }
 }
 
-.info-panel {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 8px;
-    background: white;
-    // display: none;
-    z-index: 99;
-    flex-direction: column;
-    border-top: solid 2px #00437b;
-    border-left: solid 2px #00437b;
-    border-right: solid 2px #00437b;
-    box-sizing: border-box;
-
-    span {
-        display: flex;
-        align-items: center;
-        margin: 4px 0;
-    }
-
-    span i {
-        margin-right: 8px;
-    }
-}
-
 .hide-800 {
     @media (max-width: 800px) {
         display: none !important;

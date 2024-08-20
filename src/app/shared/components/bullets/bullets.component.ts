@@ -11,6 +11,6 @@ export class BulletsComponent {
     number = input.required<number>();
     bulletClass = input<string>('fa-circle');
 
-    numberArray: Signal<number[]> = computed(() => new Array(this.number()));
+    numberArray: Signal<number[]> = computed(() => new Array(this.number()).fill(1).map((e, i) => e * i));
 
 }

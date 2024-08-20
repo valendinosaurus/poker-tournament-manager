@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Player, PlayerInSeries } from '../interfaces/player.interface';
-import { LeaderboardRow } from '../../series/interfaces/overall-ranking.interface';
+import { LeaderboardRow } from '../../series/interfaces/leaderboard-row.interface';
 import { SeriesTournament } from '../../series/interfaces/series-tournament.interface';
 import { SeriesTournamentRow } from '../../series/interfaces/series-tournament-row';
 import { Tournament, TournamentS } from '../interfaces/tournament.interface';
@@ -9,12 +9,12 @@ import { Finish } from '../interfaces/finish.interface';
 import { Entry } from '../interfaces/entry.interface';
 import { EntryType } from '../enums/entry-type.enum';
 import { SeriesMetadata, SeriesS } from '../interfaces/series.interface';
-import { SimpleStat } from '../interfaces/simple-stat.interface';
 import { mostSpilled } from '../const/app.const';
 import { Elimination } from '../interfaces/elimination.interface';
 import { SeriesStats } from '../../series/interfaces/series-stats.interface';
 import { Formula } from '../interfaces/formula-input.type';
 import { ChartConfiguration } from 'chart.js';
+import { SeriesStat } from '../interfaces/series-stat.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -78,7 +78,7 @@ export class SeriesService {
                     } as SeriesTournamentRow)
                 );
 
-                const nextRank = Math.min(...localFinished.map(e => e.rank));
+                const nextRank = Math.min(...localFinished.map(e => e.rank)) - 1;
                 const booked = localFinished.map(e => e.playerId);
                 const missing = localEntries.filter(e => e.type === EntryType.ENTRY).filter(
                     e => !booked.includes(e.playerId)
@@ -216,7 +216,11 @@ export class SeriesService {
             (a, b) => b.pointsBeforeLastTournament - a.pointsBeforeLastTournament);
 
         overallRanking
-            .sort((a, b) => b.points - a.points)
+            .sort((a, b) =>
+                b.points - a.points
+                || a.tournaments - b.tournaments
+                || a.rebuysAddons - b.rebuysAddons
+            )
             .forEach((player: LeaderboardRow, i: number) => {
                 if (!player.disqualified) {
                     player.position = pos++;
@@ -235,7 +239,7 @@ export class SeriesService {
                 player.lastMovementDiff = indexBefore - i;
             });
 
-        return overallRanking;
+        return overallRanking.filter(e => !e.disqualified);
     }
 
     getPositionChartData(seriesTournaments: SeriesTournament[]): ChartConfiguration<'line'>['data'] {
@@ -268,9 +272,6 @@ export class SeriesService {
                     const index = datasets.findIndex(o => o.playerId === f.playerId);
 
                     const element = datasets[index];
-                    if (f.name === 'Bole') {
-                        console.log('add', seriesTournament.tournament.name, f.points);
-                    }
 
                     datasets[index] = {
                         label: f.name,
@@ -280,9 +281,6 @@ export class SeriesService {
                     };
 
                 } else {
-                    if (f.name === 'Bole') {
-                        console.log('first', seriesTournament.tournament.name, f.points);
-                    }
                     datasets.push({
                         label: f.name,
                         data: [+f.points],
@@ -321,37 +319,43 @@ export class SeriesService {
         };
     }
 
-    getBestAverageRank(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getBestAverageRank(overallRanking: LeaderboardRow[]): SeriesStat {
         const bar = overallRanking.filter(e => e.tournaments > 1).sort(
             (prev, curr) =>
                 ((prev.rank / prev.tournaments) - (curr.rank / curr.tournaments))
         );
 
-        return bar.slice(0, 7).map(e => ({
-            playerName: e.name,
-            value: e.rank / e.tournaments,
-            played: e.tournaments,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: false,
+            stats: bar.slice(0, 7).map(e => ({
+                playerName: e.name,
+                value: e.rank / e.tournaments,
+                played: e.tournaments,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostPrices(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostPrices(overallRanking: LeaderboardRow[]): SeriesStat {
         const mp = overallRanking.sort(
             (prev, curr) =>
                 (prev.price - curr.price)
         ).reverse();
 
-        return mp.slice(0, 7).map(e => ({
-            playerName: e.name,
-            value: e.price,
-            played: e.tournaments,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: true,
+            stats: mp.slice(0, 7).map(e => ({
+                playerName: e.name,
+                value: e.price,
+                played: e.tournaments,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostEffectivePrices(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostEffectivePrices(overallRanking: LeaderboardRow[]): SeriesStat {
         const mep = overallRanking
             .sort(
                 (prev, curr) =>
@@ -362,108 +366,130 @@ export class SeriesService {
                     ) || prev.tournaments - curr.tournaments
             ).reverse();
 
-        return mep.slice(0, 7).map(e => ({
-            playerName: e.name,
-            value: e.price - ((e.tournaments + e.rebuysAddons) * 50),
-            played: e.tournaments,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: false,
+            stats: mep.slice(0, 7).map(e => ({
+                playerName: e.name,
+                value: e.price - ((e.tournaments + e.rebuysAddons) * 50),
+                played: e.tournaments,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostRebuysAddons(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostRebuysAddons(overallRanking: LeaderboardRow[]): SeriesStat {
         const mostRA = overallRanking.sort(
             (prev, curr) =>
                 (prev.rebuysAddons - curr.rebuysAddons) || prev.tournaments - curr.tournaments
         ).reverse();
 
-        return mostRA.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.rebuysAddons,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: true,
+            stats: mostRA.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.rebuysAddons,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostRebuysAddonsPerTournament(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostRebuysAddonsPerTournament(overallRanking: LeaderboardRow[]): SeriesStat {
         const mostRAT = overallRanking.filter(e => e.tournaments > 1).sort(
             (prev, curr) =>
                 ((prev.rebuysAddons / prev.tournaments) - (curr.rebuysAddons / curr.tournaments)) || prev.tournaments - curr.tournaments
         ).reverse();
 
-        return mostRAT.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.rebuysAddons / e.tournaments,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: false,
+            stats: mostRAT.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.rebuysAddons / e.tournaments,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostEliminations(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostEliminations(overallRanking: LeaderboardRow[]): SeriesStat {
         const mostEl = overallRanking.sort(
             (prev, curr) =>
                 ((prev.eliminations) - (curr.eliminations)) || prev.tournaments - curr.tournaments
         ).reverse();
 
-        return mostEl.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.eliminations,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: true,
+            stats: mostEl.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.eliminations,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostITM(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostITM(overallRanking: LeaderboardRow[]): SeriesStat {
         const mitm = overallRanking.sort(
             (a, b) => b.itm - a.itm || a.tournaments - b.tournaments
         );
 
-        return mitm.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.itm,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: false,
+            stats: mitm.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.itm,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostPercentualITM(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostPercentualITM(overallRanking: LeaderboardRow[]): SeriesStat {
         const mpitm = overallRanking.sort(
             (a, b) => (b.itm / b.tournaments) - (a.itm / a.tournaments) || a.tournaments - b.tournaments
         );
 
-        return mpitm.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.itm / e.tournaments * 100,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: false,
+            stats: mpitm.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.itm / e.tournaments * 100,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
-    getMostBubbles(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostBubbles(overallRanking: LeaderboardRow[]): SeriesStat {
         const mb = overallRanking.sort(
             (a, b) => b.bubbles - a.bubbles || a.tournaments - b.tournaments
         );
 
-        return mb.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.bubbles,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        })).filter(s => s.value > 0);
+        return {
+            shouldUpdateLive: true,
+            stats: mb.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.bubbles,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            })).filter(s => s.value > 0)
+        };
     }
 
-    getBiggestRivals(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getBiggestRivals(overallRanking: LeaderboardRow[]): SeriesStat {
         let rivals: {
             id: number;
             name: string;
             eliminated: string;
             amount: number;
+            amountReverse: number;
             image: string;
             played: number;
             inactive: boolean;
@@ -482,40 +508,76 @@ export class SeriesService {
                         amount: 1,
                         played: player.tournaments,
                         image: player.image,
-                        inactive: player.disqualified
+                        inactive: player.disqualified,
+                        amountReverse: 0
                     });
                 }
             });
         });
 
-        rivals = rivals.sort((a, b) => b.amount - a.amount);
+        const combos: { n1: string, n2: string }[] = [];
+        const doubleIndexes: number[] = [];
 
-        return rivals
-            .slice(0, 7)
-            .map(e => ({
-                played: e.played,
-                value: e.amount,
-                playerName: `${e.name} > ${e.eliminated}`,
-                image: e.image,
-                inactive: e.inactive
-            }))
-            .filter(s => s.value > 0)
-            .sort((a, b) => b.value - a.value || a.played - b.played);
+        for (let i = 0; i < rivals.length; i++) {
+            const name = rivals[i].name;
+            const eliminated = rivals[i].eliminated;
+
+            const index = rivals.findIndex(r => r.name === eliminated && r.eliminated === name);
+
+            console.log('checking', combos);
+            console.log(name, eliminated, combos.filter(e =>
+                (e.n1 === eliminated && e.n2 === name) || (e.n1 === name && e.n2 === eliminated)
+            ).length === 0);
+
+            if (combos.filter(e =>
+                (e.n1 === eliminated && e.n2 === name) || (e.n1 === name && e.n2 === eliminated)
+            ).length === 0) {
+                console.log('pushing', name, {n1: name, n2: eliminated});
+                combos.push({n1: name, n2: eliminated});
+            } else {
+                doubleIndexes.push(index);
+            }
+
+            rivals[i].amountReverse = rivals[index] ? rivals[index].amount : 0;
+        }
+
+        rivals = rivals
+            .filter((e, i) => doubleIndexes.indexOf(i) === -1)
+            .sort((a, b) => (b.amount + b.amountReverse) - (a.amount + a.amountReverse));
+
+        return {
+            shouldUpdateLive: true,
+            stats: rivals
+                .slice(0, 5)
+                .filter(s => s.amount > 0)
+                .map(e => ({
+                    played: e.played,
+                    value: e.amount + e.amountReverse,
+                    addValue: `${e.eliminated} (${e.amountReverse})`,
+                    playerName: `${e.name} (${e.amount}) vs. ${e.eliminated} (${e.amountReverse})`,
+                    image: e.image,
+                    inactive: e.inactive
+                }))
+                .sort((a, b) => b.value - a.value || a.played - b.played)
+        };
     }
 
-    getMostBounties(overallRanking: LeaderboardRow[]): SimpleStat[] {
+    getMostBounties(overallRanking: LeaderboardRow[]): SeriesStat {
         const mostB = overallRanking.sort(
             (prev, curr) =>
                 ((prev.collectedBounties) - (curr.collectedBounties)) || prev.tournaments - curr.tournaments
         ).reverse();
 
-        return mostB.slice(0, 7).map(e => ({
-            played: e.tournaments,
-            value: e.collectedBounties,
-            playerName: e.name,
-            image: e.image,
-            inactive: e.disqualified
-        }));
+        return {
+            shouldUpdateLive: true,
+            stats: mostB.slice(0, 7).map(e => ({
+                played: e.tournaments,
+                value: e.collectedBounties,
+                playerName: e.name,
+                image: e.image,
+                inactive: e.disqualified
+            }))
+        };
     }
 
     getGuaranteedFromSeries(series: SeriesS): number {

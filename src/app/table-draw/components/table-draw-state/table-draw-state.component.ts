@@ -1,5 +1,5 @@
-import { Component, input, Input } from '@angular/core';
-import { TableDrawState } from '../../enums/table-draw-state.enum';
+import { Component, input } from '@angular/core';
+import { TableDrawStep } from '../../enums/table-draw-step.enum';
 
 @Component({
     selector: 'app-table-draw-state',
@@ -9,8 +9,8 @@ import { TableDrawState } from '../../enums/table-draw-state.enum';
 })
 export class TableDrawStateComponent {
 
-    currentState = input.required< TableDrawState>();
+    currentState = input.required<TableDrawStep>();
 
-    readonly TABLE_DRAW_STATE = TableDrawState;
+    readonly TABLE_DRAW_STEP = TableDrawStep;
 
 }

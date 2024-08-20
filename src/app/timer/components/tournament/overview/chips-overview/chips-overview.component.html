@@ -1,6 +1,5 @@
 <div
-    class="stats-container gap-20"
-    [class.flex-dir-column]="!isWithRebuyOrAddon() && !isTooNarrow()"
+    class="stats-container flex-dir-column gap-20"
     [class.gap-20]="!isWithRebuyOrAddon()"
 >
     <div class="flex flex-dir-column justify-center align-center">
@@ -9,6 +8,7 @@
             {{ totalChips() | number:'':'de-CH' }}
         </p>
     </div>
+
     <div class="flex flex-dir-column justify-center align-center">
         <h4>Avg. Stack</h4>
         <p class="big">

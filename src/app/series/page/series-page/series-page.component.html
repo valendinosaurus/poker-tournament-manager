@@ -8,6 +8,7 @@
     <div class="series-page page-with-header">
         <app-series-header
             [seriesHeader]="seriesHeader$ | async | nullsafePrimitive:{}"
+            [totalPlayers]="totalPlayers$ | async | nullsafePrimitive:0"
         ></app-series-header>
 
         @if ((userEmail$ | async) && (isUserConnectedHere$ | async) === false) {
@@ -52,24 +53,24 @@
             </div>
 
 
-            @if (positionChartData$ | async; as chartData) {
-                <h2>
-                    Point progression
-                </h2>
+            <!--            @if (positionChartData$ | async; as chartData) {-->
+                <!--                <h2>-->
+                <!--                    Point progression-->
+                <!--                </h2>-->
 
-                <div
-                    style="width: 100%; height: 600px; display: block; margin-top: 32px"
-                >
-                    <canvas baseChart
-                            [type]="'line'"
-                            [data]="chartData"
-                            [options]="lineChartOptions"
-                            [legend]="lineChartLegend">
-                    </canvas>
-                </div>
-            }
+                <!--                <div-->
+                <!--                    style="width: 100%; height: 600px; display: block; margin-top: 32px"-->
+                <!--                >-->
+                <!--                    <canvas baseChart-->
+                <!--                            [type]="'line'"-->
+                <!--                            [data]="chartData"-->
+                <!--                            [options]="lineChartOptions"-->
+                <!--                            [legend]="lineChartLegend">-->
+                <!--                    </canvas>-->
+                <!--                </div>-->
+                <!--            }-->
 
-            <!-- TODO refactor -->
+                <!-- TODO refactor -->
             @if (seriesStats$ | async; as stats) {
                 <app-series-stats
                     [series]="series"
@@ -85,6 +86,7 @@
                     [mostBounties]="stats.mostBounties"
                     [biggestRivals]="stats.biggestRivals"
                     [mostSpilled]="stats.mostSpilled"
+                    [isAnyTournamentRunning]="isAnyTournamentRunning$ | async | nullsafePrimitive:false"
                     [hasRebuy]="hasRebuy$ | async | nullsafePrimitive:false"
                     [hasAddon]="hasAddon$ | async | nullsafePrimitive:false"
                     [hasBounty]="hasBounty$ | async | nullsafePrimitive:false"
@@ -111,9 +113,36 @@
                     [tournament]="tournament"
                     [myEmail]="userEmail$ | async"
                     [password]="password"
+                    (showFull)="currentlySelectedTournament$.next(tournament)"
                 ></app-series-tournament>
             }
         }
     </div>
 }
 
+@if (currentlySelectedTournament$ | async; as t) {
+    <div
+        class="tournament-wrapper"
+        [class.visible]="t !== undefined"
+    >
+        <button
+            mat-raised-button
+            color="warn"
+            (click)="currentlySelectedTournament$.next(undefined)"
+        >
+            Close
+        </button>
+
+        <div class="tournament-content">
+            @if (series$ | async; as series) {
+                <app-series-tournament
+                    [series]="series"
+                    [tournament]="t"
+                    [myEmail]="userEmail$ | async"
+                    [password]="password"
+                    [isPreview]="false"
+                ></app-series-tournament>
+            }
+        </div>
+    </div>
+}

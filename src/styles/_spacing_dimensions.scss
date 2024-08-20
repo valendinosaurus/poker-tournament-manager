@@ -15,6 +15,15 @@
     display: flex;
 }
 
+.flex-w-300 {
+    width: 300px;
+
+    @media (max-width: 1000px) {
+        width: 100%;
+        flex: 0 0 100%;
+    }
+}
+
 .flex-dir-column {
     flex-direction: column;
 }
@@ -118,6 +127,10 @@
     opacity: 0.3;
 }
 
+.bg-green {
+    background: rgba(#85BB65, 0.2);
+}
+
 .ml-12 {
     margin-left: 12px;
 }
@@ -146,6 +159,15 @@
 
 .mt-100px {
     margin-top: 100px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-0 {
+    flex-grow: 0;
+    flex-shrink: 1;
 }
 
 .flex-50 {

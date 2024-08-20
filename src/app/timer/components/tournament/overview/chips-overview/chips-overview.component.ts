@@ -23,7 +23,6 @@ export class ChipsOverviewComponent implements OnInit {
     innerWidth = signal(window.innerWidth);
     innerHeight = signal(window.innerHeight);
     ratio = computed(() => this.innerHeight() / this.innerWidth());
-    isTooNarrow = computed(() => this.ratio() < 0.5);
 
     private state: TimerStateService = inject(TimerStateService);
     private destroyRef: DestroyRef = inject(DestroyRef);
@@ -68,6 +67,5 @@ export class ChipsOverviewComponent implements OnInit {
                 return Math.floor(this.totalChips() / playersIn());
             }
         });
-
     }
 }

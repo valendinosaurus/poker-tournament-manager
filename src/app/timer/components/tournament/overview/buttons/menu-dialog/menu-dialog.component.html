@@ -1,343 +1,281 @@
-<h2><i class="fa fa-gears"></i> Menu</h2>
-
-@if (isProOrAdmin()) {
-    <h4>
-        Player Actions
-    </h4>
-
-    <div class="button-group">
-
-        @if (isProOrAdmin() && !data.isAddPlayerBlocked) {
-            <div class="action">
-                <h5><i class="fa fa-plus"></i> Player</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
-                    (click)="addPlayer()"
-                >
-                    <i class="fa fa-user"></i>
-                </button>
-            </div>
-        }
-
-        @if (isProOrAdmin()) {
-            <div class="action">
-                <h5><i class="fa fa-plus"></i> Entry</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
-                    (click)="addEntry(false)"
-                >
-                    <i class="fa fa-money-bill-wave"></i>
-                </button>
-            </div>
-        }
-
-        @if (withRebuy() && isProOrAdmin() && !isRebuyPhaseFinished()) {
-            <div class="action">
-                <h5><i class="fa fa-plus"></i> Rebuy</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
-                    (click)="addRebuy()"
-                >
-                    <i class="fa fa-refresh"></i>
-                </button>
-            </div>
-        }
-
-        @if (withReEntry() && isProOrAdmin() && !isRebuyPhaseFinished()) {
-            <div class="action">
-                <h5><i class="fa fa-plus"></i> Re-Entry</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
-                    (click)="addEntry(true)"
-                >
-            <span class="relative-icon">
-                <i class="fa fa-money-bill-wave"></i>
-                <i class="fa fa-plus absolute-icon"></i>
-            </span>
-                </button>
-            </div>
-        }
-
-        @if (withAddon() && isProOrAdmin() && !isRebuyPhaseFinished()) {
-            <div class="action">
-                <h5><i class="fa fa-plus"></i> Addon</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
-                    (click)="addAddon()"
-                >
-                    <i class="fa fa-database"></i>
-                </button>
-            </div>
-        }
-
-        @if (isProOrAdmin()) {
-            <div class="action">
-                <h5>Seat Open</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked()"
-                    (click)="seatOpen()"
-                >
-                    <i class="fa fa-skull"> </i>
-                </button>
-            </div>
-        }
-
-        @if (isProOrAdmin() && isRebuyPhaseFinished()) {
-            <div class="action">
-                <h5>Make Deal {{ isTournamentFinished() }} , {{ isTournamentLocked() }} , {{ isITM() }}</h5>
-                <button
-                    mat-flat-button
-                    class="main"
-                    [disabled]="isTournamentFinished() || isTournamentLocked() || !isITM()"
-                    (click)="makeDeal()"
-                >
-                    <i class="fa fa-handshake"></i>
-                </button>
-            </div>
-        }
-    </div>
-}
-
-<h4>
-    Timer Actions
-</h4>
-<div class="button-group">
-    @if (isRunning()) {
-        <div class="action">
-            <h5>Pause</h5>
-            <button
-                mat-flat-button
-                class="main"
-                (click)="onPause()"
-            >
-                <i class="fa fa-pause"></i>
-            </button>
-        </div>
-    } @else {
-        <div class="action">
-            <h5>Start</h5>
-            <button
-                mat-flat-button
-                class="main"
-                (click)="onStart()"
-            >
-                <i class="fa fa-play"></i>
-            </button>
-        </div>
+<div
+    [class.manage]="timerMode() === TIMER_MODE.MANAGE"
+>
+    @if (timerMode() !== TIMER_MODE.MANAGE) {
+        <h2><i class="fa fa-gears"></i> Menu</h2>
     }
 
-    <div class="action">
-        <h5><i class="fa fa-plus"></i> 1min</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="addMinute.emit()">
-            <i class="fa fa-clock"></i>
-        </button>
-    </div>
-
-    <div class="action">
-        <h5><i class="fa fa-chevron-circle-left"></i> Level</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="prevLevel.emit()">
-            <i class="fa fa-chevron-circle-left"></i>
-        </button>
-    </div>
-
-    <div class="action">
-        <h5><i class="fa fa-chevron-circle-right"></i> Level</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="nextLevel.emit()">
-            <i class="fa fa-chevron-circle-right"></i>
-        </button>
-    </div>
-
-    @if (isProOrAdmin()) {
-        <div class="action">
-            <h5>Draw</h5>
-            <button
-                mat-flat-button
-                class="main"
-                (click)="drawTables()">
-                <i class="fa fa-random"></i>
-            </button>
-        </div>
-    }
-</div>
-
-<h4>Other Actions</h4>
-<div class="button-group">
-
-    <div class="action">
-        <h5>Autoslide</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="onToggleAutoSlide()"
-        >
-            @if (autoSlide()) {
-                <i class="fa fa-toggle-on"></i>
-            } @else {
-                <i class="fa fa-toggle-off"></i>
-            }
-        </button>
-    </div>
-
-    <div class="action">
-        <h5>Condense</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="onToggleShowCondensedBlinds()"
-        >
-            @if (showCondensedBlinds()) {
-                <i class="fa fa-toggle-on"></i>
-            } @else {
-                <i class="fa fa-toggle-off"></i>
-            }
-        </button>
-    </div>
-
-    @if (!isFullScreen()) {
-        <div class="action">
-            <h5>Fullscreen</h5>
-            <button
-                mat-flat-button
-                class="main"
-                (click)="fullScreen()"
-            >
-                <i class="fa fa-maximize"></i>
-            </button>
-        </div>
-    } @else {
-        <div class="action">
-            <h5>Normal Screen</h5>
-            <button
-                mat-flat-button
-                class="main"
-                (click)="cancelFullscreen()"
-            >
-                <i class="fa fa-minimize"></i>
-            </button>
-        </div>
-    }
-
-</div>
-
-<div class="button-group">
-    <div class="action">
-        <h5>Cursor</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="onToggleIsBigCursor()"
-        >
-            <i class="fa fa-mouse-pointer"></i>
-        </button>
-    </div>
-
-    <div class="action">
-        <h5>Test</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="onTestSound()"
-        >
-            <i class="fa fa-volume-high"></i>
-        </button>
-    </div>
-
-    <audio #bleepNext>
-        <source src="../../../../../assets/gong.mp3" type="audio/mp3">
-    </audio>
-
-    <div class="action">
-        <h5>State</h5>
-        <button
-            mat-flat-button
-            class="main"
-            (click)="resetState()"
-        >
-            <i class="fa fa-eraser"></i>
-        </button>
-    </div>
-
-    <div class="action">
-        <h5>Admin</h5>
-
-        @if (isAuthenticated$ | async) {
-            <button
-                mat-flat-button
-                class="main"
-                (click)="closeMenu()"
-                [routerLink]="['/admin']"
-            >
-                <i class="fa fa-address-card"></i>
-            </button>
-        }
-    </div>
-</div>
-
-@if (!isTournamentLocked()) {
-    <h4>Tournament settings</h4>
-
-    <br>
-
-    <form
-        class="flexed"
-        (ngSubmit)="applySettings()"
+    <div
+        [class.interface]="timerMode() === TIMER_MODE.MANAGE"
     >
         @if (isProOrAdmin()) {
-            <mat-form-field>
-                <mat-label>Payout Structure</mat-label>
+            <h4>
+                Player Actions
+            </h4>
 
-                <mat-select
-                    name="payout"
-                    [ngModel]="model.payout()"
-                    [disabled]="payoutDone() || isPayoutAdapted()"
-                    (selectionChange)="this.model.payout.set($event.value)"
-                >
-                    @for (payout of payoutsForSelect; track payout.value) {
-                        <mat-option [value]="payout.value">
-                            {{ payout.label }}
-                        </mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
+            <div class="button-group">
+
+                @if (isProOrAdmin() && !isAddPlayerBlocked()) {
+                    <app-menu-dialog-item
+                        icon="fa-user"
+                        titleIcon="fa-plus"
+                        title="Player"
+                        text="Adds a Player to the Tournament. Either with or without Entry."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
+                        (elementClicked)="addPlayer()"
+                    ></app-menu-dialog-item>
+                }
+
+                @if (isProOrAdmin()) {
+                    <app-menu-dialog-item
+                        icon="fa-money-bill-wave"
+                        titleIcon="fa-plus"
+                        title="Entry"
+                        text="Enters a Player into the tournament."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
+                        (elementClicked)="addEntry(false)"
+                    ></app-menu-dialog-item>
+                }
+
+                @if (withRebuy() && isProOrAdmin() && !isRebuyPhaseFinished()) {
+                    <app-menu-dialog-item
+                        icon="fa-refresh"
+                        titleIcon="fa-plus"
+                        title="Rebuy"
+                        text="Adds a Rebuy for a Player."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
+                        (elementClicked)="addRebuy()"
+                    ></app-menu-dialog-item>
+                }
+
+                @if (withReEntry() && isProOrAdmin() && !isRebuyPhaseFinished()) {
+                    <app-menu-dialog-item
+                        icon="fa-money-bill-wave"
+                        titleIcon="fa-plus"
+                        title="Re-Entry"
+                        text="Re-Enters a Player into the tournament."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked() || isITM()"
+                        (elementClicked)="addEntry(true)"
+                    ></app-menu-dialog-item>
+                }
+
+                @if (withAddon() && isProOrAdmin() && !isRebuyPhaseFinished()) {
+                    <app-menu-dialog-item
+                        icon="fa-database"
+                        titleIcon="fa-plus"
+                        title="Addon"
+                        text="Adds a Addon for a Player."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked()"
+                        (elementClicked)="addAddon()"
+                    ></app-menu-dialog-item>
+                }
+
+                @if (isProOrAdmin()) {
+                    <app-menu-dialog-item
+                        icon="fa-skull"
+                        title="Seat Open"
+                        text="Eliminates a Player from the Tournament."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked()"
+                        (elementClicked)="seatOpen()"
+                    ></app-menu-dialog-item>
+                }
+
+                @if (isProOrAdmin() && isRebuyPhaseFinished()) {
+                    <app-menu-dialog-item
+                        icon="fa-handshake"
+                        title="Make Deal"
+                        text="Allows Players to make a Deal."
+                        [isDisabled]="isTournamentFinished() || isTournamentLocked() || !isITM()"
+                        (elementClicked)="makeDeal()"
+                    ></app-menu-dialog-item>
+                }
+            </div>
         }
 
-        <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input
-                matInput
-                [ngModel]="model.name()"
-                (ngModelChange)="model.name.set($event)"
-                name="name"
-            />
-        </mat-form-field>
+        <h4>
+            Timer Actions
+        </h4>
+        <div class="button-group">
+            @if (isRunning()) {
+                <app-menu-dialog-item
+                    icon="fa-pause"
+                    title="Pause"
+                    text="Pauses the clock."
+                    (elementClicked)="onPause()"
+                ></app-menu-dialog-item>
+            } @else {
+                <app-menu-dialog-item
+                    icon="fa-play"
+                    title="Start"
+                    text="Starts the clock."
+                    (elementClicked)="onStart()"
+                ></app-menu-dialog-item>
+            }
 
-        <button
-            mat-flat-button color="primary"
-            type="submit"
-            [disabled]="!model.isValid()"
-        >
-            APPLY
-        </button>
-    </form>
-}
+            <app-menu-dialog-item
+                icon="fa-clock"
+                titleIcon="fa-plus"
+                title="1min"
+                text="Adds a minute to the current level."
+                (elementClicked)="onAddMinute()"
+            ></app-menu-dialog-item>
+
+            <app-menu-dialog-item
+                icon="fa-chevron-circle-left"
+                title="Previous Level"
+                text="Jumps to the beginning of the previous level."
+                (elementClicked)="onPrevLevel()"
+            ></app-menu-dialog-item>
+
+            <app-menu-dialog-item
+                icon="fa-chevron-circle-right"
+                title="Next Level"
+                text="Jumps to the beginning of the next level."
+                (elementClicked)="onNextLevel()"
+            ></app-menu-dialog-item>
+
+            @if (isProOrAdmin()) {
+
+                <app-menu-dialog-item
+                    icon="fa-random"
+                    title="Table Draw"
+                    text="Opens the Table Draw Manager."
+                    (elementClicked)="openDrawDialog()"
+                ></app-menu-dialog-item>
+            }
+        </div>
+
+        <h4>Other Actions</h4>
+        <div class="button-group">
+
+            <app-menu-dialog-item
+                [icon]="autoSlide() ? 'fa-toggle-on' : 'fa-toggle-off'"
+                title="Autoslide"
+                text="Toggles the autoslide of the left side panels."
+                (elementClicked)="onToggleAutoSlide()"
+            ></app-menu-dialog-item>
+
+            <app-menu-dialog-item
+                [icon]="showCondensedBlinds() ? 'fa-toggle-on' : 'fa-toggle-off'"
+                title="Condense Blinds"
+                text="Condensed the layout of the blinds."
+                (elementClicked)="onToggleShowCondensedBlinds()"
+            ></app-menu-dialog-item>
+
+            @if (!isFullScreen()) {
+                <app-menu-dialog-item
+                    icon="fa-maximize"
+                    title="Fullscreen"
+                    text="Enables the fullscreen mode."
+                    (elementClicked)="fullScreen()"
+                ></app-menu-dialog-item>
+            } @else {
+                <app-menu-dialog-item
+                    icon="fa-minimize"
+                    title="Normal Screen"
+                    text="Disables the fullscreen mode."
+                    (elementClicked)="cancelFullscreen()"
+                ></app-menu-dialog-item>
+            }
+
+            <app-menu-dialog-item
+                icon="fa-window"
+                title="Toggle Padding"
+                text="Adds a general padding for older or disorted screens."
+                (elementClicked)="togglePadding()"
+            ></app-menu-dialog-item>
+        </div>
+
+        <div class="button-group">
+            <app-menu-dialog-item
+                icon="fa-mouse-pointer"
+                title="Cursor"
+                text="Toggles the big cursor."
+                (elementClicked)="onToggleIsBigCursor()"
+            ></app-menu-dialog-item>
+
+            <app-menu-dialog-item
+                icon="fa-volume-high"
+                title="Sound Check"
+                text="Tests the loudness of the app sounds."
+                (elementClicked)="onTestSound()"
+            ></app-menu-dialog-item>
+
+            <audio #bleepNext>
+                <source src="../../../../../assets/gong.mp3" type="audio/mp3">
+            </audio>
+
+            <app-menu-dialog-item
+                icon="fa-eraser"
+                title="Reset State"
+                text="Resets the app settings state."
+                (elementClicked)="resetState()"
+            ></app-menu-dialog-item>
+
+            @if (isAuthenticated$ | async) {
+                <app-menu-dialog-item
+                    icon="fa-address-card"
+                    title="Admin"
+                    text="Opens the Admin section."
+                    (elementClicked)="openAdmin()"
+                ></app-menu-dialog-item>
+            }
+        </div>
+
+        @if (!isTournamentLocked()) {
+            <h4>Tournament settings</h4>
+
+            <br>
+
+            <form
+                class="flexed"
+                (ngSubmit)="applySettings()"
+            >
+                @if (isProOrAdmin()) {
+                    <mat-form-field>
+                        <mat-label>Payout Structure</mat-label>
+
+                        <mat-select
+                            name="payout"
+                            [ngModel]="model.payout()"
+                            [disabled]="payoutDone() || isPayoutAdapted()"
+                            (selectionChange)="this.model.payout.set($event.value)"
+                        >
+                            @for (payout of payoutsForSelect; track payout.value) {
+                                <mat-option [value]="payout.value">
+                                    {{ payout.label }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                }
+
+                <mat-form-field>
+                    <mat-label>Name</mat-label>
+                    <input
+                        matInput
+                        [ngModel]="model.name()"
+                        (ngModelChange)="model.name.set($event)"
+                        name="name"
+                    />
+                </mat-form-field>
+
+                <button
+                    mat-flat-button color="primary"
+                    type="submit"
+                    [disabled]="!model.isValid()"
+                >
+                    APPLY
+                </button>
+            </form>
+        }
+    </div>
+
+    @if (timerMode() === TIMER_MODE.MANAGE) {
+        <app-info-panel
+            class="flex-w-300"
+            [isAbsolute]="false"
+        ></app-info-panel>
+    }
+
+</div>

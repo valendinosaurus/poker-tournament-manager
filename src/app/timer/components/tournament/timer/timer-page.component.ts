@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Tournament } from 'src/app/shared/interfaces/tournament.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take, tap } from 'rxjs/operators';
@@ -11,9 +11,11 @@ import { TimerStateService } from '../../../services/timer-state.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PlayerApiService } from '../../../../shared/services/api/player-api.service';
 import { Player } from '../../../../shared/interfaces/player.interface';
-import { TableDrawService } from '../../../../shared/services/table-draw.service';
 import { AuthUtilService } from '../../../../shared/services/auth-util.service';
-import { BroadcastAction, BroadcastEvent } from '../../../../shared/interfaces/broadcast-event.interface';
+import { TimerkMode } from '../../../../shared/enums/timer-mode.enum';
+import { TableDrawService } from '../../../../table-draw/services/table-draw.service';
+import { TableDraw } from '../../../../table-draw/interfaces/table-draw.interface';
+import { TableDrawStep } from '../../../../table-draw/enums/table-draw-step.enum';
 
 @Component({
     selector: 'app-timer-page',
@@ -24,6 +26,7 @@ import { BroadcastAction, BroadcastEvent } from '../../../../shared/interfaces/b
         AsyncPipe,
         MatDialogModule
     ],
+
 })
 export class TimerPageComponent implements OnInit {
 
@@ -46,7 +49,13 @@ export class TimerPageComponent implements OnInit {
         this.fetchTrigger$ = this.fetchService.getFetchTrigger$();
         this.state.clientId.set(Math.ceil(Math.random() * 100000));
         const tournamentId = +this.route.snapshot.params['tId'];
-        this.fetchService.trigger();
+
+        if (this.state.timerMode() === TimerkMode.CLOCK) {
+            this.tableDrawService.persistDrawToDb.set(false);
+            this.tableDrawService.id.set(tournamentId);
+        }
+
+        this.fetchService.trigger(true);
 
         combineLatest([
             this.authUtilService.isPro$(),
@@ -67,12 +76,41 @@ export class TimerPageComponent implements OnInit {
             switchMap(() => this.tournamentApiService.get$(tournamentId)),
             tap((tournament: Tournament) => {
                 this.state.tournament.set(tournament);
-                this.tableDrawService.update();
+
                 this.canShow = true;
                 this.state.blockPut.set(false);
 
                 if (this.state.markForReset()) {
                     this.fetchService.triggerReset();
+                }
+            }),
+            switchMap(() => this.tournamentApiService.getTableDraw$(tournamentId)),
+            tap((tableDraw: TableDraw | null) => {
+                if (this.state.timerMode() !== 'CLOCK') {
+                    this.tableDrawService.minTables.set(this.state.tournament().minTables);
+                    this.tableDrawService.maxTables.set(this.state.tournament().maxTables);
+                    this.tableDrawService.maxPlayersPerTable.set(this.state.tournament().maxPlayersPerTable);
+
+                    this.tableDrawService.tableDraw.set(
+                        tableDraw
+                            ? {
+                                ...tableDraw,
+                                players: tableDraw.step === TableDrawStep.DRAWN
+                                    ? this.state.players()
+                                    : this.state.players().filter(
+                                        p => !this.state.finishes().map(f => f.playerId).includes(p.id)
+                                    ),
+                                finishedPlayerIds: this.state.finishes().map(f => f.playerId)
+                            }
+                            : undefined
+                    );
+
+                    if (tableDraw?.step === TableDrawStep.BLANK) {
+                        this.tableDrawService.setupEmptyTables(this.state.tournamentId());
+                    } else {
+
+                        this.tableDrawService.update(this.state.tournamentId());
+                    }
                 }
             }),
             shareReplay(1)
@@ -84,6 +122,7 @@ export class TimerPageComponent implements OnInit {
                 this.state.allAvailablePlayers.set(players);
             })
         ).subscribe();
+
     }
 
 }

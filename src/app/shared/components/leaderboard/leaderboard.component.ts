@@ -1,5 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { LeaderboardRow } from '../../../series/interfaces/overall-ranking.interface';
+import { LeaderboardRow } from '../../../series/interfaces/leaderboard-row.interface';
 import { Series, SeriesS } from '../../interfaces/series.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { CreatePlayerComponent } from '../../../dialogs/create-player/create-player.component';

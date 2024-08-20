@@ -1,11 +1,11 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesApiService } from '../../../shared/services/api/series-api.service';
-import { combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, timer } from 'rxjs';
 import { SeriesMetadata, SeriesS } from '../../../shared/interfaces/series.interface';
 import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SeriesTournament } from '../../interfaces/series-tournament.interface';
-import { LeaderboardRow } from '../../interfaces/overall-ranking.interface';
+import { LeaderboardRow } from '../../interfaces/leaderboard-row.interface';
 import { SeriesService } from '../../../shared/services/series.service';
 import { User } from '@auth0/auth0-angular';
 import { SeriesTournamentComponent } from '../../components/series-tournament/series-tournament.component';
@@ -63,6 +63,8 @@ export class SeriesPageComponent implements OnInit {
     hasRebuy$: Observable<boolean>;
     hasAddon$: Observable<boolean>;
     hasBounty$: Observable<boolean>;
+    isAnyTournamentRunning$: Observable<boolean>;
+    totalPlayers$: Observable<number>;
 
     positionChartData$: Observable<ChartConfiguration<'line'>['data']>;
 
@@ -98,6 +100,8 @@ export class SeriesPageComponent implements OnInit {
     private dialog: MatDialog = inject(MatDialog);
 
     private trigger$ = new ReplaySubject<void>();
+
+    currentlySelectedTournament$ = new BehaviorSubject<SeriesTournament | undefined>(undefined);
 
     ngOnInit(): void {
         this.seriesId = this.route.snapshot.params['sId'];
@@ -149,6 +153,7 @@ export class SeriesPageComponent implements OnInit {
                     totalTournaments: series.noOfTournaments,
                     percentageToFinalPot: series.percentage,
                     maxAmountPerTournament: series.maxAmountPerTournament,
+                    noOfFinalists: series.finalists
                 })
             ),
         );
@@ -166,14 +171,25 @@ export class SeriesPageComponent implements OnInit {
             ),
             map((tournaments: SeriesTournament[]) => tournaments.sort(
                 (a: SeriesTournament, b: SeriesTournament) => new Date(b.tournament.date).getTime() - new Date(a.tournament.date).getTime()
-            ))
+            )),
+            shareReplay(1)
+        );
+
+        this.totalPlayers$ = this.tournaments$.pipe(
+            map((tournaments: SeriesTournament[]) =>
+                [...tournaments].map(t => t.tournament.players.filter(p => !p.disqualified).map(p => p.id)).flat()
+            ),
+            map((players: number[]) => [...new Set(players)].length),
+            shareReplay(1)
         );
 
         this.leaderboard$ = this.tournaments$.pipe(
-            map((tournaments: SeriesTournament[]) => this.seriesService.merge(tournaments)),
-            map((ranking: LeaderboardRow[]) => ranking.sort(
-                (a: LeaderboardRow, b: LeaderboardRow) => b.points - a.points || a.rebuysAddons - b.rebuysAddons
-            )),
+            map((tournaments: SeriesTournament[]) => this.seriesService.merge([...tournaments])),
+            shareReplay(1)
+        );
+
+        this.isAnyTournamentRunning$ = this.leaderboard$.pipe(
+            map((leaderboard: LeaderboardRow[]) => leaderboard.some((row: LeaderboardRow) => row.isTemp))
         );
 
         this.positionChartData$ = this.tournaments$.pipe(

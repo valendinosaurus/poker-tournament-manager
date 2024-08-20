@@ -1,16 +1,16 @@
-import { SimpleStat } from '../../shared/interfaces/simple-stat.interface';
+import { SeriesStat } from '../../shared/interfaces/series-stat.interface';
 
 export interface SeriesStats {
-    bestAverageRank: SimpleStat[];
-    mostPrices: SimpleStat[];
-    mostEffPrices: SimpleStat[];
-    mostRebuysAddons: SimpleStat[];
-    mostRebuysAddonsPerT: SimpleStat[];
-    mostITM: SimpleStat[];
-    mostPercITM: SimpleStat[];
-    mostEliminations: SimpleStat[];
-    mostSpilled: SimpleStat[];
-    mostBubbles: SimpleStat[];
-    mostBounties: SimpleStat[];
-    biggestRivals: SimpleStat[];
+    bestAverageRank: SeriesStat;
+    mostPrices: SeriesStat;
+    mostEffPrices: SeriesStat;
+    mostRebuysAddons: SeriesStat;
+    mostRebuysAddonsPerT: SeriesStat;
+    mostITM: SeriesStat;
+    mostPercITM: SeriesStat;
+    mostEliminations: SeriesStat;
+    mostSpilled: SeriesStat;
+    mostBubbles: SeriesStat;
+    mostBounties: SeriesStat;
+    biggestRivals: SeriesStat;
 }

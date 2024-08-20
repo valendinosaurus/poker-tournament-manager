@@ -208,7 +208,7 @@ export class TournamentService {
     }
 
     private getRemainingFinish(eliminator: number, rank: number): Finish {
-        const adaptedPayouts: number[] | undefined = this.state.tournament().adaptedPayout;// this.localStorageService.getAdaptedPayoutById(this.state.tournament().id);
+        const adaptedPayouts: number[] | undefined = this.state.tournament().adaptedPayout;
         const payouts = this.rankingService.getPayoutById(this.state.tournament().payout);
         const payoutPercentage = +payouts[0];
 

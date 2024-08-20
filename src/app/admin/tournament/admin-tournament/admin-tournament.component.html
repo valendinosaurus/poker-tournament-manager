@@ -43,26 +43,47 @@
             <button
                 mat-raised-button
                 color="accent"
-                (click)="openTournament(tournament.id)"
+                [matMenuTriggerFor]="menu"
             >
                 <i class="fa fa-share fa-ib"></i> OPEN
             </button>
 
-            <button
-                mat-raised-button
-                color="accent"
-                (click)="openTournamentClock(tournament.id)"
-            >
-                <i class="fa fa-clock fa-ib"></i> CLOCK
-            </button>
+            <mat-menu #menu="matMenu">
+<!--              <button mat-menu-item>Item 1</button>-->
+                <!--              <button mat-menu-item>Item 2</button>-->
+                <!--           -->
+                <button
+                    mat-menu-item
+                    color="accent"
+                    (click)="openTournamentInProMode(tournament.id)"
+                >
+                    PRO MODE
+                </button>
 
-            <button
-                mat-raised-button
-                color="accent"
-                (click)="openManageTournament(tournament.id)"
-            >
-                <i class="fa fa-gear fa-ib"></i> MANAGE
-            </button>
+                <button
+                    mat-menu-item
+                    color="accent"
+                    (click)="openTournamentInManageMode(tournament.id)"
+                >
+                    MANAGE
+                </button>
+
+                <button
+                    mat-menu-item
+                    color="accent"
+                    (click)="openTournamentInClockMode(tournament.id)"
+                >
+                    CLOCK
+                </button>
+
+                <button
+                    mat-menu-item
+                    color="accent"
+                    (click)="openTournamentInHomegameMode(tournament.id)"
+                >
+                    HOMEGAME MODE
+                </button>
+            </mat-menu>
 
             @if (tournament.locked) {
                 <button
@@ -102,12 +123,12 @@
                 </span>
 
                 <span>
-                    <h4>Buy-In</h4>
-                    <p>$ {{ tournament.buyInAmount }}</p>
+                    <h4>Buy-In ( + Rake)</h4>
+                    <p>$ {{ tournament.buyInAmount }} (+ ${{ tournament.rake }})</p>
                 </span>
 
                 <span>
-                    <h4>Number of Rebus</h4>
+                    <h4>Number of Rebusy</h4>
                     <p>{{ tournament.noOfRebuys }}</p>
                 </span>
 
@@ -156,6 +177,25 @@
                     <p>$ {{ tournament.initialPricePool }}</p>
                 </span>
 
+                <span>
+                    <h4>Max Players</h4>
+                    <p>{{ tournament.maxPlayers }}</p>
+                </span>
+
+                <span>
+                    <h4>Max Players per Table</h4>
+                    <p>{{ tournament.maxPlayersPerTable }}</p>
+                </span>
+
+                <span>
+                    <h4>Min Tables</h4>
+                    <p>{{ tournament.minTables }}</p>
+                </span>
+
+                <span>
+                    <h4>Max Tables</h4>
+                    <p>{{ tournament.maxTables }}</p>
+                </span>
 
             </div>
         </mat-tab>

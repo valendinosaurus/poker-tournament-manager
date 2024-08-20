@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, ElementRef, input, signal, ViewChild, WritableSignal } from '@angular/core';
-import { SimpleStat } from '../../../shared/interfaces/simple-stat.interface';
 import { UserImageRoundComponent } from '../../../shared/components/user-image-round/user-image-round.component';
 import { DecimalPipe } from '@angular/common';
 import { SeriesStatComponent } from './series-stat/series-stat.component';
 import { Series } from '../../../shared/interfaces/series.interface';
 import KeenSlider, { KeenSliderInstance } from 'keen-slider';
+import { SeriesStat } from '../../../shared/interfaces/series-stat.interface';
 
 @Component({
     selector: 'app-series-stats',
@@ -23,21 +23,22 @@ import KeenSlider, { KeenSliderInstance } from 'keen-slider';
 export class SeriesStatsComponent implements AfterViewInit {
 
     series = input.required<Series>();
-    bestAverageRank = input.required<SimpleStat[]>();
-    mostPrices = input.required<SimpleStat[]>();
-    mostEffPrices = input.required<SimpleStat[]>();
-    mostRebuysAddons = input.required<SimpleStat[]>();
-    mostRebuysAddonsPerT = input.required<SimpleStat[]>();
-    mostITM = input.required<SimpleStat[]>();
-    mostPercITM = input.required<SimpleStat[]>();
-    mostBounties = input.required<SimpleStat[]>();
-    mostEliminations = input.required<SimpleStat[]>();
-    mostBubbles = input.required<SimpleStat[]>();
-    biggestRivals = input.required<SimpleStat[]>();
-    mostSpilled = input.required<SimpleStat[]>();
+    bestAverageRank = input.required<SeriesStat>();
+    mostPrices = input.required<SeriesStat>();
+    mostEffPrices = input.required<SeriesStat>();
+    mostRebuysAddons = input.required<SeriesStat>();
+    mostRebuysAddonsPerT = input.required<SeriesStat>();
+    mostITM = input.required<SeriesStat>();
+    mostPercITM = input.required<SeriesStat>();
+    mostBounties = input.required<SeriesStat>();
+    mostEliminations = input.required<SeriesStat>();
+    mostBubbles = input.required<SeriesStat>();
+    biggestRivals = input.required<SeriesStat>();
+    mostSpilled = input.required<SeriesStat>();
     hasRebuy = input.required<boolean>();
     hasAddon = input.required<boolean>();
     hasBounty = input.required<boolean>();
+    isAnyTournamentRunning = input.required<boolean>();
 
     slider: KeenSliderInstance;
     currentSlide: WritableSignal<number> = signal(0);

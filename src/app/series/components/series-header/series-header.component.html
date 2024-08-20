@@ -36,6 +36,17 @@
             </h4>
         </div>
 
+        @if (seriesHeader().guaranteed > 0) {
+            <div class="li-pair">
+                <span class="green">
+                    ${{ seriesHeader().guaranteed }}
+                </span>
+                <h4>
+                    Guaranteed
+                </h4>
+            </div>
+        }
+
         @if (seriesHeader().percentageToFinalPot > 0) {
             <div class="li-pair">
                 <span>
@@ -58,13 +69,22 @@
             </div>
         }
 
-        @if (seriesHeader().guaranteed > 0) {
             <div class="li-pair">
-                <span class="green">
-                    ${{ seriesHeader().guaranteed }}
+                <span>
+                    {{ totalPlayers() }}
                 </span>
                 <h4>
-                    Guaranteed
+                    Total Players
+                </h4>
+            </div>
+
+        @if (seriesHeader().noOfFinalists) {
+            <div class="li-pair">
+                <span>
+                    {{ seriesHeader().noOfFinalists }}
+                </span>
+                <h4>
+                    Finalists
                 </h4>
             </div>
         }

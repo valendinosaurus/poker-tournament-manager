@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SeriesS } from '../../shared/interfaces/series.interface';
 import { CombinedEntriesFinishes } from '../../series/interfaces/combined-entries-finishes.interface';
 import { SeriesTournament } from '../../series/interfaces/series-tournament.interface';
-import { LeaderboardRow } from '../../series/interfaces/overall-ranking.interface';
+import { LeaderboardRow } from '../../series/interfaces/leaderboard-row.interface';
 import { Player } from '../../shared/interfaces/player.interface';
 
 @Component({

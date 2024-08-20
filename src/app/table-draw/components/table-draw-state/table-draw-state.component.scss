@@ -1,8 +1,9 @@
-@import 'src/styles/colors_texts';
-
 .draw-state {
     width: 100%;
-    margin-top: 20px;
+    max-width: 900px;
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
     transform: translateX(-36px);
 }
 
@@ -50,12 +51,11 @@ div.bullets {
 .draw-state > div > p {
     width: 130px;
     text-align: center;
-    color: $primary;
+    color: #006dc7;
 }
 
 .draw-state > div > p.completed {
     font-weight: bold;
-    color: $primary;
     color: #ccc;
 }
 

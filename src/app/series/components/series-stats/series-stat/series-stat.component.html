@@ -8,15 +8,32 @@
             class="smaller"
             [class.inactive]="e.inactive"
         >
-            <span class="truncate flex-57">
-                {{ i + 1 }}. <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
+            <span
+                class="truncate"
+                [class.flex-57]="!e.addValue"
+                [class.flex-1]="e.addValue"
+            >
+                    {{ i + 1 }}.
+
+                @if (!e.addValue) {
+                    <app-user-image-round [borderWidth]="2" [imageUrl]="e.image" [size]="20"/>
+                }
+
                 {{ e.playerName }}
             </span>
-            <span class="flex-40 flex-right">
+
+            <span
+                class="flex-right"
+                [class.flex-40]="!e.addValue"
+                [class.flex-0]="e.addValue"
+            >
                 @if (useNumberPipe()) {
                     <strong>{{ e.value | number:'1.1-1' }} </strong> ({{ e.played }})
                 } @else {
-                    <strong>{{ e.value }}</strong> ({{ e.played }})
+                    @if (e.addValue === undefined) {
+                        <strong>{{ e.value }}</strong>
+                    }
+                    ({{ e.played }})
                 }
             </span>
         </span>

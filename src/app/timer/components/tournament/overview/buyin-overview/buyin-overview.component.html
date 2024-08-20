@@ -4,12 +4,12 @@
             <h4>
                 Rebuys
             </h4>
-            <p class="big">
+            <p class="big very-big">
                 {{ textRebuys() }}
             </p>
-            <!--                        <span class="small">-->
-            <!--                        x {{ tournament().rebuyStack | number:'':'de-CH' }}-->
-            <!--                    </span>-->
+            <span class="small">
+                x {{ tournament().rebuyStack | number:'':'de-CH' }}
+            </span>
         </div>
     }
 
@@ -18,12 +18,26 @@
             <h4>
                 Addons
             </h4>
-            <p class="big">
+            <p class="big very-big">
                 {{ textAddons() }}
             </p>
-            <!--                        <span class="small">-->
-            <!--                        x {{ tournament().addonStack | number:'':'de-CH' }}-->
-            <!--                    </span>-->
+            <span class="small">
+                x {{ tournament().addonStack | number:'':'de-CH' }}
+            </span>
+        </div>
+    }
+
+    @if (isWithReEntries()) {
+        <div class="flex flex-dir-column justify-center align-center">
+            <h4>
+                Re-Entries
+            </h4>
+            <p class="big very-big">
+                {{ textReEntries() }}
+            </p>
+            <span class="small">
+                x {{ tournament().startStack | number:'':'de-CH' }}
+            </span>
         </div>
     }
 </div>
